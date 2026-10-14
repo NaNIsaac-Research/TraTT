@@ -44,7 +44,8 @@ from typing import Callable, Protocol
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
-__all__ = ["PhaseField", "ZERO_PHASE", "required_nz", "solve_laue", "solve_bragg", "rocking"]
+__all__ = ["PhaseField", "ZERO_PHASE", "required_nz", "solve_laue", "solve_bragg",
+           "amplitude", "rocking"]
 
 
 class PhaseField(Protocol):
@@ -58,14 +59,38 @@ def ZERO_PHASE(zeta):
     return np.zeros_like(np.asarray(zeta, dtype=np.float64))
 
 
-def required_nz(alpha: float, alpha_ac: float, per_cycle: int = 20) -> int:
-    """Depth steps needed to resolve both oscillations in the integrand.
+def required_nz(
+    alpha: float,
+    alpha_ac: float,
+    per_cycle: int = 20,
+    S: float = 0.0,
+    eta_max: float = 0.0,
+) -> int:
+    """Depth steps needed to resolve the fastest oscillation in the integrand.
 
-    The phase grating turns over ``alpha_ac`` times across the slab and the
-    Pendelloesung solution turns over ``alpha`` times; RK4 needs a handful of
-    steps per cycle of the faster one.
+    The grating turns over ``alpha_ac`` times across the slab and the
+    Pendelloesung solution ``alpha`` times. But the integrand also carries
+    ``e^{-i phi}``, whose phase sweeps up to ``S q`` per unit depth, and
+    ``e^{i eta zeta}``, which turns ``eta / 2 pi`` times; at large ``S`` and
+    high channels these dominate. Pass ``S`` and the largest ``|eta|`` to
+    include them: e.g. ``S = 6`` read at ``eta = 5 q`` needs ~4x the steps the
+    ``alpha_ac`` rule gives (notebook Entry 31).
     """
-    return max(256, int(per_cycle * max(alpha, alpha_ac)))
+    cycles = max(alpha, alpha_ac, eta_max / (2.0 * np.pi) + S * alpha_ac)
+    return max(256, int(per_cycle * cycles))
+
+
+def _state_shape(eta_a: NDArray[np.float64], phase) -> tuple[int, ...]:
+    """Broadcast shape of the integrator state.
+
+    A phase profile that returns a scalar per depth gives the plain ``eta`` shape.
+    A profile that returns an extra leading axis -- e.g. ``Drive.phi`` handed a
+    column of times ``t[:, None]`` -- gives ``(n_t,) + eta.shape``, so one RK4
+    sweep produces a whole time series instead of one snapshot. That matters: the
+    per-step cost is dominated by Python loop overhead, not by array width.
+    """
+    probe = np.asarray(phase(np.float64(0.0)), dtype=np.float64)
+    return np.broadcast_shapes(eta_a.shape, probe.shape)
 
 
 def _phase_factor(phi, zeta: float) -> NDArray[np.complex128]:
@@ -73,7 +98,7 @@ def _phase_factor(phi, zeta: float) -> NDArray[np.complex128]:
 
 
 def solve_laue(
-    alpha: float,
+    alpha: complex,
     eta: ArrayLike = 0.0,
     phi: PhaseField | None = None,
     n_z: int = 512,
@@ -82,16 +107,21 @@ def solve_laue(
 
     Vectorized over ``eta``: the phase profile is shared, so a whole rocking
     curve costs one sweep. Returns the exit amplitudes ``(D0, Dh)``.
+
+    A complex ``alpha`` models the Borrmann part of absorption in a
+    centrosymmetric crystal (``chi_h = chi_hbar``, so the same coupling enters
+    both equations). The common ``exp(-mu z)`` of ``chi_0''`` is still gauged out.
     """
-    if alpha < 0:
+    if np.real(alpha) < 0:
         raise ValueError(f"alpha must be non-negative, got {alpha}")
     if n_z < 1:
         raise ValueError(f"n_z must be >= 1, got {n_z}")
 
     eta_a = np.asarray(eta, dtype=np.float64)
-    D0 = np.ones(eta_a.shape, dtype=np.complex128)
-    Dh = np.zeros(eta_a.shape, dtype=np.complex128)
     phase = ZERO_PHASE if phi is None else phi
+    shape = _state_shape(eta_a, phase)
+    D0 = np.ones(shape, dtype=np.complex128)
+    Dh = np.zeros(shape, dtype=np.complex128)
     c = 1j * np.pi * alpha
     h = 1.0 / n_z
 
@@ -116,26 +146,39 @@ def solve_bragg(
     eta: ArrayLike = 0.0,
     phi: PhaseField | None = None,
     n_z: int = 512,
+    kappa: float = 0.0,
 ) -> NDArray[np.complex128]:
     """Integrate the Bragg Riccati equation backward from ``R(1)=0`` to ``zeta=0``.
 
     Returns the complex amplitude reflectivity ``R(0) = Dh(0)/D0(0)`` at the
     entrance surface; the measured reflectivity is ``|R|^2``.
+
+    ``kappa >= 0`` is normal absorption (chi_0''), which in Bragg does *not* gauge
+    out: the two beams travel in opposite directions, so it enters ``R`` as
+    ``eta -> eta + i kappa``. A layer at depth ``zeta`` then contributes with weight
+    ``exp(-kappa zeta)``, i.e. ``kappa`` is the round-trip amplitude attenuation per
+    unit depth (``mu L (1/gamma_0 + 1/gamma_h) / 2``). chi_h'' (anomalous absorption)
+    is not included. Thick slab, kappa > 0 -> the Darwin-Prins root of
+    ``c R^2 + i (eta + i kappa) R + c = 0`` (tests/test_core.py).
     """
     if alpha < 0:
         raise ValueError(f"alpha must be non-negative, got {alpha}")
     if n_z < 1:
         raise ValueError(f"n_z must be >= 1, got {n_z}")
 
+    if kappa < 0:
+        raise ValueError(f"kappa must be non-negative, got {kappa}")
+
     eta_a = np.asarray(eta, dtype=np.float64)
-    R = np.zeros(eta_a.shape, dtype=np.complex128)
+    eta_c = eta_a + 1j * kappa
     phase = ZERO_PHASE if phi is None else phi
+    R = np.zeros(_state_shape(eta_a, phase), dtype=np.complex128)
     c = 1j * np.pi * alpha
     h = -1.0 / n_z  # backward
 
     def f(zeta, r):
         e = _phase_factor(phase, zeta)
-        return -c * np.conj(e) - 1j * eta_a * r - c * e * r * r
+        return -c * np.conj(e) - 1j * eta_c * r - c * e * r * r
 
     for i in range(n_z):
         z = 1.0 + i * h
@@ -150,6 +193,31 @@ def solve_bragg(
     return R
 
 
+def amplitude(
+    alpha: float,
+    eta: ArrayLike,
+    phi: PhaseField | None = None,
+    geometry: str = "laue",
+    n_z: int = 512,
+) -> NDArray[np.complex128]:
+    """Complex diffracted amplitude whose squared modulus is the intensity.
+
+    ``geometry='laue'`` gives ``Dh(L)``; ``'bragg'`` gives ``R(0)``.
+
+    The phase matters for more than bookkeeping. Subtracting the unmodulated
+    solution at the *amplitude* level, ``Dh(S) - Dh(0)``, cancels the part of the
+    crystal the acoustic wave has not reached: in the kinematic limit the
+    integrand becomes ``(e^{-i phi} - 1)``, which is identically zero ahead of the
+    wavefront, so the difference is supported only on the filled depth. The same
+    subtraction done on intensities does not cancel anything.
+    """
+    if geometry == "laue":
+        return solve_laue(alpha, eta, phi=phi, n_z=n_z)[1]
+    if geometry == "bragg":
+        return solve_bragg(alpha, eta, phi=phi, n_z=n_z)
+    raise ValueError(f"geometry must be 'laue' or 'bragg', got {geometry!r}")
+
+
 def rocking(
     alpha: float,
     eta: ArrayLike,
@@ -161,9 +229,4 @@ def rocking(
 
     ``geometry='laue'`` returns ``|Dh(L)|^2``; ``'bragg'`` returns ``|R(0)|^2``.
     """
-    if geometry == "laue":
-        _, Dh = solve_laue(alpha, eta, phi=phi, n_z=n_z)
-        return np.abs(Dh) ** 2
-    if geometry == "bragg":
-        return np.abs(solve_bragg(alpha, eta, phi=phi, n_z=n_z)) ** 2
-    raise ValueError(f"geometry must be 'laue' or 'bragg', got {geometry!r}")
+    return np.abs(amplitude(alpha, eta, phi=phi, geometry=geometry, n_z=n_z)) ** 2

@@ -13,3 +13,7 @@ __pycache__/
 .ipynb_checkpoints/
 
 *.docx
+# poster build output (regenerate with python poster/build.py)
+poster/out/
+poster/assets/
+poster/build.log
