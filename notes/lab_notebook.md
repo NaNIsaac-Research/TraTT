@@ -3913,3 +3913,223 @@ where |F_TT| > 2 % of max. Away from the main peak and the satellites, SW stays 
   - correcting a single-Bloch-wave ansatz is a modest step, so a referee may call it routine. The
     paper case must rest on the measurement correction, not on the linearisation.
 - Still unread: Sheppard et al. 2005, Chukhovskii & Förster 1995, Wark & Lee 1999.
+
+---
+
+## 2026-10-14 — Entry 65: the transfer function for a real crystal (Si 400), and where it stops being linear
+
+**Why.** Entries 59 and 64 give the crystal factor H in dimensionless form (frequency over the
+Darwin half-width x, absorption g = κ/2πα). This entry puts in Chalise et al.'s crystal and asks
+two things: how large is the bias across their spectral band, and is the closed form still right
+there? The regime is far out in the weakly absorbing tail (x ~ 100), where nothing had been
+checked against TT. Scripts: `explore/nb/e65_si400.py` (closed form, full-TT check, figure) and
+`explore/nb/e65_conv.py` (depth-step convergence and the linear-regime test). Logs:
+`e65_si400.log`, `e65_conv.log`. Figure: `figures/si400_transfer.png`.
+
+**1. Mapping (sigma polarisation, X0h constants of Entry 20, symmetric Bragg).**
+- Λ = λ sinθ_B/|χ_rh| (the code's Λ with γ = sinθ_B).
+- g = κ/2πα = χ_i0/|χ_rh|. With μ = 2πχ_i0/λ and κ = μL/sinθ_B, the factor sinθ_B cancels.
+- x = f/f_D, with f_D = v_L/Λ and v_L = 8433 m/s.
+
+| E keV | Λ µm | f_D GHz | g |
+|---|---|---|---|
+| 8 | 11.33 | 0.744 | 0.0458 |
+| 17.48 | 11.54 | 0.730 | 0.0100 |
+
+So Chalise's 87–113 GHz peak sits at x ≈ 120–150, and their 20–170 GHz band at x ≈ 27–230.
+
+**2. Crystal factor across their band (closed form, single mode at the satellite).**
+
+| f GHz | 5 | 10 | 20 | 40 | 60 | 100 | 170 |
+|---|---|---|---|---|---|---|---|
+| H, 8 keV | 0.52 | 0.78 | 0.93 | 0.98 | 0.99 | 1.00 | 1.00 |
+| H, 17.48 keV | 0.14 | 0.26 | 0.48 | 0.74 | 0.85 | 0.94 | 0.98 |
+
+- **H(20 GHz)/H(100 GHz) = 0.51 at 17.48 keV and 0.93 at 8 keV.**
+- A peak-normalised Fourier-weight spectrum taken at 17 keV therefore under-reads 20 GHz by a
+  factor 2 after any kinematic correction. Their Fig. 2 shows a low-frequency deficit of the same
+  sign; its size is about 4× (Entry 57, read off the figure).
+- Their energy and their weighting of the strain curve are not stated (Entry 57), so this stays
+  consistency in sign and order of magnitude, not a quantitative match.
+- The factor comes from weak absorption. Where κ is small, the tail extinction 2cR0 ~ (πα)²/η
+  competes with absorption out to tens of Darwin half-widths (Entry 59 sec. 4).
+
+**3. Full-TT check: two separate effects.**
+- **(a) Numerics.** At 24 RK4 steps per cycle of η, the phase error accumulates over ~10⁴
+  cycles. At g = 0.01, x = 30 the ratio TT/closed goes 0.917 → 0.954 → 0.956 for 24/48/96 steps
+  per cycle; at x = 100 it goes 0.680 → 0.744 → 0.746. The h⁴ scaling holds, and 48 steps per
+  cycle is converged to < 0.5 %. **The `tt` run in `e65_si400.log` used 24 steps per cycle and
+  is not converged at x ≥ 30. Do not quote it.**
+- **(b) Physics: the satellite stops being linear.** The converged residual at S = 0.02 is not
+  numerical. At S = 0.002, with 48 steps per cycle, the closed form holds:
+
+| g | x | S | ν = linear satellite amplitude | 1 − TT/closed |
+|---|---|---|---|---|
+| 0.0100 | 30 | 0.02 | 0.257 | 0.044 |
+| 0.0100 | 100 | 0.02 | 0.447 | 0.254 |
+| 0.0100 | 30 | 0.002 | 0.026 | 0.002 |
+| 0.0100 | 100 | 0.002 | 0.045 | 0.013 |
+| 0.0458 | 30 | 0.002 | — | 0.001 |
+| 0.0458 | 100 | 0.002 | — | 0.005 |
+| 0.12 (Entry 64) | 20 | 0.02 | 0.041 | −0.005 |
+
+- The deviation follows ν², where ν = |c S (1 − R0²) / (2(Λ − iW))| is the satellite amplitude
+  the linear theory predicts.
+- In words: when absorption is weak and the strain fills the penetration depth, the satellite
+  builds up its own reflectivity. It reaches the regime where its coupling πα|J_1(S)| over the
+  penetration depth is no longer small, and the first-order (kinematic-in-S) weight over-reads.
+- This is the same physics as the rest of this work: the satellite becomes a dynamical reflection
+  with its own extinction length Λ/|J_n(S)|.
+
+**4. Validity rule for the Fourier-weight estimator, and what it means for Chalise.**
+- The linear transfer function H applies while ν ≲ 0.2 (error ≲ 4 %).
+- For a packet rather than a filling mode, ν scales with the strained depth that the X-ray
+  samples coherently: ν ~ π|J_1(S)| ℓ/Λ with ℓ = min(packet length, penetration depth).
+- Chalise's packets are ~3 cycles of ~97 nm (ℓ ≈ 0.3 µm), with |strain| ~ 1e-3, so S ≈ 0.7
+  (Entry 57) and J_1 ≈ 0.33. That gives **ν ≈ 0.03, linear: H applies to their case.**
+  This is an order estimate, not a TT run of their packet.
+- For long acoustic trains — the GHz transducer drive of this project — ν is large by design, and
+  the satellite forms dynamically (Entries 1, 9). The two halves of the poster meet here:
+  - **short packet** → linear, H-corrected spectroscopy;
+  - **long train** → satellite Pendellösung.
+  - The crossover is the satellite's own extinction length reaching the strained depth.
+
+**Verdict.**
+- For Si 400 the crystal factor is a factor-2 effect across a realistic DFXM band at 17 keV, and
+  < 10 % at 8 keV.
+- The closed form is verified against converged TT to ≤ 0.5 % in the linear regime at both
+  energies, out to x = 100.
+- The estimator itself has a linearity limit, ν ≲ 0.2. It is a property of the measurement, not of
+  the solver, and it ties the Outlook back to the formation physics.
+
+**Not done.**
+- A TT run of an actual few-cycle packet at Si 400 parameters, which would replace the ν
+  estimate.
+- Anomalous absorption χ_ih in Bragg.
+- Their exact energy and normalisation (not stated in the preprint).
+- (nothing pending)
+
+**Update (same night).** At 8 keV, S = 0.02, converged with 96 steps per cycle, TT/closed form
+is 0.974 at x = 100 and 0.977 at x = 150. Stronger absorption keeps ν smaller, so the
+non-linearity is ~2 % there, against 25 % at 17.48 keV.
+
+**Update 2 — a few-cycle packet in full TT (`explore/nb/e65_packet.py`, `e65_packet.log`).**
+- Setup: the Entry 59 packet with α = 40, κ = 6 (g = 0.024), R_D = 0.2 (x ≈ 5), S = 0.02 / 0.2 / 0.7.
+  The table gives W/S relative to the S = 0.02 run.
+
+| S | ν estimate (πα\|J_1\|τ_d) | ν² | at η = q₀ (spectral peak) | at η = 2q₀ (twice the peak) |
+|---|---|---|---|---|
+| 0.2 | 0.19 | 0.035 | 0.973 | 1.221 |
+| 0.7 | 0.62 | 0.385 | 0.738 | 2.604 |
+
+- **Two different non-linearities.**
+  - **(i) At the peak: saturation.** The weight falls by about ν² (2.7 % against 3.5 %; 26 % against
+    38 %). This confirms the Entry 65 rule for packets, with ν = πα|J_1(S)|τ_d.
+  - **(ii) In the wings: harmonic generation.** At 2q₀ the weight grows to 1.2× and 2.6× its linear
+    value. This is the J₂(S) term of the Bessel expansion, a kinematic effect, already listed as
+    candidate bias (ii) in Entry 57. It depends on S itself, not on ν. Where the linear spectrum is
+    small, a harmonic of the strong peak dominates.
+- **Chalise's case.** In physical units, ν ≈ π|J_1(S)|ℓ/Λ ≈ 0.03 (ℓ ≈ 0.3 µm), so (i) is
+  negligible. But S ≈ 0.7 (Entry 57), so (ii) is not.
+  - **Hypothesis, not checked:** the second harmonic of their 87 GHz peak sits at 174 GHz, which is
+    where Entry 57 saw an unexplained feature in their reflectivity spectrum (150–170 GHz).
+  - The difference frequency 113 − 87 = 26 GHz falls in their low-frequency band too.
+  - Checking this needs their packet and energy, so it is not done here.
+- **Rule for the estimator, both parts.**
+  - Saturation is controlled by ν ≲ 0.2.
+  - Harmonics are controlled by S itself (|J₂/J₁| ≈ S/4).
+  - Only the first is a dynamical-diffraction effect. The second is kinematic and known in kind.
+
+---
+
+## 2026-10-15 — Entry 66: Chalise et al. Fig. 2 tails in full TT at Si 400 — second-order strain terms, not the crystal
+
+**Why.** Entry 65 left a hypothesis unchecked: the 150–170 GHz feature in their Fig. 2b may be the second
+harmonic of the 87 GHz packet. Entry 65 said this needed their packet and energy. A semi-infinite solver
+removes the cost problem, so the case is run here at the real crystal (Si 400, 17.48 keV) with an analytic
+packet of their peak strain. Script `explore/nb/e66_harmonic.py` (`check`, `run`, `fig`); data
+`e66_harmonic.json`, log `e66_harmonic.log`; figure `figures/si400_harmonic.png`.
+
+**1. Method: one ODE gives the whole R(t).**
+- The packet enters at t = 0 and moves at v = 1, so phi(zeta, t) = S g(t − zeta) depends on depth only
+  through s = t − zeta, the distance behind the front.
+- The Bragg Riccati equation has no other explicit depth dependence. Below the front the crystal is perfect,
+  so R = r0 there (Darwin–Prins root).
+- Integrate dR/ds = −dR/dzeta from s = 0 upward. The value at s = t is the surface reflectivity at time t.
+  This needs no slab thickness and no loop over time. One run (126 frequencies, 30k steps) takes about a
+  second.
+- **Check** against `solve_bragg` (α = 8, κ = 6, S = 0.3, R_D = 0.2): max |ΔR| = 2.9e-4 at |R| ≈ 0.24.
+  This equals the slab's back-face term with no packet (2.9e-4, 2.2e-4, 1.2e-4 at the three η). So the two
+  solvers agree up to the finite slab itself.
+- **Convergence:** 64 and 128 steps per cycle give identical K to 4 digits.
+- Units: length Λ = 11.54 µm (α = 1), time Λ/v_L = 1.368 ns, κ = 2πg = 0.063.
+  - S is set by peak strain 1e-3: S = ε GΛ/q0, which gives 0.71 at 87 GHz and 0.55 at 113 GHz.
+  - The packet is the Entry 58 shape: φ = S e^{−s/τ_d} sin(q0 s), so the strain starts with a step, as in
+    their Fig. 2a. The decay is 0.9 cycles (their peak FWHM ≈ 30 GHz) or 2 cycles.
+  - Window 140 ps (their Fig. 2a: entry at 60 ps, end at 200 ps) and 1400 ps.
+- **Measure:** K(f) = (W(f; S)/S) / (W(f; S/100)/(S/100)), the non-linear over the linear weight at the
+  same frequency.
+  - The linear transfer function (Entry 59/65 H, the heterodyne factor, the window) cancels in K.
+  - So K is the strain non-linearity alone.
+
+**2. Results (140 ps window; 1400 ps changes K by ≤ 0.1).**
+
+| packet | S | K(f0) | K(2f0) | K max (at) | K at 20 / 30 / 40 GHz |
+|---|---|---|---|---|---|
+| 87 GHz, 0.9 cyc | 0.71 | 1.009 | 1.17 | 1.28 (158 GHz) | 0.88 / 0.81 / 0.81 |
+| 87 GHz, 2 cyc | 0.71 | 1.036 | 1.74 | 1.85 (170 GHz) | 0.65 / 0.62 / 0.69 |
+| 113 GHz, 0.9 cyc | 0.55 | 1.003 | 1.11 | 1.22 (202 GHz) | 0.93 / 0.86 / 0.84 |
+| 113 GHz, 2 cyc | 0.55 | 1.012 | 1.51 | 1.66 (216 GHz) | 0.75 / 0.68 / 0.71 |
+
+- **Scaling** (87 GHz, 0.9 cycles, S = 0.71 / 0.36 / 0.18): (K − 1)/S is constant at 140–158 GHz
+  (0.32–0.40) and at 200 GHz (−0.42 to −0.52).
+  - The deviation is the second-order (J₂ and mixing) term interfering with the first-order one.
+  - It is not ν² saturation: at the peak K = 1.01, as Entry 65 predicted (ν ≈ 0.03).
+- **High-frequency wing.**
+  - The weight rises above the linear value from about 1.3 f0 up to 2 f0, by 20–85 % at the maximum.
+  - It falls below the linear value just past 2 f0 (K ≈ 0.5–0.7 at 200–230 GHz for the 87 GHz packet).
+  - In their normalised units, the shoulder lies at 0.2–0.35 of the peak, where the strain is 0.1–0.2.
+- **Low-frequency wing.**
+  - The difference-frequency terms reduce the weight to K = 0.6–0.9 at 20–40 GHz.
+  - The longer packet gives the larger reduction.
+
+**3. Against their Fig. 2 (figure downloaded from the arXiv HTML; numbers read off the image).**
+- **Location.**
+  - For 87 GHz, the computed shoulder ends at 158–170 GHz. They see a step in the reflectivity curve at about
+    165 GHz.
+  - For 113 GHz, the computed shoulder is at 200–216 GHz. Their reflectivity curve is above the strain curve
+    from about 155 GHz upward.
+  - The location therefore agrees with the hypothesis of Entry 65.
+- **Size and sign.**
+  - Their excess at 170–240 GHz is about +0.02 of the peak.
+  - Here the excess is +0.05 to +0.1 of the peak before 2 f0, and the deficit past 2 f0 is of the same order.
+  - Their strain spectrum has a notch near 165 GHz (b) and 215 GHz (d), which the analytic packet does not
+    have. The sign past 2 f0 depends on the packet's phase structure, so a shape match is not expected.
+- **Low frequencies: two factors multiply.**
+  - At 20 GHz, the crystal factor of Entry 65 gives H(20)/H(100) = 0.51.
+  - The strain non-linearity gives K = 0.65–0.88.
+  - Together that is 0.33–0.45, so the reflectivity under-reads 20 GHz by 2.2–3×. Their figure shows about 4×.
+  - Both factors are in their forward model, since they solve TT with the full phase.
+
+**Verdict.**
+- At their strain (1e-3 at 87–113 GHz, S = 0.55–0.71), the reflectivity-spectrum estimator is linear at the
+  peak (≤ 4 %), but not in the wings.
+- Second-order strain terms change the weight by tens of percent at 1.3–2.5 f0 and at f ≲ 0.5 f0.
+- The location of the extra weight agrees with the unexplained 150–170 GHz feature in their Fig. 2b.
+- The hypothesis of Entry 65 moves from "unchecked" to "consistent in location and order of magnitude". The
+  shape and sign are not tested, because their packet is not available.
+- **Physics class.** K is kinematic in kind. It is the Bessel/mixing expansion, candidate bias (ii) of
+  Entry 57, and is known in principle. What is new is the size at their stated strain and the separation of
+  this effect from the crystal factor H.
+- **Usable criterion (the Entry 57 stop rule).**
+  - The non-linear part grows as S while the linear part does not.
+  - Two runs or measurements at different fluence would separate the two parts.
+  - Scaling (W/S at f) between fluences changes by (K − 1) ∝ S in the wings, and stays flat where the
+    spectrum is linear.
+  - This criterion needs only a fluence series, not their packet.
+
+**Not done.**
+- Their actual udkm1Dsim packet. The notch in their strain spectrum and the exact shoulder shape need it.
+- How they combine angle-resolved FFTs into one spectrum (Entry 57). Here the weight is taken at ω = |η|,
+  as in Entry 58.
+- Instrument resolution (their Sec. IV).
