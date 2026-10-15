@@ -1,7 +1,5 @@
 # TraTT — transient formation of acoustic Bragg satellites
 
-[![PyPI](https://img.shields.io/pypi/v/tratt)](https://pypi.org/project/tratt/) [![Python](https://img.shields.io/pypi/pyversions/tratt)](https://pypi.org/project/tratt/) [![Tests](https://github.com/NaNIsaac/TraTT/actions/workflows/tests.yml/badge.svg)](https://github.com/NaNIsaac/TraTT/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://github.com/NaNIsaac/TraTT/blob/main/LICENSE)
-
 A travelling acoustic wave enters a perfect crystal. Its steady-state X-ray satellites are textbook
 material. This repository resolves how the satellites **form** while the wavefront crosses the
 crystal, using two-beam Takagi–Taupin theory, and records every step in a lab notebook.
@@ -33,7 +31,7 @@ Hyunjung Kim — Center for Ultrafast Phase Transformation, Sogang University.
 pip install tratt
 ```
 
-The package is the solver (`src/tratt`). Notebooks, figure scripts and the poster build need a
+Requires Python 3.12+; the package is the solver (`src/tratt`, numpy and scipy only). Notebooks, figure scripts and the poster build need a
 clone of this repository.
 
 ## Setup
@@ -80,3 +78,11 @@ uv run nbstripout --install --attributes .gitattributes
 ## Acknowledgement
 
 This work was supported by the National Research Foundation of Korea, grant RS-2021-NR059920.
+
+## Citation
+
+See [CITATION.cff](CITATION.cff).
+
+## License
+
+MIT, see [LICENSE](LICENSE).
