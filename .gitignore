@@ -17,3 +17,6 @@ __pycache__/
 poster/out/
 poster/assets/
 poster/build.log
+
+# build output
+dist/

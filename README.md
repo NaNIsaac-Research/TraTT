@@ -8,12 +8,12 @@ crystal, using two-beam Takagi–Taupin theory, and records every step in a lab 
 Hyunjung Kim — Center for Ultrafast Phase Transformation, Sogang University.
 
 <p align="center">
-  <img src="figures/poster/poster_preview.jpg" width="640" alt="KPS 2026 poster P2.17">
+  <img src="https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/poster_preview.jpg" width="640" alt="KPS 2026 poster P2.17">
 </p>
 
 ## Results
 
-![Schematic: the acoustic front fills the crystal; on the right, the rocking curve of that instant](figures/poster/f0_scheme.png)
+![Schematic: the acoustic front fills the crystal; on the right, the rocking curve of that instant](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f0_scheme.png)
 
 | | result | notebook |
 |---|---|---|
@@ -22,8 +22,17 @@ Hyunjung Kim — Center for Ultrafast Phase Transformation, Sogang University.
 | **Validity** | The independent-satellite picture is accurate to 5 % for R = Λ<sub>ac</sub>/Λ<sub>P</sub> ≲ 0.3. Past that, the channels couple through sidebands of the forward beam. | Entries 52–54 |
 | **Outlook** | The Fourier weight of R(t) is the strain spectrum times a crystal transfer function H(ω), in closed form at first order. It holds inside the Darwin width, where the plane-wave perturbation of Sondhauss & Wark (2003) is off by ×3–8. | Entries 59, 64 |
 
-![Filled-depth mapping: full TT (points) against the closed forms (lines)](figures/poster/f1_collapse.png)
-![Outlook: one transfer curve; first-order forms against full TT inside the Darwin width](figures/poster/f5_outlook.png)
+![Filled-depth mapping: full TT (points) against the closed forms (lines)](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f1_collapse.png)
+![Outlook: one transfer curve; first-order forms against full TT inside the Darwin width](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f5_outlook.png)
+
+## Install
+
+```
+pip install tratt
+```
+
+The package is the solver (`src/tratt`). Notebooks, figure scripts and the poster build need a
+clone of this repository.
 
 ## Setup
 

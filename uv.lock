@@ -1268,14 +1268,13 @@ name = "tratt"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "ipykernel" },
-    { name = "matplotlib" },
     { name = "numpy" },
     { name = "scipy" },
 ]
 
 [package.optional-dependencies]
 dev = [
+    { name = "matplotlib" },
     { name = "pytest" },
 ]
 
@@ -1288,8 +1287,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ipykernel", specifier = ">=7.3.0" },
-    { name = "matplotlib", specifier = ">=3.8" },
+    { name = "matplotlib", marker = "extra == 'dev'", specifier = ">=3.8" },
     { name = "numpy", specifier = ">=2.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "scipy", specifier = ">=1.13" },
