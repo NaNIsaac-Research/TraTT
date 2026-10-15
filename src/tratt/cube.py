@@ -38,7 +38,7 @@ def _over_time(solve, drive: Drive, eta, times, steady: bool) -> NDArray:
     1501-point eta grid, the cost per time sample bottoms out near 5e4 live
     elements, so the block is sized to that instead of to n_t.
     """
-    # ponytail: the 5e4 figure is one machine's cache, not a law. If a sweep runs
+    # Note: the 5e4 figure is one machine's cache, not a law. If a sweep runs
     # on other hardware and speed matters, re-measure by timing a few block sizes.
     phase = drive.steady_phi if steady else drive.phi
     block = max(1, 50_000 // max(eta.size, 1))

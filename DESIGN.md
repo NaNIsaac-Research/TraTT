@@ -1,14 +1,12 @@
-# DynamicFTT — Program Design
+# TraTT — Physics conventions
 
-Transient formation dynamics of acoustic Bragg satellites (KPS 2026 Fall abstract).
+Conventions, assumptions and analytic limits behind the solver. The tests in
+`tests/` assert the analytic facts below.
 
-Design rule: **the solver produces `I(η,t)` and nothing else.** Every claim in the
-paper is an analysis of that cube. No metric is added until a figure needs it.
-This is the explicit fix for the previous repo becoming a black box.
+Design rule: the solver produces `I(η,t)` and nothing else; every result is an
+analysis of that cube.
 
----
-
-## 0. Physics, fixed once
+## 0. Physics conventions
 
 Two-beam Takagi–Taupin, one traveling acoustic modulation, stroboscopic
 (quasi-static) X-ray response.
@@ -73,7 +71,7 @@ Full list:
 What 4 discards: uniform absorption (harmless — common factor) and the
 **Borrmann effect** (not harmless — `Im chi_h` gives the two Bloch modes
 different absorption, and mode-selective damping is itself a candidate extra
-timescale). Deliberately excluded now, kept on the P8 mechanism list.
+timescale). Deliberately excluded from this model.
 
 Note that strain is *not* discarded by 7: `d phi/d zeta = h . du/d zeta` is the
 local lattice-spacing change, so it is already inside `phi`.
@@ -88,8 +86,7 @@ local lattice-spacing change, so it is already inside `phi`.
 | `w = Ω·t_tr` | acoustic phase per transit | `= q` (non-dispersive) |
 
 `α_ac = L/Λ_ac` is the acoustic thickness parameter. **`q = w` is locked** by
-`Ω = K v_s`; treating them as independent (previous repo) is a generalization we
-do not need. Whether `α_ac` is tied to `α` or swept separately: see §6, decision D2.
+`Ω = K v_s`; treating them as independent is a generalization not needed here.
 
 ### Analytic facts used as ground truth (not fitted)
 
@@ -107,7 +104,7 @@ Fact 5 reframes the central question of the abstract:
 > not "does the transient outlive the wavefront?"
 > but **"what fraction of the transit does formation actually take, and why?"**
 
-### Standing prediction to test in Phase 4
+### Standing prediction
 
 Bragg geometry reflects only from the top ~`Λ_ext`. The front only has to cross
 that depth for the diffracted state to be established:
@@ -129,160 +126,6 @@ so `ζ_sat = min(1, 1/α)` holds to 2–4 % for α ≥ 4.
 
 This is a static penetration depth, not a formation time — the real problem is
 modulated and time dependent, so it may not carry over. That is exactly why it is
-useful: a quantitative baseline fixed *before* the sweep, which P4 either
+useful: a quantitative baseline fixed *before* the sweep, which the parameter sweep either
 confirms or breaks. If it holds, the "additional dynamical timescale" of the
 abstract is the extinction depth mapped into time, `t_ext = Λ_ext/v_s = t_tr/α`.
-
----
-
-## 1. Module layout
-
-Five files. Total target < 600 lines.
-
-```
-src/dftt/
-  core.py      TT solver. frozen φ(ζ) → I(η). Laue (IVP) + Bragg (Riccati).
-  drive.py     φ(ζ; t̃): traveling modulation, envelope, causality.
-  cube.py      one parameter point → I(η,t̃) cube → .npz
-  observe.py   I(η,t̃) → p_n(t), η_c,n(t), σ_n(t) → formation times
-  sweep.py     (α,S) grid → runs.csv of t_f/t_tr
-tests/
-  test_core.py  the 5 analytic facts above, as asserts
-```
-
-Explicitly **not** ported from `../FTT`: `metrics.py`, `floquet.py`,
-`experiment.py`, all of `scripts/`, all of `transient/`. They encode mechanism
-hypotheses (quenching, Landau–Zener, asymmetry) that Phase 7 may or may not need.
-
-`../AW_TT_EXP/spec_calc.py` stays where it is — it is the physical-units
-feasibility calculator (Δθ, detector pixels, real t_tr) and is orthogonal to the
-dimensionless solver. Called by hand when picking realistic (α,S).
-
-### core.py
-
-```python
-def rocking(alpha, eta, phi, geometry="laue", n_z=512) -> I     # |Dh|² or |R|²
-```
-
-- **Laue**: initial-value problem, `D0(0)=1, Dh(0)=0`, RK4 forward, vectorized
-  over the whole η grid at once.
-- **Bragg**: two-point BVP. Solved as a Riccati IVP for `R = Dh/D0`, integrated
-  backward from `ζ=1` with `R(1)=0`. One complex ODE, stable, no shooting.
-
-`n_z` must resolve `q·ζ`: require `n_z ≥ 20·α_ac`. Asserted, not assumed.
-
-### drive.py
-
-Envelopes: `step` (default, exactly causal) and `smoothstep(rise)` for the finite
-transducer rise time. `rise = T_r/t_tr` is the only physical knob that can push
-formation past the transit under fact 5, so it is a deliberate, labeled control —
-not a smoothing convenience.
-
-### cube.py
-
-One parameter point → one `.npz`:
-
-```
-eta  (Nη,) float64      # η grid, spans at least ±(M+0.5)·q
-t    (Nt,) float64      # t̃ from 0 to t_max (default 3)
-I    (Nt,Nη) float32    # the raw data
-meta dict               # alpha, S, q, w, geometry, envelope, rise, n_z, M
-```
-
-Sampling: 32 t̃-samples per acoustic period `2π/w` → `Nt ≈ 32·(w/2π)·t_max`.
-Nη = 512. float32 keeps a full sweep on disk in a few hundred MB; the derived
-`p_n(t)` curves are tiny and always kept.
-
-### observe.py
-
-Given the cube:
-
-- `p_n(t)` = ∫ I dη over `|η − n·q| < q/2` (window fixed analytically, §0 fact 3)
-- `η_c,n(t)` = intensity centroid in that window
-- `σ_n(t)` = second moment in that window
-
-Formation time, **three independent definitions**, all reported:
-
-| name | rule |
-|---|---|
-| `t_f^tol` | last t̃ at which `\|p_n − p̄_n^ss\| > ε·p̄_n^ss` (ε = 0.05) |
-| `t_f^env` | decay time of the envelope of `p_n(t) − p̄_n^ss` |
-| `t_f^int` | `∫\|p_n − p̄_n^ss\| dt / \|p_n(0) − p̄_n^ss\|` (no threshold at all) |
-
-`p̄_n^ss` = mean over the last full acoustic period. Steady state here is a
-**limit cycle, not a constant** — the drive keeps sliding after the front exits.
-All three are computed for every run; if they disagree by more than ~2× the
-result is flagged, not averaged.
-
-### sweep.py
-
-`(α, S)` grid → for each point run `cube` → `observe` → append a row to
-`runs.csv`. Cubes for a labeled subset are kept; the rest keep only `p_n(t)`.
-Multiprocessing over grid points.
-
----
-
-## 2. Phases
-
-Each phase ends with a concrete artifact. No phase starts before the previous
-one's artifact exists.
-
-| # | phase | artifact |
-|---|---|---|
-| P0 | `core.py` + `drive.py` + `tests/test_core.py` | 5 analytic asserts pass |
-| P1 | `cube.py` | one `I(η,t̃)` movie, eyeballed |
-| P2 | `observe.py` | `p_n(t)`, `η_c,n(t)`, `σ_n(t)` for that one cube |
-| P3 | formation times | three `t_f` definitions agree on one cube |
-| P4 | `sweep.py` over (α,S) | **`t_f/t_tr` map** — decision point |
-| P5 | zoom on structure | which channel is slow? overshoot? ringing? |
-| P6 | multiple timescales | `t_birth`, `t_peak`, `t_sat`, `t_relax` |
-| P7 | scaling / collapse | does `t_f·α/t_tr` collapse? |
-| P8 | mechanism | only now: extinction depth, Pendellösung, coupling |
-
-P4 is the branch point named in the research plan. Its outcome decides P5–P8:
-
-- map ≈ `min(1, 1/α)` → the extinction-depth story is the paper. Clean result.
-- map has structure not explained by `1/α` → that structure is the paper.
-- map ≈ 1 everywhere → formation is pure wavefront kinematics; the paper becomes
-  the **formation sequence** (channel ordering `t_f,0 < t_f,1 < t_f,2`) instead
-  of the formation time. Still a result, and still what the abstract promises.
-
-All three outcomes are publishable. That is why the map comes before any mechanism.
-
----
-
-## 3. What is deliberately not built
-
-- No plotting library wrapper. matplotlib called directly in one `figs.py` per figure.
-- No config system. Sweep parameters are literals at the top of `sweep.py`.
-- No caching layer. `.npz` on disk is the cache.
-- No abstract solver interface. Two geometries, two functions.
-- No mechanism metrics (asymmetry, quenching, adiabaticity) until P8 asks for one.
-
----
-
-## 4. Figure map (abstract → paper)
-
-| fig | content | phase |
-|---|---|---|
-| 1 | `I(η,t̃)` movie / waterfall — transient exists | P1 |
-| 2 | `p_0, p_±1, p_±2` vs t̃ — channel dynamics | P2 |
-| 3 | characteristic times, several definitions | P3, P6 |
-| 4 | `t_f/t_tr` over (α,S) | P4 |
-| 5 | collapse onto a dimensionless time | P7 |
-| 6 | mechanism | P8 |
-
----
-
-## 5. Open decisions
-
-**D1 — geometry.** Laue is an IVP (trivial); Bragg is a Riccati IVP (also easy)
-and is where `t_f/t_tr < 1` is predicted to live. Recommend building both in P0;
-the diff is ~30 lines and the Laue/Bragg contrast is Figure 4's control.
-
-**D2 — is `α_ac` tied to `α`?** `α = L/Λ_ext` (X-ray) and `α_ac = L/Λ_ac`
-(acoustic) are physically independent: `Λ_ext` is set by the reflection and
-energy, `Λ_ac` by the acoustic frequency. Sweeping both is a 3D grid. Recommend
-sweeping `(α, S)` at a few **fixed** `α_ac` values (e.g. 2, 5, 10) rather than a
-full 3D grid — `α_ac` sets the satellite spacing `q`, and the plan's question is
-about `α` and `S`.
