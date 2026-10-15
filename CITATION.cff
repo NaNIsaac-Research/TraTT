@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "TraTT: Transient formation dynamics of acoustic Bragg satellites in dynamical X-ray diffraction"
+authors:
+  - family-names: Yong
+    given-names: Isaac
+    email: isaacyong@naver.com
+    affiliation: "Sogang University"
+license: MIT
+repository-code: "https://github.com/NaNIsaac/TraTT"
+abstract: "Resolves how acoustic Bragg satellites form while a travelling acoustic wave crosses a perfect crystal, using two-beam Takagi-Taupin dynamical X-ray diffraction theory."
+keywords:
+  - "dynamical diffraction"
+  - "Takagi-Taupin"
+  - "acoustic waves"
+  - "Bragg satellites"
+  - "X-ray diffraction"
+  - "time-resolved"
+version: "0.1.0"
+date-released: "2026-10-15"
