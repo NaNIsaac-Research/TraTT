@@ -1,6 +1,6 @@
 # TraTT — transient formation of acoustic Bragg satellites
 
-[![PyPI](https://img.shields.io/pypi/v/tratt)](https://pypi.org/project/tratt/) [![Python](https://img.shields.io/pypi/pyversions/tratt)](https://pypi.org/project/tratt/) [![Tests](https://github.com/NaNIsaac/TraTT/actions/workflows/tests.yml/badge.svg)](https://github.com/NaNIsaac/TraTT/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/tratt)](https://pypi.org/project/tratt/) [![Python](https://img.shields.io/pypi/pyversions/tratt)](https://pypi.org/project/tratt/) [![Tests](https://github.com/NaNIsaac/TraTT/actions/workflows/tests.yml/badge.svg)](https://github.com/NaNIsaac/TraTT/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://github.com/NaNIsaac/TraTT/blob/main/LICENSE)
 
 A travelling acoustic wave enters a perfect crystal. Its steady-state X-ray satellites are textbook
 material. This repository resolves how the satellites **form** while the wavefront crosses the
@@ -56,7 +56,7 @@ src/tratt/      solver package
   cube.py         rocking curve over time (I(eta, t) cubes)
   sweep.py        parameter grids
 tests/          analytic ground truth as asserts
-notes/          lab_notebook.md: every result, with its script and its caveats (Entries 0-64)
+notes/          lab_notebook.md: every result, with its script and its caveats (numbered entries)
 explore/nb/     one script per notebook entry (eNN_*.py), with small cached results
 explore/        figure scripts; make_poster_figs.py draws the poster figures
 poster/         poster.md (the only source of poster text), build.py (layout + checks), fonts
