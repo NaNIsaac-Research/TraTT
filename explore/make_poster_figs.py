@@ -117,7 +117,7 @@ def f0():
         ax.plot([x, x], [yd - 0.22, yd + 0.22], color=INK2, lw=1.1)
     ax.plot([x0, xf], [yd, yd], color=INK, lw=3.2, solid_capstyle="butt")
     ax.text(x1 + 0.22, yd, r"$L$", ha="left", va="center", fontsize=SMALL, color=INK2)
-    ax.text(0.5 * (x0 + xf), yd - 0.38, r"filled depth $v_s t$", ha="center", va="top",
+    ax.text(0.5 * (x0 + xf), yd - 0.38, r"strained depth $v_s t$", ha="center", va="top",
             fontsize=SMALL, color=INK)
 
     # beams: in above the transducer, forward and diffracted out
@@ -162,7 +162,7 @@ def f1():
                r"Bragg: $\tanh^2(\pi\alpha_n\tilde t)$", small=SMALL - 2, ms=9)
     ax[0].get_legend().remove()                      # one legend for both: the cases are the same
     h, lab = ax[1].get_legend_handles_labels()
-    ax[1].legend(h, lab[:-1] + ["closed form (line)"], frameon=False, loc="lower right", fontsize=SMALL - 2)
+    ax[1].legend(h, lab[:-1] + ["formula (line)"], frameon=False, loc="lower right", fontsize=SMALL - 2)
     for a in ax:
         a.set_xlabel(r"$\alpha_n\tilde t$,   $\alpha_n=\alpha\left|J_n(S)\right|$")
     ax[1].set_ylabel("")
@@ -186,7 +186,7 @@ def f2():
     ax[1].plot(tf, np.sin(np.pi * an * tf) ** 2, color=INK, lw=2.4, label=r"$\sin^2(\pi\alpha_1\tilde t)$")
     ax[1].plot(t, I[:, k0], "o", color=BLUE, mec="white", mew=0.8, label="full TT")
     ax[1].set(xlabel=r"$\tilde t$", ylabel=r"$I(\eta=q,\tilde t)$", ylim=(-0.03, 1.1),
-              title=r"centre: TT vs $\sin^2(\pi\alpha_1\tilde t)$")
+              title="intensity at the satellite centre")
     for s in ("top", "right"):
         ax[0].spines[s].set_visible(True)
     finish(fig, ax[1], "f2_fringes")
@@ -196,18 +196,20 @@ def f3():
     import make_memory_figure as M
     style()
     fig, ax = plt.subplots(1, 2, figsize=(FIG_W, 6.0), constrained_layout=True)
-    M.panel_a(ax[0], small=SMALL - 2, title=r"transient-only: $J_1(S_f)=0$")
-    M.panel_b(ax[1], small=SMALL - 2, title="same strain, up vs down")
+    M.panel_a(ax[0], small=SMALL - 2, title=r"final amplitude with $J_1(S_f)=0$")
+    M.panel_b(ax[1], small=SMALL - 2, title=r"increasing vs decreasing $A$")
     for line in ax[0].lines + ax[1].lines:
         if line.get_marker() not in ("None", None, ""):
             line.set_markersize(8)
-    ax[0].texts[0].set(position=(2.93, 0.66), ha="right", va="top")
+    ax[0].texts[0].set(position=(2.93, 0.66), ha="right", va="top", text="$A$ constant in\nthe whole crystal")
     ax[0].legend(frameon=False, loc="upper left", fontsize=SMALL)
     ax[1].set_ylim(-0.02, 0.76)
-    ax[1].legend(frameon=False, loc="upper center", ncol=2, fontsize=SMALL - 2, columnspacing=1.0, handletextpad=0.3)
+    ax[1].set_xlabel(r"acoustic amplitude $S\,A(\tilde t)$")
+    h, _ = ax[1].get_legend_handles_labels()
+    ax[1].legend(h, [r"rise/fall time 1 $t_{\rm tr}$", r"rise/fall time 4 $t_{\rm tr}$"], frameon=False, loc="upper center", ncol=2, fontsize=SMALL - 2, columnspacing=1.0, handletextpad=0.3)
     # which branch is which: every loop starts at the origin, so the lower branch is the rise
-    ax[1].text(2.05, 0.09, "up", color=BLUE, fontsize=SMALL, fontweight="bold")
-    ax[1].text(0.02, 0.475, "down", color=BLUE, fontsize=SMALL, fontweight="bold")
+    ax[1].text(2.05, 0.09, "increase", color=BLUE, fontsize=SMALL, fontweight="bold")
+    ax[1].text(0.02, 0.55, "decrease", color=BLUE, fontsize=SMALL, fontweight="bold")
     finish(fig, ax, "f3_memory")
 
 
@@ -226,16 +228,16 @@ def f4():
         ax.text(1.3e-3, e * 1.12, lab, fontsize=SMALL, color=INK2)
     # the boundary the panel is about, so the result is readable without decoding the scatter
     ax.axvline(0.3, color=INK, lw=2.0, ls=(0, (5, 3)), zorder=4)
-    ax.text(0.26, 3.5e-5, "resolved satellites", fontsize=SMALL, color=INK, ha="right", va="bottom")
-    ax.text(0.35, 3.5e-5, "channels overlap", fontsize=SMALL, color=INK, ha="left", va="bottom")
+    ax.text(0.26, 3.5e-5, "independent satellites", fontsize=SMALL, color=INK, ha="right", va="bottom")
+    ax.text(0.35, 3.5e-5, "coupled satellites", fontsize=SMALL, color=INK, ha="left", va="bottom")
     ax.set(xscale="log", yscale="log", ylim=(2.2e-5, 1.5), xlim=(1e-3, 6),
-           xlabel=r"$R=\Lambda_{ac}/\Lambda_P$", ylabel="population error $E_{pop}$")
+           xlabel=r"$R=\Lambda_{ac}/\Lambda_P$", ylabel="intensity error")
     # nine S values: a discrete colour bar reads better than a nine-entry legend
     cmap = mpl.colors.ListedColormap(hues)
     norm = mpl.colors.BoundaryNorm(np.arange(len(Ss) + 1) - 0.5, len(Ss))
     cb = fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax, pad=0.01, aspect=25)
     cb.set_ticks(range(len(Ss)), labels=[f"{S:g}" for S in Ss])
-    cb.set_label("modulation index $S$")
+    cb.set_label("acoustic amplitude $S$")
     cb.outline.set_visible(False)
     finish(fig, ax, "f4_regime")
 
@@ -258,10 +260,10 @@ def f5():
         Wk = np.abs(R0) * np.abs(G(*packet(S, q0), eta)) * np.pi * alpha * S / kappa / T
         o = np.argsort(eta)
         ax[0].plot(eta[o] / wd, (Wp / Wk)[o], "-", color=c, lw=2.4)
-        ax[0].plot(eta / wd, Wn / Wk, "o", ms=7, color=c, mec="white", mew=0.6, label=rf"packet at {1 / RD:g} $\omega_D$")
+        ax[0].plot(eta / wd, Wn / Wk, "o", ms=7, color=c, mec="white", mew=0.6, label=rf"pulse at {1 / RD:g} $\omega_D$")
     ax[0].axhline(1, color=INK2, lw=1.2, ls=":")
     ax[0].set(xscale="log", yscale="log", xlabel=r"phonon frequency / Darwin half-width",
-              ylabel="weight / kinematic law", title="one transfer curve: points TT, lines closed form")
+              ylabel="Fourier weight / kinematic value", title="points: full TT, lines: formula")
     ax[0].legend(frameon=False, loc="lower right", fontsize=SMALL - 2)
     E = json.load(open(nb / "e64_sw.json"))
     x, sw, ric = [], [], []
@@ -275,10 +277,10 @@ def f5():
     o = np.argsort(x)
     x, sw, ric = np.array(x)[o], np.array(sw)[o], np.array(ric)[o]
     ax[1].plot(x, sw, "s-", color=ORANGE, ms=10, lw=2.4, label="plane-wave perturbation (2003)")
-    ax[1].plot(x, ric, "o-", color=BLUE, ms=10, lw=2.4, label="this work (Bloch-wave form)")
+    ax[1].plot(x, ric, "o-", color=BLUE, ms=10, lw=2.4, label="this work (first order)")
     ax[1].axhline(1, color=INK2, lw=1.2, ls=":")
     ax[1].set(xscale="log", yscale="log", xlabel=r"phonon frequency / Darwin half-width",
-              ylabel="satellite weight / full TT", title="inside the Darwin width")
+              ylabel="theory / full TT", title="inside the Darwin width")
     ax[1].set_yticks([1, 2, 4, 8], labels=["1", "2", "4", "8"])
     ax[1].yaxis.set_minor_formatter(mpl.ticker.NullFormatter())
     ax[1].legend(frameon=False, loc="upper right", fontsize=SMALL - 2)
