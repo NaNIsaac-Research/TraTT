@@ -4195,6 +4195,18 @@ changed phase-averaged TT intensity by at most 3.41e-5. The plotted TT dots
 use the refined 16-phase calculation. These checks are selected conditions,
 not a full TT sweep or a global error bound for the entire map.
 
+**Audit.** `e67_worker_audit.py` (results `.json`, runs in `.log`) rechecks A–C,
+the map maximum (S = 3.8, T/t_tr = 4) and the short-rise corner (S = 6,
+T/t_tr = 0.05). Direct `quad` depth integration matches the antiderivative law
+to 1.7e-8; causality and the filled endpoint hold exactly. Full TT with 16
+phases: depth doubling changes intensity by at most 3.4e-5 (A), 16 to 32 phases
+by at most 1.5e-8, and the TT minus approximation error is at most 8.3e-5.
+Excess errors are at most 5.2e-5 (B). The 6.0e-4 excess at the short-rise corner is
+comparable to this error scale and is not a map feature. The map maximum is
+still rising at T/t_tr = 4 toward the quasi-static bound
+sin^2(pi alpha max|J_1|) = 0.6272. B (T = 1) and C (T = 2) lie between map
+rows (0.998, 1.9855). Their table values are computed at the exact T.
+
 **Scope.** The map establishes behaviour for this fixed thickness, geometry,
 order, and linear envelope. It does not map thickness-dependent Pendellösung
 overshoot, arbitrary envelope shapes, absorption, or an experimental detection limit.
