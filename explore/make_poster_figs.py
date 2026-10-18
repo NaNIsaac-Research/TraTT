@@ -32,7 +32,7 @@ from tratt.drive import Drive  # noqa: E402
 OUT = ROOT / "figures" / "poster"
 for _f in sorted((ROOT / "poster" / "fonts").glob("*.ttf")):     # same typeface as the poster text
     mpl.font_manager.fontManager.addfont(str(_f))
-FONT = "Source Sans 3"   # same face as poster/build.py
+FONT = "IBM Plex Sans"   # same face as poster/build.py (f1 still carries Source Sans 3: redrawing it reruns TT)
 
 FIG_W = 14.4          # inches = poster card inner width (~366 mm)
 BIG, SMALL = 26, 23   # printed pt; smallest label 21 pt (SMALL - 2), readable at ~1.5 m on A0
@@ -75,6 +75,7 @@ def f0():
     modulation varying across the beam rather than with depth -- the opposite of the drive.
     """
     style()
+    LAB, KEY = BIG, BIG + 4   # it shares a row with f6 on the Background card, so set one step larger
     alpha, S, alpha_ac, t = 0.6, 1.5, 5.0, 0.62
     d = Drive(S=S, alpha_ac=alpha_ac)
 
@@ -104,12 +105,12 @@ def f0():
     ty = y0 + 0.58 * (y1 - y0)
     ax.add_patch(plt.Rectangle((x0 - 0.44, y0), 0.44, ty - y0, fc=INK2, ec="none", zorder=2))
     ax.text(x0 - 0.62, 0.5 * (y0 + ty), "transducer", ha="right", va="center",
-            fontsize=SMALL, color=INK2)
+            fontsize=LAB, color=INK2)
 
     # front marker
     ax.annotate("", xy=(xf + 1.25, y1 + 0.70), xytext=(xf, y1 + 0.70),
                 arrowprops=dict(arrowstyle="-|>", color=BLUE, lw=2.2, mutation_scale=22))
-    ax.text(xf + 1.45, y1 + 0.70, r"$v_s$", color=BLUE, va="center", fontsize=BIG)
+    ax.text(xf + 1.45, y1 + 0.70, r"$v_s$", color=BLUE, va="center", fontsize=KEY)
 
     # one dimension row: the slab thickness, with the filled part picked out on the same line
     yd = y0 - 0.72
@@ -118,20 +119,20 @@ def f0():
     for x in (x0, xf, x1):
         ax.plot([x, x], [yd - 0.22, yd + 0.22], color=INK2, lw=1.1)
     ax.plot([x0, xf], [yd, yd], color=INK, lw=3.2, solid_capstyle="butt")
-    ax.text(x1 + 0.22, yd, r"$L$", ha="left", va="center", fontsize=SMALL, color=INK2)
+    ax.text(x1 + 0.22, yd, r"$L$", ha="left", va="center", fontsize=LAB, color=INK2)
     ax.text(0.5 * (x0 + xf), yd - 0.38, r"strained depth $v_s t$", ha="center", va="top",
-            fontsize=SMALL, color=INK)
+            fontsize=LAB, color=INK)
 
     # beams: in above the transducer, forward and diffracted out
     ax.annotate("", xy=(x0 + 0.08, ymid + 1.25), xytext=(-2.8, ymid + 2.85),
                 arrowprops=dict(arrowstyle="-|>", color=INK, lw=2.8, mutation_scale=26), zorder=5)
-    ax.text(-2.9, ymid + 3.2, "X-ray", fontsize=BIG, color=INK)
+    ax.text(-2.9, ymid + 3.2, "X-ray", fontsize=KEY, color=INK)
     ax.annotate("", xy=(9.0, ymid + 1.65), xytext=(x1, ymid + 0.1),
                 arrowprops=dict(arrowstyle="-|>", color=INK2, lw=2.4, mutation_scale=22))
-    ax.text(9.2, ymid + 1.8, r"$D_0$", va="center", fontsize=BIG, color=INK2)
+    ax.text(9.2, ymid + 1.8, r"$D_0$", va="center", fontsize=KEY, color=INK2)
     ax.annotate("", xy=(9.0, ymid - 1.65), xytext=(x1, ymid - 0.1),
                 arrowprops=dict(arrowstyle="-|>", color=ORANGE, lw=3.0, mutation_scale=22))
-    ax.text(9.2, ymid - 1.8, r"$D_h$", va="center", fontsize=BIG, color=ORANGE)
+    ax.text(9.2, ymid - 1.8, r"$D_h$", va="center", fontsize=KEY, color=ORANGE)
 
     # ---- right: the same snapshot, actually solved, eta vertical so peaks face the beam
     eta = np.linspace(-2.6 * d.q, 2.6 * d.q, 4001)
@@ -139,14 +140,14 @@ def f0():
     axr.plot(I, eta / d.q, color=ORANGE, lw=2.2)
     axr.fill_betweenx(eta / d.q, 0, I, color=ORANGE, alpha=0.16)
     axr.set(xlim=(0, 1.55 * I.max()), ylim=(-2.75, 2.75), xticks=[], yticks=[-2, -1, 0, 1, 2])
-    axr.set_xlabel(r"$I(\eta)$", fontsize=SMALL, labelpad=1)
-    axr.set_ylabel(r"$\eta / q$", fontsize=SMALL, labelpad=0)
-    axr.tick_params(labelsize=SMALL, length=4)
+    axr.set_xlabel(r"$I(\eta)$", fontsize=LAB, labelpad=1)
+    axr.set_ylabel(r"$\eta / q$", fontsize=LAB, labelpad=0)
+    axr.tick_params(labelsize=LAB, length=4)
     for s in ("top", "right", "bottom"):
         axr.spines[s].set_visible(False)
     axr.grid(False)
     for n in (0, 1, 2):
-        axr.annotate(f"$n={n}$", (float(np.interp(n * d.q, eta, I)), n), fontsize=SMALL,
+        axr.annotate(f"$n={n}$", (float(np.interp(n * d.q, eta, I)), n), fontsize=LAB,
                      color=ORANGE, va="center", xytext=(6, 0), textcoords="offset points")
 
     OUT.mkdir(parents=True, exist_ok=True)
@@ -303,13 +304,14 @@ def f6():
     from scipy.special import jv
 
     style()
-    fig, ax = plt.subplots(figsize=(FIG_W / 2, 4.2), constrained_layout=True)
+    # same printed height as f0, which shares its row on the Background card
+    fig, ax = plt.subplots(figsize=(7.35, 3.2), constrained_layout=True)
     amplitude = np.linspace(0, 5, 501)
     for n, color in zip((0, 1, 2, 3), (INK2, BLUE, ORANGE, AQUA)):
         ax.plot(amplitude, np.abs(jv(n, amplitude)), color=color, label=rf"$n={n}$")
-    ax.set(xlabel=r"sound amplitude $S=h u_0$", ylabel=r"coupling weight $|J_n(S)|$",
+    ax.set(xlabel=r"sound amplitude $S=h u_0$", ylabel=r"$|J_n(S)|$",
            xlim=(0, 5), ylim=(0, 1.04), title="Sinusoidal grating: Bessel weights")
-    ax.legend(frameon=False, ncol=2, fontsize=SMALL - 2)
+    ax.legend(frameon=False, loc="center left", bbox_to_anchor=(1.0, 0.5), handlelength=1.4)
     finish(fig, ax, "f6_background")
 
 
@@ -319,13 +321,13 @@ def f7():
     style()
     data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
-    fig = plt.figure(figsize=(FIG_W, 9.0), constrained_layout=True)
+    fig = plt.figure(figsize=(FIG_W, 8.0), constrained_layout=True)
     grid = fig.add_gridspec(2, 3, height_ratios=[1.4, 1])
     ax = fig.add_subplot(grid[0, :])
     im = ax.pcolormesh(data["S"], data["rise"], data["excess"], shading="nearest",
                        cmap="YlOrRd", vmin=0)
     cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.045)
-    cb.set_label(r"excess intensity $I_{max}-I_{steady}$")
+    cb.set_label(r"overshoot $\Delta I$")
     ax.set(xlabel=r"final sound amplitude $S$", ylabel=r"rise time $T_{rise}/t_{tr}$",
            title=r"Linear turn-on, then held: first satellite ($n=1$)")
     for case, color, label in zip(summary["cases"], (BLUE, ORANGE, AQUA),
@@ -339,7 +341,15 @@ def f7():
         a.plot(data[f"{letter}_tt_t"][::3], data[f"{letter}_tt_I"][::3], "o",
                color=color, mec="white", ms=7)
         a.axhline(case["steady"], color=INK2, ls="--", lw=1.5)
-        a.set(xlabel=r"time / $t_{tr}$", ylim=(-0.025, 0.68), title=label)
+        if letter == "B":   # mark the quantity the map shows
+            k = int(np.argmax(data["B_I"]))
+            tb = float(data["B_t"][k])
+            a.annotate("", xy=(tb, float(data["B_I"][k])), xytext=(tb, case["steady"]),
+                       arrowprops=dict(arrowstyle="<|-|>", color=INK, lw=1.6, mutation_scale=16,
+                                       shrinkA=0, shrinkB=0))
+            a.text(tb + 0.08, case["steady"] + 0.3 * (float(data["B_I"][k]) - case["steady"]), r"$\Delta I$",
+                   fontsize=SMALL, va="center", color=INK)
+        a.set(xlabel=r"time / $t_{tr}$", ylim=(-0.025, 0.8), title=label)
         a.text(0.04, 0.94, f"S={S:g}, rise={rise:g}", transform=a.transAxes,
                fontsize=SMALL - 2, va="top", bbox=dict(facecolor="white", edgecolor="none", pad=2))
         if letter == "A":
