@@ -149,8 +149,7 @@ uv run python explore/make_poster_figs.py   # poster figures -> figures/poster/
 uv run python poster/build.py               # poster/poster.md -> poster/out/poster.pdf
 ```
 
-The banner and logos are read from `poster/assets/`, which is not in the repository; without it the
-poster builds with a plain header.
+The banner and the Sogang and CUPT logos are in `poster/assets/`.
 
 ## Layout
 

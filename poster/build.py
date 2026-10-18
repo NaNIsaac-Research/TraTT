@@ -9,7 +9,7 @@ header on the lab banner (poster/assets/header_bg.png) with the Sogang IHS shiel
 three-colour stripe, white page, thin grey-outlined boxes whose heads carry a navy number square
 and a navy + orange rule, and an Acknowledgement box with the CUPT logo and the repository QR at
 the lower right. Logos sit where the advisor asked (Sogang upper right, CUPT lower right); the
-banner, shield, white CUPT logo and box geometry are taken from the Oct 15 poster PDF.
+banner, shield and box geometry are taken from the Oct 15 poster PDF.
 Text in Source Sans 3 (the lab posters use Arial). A QR code to the repository sits in the
 Acknowledgement box (figures/poster/qr_repo.png, made by explore/make_poster_qr.py;
 poster/assets/qr_repo.png remains an optional override).
