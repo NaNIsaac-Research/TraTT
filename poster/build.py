@@ -33,6 +33,7 @@ Manuscript syntax
   "- text"        bullet                                  "![caption](path)" figure (width = card)
   "%% value | label"  stat tile (consecutive lines form one row)
   "$$ text"       display line: centred, slightly larger, with space around it (equations)
+  "=> a | b | c"  flow diagram: boxes joined by arrows, a loop arrow back to the first box
   {E12}           notebook entry tag (stripped from print, required on every item)
 
 Checks
@@ -89,10 +90,10 @@ NOTEBOOK = ROOT / "notes" / "lab_notebook.md"
 # A0 portrait, same as the ICAMD 2025 poster (841 x 1189 mm). Check the KPS rule before printing.
 SPEC = dict(
     W=841, H=1189, margin=16, gap=14, cols=2, pad=11,
-    header_h=130, stripe_h=5, footer_h=58,
+    header_h=110, stripe_h=5, footer_h=53,
     title_pt=52, authors_pt=30, head_pt=40, badge_pt=30, body_pt=28, callout_pt=29, caption_pt=23,
     stat_pt=36, stat_label_pt=23, eq_pt=30, min_pt=23,
-    leading=1.3, para_gap=6, side_text=0.52, panel_gap=9, fig_gap=4,
+    leading=1.3, para_gap=6, side_text=0.64, panel_gap=8, fig_gap=4,
     navy="#0f2a3a", accent="#e8743b", page="#ffffff", card="#ffffff", edge="#7d868f", key="#fbf1d9",
     ink="#111111", ink2="#4f5560", tint="#f2f4f7",
     stripe=("#3a3a3a", "#e04b3a", "#f08a3c"),
@@ -144,6 +145,11 @@ def parse(text):
                 b = " ".join(b.split())
                 cur["items"].append(dict(kind="bullet", text=TAG.sub("", b).strip(), tags=TAG.findall(b)))
             continue
+        if block.startswith("=>"):
+            t = " ".join(block[2:].split())
+            cur["items"].append(dict(kind="flow", boxes=[b.strip() for b in TAG.sub("", t).split("|")],
+                                     tags=TAG.findall(t)))
+            continue
         if block.startswith("$$"):
             t = " ".join(block[2:].split())
             cur["items"].append(dict(kind="eq", text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
@@ -192,7 +198,7 @@ class Page:
             prev = m.end()
             s, wgt, col = m[0], weight, color
             if s.startswith("**"):
-                s, wgt, col = s[2:-2], "medium", strong or color
+                s, wgt, col = s[2:-2], "semibold", strong or color
             toks.append((s, wgt, col, glue))
         lines, line, lw = [], [], 0.0
         for s, wgt, col, g in toks:
@@ -251,7 +257,7 @@ def bullet(P, it, x, y, w, draw=True):
         mid = y + s["body_pt"] * PT_MM * (1 - XH / 2)       # middle of the x-height of the first line
         P.box(x + 0.5, mid - d / 2, d, d, s["ink"], r=0, z=3)
     return P.flow(it["text"], x, y, w, s["body_pt"], indent=7, draw=draw,
-                  strong=s["accent"]) + s["para_gap"]
+                  strong=s["navy"]) + s["para_gap"]
 
 
 def callout(P, it, x, y, w, draw=True):
@@ -285,7 +291,34 @@ def stats(P, it, x, y, w, draw=True):
 
 def equation(P, it, x, y, w, draw=True):
     s = SPEC
-    return P.flow(it["text"], x, y + 1.5, w, s["eq_pt"], align="center", draw=draw) + s["para_gap"] + 2.5
+    return P.flow(it["text"], x, y + 1, w, s["eq_pt"], align="center", draw=draw) + s["para_gap"] + 1.5
+
+
+def flow_diagram(P, it, x, y, w, draw=True):
+    """Boxes left to right joined by arrows, with a return arrow underneath (one loop per time step)."""
+    s = SPEC
+    n, aw, pt = len(it["boxes"]), 9.0, s["caption_pt"]
+    bw = (w - (n - 1) * aw) / n
+    h = max(P.flow(b, 0, 0, bw - 4, pt, align="center", draw=False) for b in it["boxes"]) + 6
+    if draw:
+        for i, b in enumerate(it["boxes"]):
+            bx = x + i * (bw + aw)
+            P.box(bx, y, bw, h, s["key"], r=0, z=2)
+            th = P.flow(b, 0, 0, bw - 4, pt, align="center", draw=False)
+            P.flow(b, bx + 2, y + (h - th) / 2, bw - 4, pt, align="center")
+            if i < n - 1:
+                P.ax.annotate("", xy=(bx + bw + aw - 0.5, y + h / 2), xytext=(bx + bw + 0.5, y + h / 2),
+                              arrowprops=dict(arrowstyle="-|>", color=s["accent"], lw=2.2, mutation_scale=16),
+                              zorder=3)
+        ly = y + h + 7                                      # loop: next time step
+        P.ax.plot([x + w - bw / 2, x + w - bw / 2, x + bw / 2], [y + h, ly, ly], color=s["ink2"], lw=1.6,
+                  zorder=3)
+        P.ax.annotate("", xy=(x + bw / 2, y + h + 0.3), xytext=(x + bw / 2, ly),
+                      arrowprops=dict(arrowstyle="-|>", color=s["ink2"], lw=1.6, mutation_scale=14), zorder=3)
+        P.ax.text(x + w / 2, ly, r"next $\tilde t$", fontsize=pt - 1, color=s["ink2"], family=FONT,
+                  ha="center", va="center", zorder=4,
+                  bbox=dict(facecolor="white", edgecolor="none", pad=1.5))
+    return y + h + 7 + 4 + s["para_gap"]
 
 
 def text_height(P, items, ix, iw):
@@ -300,9 +333,11 @@ def text_height(P, items, ix, iw):
             y = stats(P, it, ix, y, iw, draw=False)
         elif it["kind"] == "eq":
             y = equation(P, it, ix, y, iw, draw=False)
+        elif it["kind"] == "flow":
+            y = flow_diagram(P, it, ix, y, iw, draw=False)
         elif it["kind"] == "para":
             y = P.flow(it["text"], ix, y, iw, s["body_pt"], draw=False,
-                      strong=s["accent"]) + s["para_gap"]
+                      strong=s["navy"]) + s["para_gap"]
     return y
 
 
@@ -333,7 +368,10 @@ def build(preview_dpi=60, extra=None, save=True):
     ax.add_patch(plt.Rectangle((0, 0), W, H, color=s["page"], lw=0, zorder=0))
     ax.add_patch(plt.Rectangle((0, 0), W, s["header_h"], color=s["navy"], lw=0, zorder=1))
     if (ASSETS / "header_bg.png").exists():             # in the page axes, under the title text
-        ax.imshow(mpimg.imread(ASSETS / "header_bg.png"), extent=(0, W, s["header_h"], 0), aspect="auto",
+        bg = mpimg.imread(ASSETS / "header_bg.png")          # drawn for 130 mm; trim rows, never stretch
+        keep = min(bg.shape[0], round(bg.shape[0] * s["header_h"] / 130))
+        top = (bg.shape[0] - keep) // 2
+        ax.imshow(bg[top:top + keep], extent=(0, W, s["header_h"], 0), aspect="auto",
                   zorder=1.5, interpolation="lanczos")
         ax.set_xlim(0, W)
         ax.set_ylim(H, 0)
@@ -344,11 +382,11 @@ def build(preview_dpi=60, extra=None, save=True):
     logo_w = 0
     if (ASSETS / "logo_ihs.png").exists():                  # same size and inset as on the Oct 15 poster, mirrored
         logo_w = 100
-        P.image(ASSETS / "logo_ihs.png", W - 22.4 - 55.4, 22.1, 55.4, h=79.7)
+        P.image(ASSETS / "logo_ihs.png", W - 22.4 - 55.4, (s["header_h"] - 79.7) / 2, 55.4, h=79.7)
     if meta.get("session"):                                 # kept out of the way, in the empty left corner
         P.flow(meta["session"], M + 6, 14, 150, s["caption_pt"], "#9fb3c2")
     tw = W - 2 * M - 2 * logo_w
-    y = 20 - s["title_pt"] * PT_MM * (s["leading"] - 1)
+    y = 15 - s["title_pt"] * PT_MM * (s["leading"] - 1)
     for line in meta.get("title", "").split("//"):           # "//" in the title = manual line break
         y = P.flow(line.strip(), M + logo_w, y + s["title_pt"] * PT_MM * (s["leading"] - 1), tw, s["title_pt"],
                    "white", weight="semibold", align="center") - s["title_pt"] * PT_MM * 0.35
@@ -450,9 +488,11 @@ def build(preview_dpi=60, extra=None, save=True):
                 y = stats(P, it, ix, y, iw)
             elif it["kind"] == "eq":
                 y = equation(P, it, ix, y, iw)
+            elif it["kind"] == "flow":
+                y = flow_diagram(P, it, ix, y, iw)
             else:
                 y = P.flow(it["text"], ix, y, iw, s["body_pt"],
-                           strong=s["accent"]) + s["para_gap"]
+                           strong=s["navy"]) + s["para_gap"]
         if side:
             y = max(y, fyy - s["fig_gap"])
         y += s["pad"] - s["para_gap"]
@@ -477,7 +517,7 @@ def build(preview_dpi=60, extra=None, save=True):
         plt.close(P.fig)
         return [lf / (n - 1) if n > 1 and lf > 0 else 0.0 for lf, n in zip(left, count)]
     OUT.mkdir(exist_ok=True)
-    P.fig.savefig(OUT / "poster.pdf")
+    P.fig.savefig(OUT / "poster.pdf", dpi=300)       # raster figures are resampled to this; text stays vector
     P.fig.savefig(OUT / "poster.png", dpi=preview_dpi)
     print("column space distributed between panels (mm per gap): " +
           "  ".join(f"{i + 1}: {e:.0f}" for i, e in enumerate(extra)))

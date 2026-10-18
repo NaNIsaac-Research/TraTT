@@ -8,89 +8,85 @@ footer: This work was supported by the National Research Foundation of Korea gra
 
 <!--
 Printed text source; build with python poster/build.py.
-Reading order: full-width background and question; left column theory, method and
-result 1; right column result 2, solver checks and conclusion. Numbers follow notes/tasks/poster_facts.md.
+Reading order: full-width introduction; left column model, method and formation dynamics;
+right column overshoot and conclusions. Numbers follow notes/tasks/poster_facts.md.
 -->
 
 @wide
 
-## Background: acoustic satellites and the question
+## Introduction
 
-**Acoustic satellites.** Sound displaces the lattice planes by $u$ and shifts the diffracted X-ray phase by $\phi=h u$. This moving phase grating adds satellites $n=\pm1,\pm2,\dots$ to the rocking curve $I(\eta)$ at $\eta=nq$, $q=2\pi L/\Lambda_{ac}$ ($\eta$: angle deviation, $L$: thickness, $\Lambda_{ac}$: acoustic wavelength). {E0}
+**Motivation.** Time-resolved X-ray diffraction can follow GHz acoustic waves in crystals: satellites form over a few ns, much longer than 50–100 ps synchrotron pulses, and a strain pulse entering a Laue crystal has been used to switch X-rays (DeCamp et al., Nature 413, 825 (2001)). {E6}{E7}{E21}
 
-**Steady state (known).** With sound in the whole crystal, $e^{i\phi}=\Sigma_n J_n(S)\,e^{in(q\zeta-q\tilde t)}$, $S=h u_0$. Satellite $n$ couples with strength $\alpha\left|J_n(S)\right|$, $\alpha=L/\Lambda_P$ ($\Lambda_P$: Pendellösung length). $J_n$ is a coupling weight; multiple scattering sets the intensity. Multi-wave theory: Polikarpov & Skadorov, phys. stat. sol. (b) 143, 11 (1987). {E0}{E7}{E29}
+**Acoustic satellites.** A displacement $u$ shifts the phase of the diffracted wave by $\phi=hu$, so a travelling acoustic wave acts as a moving phase grating with satellites $n=\pm1,\pm2,\dots$ at $\eta=nq$, $q=2\pi L/\Lambda_{ac}$ ($\eta$: angular deviation, $L$: thickness, $\Lambda_{ac}$: acoustic wavelength). In a filled crystal $e^{i\phi}=\Sigma_nJ_n(S)\,e^{in(q\zeta-q\tilde t)}$ with $S=hu_0$, and satellite $n$ couples with strength $\alpha\left|J_n(S)\right|$, $\alpha=L/\Lambda_P$ ($\Lambda_P$: Pendellösung length); its intensity follows from multiple scattering (Polikarpov & Skadorov, phys. stat. sol. (b) 143, 11 (1987)). {E0}{E7}{E29}
 
-**Before the steady state.** The front moves at $v_s$. For $t<t_{tr}=L/v_s$ only the depth $v_s t$ vibrates. {E0}{E7}
-
-> **Question.** How do the satellites form while the front crosses the crystal, and how does a gradual turn-on change their intensity in time? {E0}{E28}{E33}
+> **This work.** The Bessel-weighted coupling describes a crystal already filled with sound. While the wavefront enters ($t<t_{tr}=L/v_s$), the vibrating depth $v_st$ grows and the diffraction is dynamical, so we compute time-resolved rocking curves directly from the TT equations. {E0}{E7}{E28}{E33}
 
 ![](figures/poster/f0_scheme.png){E0}
 
 ![](figures/poster/f6_background.png){E0}{E7}
 
-## Theory and numerical method
+## Theoretical Model and Numerical Methods
 
-**1. Two-beam Takagi–Taupin (TT) equations.** Amplitudes $D_0$, $D_h$ vs depth $\zeta=z/L\in[0,1]$; $\eta$ in units of $1/L$: {E0}
+**1 Two-beam diffraction.** The X-ray field near a Bragg reflection consists of the transmitted wave $D_0$ and the diffracted wave $D_h$, which exchange intensity with depth $\zeta=z/L\in[0,1]$. They obey the coupled Takagi–Taupin (TT) equations: {E0}
 
 $$ $dD_0/d\zeta = i\pi\alpha\,e^{+i\phi}D_h,\qquad dD_h/d\zeta = i\pi\alpha\,e^{-i\phi}D_0 + i\eta D_h$ {E0}
 
-**2. Travelling sound as a phase field,** $\tilde t=t/t_{tr}$: {E0}
+$\pi\alpha$ couples the beams, $i\eta D_h$ is the angular detuning ($\eta$ in units of $1/L$), and the lattice displacement enters only as the phase $e^{\pm i\phi}$ of the coupling. {E0}
+
+**2 Travelling acoustic deformation,** with $\tilde t=t/t_{tr}$: {E0}
 
 $$ $\phi(\zeta,\tilde t)=S\,A(\tilde t-\zeta)\,\sin(q\zeta-q\tilde t)$ {E0}
 
-Causal envelope: $A=0$ for $\zeta>\tilde t$, so only the layer behind the front is modulated. Step $A$: sudden turn-on; linear ramp over $T_{rise}$: gradual. {E0}{E28}
+Causal envelope: $A=0$ ahead of the front ($\zeta>\tilde t$); its profile sets the onset. {E0}{E28}
 
-**3. Laue: initial-value problem.** $D_0(0)=1$, $D_h(0)=0$; integrate to $\zeta=1$, $I=\left|D_h(1)\right|^2$. {E0}
+**3 Numerical solution.** The X-ray transit $L/c\approx1$ ps is 0.2 % of a 500 ps acoustic period (Si 440, 30 keV, 2 GHz, $L=296$ μm), so $\phi$ is held fixed at each $\tilde t$ (quasi-static). {E62}
 
-**4. Bragg: Riccati form.** $D_h$ exits through the entrance face, so $D_0(0)=1$, $D_h(1)=0$ sit on opposite faces. For $R=D_h/D_0$: {E0}
+- Laue: $D_0(0)=1$, $D_h(0)=0$ at the entrance; integrate forward to $\zeta=1$. {E0}
+- Bragg: $D_h$ exits at the entrance, so $D_0(0)=1$, $D_h(1)=0$ sit on opposite faces; $R=D_h/D_0$ obeys a Riccati equation, integrated backward (stable): {E0}
 
 $$ $dR/d\zeta=-i\pi\alpha\,e^{-i\phi}-i\eta R-i\pi\alpha\,e^{+i\phi}R^2,\qquad R(1)=0$ {E0}
 
-Integrated backward from $\zeta=1$ (stable): no shooting; $I=\left|R(0)\right|^2$. {E0}
+- Both: fixed-step RK4 in depth, $\geq20$ steps per fastest oscillation. {E0}{E31}
 
-**5. RK4 in depth.** Fixed step, $\geq 20$ per fastest oscillation; all $\eta$ in one sweep. {E0}{E31}
+**4 Calculated quantities.** $I(\eta,\tilde t)=\left|D_h(1)\right|^2$ (Laue) or $\left|R(0)\right|^2$ (Bragg), for every $\eta$ and $\tilde t$: {E0}
 
-**6. Quasi-static time.** X-ray transit $L/c\approx1$ ps is 0.2 % of a 500 ps acoustic period (worst case: Si 440, 30 keV, 2 GHz, $L=296$ μm), so each time step is a frozen snapshot: {E62}
+=> time $\tilde t$ | fix $\phi(\zeta,\tilde t)$ | RK4 in $\zeta$ (all $\eta$) | $I(\eta,\tilde t)$ | $I_n(\tilde t)=I(nq,\tilde t)$ {E0}{E62}
 
-> $\tilde t\ \rightarrow\ \phi(\zeta,\tilde t)\ \rightarrow\ $ RK4 in $\zeta$ $\rightarrow\ I(\eta,\tilde t)\ \rightarrow$ next $\tilde t$ {E0}{E62}
+**Numerical verification.** The solver was checked against analytical solutions, step-size convergence and an independent Floquet calculation. {E0}{E42}
 
-## Result 1: satellite formation (sudden turn-on)
+## Formation Dynamics of Acoustic Satellites
 
-Centre intensity of satellite $n$ while the front crosses. The filled layer acts as a uniform crystal of thickness $\tilde t$ and coupling $\alpha_n=\alpha\left|J_n(S)\right|$: {E1}{E9}
+![](figures/poster/f8_onset_step.png){E0}
+
+With the satellites treated as independent, the strained layer acts as a uniform crystal of thickness $\tilde t$ and coupling $\alpha_n=\alpha\left|J_n(S)\right|$: {E1}{E9}
 
 $$ $I_n=\sin^2(\pi\alpha_n\tilde t)$ (Laue), $\qquad I_n=\tanh^2(\pi\alpha_n\tilde t)$ (Bragg) {E1}{E9}
 
-Time scale $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$, independent of $L$. The order follows $\left|J_n\right|$, not $n$: at $S=3$ the first maxima come as $n=2,1,3$. {E1}{E6}
+The formation time $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$ is independent of $L$, and the order follows $\left|J_n(S)\right|$ rather than $n$ (at $S=3$: $n=2,1,3$). {E1}{E6}
 
-![Points: full TT for four $(S,\alpha,n)$. Lines: the formulas, **no fitted parameter**. Over the notebook test cases ($\alpha_{ac}=20$) the deviation is at most 0.079 (Laue) and 0.043 (Bragg).](figures/poster/f1_collapse.png){E1}{E9}
-
-**Validity** (approximation, not solver error): satellites are treated as independent; centre-intensity error $\approx0.9\,\Lambda_{ac}/\Lambda_P$ at $S=1.5$, $\leq0.03$ for $\Lambda_{ac}/\Lambda_P\leq0.05$ (30 random cases). {E19}{E26}
+![Points: full TT; lines: expressions above, without fitting parameters. Deviations (at most 0.079 Laue, 0.043 Bragg; notebook cases, $\alpha_{ac}=20$) come from the independent-satellite approximation, not the solver: $\approx0.9\,\Lambda_{ac}/\Lambda_P$ at $S=1.5$, $\leq0.03$ for $\Lambda_{ac}/\Lambda_P\leq0.05$.](figures/poster/f1_collapse.png){E1}{E9}{E19}{E26}
 
 @column
 
-## Result 2: transient overshoot (gradual turn-on)
+## Transient Intensity Overshoot
 
-During a ramp, each depth holds a different amplitude, and the satellite sums their couplings: {E5}{E28}
+![](figures/poster/f8_onset_ramp.png){E28}{E67}
+
+The amplitude rises linearly to $S$ over $T_{rise}$ and is then held. The depth-dependent amplitude gives satellite $n$ a depth-averaged coupling: {E5}{E28}
 
 $$ $\Theta_n(\tilde t)=\int_0^1 J_n(S\,A(\tilde t-\zeta))\,d\zeta,\qquad I_n\approx\sin^2(\pi\alpha\,\Theta_n)$ (Laue) {E5}{E28}
 
-**Overshoot**: $\Delta I=I_{max}-I_{steady}>0$ (incident-intensity units). Scan of $S$ and $T_{rise}$; first Laue satellite, $L/\Lambda_P=0.5$. {E67}
+Overshoot: $\Delta I=I_{max}-I_{steady}$ in incident-intensity units, for the first Laue satellite at $L/\Lambda_P=0.5$, $0.5\leq S\leq6$, $0.05\leq T_{rise}/t_{tr}\leq4$. {E67}
 
-![Top: $\Delta I$ from the $\Theta_n$ law, 11,211 conditions, $\Lambda_{ac}/\Lambda_P=0.0125$. Bottom: A–C traces; lines, law; dots, full TT; dashed, steady value. Phase-averaged centre intensity.](figures/poster/f7_overshoot.png){E67}
+![Top: $\Delta I$ from $\Theta_n$, 11,211 conditions, $\Lambda_{ac}/\Lambda_P=0.0125$. Bottom: lines, $\Theta_n$; dots, full TT; dashed, steady state.](figures/poster/f7_overshoot.png){E67}
 
-- A ($S=1.5$): monotonic. B ($S=3$): the ramp passes larger $\left|J_1\right|$, so the peak is 1.69 × the final value. C (near $J_1=0$): 0.53 during turn-on, $1.3\times10^{-4}$ at the end. {E15}{E28}{E67}
-- Largest $\Delta I$: 0.603 at the scan edge $T_{rise}=4t_{tr}$ (bound 0.627). Full TT at five points agrees with the law to $8\times10^{-5}$. {E28}{E67}
+- A ($S=1.5$): monotonic. B ($S=3$): $\left|J_1\right|$ is larger during the ramp than at the end, and the maximum is 1.69 times the final value. C (near $J_1=0$): 0.53 during the ramp, $1.3\times10^{-4}$ at the end. {E15}{E28}{E67}
+- Largest $\Delta I$ in the scanned range: 0.603 at $T_{rise}=4t_{tr}$, still rising toward the quasi-static limit 0.627. Full TT at five points agrees with $\Theta_n$ to $8\times10^{-5}$. {E28}{E67}
 
-## Numerical checks of the TT solver
+## Conclusions
 
-%% $<10^{-9}$ | vs closed form, no sound {E0}
-%% 4th order | RK4 convergence in depth step {E0}
-%% $\sim10^{-5}$ | vs Floquet solver, filled crystal {E42}
-
-- Also lossless, $\left|D_0\right|^2+\left|D_h\right|^2=1$; satellites at $\eta=nq$; doubling the depth steps changes the overshoot traces by $\leq 3.4\times10^{-5}$. Solver accuracy only; the limits of the simple laws are in panel 3. {E0}{E42}{E67}
-
-## Conclusion
-
-- We calculated satellite formation behind a travelling acoustic front with TT equations, Laue and Bragg. Each satellite forms on its own time scale, $\tau_n\propto1/\left|J_n(S)\right|$. {E0}{E1}{E9}
-- A gradual turn-on can give non-monotonic growth and overshoot; the steady-state intensity alone does not describe the transient. {E28}{E67}
-- Calculation only, not compared with experiment. Two-beam, symmetric, non-absorbing, quasi-static; the simple laws need small $\Lambda_{ac}/\Lambda_P$. Proposed, untested: Si 440, 17–30 keV, 1–2 GHz, $\tau_1\approx17$–30 ns. {E0}{E20}{E54}{E62}
+- We calculated the formation of acoustic diffraction satellites while an acoustic wavefront propagates through the crystal, using the two-beam Takagi–Taupin equations. {E0}{E1}{E9}
+- The simulations show satellite-dependent formation times, $\tau_n\propto1/\left|J_n(S)\right|$, and a transient intensity overshoot for finite acoustic rise times. {E1}{E9}{E67}
+- The steady-state satellite intensity alone does not determine its transient evolution. {E28}{E67}
+- Scope: two beams, symmetric geometry, no absorption, quasi-static diffraction; the simple expressions require small $\Lambda_{ac}/\Lambda_P$. No experimental comparison yet. {E0}{E20}{E62}

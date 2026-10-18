@@ -12,6 +12,7 @@ f5  outlook: Fourier weight / kinematic law (Entry 59, e58 data) and the satelli
     first-order forms against full TT (Entry 64, e64_sw.json); reads stored results only
 f6  introductory Bessel coupling weights for a sinusoidal grating
 f7  linear-ramp overshoot map and three TT-checked traces (Entry 67)
+f8  envelope strips for the two result panels: step (Drive, rise = 0) and linear ramp (Entry 67)
 """
 
 from __future__ import annotations
@@ -84,7 +85,7 @@ def f0():
         gridspec_kw=dict(width_ratios=[2.5, 1.0], wspace=0.0))
 
     # ---- left: the crystal in cross-section, with the real phase profile inside it
-    ax.set(xlim=(-3.3, 9.6), ylim=(-0.3, 9.6))
+    ax.set(xlim=(-3.3, 9.6), ylim=(-0.3, 10.4))
     ax.axis("off")
     x0, x1, y0, y1 = 0.0, 6.0, 2.1, 8.1            # slab; depth zeta runs left to right
     xf = x0 + t * (x1 - x0)                         # acoustic front
@@ -98,7 +99,6 @@ def f0():
     amp = 0.33 * (y1 - y0) / max(abs(phi).max(), 1e-9)
     ax.plot(x0 + zz * (x1 - x0), ymid + amp * phi, color=BLUE, lw=2.6, zorder=3,
             solid_capstyle="round")
-    ax.plot([xf, x1], [ymid, ymid], color=BLUE, lw=2.6, zorder=3, solid_capstyle="round")
     ax.plot([xf, xf], [y0, y1], color=BLUE, lw=2.4, ls=(0, (4, 3)), zorder=4)
 
     # transducer on the lower part of the entrance face, so the beam enters clear of it
@@ -107,10 +107,13 @@ def f0():
     ax.text(x0 - 0.62, 0.5 * (y0 + ty), "transducer", ha="right", va="center",
             fontsize=LAB, color=INK2)
 
-    # front marker
+    # front marker, and the two regions it separates
     ax.annotate("", xy=(xf + 1.25, y1 + 0.70), xytext=(xf, y1 + 0.70),
                 arrowprops=dict(arrowstyle="-|>", color=BLUE, lw=2.2, mutation_scale=22))
     ax.text(xf + 1.45, y1 + 0.70, r"$v_s$", color=BLUE, va="center", fontsize=KEY)
+    ax.text(xf, y1 + 1.55, "wavefront", color=BLUE, ha="center", va="bottom", fontsize=LAB)
+    ax.text(0.5 * (xf + x1) + 0.1, ymid, "unstrained", color=INK2, ha="center", va="center",
+            rotation=90, fontsize=LAB - 3)
 
     # one dimension row: the slab thickness, with the filled part picked out on the same line
     yd = y0 - 0.72
@@ -120,7 +123,7 @@ def f0():
         ax.plot([x, x], [yd - 0.22, yd + 0.22], color=INK2, lw=1.1)
     ax.plot([x0, xf], [yd, yd], color=INK, lw=3.2, solid_capstyle="butt")
     ax.text(x1 + 0.22, yd, r"$L$", ha="left", va="center", fontsize=LAB, color=INK2)
-    ax.text(0.5 * (x0 + xf), yd - 0.38, r"strained depth $v_s t$", ha="center", va="top",
+    ax.text(0.5 * (x0 + xf), yd - 0.38, r"vibrating depth $v_s t$", ha="center", va="top",
             fontsize=LAB, color=INK)
 
     # beams: in above the transducer, forward and diffracted out
@@ -321,7 +324,7 @@ def f7():
     style()
     data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
-    fig = plt.figure(figsize=(FIG_W, 8.0), constrained_layout=True)
+    fig = plt.figure(figsize=(FIG_W, 10.2), constrained_layout=True)
     grid = fig.add_gridspec(2, 3, height_ratios=[1.4, 1])
     ax = fig.add_subplot(grid[0, :])
     im = ax.pcolormesh(data["S"], data["rise"], data["excess"], shading="nearest",
@@ -363,6 +366,37 @@ def f7():
     print("wrote", OUT / "f7_overshoot.png")
 
 
+def f8():
+    """Envelope strips that open the two result panels, drawn from the envelopes the results used:
+    the step of `Drive` (rise = 0, Entries 1 and 9) and the linear ramp of memory_drive.ramp (Entry 67)."""
+    sys.path.insert(0, str(ROOT / "explore" / "nb"))
+    from memory_drive import ramp
+
+    style()
+    s = np.linspace(-0.6, 2.6, 801)
+    for name, A, color, text in (
+            ("f8_onset_step", Drive(S=1.0, alpha_ac=20.0).envelope(s), BLUE,
+             r"Sudden onset: $A(s)=1$ for $s\geq0$,  $s=\tilde t-\zeta$"),
+            ("f8_onset_ramp", ramp(1.5)(s) * (s >= 0), ORANGE,
+             r"Gradual onset: $A(s)=\min(s/T_{rise},\,1)$ for $s\geq0$")):
+        fig = plt.figure(figsize=(FIG_W, 0.95))
+        ax = fig.add_axes([0.035, 0.30, 0.20, 0.62])
+        ax.plot(s, A, color=color, lw=3.2)
+        ax.set(xlim=(-0.6, 2.6), ylim=(-0.15, 1.75), xticks=[0], yticks=[0, 1])
+        ax.set_xticklabels([r"$0$"])
+        ax.tick_params(labelsize=SMALL - 2, length=4, pad=2)
+        ax.text(1.03, 0.04, r"$s$", transform=ax.transAxes, fontsize=SMALL - 2, va="center")
+        ax.set_ylabel(r"$A$", fontsize=SMALL - 2, rotation=0, labelpad=10, va="center")
+        if "ramp" in name:
+            ax.annotate("", xy=(1.5, 1.25), xytext=(0, 1.25),
+                        arrowprops=dict(arrowstyle="<|-|>", color=INK2, lw=1.2, mutation_scale=12))
+            ax.text(0.75, 1.3, r"$T_{rise}$", ha="center", va="bottom", fontsize=SMALL - 2, color=INK2)
+        fig.text(0.27, 0.55, text, fontsize=BIG, va="center", color=INK)
+        OUT.mkdir(parents=True, exist_ok=True)
+        fig.savefig(OUT / f"{name}.png")
+        print("wrote", OUT / f"{name}.png")
+
+
 if __name__ == "__main__":
-    for name in (sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7"]):
+    for name in (sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"]):
         globals()[name]()
