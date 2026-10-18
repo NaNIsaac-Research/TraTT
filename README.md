@@ -61,8 +61,8 @@ stores the rocking curve. Stacking these gives a map I(η, t). Every result belo
 such maps.
 
 Freezing the lattice is safe here: the X-rays cross the crystal in about 1 ps, while one acoustic
-period is about 500 ps, so the lattice moves by less than 1 % of a period during one crossing
-(notebook Entry 62).
+period is about 500 ps, so one crossing takes about 0.2 % of a period even in the least
+favourable proposed case (Si 440, 30 keV, 2 GHz, L = 296 µm; notebook Entry 62).
 
 The problem reduces to a few dimensionless numbers:
 
@@ -98,20 +98,32 @@ crystal thickness, and the satellite with the largest |J<sub>n</sub>(S)| forms f
 
 ![Full TT (points) and the formulas of result 1 (lines)](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f1_collapse.png)
 
-**2. Time-dependent acoustic amplitude** (Entries 28, 30). If the amplitude A(t) changes in
+**2. Gradual turn-on and overshoot** (Entries 28, 30, 67). If the amplitude A(t) changes in
 time, different depths of the crystal have different amplitudes. Satellite n then depends on the
 amplitude during the last transit time, Θ<sub>n</sub> = ∫J<sub>n</sub>(S A(t−ζ)) dζ, and not only
-on the present amplitude. Example: a satellite with J<sub>n</sub> = 0 at the final amplitude has
-zero intensity in the steady state, but it is the strongest satellite for some time during
-formation.
+on the present amplitude. With a linear turn-on over T<sub>rise</sub> the satellite can overshoot:
+its maximum during the turn-on exceeds the steady value. In a scan of 11,211 (S, T<sub>rise</sub>)
+conditions for the first Laue satellite (α = 0.5, R = 0.0125) the largest overshoot is 0.603 of the
+incident intensity, at the edge of the scan (T<sub>rise</sub> = 4t<sub>tr</sub>). The map comes from
+the Θ<sub>n</sub> law; full TT at five points agrees with it to 8×10⁻⁵. Near a Bessel zero
+(J<sub>1</sub> = 0 at the final amplitude) the satellite reaches 0.53 during the turn-on and
+1.3×10⁻⁴ at the end.
 
-**3. Validity of the independent-satellite approximation** (Entries 52–54). Result 1 treats each
-satellite independently. The error is below 5 % for R = Λ<sub>ac</sub>/Λ<sub>P</sub> ≲ 0.3. For
-larger R the satellites are coupled through the forward beam, and the formulas of result 1 are not
-valid.
+![Overshoot map from the Θ<sub>n</sub> law and three traces checked against full TT](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f7_overshoot.png)
+
+**3. Validity of the independent-satellite approximation** (Entries 19, 26, 52–54). Results 1
+and 2 treat each satellite independently, so their error grows with
+R = Λ<sub>ac</sub>/Λ<sub>P</sub>. For the satellite centre intensity in time it is about 0.9R at
+S = 1.5 and at most 0.03 for R ≤ 0.05 (30 random cases). The steady-state satellite populations
+of the filled crystal reach a 5 % median error at R = 0.34–0.57. For larger R the satellites are
+coupled through the forward beam. This is a limit of the approximate laws, not of the TT solver.
+
+**Solver checks.** Against the closed-form Laue and Bragg solutions without sound the error is
+below 10⁻⁹; the RK4 step converges at fourth order; against the independent Floquet solver for a
+filled crystal the agreement is about 10⁻⁵ (Entry 42). The 54 tests in `tests/` cover these.
 
 **4. Outlook: measurement of the phonon spectrum** (Entries 59, 64). For small strain, the Fourier
-component of the reflectivity R(t) at frequency ω is the strain spectrum multiplied by a crystal
+component of the reflectivity at frequency ω is the strain spectrum multiplied by a crystal
 transfer function H(ω). We obtained H(ω) analytically to first order. Inside the Darwin width (the
 angular range of strong reflection) it agrees with full TT, while the perturbation theory of
 Sondhauss & Wark (2003) differs from full TT by a factor of 3–8. Comparison with previous work is
@@ -136,6 +148,9 @@ uv run pytest -q                        # 54 tests: analytic limits, Floquet cro
 uv run python explore/make_poster_figs.py   # poster figures -> figures/poster/
 uv run python poster/build.py               # poster/poster.md -> poster/out/poster.pdf
 ```
+
+The banner and logos are read from `poster/assets/`, which is not in the repository; without it the
+poster builds with a plain header.
 
 ## Layout
 
