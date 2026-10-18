@@ -11,20 +11,20 @@ the rest credible.
 
 ## 1. The opening
 
-**10 seconds.** "Acoustic satellites are known in steady state. We resolve how they *form* while
-the acoustic wavefront is still crossing the crystal — and each order turns out to have its own
-clock."
+**10 seconds.** "A sound wave in a crystal adds satellite peaks to the X-ray rocking curve; the
+steady state is known. We simulated how the satellites grow while the sound is still entering the
+crystal. In our runs each satellite grows at its own rate."
 
-**30 seconds (Korean, for a first approach).** "음파가 결정을 지나는 동안 위성 피크가 어떻게
-생기는지를 계산했습니다. 핵심은 파면 뒤쪽이 '채워진 깊이짜리 결정'처럼 행동한다는 것입니다.
-차수 n의 결합이 πα|J_n(S)|이라서, 차수마다 형성 속도가 다르고 그 순서를 음향 진폭 S로
-바꿀 수 있습니다. 맞춤 변수는 없습니다."
+**30 seconds (Korean, for a first approach).** "음파가 결정 안으로 들어가는 동안 X선 위성 피크가
+어떻게 자라는지 시뮬레이션했습니다. 계산해 보니 음파가 지나간 부분이 '그 깊이만큼 두께의
+결정'처럼 행동했습니다. 차수 n의 결합이 α|J_n(S)|로 줄어들어서 차수마다 자라는 속도가 다르고,
+음향 세기 S를 바꾸면 순서도 바뀝니다. 맞춘 변수는 없습니다. 아직 실험과 비교하지는 않았습니다."
 
-**60 seconds, pointing at panel 3.** "Behind the front, satellite *n* is a crystal of the filled
-depth v_s t whose coupling is πα|J_n(S)|. So the Laue centre intensity is sin²(πα_n t) and Bragg
-is tanh²(πα_n t), with α_n = α|J_n(S)|. Four different (S, α, n) collapse onto one curve, no fit
-parameter. The transit time doesn't set the formation time — it only ends the transient. The
-clock is t_tr/α_n, the satellite's own extinction length." {E1}{E9}{E33}
+**60 seconds, pointing at panel 2.** "Behind the front, satellite *n* behaves like a plain crystal
+of thickness v_s t whose coupling is reduced to α_n = α|J_n(S)|. So the Laue centre intensity is
+sin²(πα_n t) and Bragg is tanh²(πα_n t). Four different (S, α, n) fall on these curves without a
+fitted parameter. The transit time only limits how long the growth lasts; the growth rate is set
+by t_tr/α_n, i.e. by the satellite's own extinction length." {E1}{E9}{E33}
 
 ---
 
@@ -162,7 +162,7 @@ Design rule: keep μLκ|J_n| ≲ 1. {E11}{E20}
 
 ### Q. "How well does the law hold, and where does it break?"
 
-Panel 6 is that map, and the limit is **R = Λ_ac/Λ_P**, not α: {E26}{E53}{E54}{E25}
+Panel 4 is that map, and the limit is **R = Λ_ac/Λ_P**, not α: {E26}{E53}{E54}{E25}
 
 - accuracy ≈ 0.9 R, independent of how many turns the clock makes — f tunes accuracy, L and S
   tune the clock;
