@@ -83,7 +83,7 @@ $$ $I_n=\sin^2(\pi\alpha_n\tilde t)$ (Laue), $\qquad I_n=\tanh^2(\pi\alpha_n\til
 
 The formation time $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$ is independent of $L$, and the order follows $\left|J_n(S)\right|$ rather than $n$ (at $S=3$: $n=2,1,3$). {E1}{E6}
 
-![Points: full TT; lines: expressions above, without fitting parameters. Deviations (at most 0.079 Laue, 0.043 Bragg; notebook cases, $\alpha_{ac}=20$) come from the independent-satellite approximation, not the solver: $\approx0.9\,\Lambda_{ac}/\Lambda_P$ at $S=1.5$, $\leq0.03$ for $\Lambda_{ac}/\Lambda_P\leq0.05$.](figures/poster/f1_collapse.png){E1}{E9}{E19}{E26}
+![Points: full TT ($\alpha_{ac}=20$); lines: expressions above, without fitting parameters. The deviations come from the independent-satellite approximation, not the solver, and grow with $\Lambda_{ac}/\Lambda_P$: up to 0.15 (Laue) and 0.14 (Bragg) for the $\alpha=4$ cases ($\Lambda_{ac}/\Lambda_P=0.2$), $\approx0.9\,\Lambda_{ac}/\Lambda_P$ at $S=1.5$, $\leq0.03$ for $\Lambda_{ac}/\Lambda_P\leq0.05$.](figures/poster/f1_collapse.png){E1}{E9}{E19}{E26}
 
 ## Transient Intensity Overshoot
 
@@ -95,19 +95,19 @@ $$ $\Theta_n(\tilde t)=\int_0^1 J_n(S\,A(\tilde t-\zeta))\,d\zeta,\qquad I_n\app
 
 Overshoot: $\Delta I=I_{max}-I_{steady}$ in incident-intensity units, for the first Laue satellite at $L/\Lambda_P=0.5$, $0.5\leq S\leq6$, $0.05\leq T_{rise}/t_{tr}\leq4$. {E67}
 
-![Top: $\Delta I$ from $\Theta_n$, 11,211 conditions, $\Lambda_{ac}/\Lambda_P=0.0125$. Bottom: lines, $\Theta_n$; dots, full TT; dashed, steady state. A ($S=1.5$): monotonic. B ($S=3$): $\left|J_1\right|$ is larger during the ramp than at the end; the maximum is 1.69 times the final value. C (near $J_1=0$): 0.53 during the ramp, $1.3\times10^{-4}$ at the end. Largest $\Delta I$ in the scanned range: 0.603 at $T_{rise}=4t_{tr}$, still rising toward the quasi-static limit 0.627. Full TT at five points agrees with $\Theta_n$ to $8\times10^{-5}$.](figures/poster/f7_overshoot.png){E15}{E28}{E67}
+![Top: $\Delta I$ from $\Theta_n$, 11,211 conditions, $\Lambda_{ac}/\Lambda_P=0.0125$; largest value in the scanned range 0.603 at $T_{rise}=4t_{tr}$, still rising toward the quasi-static limit 0.627. Bottom: lines, $\Theta_n$; dots, full TT; dashed, steady state. In B, $\left|J_1\right|$ is larger during the ramp than at the end; in C, $J_1\approx0$ at the final amplitude. Full TT at five points agrees with $\Theta_n$ to $8\times10^{-5}$.](figures/poster/f7_overshoot.png){E15}{E28}{E67}
 
 ## Conclusions
 
-[[ 0.333
+[[ 0.37
 
 We calculated the formation of acoustic diffraction satellites while an acoustic wavefront propagates through the crystal, using the two-beam Takagi–Taupin equations. {E0}{E1}{E9}
 
-|| 0.333
+|| 0.36
 
 The simulations show satellite-dependent formation times, $\tau_n\propto1/\left|J_n(S)\right|$, and a transient intensity overshoot for finite acoustic rise times. {E1}{E9}{E67}
 
-|| 0.333
+|| 0.27
 
 The steady-state satellite intensity alone does not determine its transient evolution. {E28}{E67}
 

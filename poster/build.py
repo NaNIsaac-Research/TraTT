@@ -318,7 +318,7 @@ def flow_diagram(P, it, x, y, w, draw=True):
             yy = P.flow(t, bx + 3, yy + 1.5, bw - 6, s["caption_pt"], s["ink2"], align="center", draw=draw)
         return yy - by
 
-    h = max(block(ps, 0, 0, False) for ps in parts) + 12
+    h = max(block(ps, 0, 0, False) for ps in parts) + 6
     if draw:
         for i, ps in enumerate(parts):
             bx = x + i * (bw + aw)
@@ -329,7 +329,7 @@ def flow_diagram(P, it, x, y, w, draw=True):
                 P.ax.annotate("", xy=(bx + bw + aw - 0.8, y + h / 2), xytext=(bx + bw + 0.8, y + h / 2),
                               arrowprops=dict(arrowstyle="-|>", color=s["accent"], lw=2.6, mutation_scale=20),
                               zorder=3)
-        ly = y + h + 8                                      # loop: next time step
+        ly = y + h + 5                                      # loop: next time step
         P.ax.plot([x + w - bw / 2, x + w - bw / 2, x + bw / 2], [y + h, ly, ly], color=s["ink2"], lw=1.8,
                   zorder=3)
         P.ax.annotate("", xy=(x + bw / 2, y + h + 0.3), xytext=(x + bw / 2, ly),
@@ -337,7 +337,7 @@ def flow_diagram(P, it, x, y, w, draw=True):
         P.ax.text(x + w / 2, ly, r"next time step $\tilde t$", fontsize=s["caption_pt"], color=s["ink2"],
                   family=FONT, ha="center", va="center", zorder=4,
                   bbox=dict(facecolor="white", edgecolor="none", pad=2))
-    return y + h + 8 + 5 + s["para_gap"]
+    return y + h + 5 + 4 + s["para_gap"]
 
 
 def aspect(path):
@@ -520,8 +520,8 @@ def build(preview_dpi=60):
 
     number = {id(p): k + 1 for k, p in enumerate(panels)}
     heights = [band(b, 0.0, False) for b in bands]
-    spare = bottom - top - sum(heights)
-    gap = spare / max(1, len(bands) - 1) if spare > 0 else s["panel_gap"]
+    spare = bottom - top - sum(heights) - s["panel_gap"] * (len(bands) - 1)
+    gap = s["panel_gap"] + max(0.0, spare) / max(1, len(bands) - 1)
     y = top
     for b, h in zip(bands, heights):
         if b[0]["title"].startswith("Conclusion"):          # the summary sits on a light band
@@ -541,6 +541,7 @@ def build(preview_dpi=60):
     P.fig.savefig(OUT / "poster.pdf", dpi=300)       # raster figures are resampled to this; text stays vector
     P.fig.savefig(OUT / "poster.png", dpi=preview_dpi)
     print(f"space between bands: {gap:.0f} mm")
+    print("band heights (mm): " + "  ".join(f"{b[0]['title'][:12]} {h:.0f}" for b, h in zip(bands, heights)))
     print("entries cited: " + ", ".join(f"E{e}" for e in sorted(used)))
     print(f"wrote {OUT / 'poster.pdf'} and poster.png")
     if problems:

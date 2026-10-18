@@ -37,6 +37,7 @@ FONT = "IBM Plex Sans"   # same face as poster/build.py (f1 still carries Source
 
 FIG_W = 14.4          # inches = poster card inner width (~366 mm)
 INTRO_W = 12.5        # inches = left column of the introduction band (~317 mm)
+F1_H, F7_H = 8.8, 9.0  # heights of the two result figures (inches), set by the results band
 BIG, SMALL = 26, 23   # printed pt; smallest label 21 pt (SMALL - 2), readable at ~1.5 m on A0
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
@@ -82,7 +83,7 @@ def f0():
     d = Drive(S=S, alpha_ac=alpha_ac)
 
     fig, (ax, axr) = plt.subplots(
-        1, 2, figsize=(INTRO_W, 0.40 * INTRO_W), constrained_layout=True,
+        1, 2, figsize=(INTRO_W, 0.35 * INTRO_W), constrained_layout=True,
         gridspec_kw=dict(width_ratios=[2.5, 1.0], wspace=0.0))
 
     # ---- left: the crystal in cross-section, with the real phase profile inside it
@@ -160,21 +161,41 @@ def f0():
 
 
 def f1():
+    """Same cases, times and solver call as make_poster_figure.collapse (Entries 1, 9); the TT
+    points are cached in explore/nb/poster_f1_points.npz so a restyle does not rerun them."""
     import make_poster_figure as M
+    from scipy.special import jv
+
     style()
-    fig, ax = plt.subplots(1, 2, figsize=(FIG_W, 5.6), constrained_layout=True, sharey=True)
-    M.collapse(ax[0], "laue", lambda s: np.sin(np.pi * s) ** 2, r"$\sin^2(\pi\alpha_n\tilde t)$",
-               r"Laue: $\sin^2(\pi\alpha_n\tilde t)$", small=SMALL - 2, ms=9)
-    M.collapse(ax[1], "bragg", lambda s: np.tanh(np.pi * s) ** 2, r"$\tanh^2(\pi\alpha_n\tilde t)$",
-               r"Bragg: $\tanh^2(\pi\alpha_n\tilde t)$", small=SMALL - 2, ms=9)
-    ax[0].get_legend().remove()                      # one legend for both: the cases are the same
+    cache = ROOT / "explore" / "nb" / "poster_f1_points.npz"
+    t = np.linspace(0.0, 1.0, 61) + M.OFF
+    if cache.exists():
+        d = np.load(cache)
+        laue, bragg = d["laue"], d["bragg"]
+    else:
+        laue = np.array([M.centre(a, S, n, t, "laue") for S, a, n in M.CASES])
+        bragg = np.array([M.centre(a, S, n, t, "bragg") for S, a, n in M.CASES])
+        np.savez(cache, t=t, cases=np.array(M.CASES), laue=laue, bragg=bragg)
+    fig, ax = plt.subplots(1, 2, figsize=(FIG_W, F1_H), constrained_layout=True, sharey=True)
+    s = np.linspace(0, 2.3, 500)
+    for a, data, law, title in (
+            (ax[0], laue, np.sin(np.pi * s) ** 2, r"Laue: $\sin^2(\pi\alpha_n\tilde t)$"),
+            (ax[1], bragg, np.tanh(np.pi * s) ** 2, r"Bragg: $\tanh^2(\pi\alpha_n\tilde t)$")):
+        a.plot(s, law, color=INK, lw=2.4, zorder=1, label="expression")
+        for (S, al, n), I, c, m in zip(M.CASES, data, (BLUE, ORANGE, AQUA, YELLOW), M.MARK):
+            a.plot(al * abs(jv(n, S)) * t, I, m, color=c, mec="white", mew=1.2, ms=11, ls="none",
+                   label=rf"$S={S:g},\ \alpha={al:g},\ n={n}$")
+        a.set(xlim=(0, 2.3), ylim=(-0.03, 1.08), title=title,
+              xlabel=r"$\alpha_n\tilde t$,  $\alpha_n=\alpha\left|J_n(S)\right|$")
+    ax[0].set_ylabel(r"centre intensity $I_n$")
+    ax[1].tick_params(labelleft=False)
     h, lab = ax[1].get_legend_handles_labels()
-    ax[1].legend(h, lab[:-1] + ["formula (line)"], frameon=False, loc="lower right", fontsize=SMALL - 2)
-    for a in ax:
-        a.set_xlabel(r"$\alpha_n\tilde t$,   $\alpha_n=\alpha\left|J_n(S)\right|$")
-    ax[1].set_ylabel("")
-    ax[1].tick_params(labelleft=False)          # shared y axis: one set of tick labels
+    ax[1].legend(h[1:] + h[:1], lab[1:] + lab[:1], frameon=False, loc="lower right", handletextpad=0.3)
     finish(fig, ax, "f1_collapse")
+    for name, data, law in (("Laue", laue, lambda x: np.sin(np.pi * x) ** 2),
+                            ("Bragg", bragg, lambda x: np.tanh(np.pi * x) ** 2)):
+        dev = [np.abs(I - law(al * abs(jv(n, S)) * t)).max() for (S, al, n), I in zip(M.CASES, data)]
+        print(f"f1 {name}: max |TT - expression| per case", " ".join(f"{v:.3f}" for v in dev))
 
 
 def f2():
@@ -309,7 +330,7 @@ def f6():
 
     style()
     # same printed height as f0, which shares its row on the Background card
-    fig, ax = plt.subplots(figsize=(INTRO_W, 2.9), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(INTRO_W, 2.45), constrained_layout=True)
     amplitude = np.linspace(0, 5, 501)
     for n, color in zip((0, 1, 2, 3), (INK2, BLUE, ORANGE, AQUA)):
         ax.plot(amplitude, np.abs(jv(n, amplitude)), color=color, label=rf"$n={n}$")
@@ -325,7 +346,7 @@ def f7():
     style()
     data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
-    fig = plt.figure(figsize=(FIG_W, 6.9), constrained_layout=True)
+    fig = plt.figure(figsize=(FIG_W, F7_H), constrained_layout=True)
     grid = fig.add_gridspec(2, 3, height_ratios=[1.4, 1])
     ax = fig.add_subplot(grid[0, :])
     im = ax.pcolormesh(data["S"], data["rise"], data["excess"], shading="nearest",
@@ -335,7 +356,8 @@ def f7():
     ax.set(xlabel=r"final sound amplitude $S$", ylabel=r"rise time $T_{rise}/t_{tr}$",
            title=r"Linear turn-on, then held: first satellite ($n=1$)")
     for case, color, label in zip(summary["cases"], (BLUE, ORANGE, AQUA),
-                                  ("A: no overshoot", "B: overshoot", "C: near a Bessel zero")):
+                                  ("A: monotonic", r"B: peak $1.69\times$ final",
+                                   r"C: $0.53\rightarrow1.3\times10^{-4}$")):
         letter, S, rise = case["label"], case["S"], case["rise"]
         ax.plot(S, rise, "o", color=color, mec="white", mew=2, ms=13)
         ax.annotate(letter, (S, rise), xytext=(9, 9), textcoords="offset points",
