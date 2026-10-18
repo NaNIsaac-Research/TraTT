@@ -1,5 +1,7 @@
 # TraTT — transient formation of acoustic Bragg satellites
 
+[![PyPI](https://img.shields.io/pypi/v/tratt)](https://pypi.org/project/tratt/) [![Tests](https://github.com/NaNIsaac/TraTT/actions/workflows/tests.yml/badge.svg)](https://github.com/NaNIsaac/TraTT/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 A travelling acoustic wave enters a perfect crystal. Its steady-state X-ray satellites are textbook
 material. This repository resolves how the satellites **form** while the wavefront crosses the
 crystal, using two-beam Takagi–Taupin theory, and records every step in a lab notebook.
