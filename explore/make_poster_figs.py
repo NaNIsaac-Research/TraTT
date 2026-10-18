@@ -36,6 +36,7 @@ for _f in sorted((ROOT / "poster" / "fonts").glob("*.ttf")):     # same typeface
 FONT = "IBM Plex Sans"   # same face as poster/build.py (f1 still carries Source Sans 3: redrawing it reruns TT)
 
 FIG_W = 14.4          # inches = poster card inner width (~366 mm)
+INTRO_W = 12.5        # inches = left column of the introduction band (~317 mm)
 BIG, SMALL = 26, 23   # printed pt; smallest label 21 pt (SMALL - 2), readable at ~1.5 m on A0
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
@@ -76,12 +77,12 @@ def f0():
     modulation varying across the beam rather than with depth -- the opposite of the drive.
     """
     style()
-    LAB, KEY = BIG, BIG + 4   # it shares a row with f6 on the Background card, so set one step larger
+    LAB, KEY = BIG + 4, BIG + 8   # the lead schematic of the introduction, read from a distance
     alpha, S, alpha_ac, t = 0.6, 1.5, 5.0, 0.62
     d = Drive(S=S, alpha_ac=alpha_ac)
 
     fig, (ax, axr) = plt.subplots(
-        1, 2, figsize=(FIG_W / 2, 3.2), constrained_layout=True,
+        1, 2, figsize=(INTRO_W, 0.40 * INTRO_W), constrained_layout=True,
         gridspec_kw=dict(width_ratios=[2.5, 1.0], wspace=0.0))
 
     # ---- left: the crystal in cross-section, with the real phase profile inside it
@@ -154,7 +155,7 @@ def f0():
                      color=ORANGE, va="center", xytext=(6, 0), textcoords="offset points")
 
     OUT.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT / "f0_scheme.png", dpi=400)  # half the card width, so twice the dpi to print like the rest
+    fig.savefig(OUT / "f0_scheme.png", dpi=300)
     print("wrote", OUT / "f0_scheme.png")
 
 
@@ -308,7 +309,7 @@ def f6():
 
     style()
     # same printed height as f0, which shares its row on the Background card
-    fig, ax = plt.subplots(figsize=(7.35, 3.2), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(INTRO_W, 2.9), constrained_layout=True)
     amplitude = np.linspace(0, 5, 501)
     for n, color in zip((0, 1, 2, 3), (INK2, BLUE, ORANGE, AQUA)):
         ax.plot(amplitude, np.abs(jv(n, amplitude)), color=color, label=rf"$n={n}$")
@@ -324,7 +325,7 @@ def f7():
     style()
     data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
-    fig = plt.figure(figsize=(FIG_W, 10.2), constrained_layout=True)
+    fig = plt.figure(figsize=(FIG_W, 6.9), constrained_layout=True)
     grid = fig.add_gridspec(2, 3, height_ratios=[1.4, 1])
     ax = fig.add_subplot(grid[0, :])
     im = ax.pcolormesh(data["S"], data["rise"], data["excess"], shading="nearest",
