@@ -10,6 +10,8 @@ f3  path memory: transient-only satellite, up vs down a pulse       (make_memory
 f4  population error of the independent-channel picture vs R        (make_phase_figure.merged; Entry 54)
 f5  outlook: Fourier weight / kinematic law (Entry 59, e58 data) and the satellite weight of the
     first-order forms against full TT (Entry 64, e64_sw.json); reads stored results only
+f6  introductory Bessel coupling weights for a sinusoidal grating
+f7  linear-ramp overshoot map and three TT-checked traces (Entry 67)
 """
 
 from __future__ import annotations
@@ -195,7 +197,16 @@ def f2():
 def f3():
     import make_memory_figure as M
     style()
-    fig, ax = plt.subplots(1, 2, figsize=(FIG_W, 6.0), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(FIG_W, 7.2), constrained_layout=True,
+                             gridspec_kw=dict(height_ratios=[1, 3]))
+    ax = axes[1]
+    time = np.linspace(0, 3.4, 300)
+    axes[0, 0].plot(time, np.clip(time / 2, 0, 1), color=INK2)
+    axes[0, 1].plot([0, 1, 2], [0, 1, 0], color=BLUE)
+    axes[0, 1].plot([0, 4, 8], [0, 1, 0], color=ORANGE)
+    for a in axes[0]:
+        a.set(ylim=(-0.05, 1.15), yticks=[0, 1], xlabel=r"time / $t_{tr}$",
+              ylabel=r"$A(t)$", title="Input envelope")
     M.panel_a(ax[0], small=SMALL - 2, title=r"final amplitude with $J_1(S_f)=0$")
     M.panel_b(ax[1], small=SMALL - 2, title=r"increasing vs decreasing $A$")
     for line in ax[0].lines + ax[1].lines:
@@ -210,7 +221,7 @@ def f3():
     # which branch is which: every loop starts at the origin, so the lower branch is the rise
     ax[1].text(2.05, 0.09, "increase", color=BLUE, fontsize=SMALL, fontweight="bold")
     ax[1].text(0.02, 0.55, "decrease", color=BLUE, fontsize=SMALL, fontweight="bold")
-    finish(fig, ax, "f3_memory")
+    finish(fig, axes.flat, "f3_memory")
 
 
 def f4():
@@ -287,6 +298,61 @@ def f5():
     finish(fig, ax, "f5_outlook")
 
 
+def f6():
+    """Known Bessel coupling weights, not dynamical peak intensities."""
+    from scipy.special import jv
+
+    style()
+    fig, ax = plt.subplots(figsize=(FIG_W / 2, 4.2), constrained_layout=True)
+    amplitude = np.linspace(0, 5, 501)
+    for n, color in zip((0, 1, 2, 3), (INK2, BLUE, ORANGE, AQUA)):
+        ax.plot(amplitude, np.abs(jv(n, amplitude)), color=color, label=rf"$n={n}$")
+    ax.set(xlabel=r"sound amplitude $S=h u_0$", ylabel=r"coupling weight $|J_n(S)|$",
+           xlim=(0, 5), ylim=(0, 1.04), title="Sinusoidal grating: Bessel weights")
+    ax.legend(frameon=False, ncol=2, fontsize=SMALL - 2)
+    finish(fig, ax, "f6_background")
+
+
+def f7():
+    import json
+
+    style()
+    data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
+    summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
+    fig = plt.figure(figsize=(FIG_W, 9.0), constrained_layout=True)
+    grid = fig.add_gridspec(2, 3, height_ratios=[1.4, 1])
+    ax = fig.add_subplot(grid[0, :])
+    im = ax.pcolormesh(data["S"], data["rise"], data["excess"], shading="nearest",
+                       cmap="YlOrRd", vmin=0)
+    cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.045)
+    cb.set_label(r"excess intensity $I_{max}-I_{steady}$")
+    ax.set(xlabel=r"final sound amplitude $S$", ylabel=r"rise time $T_{rise}/t_{tr}$",
+           title=r"Linear turn-on, then held: first satellite ($n=1$)")
+    for case, color, label in zip(summary["cases"], (BLUE, ORANGE, AQUA),
+                                  ("A: no overshoot", "B: overshoot", "C: near a Bessel zero")):
+        letter, S, rise = case["label"], case["S"], case["rise"]
+        ax.plot(S, rise, "o", color=color, mec="white", mew=2, ms=13)
+        ax.annotate(letter, (S, rise), xytext=(9, 9), textcoords="offset points",
+                    fontsize=BIG, fontweight="bold", color=INK)
+        a = fig.add_subplot(grid[1, ord(letter) - ord("A")])
+        a.plot(data[f"{letter}_t"], data[f"{letter}_I"], color=color)
+        a.plot(data[f"{letter}_tt_t"][::3], data[f"{letter}_tt_I"][::3], "o",
+               color=color, mec="white", ms=7)
+        a.axhline(case["steady"], color=INK2, ls="--", lw=1.5)
+        a.set(xlabel=r"time / $t_{tr}$", ylim=(-0.025, 0.68), title=label)
+        a.text(0.04, 0.94, f"S={S:g}, rise={rise:g}", transform=a.transAxes,
+               fontsize=SMALL - 2, va="top", bbox=dict(facecolor="white", edgecolor="none", pad=2))
+        if letter == "A":
+            a.set_ylabel("satellite intensity")
+        else:
+            a.tick_params(labelleft=False)
+        a.grid(color=GRID, lw=1)
+        a.set_axisbelow(True)
+    OUT.mkdir(parents=True, exist_ok=True)
+    fig.savefig(OUT / "f7_overshoot.png")
+    print("wrote", OUT / "f7_overshoot.png")
+
+
 if __name__ == "__main__":
-    for name in (sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5"]):
+    for name in (sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7"]):
         globals()[name]()

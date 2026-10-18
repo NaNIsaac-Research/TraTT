@@ -8,7 +8,8 @@ Look (v3, lab template). Matches the CUPT lab posters for KPS 2026 (J. Jang, pos
 header with the IHS shield left and the white CUPT logo right, three-colour stripe, white page,
 thin dark-outlined boxes with "■ Title" heads, an Acknowledgement box at the bottom.
 Text in Source Sans 3 (the lab posters use Arial). A QR code to the repository sits in the
-Acknowledgement box (poster/assets/qr_repo.png, made once with segno).
+Acknowledgement box (figures/poster/qr_repo.png, made by explore/make_poster_qr.py;
+poster/assets/qr_repo.png remains an optional override).
 v2 (gray page, shadowed cards, orange number badges, Plex Sans) is in git history (c381842).
 Kept from v2:
 - text in IBM Plex Sans (poster/fonts, SIL OFL); math in STIX, so a variable is a serif italic
@@ -222,7 +223,7 @@ class Page:
         img = mpimg.imread(path)
         h = h or w * img.shape[0] / img.shape[1]
         a = self.fig.add_axes([x / SPEC["W"], 1 - (y + h) / SPEC["H"], w / SPEC["W"], h / SPEC["H"]], zorder=z)
-        a.imshow(img, interpolation="lanczos")
+        a.imshow(img, cmap="gray", interpolation="lanczos")
         a.axis("off")
         return h
 
@@ -327,6 +328,8 @@ def build(preview_dpi=60, extra=None, save=True):
     ax.text(M + s["pad"], fy + 6 + s["head_pt"] * PT_MM * 0.9, "■ Acknowledgement", fontsize=s["head_pt"] - 6,
             color=s["ink"], family=FONT, fontweight="bold", va="baseline", zorder=3)
     qr = ASSETS / "qr_repo.png"
+    if not qr.exists():
+        qr = ROOT / "figures" / "poster" / "qr_repo.png"
     qw = s["footer_h"] - M * 0.75 - 6 if qr.exists() else 0
     if qw:
         P.image(qr, W - M - 3 - qw, fy + 3, qw, h=qw)

@@ -1,4 +1,30 @@
-# KPS 2026 Fall poster — outline draft (2026-09-30, updated 2026-10-02 for Entries 34–57)
+# Current poster structure (2026-10-19)
+
+Audience: visitors unfamiliar with acoustic gratings, Bessel weights, or dynamical diffraction.
+The printed manuscript is `poster/poster.md`; the earlier detailed outline below is retained
+as background for discussion and is no longer the printed panel plan.
+
+1. Full-width introduction: motivation, sound-induced grating, satellites, launch and X-ray setup.
+2. Full-width background: steady state versus partial filling, Bessel coupling weights,
+   Pendellösung in plain language, and the transient research question.
+3. Left: snapshot calculation and sudden-onset formation; explain the time scale and compare
+   with steady state. A short conclusion below states the findings and model scope.
+4. Right: amplitude versus rise-time overshoot map for a linear ramp, followed by three
+   marked time traces (no overshoot, moderate overshoot, near a Bessel zero). Define the
+   envelope before the map; explain why transient coupling can exceed its final value.
+   Entry 67 records the 11,211-point approximation scan, numerical refinement, and TT checks.
+   Colour is peak minus steady centre intensity, normalized to incident intensity; it is
+   not a peak/steady ratio or an angle-integrated satellite intensity. The earlier
+   ramp/triangle memory plot remains available as `figures/poster/f3_memory.png`.
+
+Keep line-shape minima, high-order coupling, regime maps, and phonon-spectrum transfer
+functions in the notebook for questions. They are outside this introductory poster's story.
+The Bessel plot shows coupling weights, not universal satellite intensities. Steady state
+refers here to the acoustic-period-averaged response of a fully filled, constant-amplitude wave.
+
+---
+
+# Earlier detailed outline (2026-09-30, updated 2026-10-02 for Entries 34–57)
 
 Title (abstract): *Transient Formation Dynamics of Acoustic Bragg Satellites in
 Dynamical X-ray Diffraction.* Every claim below points to a notebook entry
