@@ -81,44 +81,43 @@ A realistic case (notebook Entry 20): the Si 440 reflection at 17–30 keV, a cr
 thick, a 1–2 GHz shear wave with strain ~2–3×10⁻⁵. The transit time is then 20–50 ns, long
 compared with a synchrotron X-ray pulse (~100 ps), so the growth could in principle be resolved.
 
-## What we have seen so far
+## Results
 
-These are simulation results only; nothing has been compared with an experiment yet. Each item points to the notebook entries with the numbers,
-scripts and caveats.
+These are calculation results only; no experiment has been compared yet. Each item gives the
+notebook entries with the numbers, scripts and limitations.
 
 ![Schematic: the acoustic front fills the crystal; on the right, the rocking curve of that instant](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f0_scheme.png)
 
-**1. Each satellite grows like an undisturbed crystal of depth v<sub>s</sub>t with a weaker
-coupling** (Entries 1, 9, 24). In the simulations, satellite n at time t behaves as if it were
-diffracted by a plain crystal of thickness v<sub>s</sub>t whose coupling is reduced by the factor
-|J<sub>n</sub>(S)|. This gives simple formulas with no fitted parameter,
-I<sub>n</sub> ∝ sin²(πα|J<sub>n</sub>|t̃) in Laue and tanh²(πα|J<sub>n</sub>|t̃) in Bragg, which
-match the full TT calculation. So each satellite has its own growth time,
-τ<sub>n</sub> = Λ<sub>P</sub>/(v<sub>s</sub>|J<sub>n</sub>(S)|), independent of the crystal
-thickness, and changing S changes which satellite forms first.
+**1. Formation time of each satellite** (Entries 1, 9, 24). Satellite n at time t has the
+intensity of a uniform, unstrained crystal of thickness v<sub>s</sub>t with coupling
+α|J<sub>n</sub>(S)|: I<sub>n</sub> = sin²(πα|J<sub>n</sub>|t̃) in Laue and
+tanh²(πα|J<sub>n</sub>|t̃) in Bragg geometry. These formulas agree with the full TT calculation
+without a fitting parameter. The formation time of satellite n is therefore
+τ<sub>n</sub> = Λ<sub>P</sub>/(v<sub>s</sub>|J<sub>n</sub>(S)|). It does not depend on the
+crystal thickness, and the satellite with the largest |J<sub>n</sub>(S)| forms first.
 
-![Full TT (points) against the closed formulas (lines)](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f1_collapse.png)
+![Full TT (points) and the formulas of result 1 (lines)](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f1_collapse.png)
 
-**2. If the sound amplitude changes in time, the satellites follow its recent history** (Entries
-28, 30). When the amplitude ramps up instead of switching on at once, different depths hold sound
-emitted at different times. A satellite then responds to the amplitude averaged over the last
-transit time, Θ<sub>n</sub> = ∫J<sub>n</sub>(S A(t−ζ)) dζ, not to the current amplitude. One case
-we found: a satellite with J<sub>n</sub> = 0 at the final amplitude (absent in the steady state)
-can be the brightest satellite for a while during the growth.
+**2. Time-dependent acoustic amplitude** (Entries 28, 30). If the amplitude A(t) changes in
+time, different depths of the crystal have different amplitudes. Satellite n then depends on the
+amplitude during the last transit time, Θ<sub>n</sub> = ∫J<sub>n</sub>(S A(t−ζ)) dζ, and not only
+on the present amplitude. Example: a satellite with J<sub>n</sub> = 0 at the final amplitude has
+zero intensity in the steady state, but it is the strongest satellite for some time during
+formation.
 
-**3. Item 1 holds only while the acoustic wavelength is short enough** (Entries 52–54). Treating
-each satellite separately stays within about 5 % of the full calculation for
-R = Λ<sub>ac</sub>/Λ<sub>P</sub> ≲ 0.3. For longer acoustic wavelengths the satellites exchange
-intensity through the forward beam, and the simple formulas stop working.
+**3. Validity of the independent-satellite approximation** (Entries 52–54). Result 1 treats each
+satellite independently. The error is below 5 % for R = Λ<sub>ac</sub>/Λ<sub>P</sub> ≲ 0.3. For
+larger R the satellites are coupled through the forward beam, and the formulas of result 1 are not
+valid.
 
-**4. Side result: weak strain maps linearly onto the time signal** (Entries 59, 64). For weak
-strain, the frequency components of the reflectivity R(t) are, to first order, the strain spectrum
-multiplied by a crystal response function H(ω) that can be written in closed form. Inside the
-Darwin width (the angular range of strong reflection) this agrees with full TT in our checks,
-whereas the plane-wave perturbation of Sondhauss & Wark (2003) differs from full TT by a factor of
-3–8 there. How much of this is already in the literature is still open (Entries 60, 61).
+**4. Outlook: measurement of the phonon spectrum** (Entries 59, 64). For small strain, the Fourier
+component of the reflectivity R(t) at frequency ω is the strain spectrum multiplied by a crystal
+transfer function H(ω). We obtained H(ω) analytically to first order. Inside the Darwin width (the
+angular range of strong reflection) it agrees with full TT, while the perturbation theory of
+Sondhauss & Wark (2003) differs from full TT by a factor of 3–8. Comparison with previous work is
+not complete (Entries 60, 61).
 
-![First-order formulas against full TT inside the Darwin width](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f5_outlook.png)
+![First-order theory and full TT inside the Darwin width](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f5_outlook.png)
 
 ## Install
 

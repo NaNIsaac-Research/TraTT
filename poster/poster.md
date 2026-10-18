@@ -19,57 +19,58 @@ These are simulation results; the text says what we saw, not more.
 
 @wide
 
-## Introduction: acoustic satellites while the sound is still entering the crystal
+## Introduction
 
-In a thick perfect crystal the X-ray beams exchange intensity over the Pendellösung length $\Lambda_P$. A GHz sound wave adds satellites $n$ with weight $J_n(S)$ to the rocking curve $I(\eta)$. We simulate how they **grow** during the transit $t_{tr} = L/v_s$, before the sound fills the crystal. {E0}
+A sound wave in a crystal produces extra peaks (satellites $n = \pm1, \pm2, \dots$) in the X-ray rocking curve $I(\eta)$. For a fully strained crystal they are known. We calculate them during the transit time $t_{tr} = L/v_s$, when the acoustic front is still inside the crystal ($L$: thickness, $v_s$: sound velocity). {E0}
 
-Known: Pendellösung in time of the main peak (DeCamp et al., Nature 413, 825 (2001)); steady-state satellites (Entin; Zolotoyabko et al.). {E7}
+Previous work: time-domain Pendellösung of the main peak (DeCamp et al., Nature 413, 825 (2001)); satellites of a fully strained crystal (Entin; Zolotoyabko et al.). {E7}
 
-- Two-beam Takagi–Taupin equations, Laue and Bragg; $\alpha = L/\Lambda_P$, $S = h\cdot u_0$, $R = \Lambda_{ac}/\Lambda_P$. Lattice frozen per instant: $\beta \leq 1.2\times10^{-2}$. {E0}{E62}
-- Solver checked against analytic limits ($10^{-9}$) and an independent exact Floquet solver ($3\times10^{-7}$). {E0}{E42}
+- Method: two-beam Takagi–Taupin (TT) equations, Laue and Bragg geometry, solved for the strain profile at each time $t$. The X-ray passes the crystal in less than 1.2 % of one acoustic period. {E0}{E62}
+- Parameters: $\alpha = L/\Lambda_P$ ($\Lambda_P$: Pendellösung length), acoustic amplitude $S = h u_0$, $R = \Lambda_{ac}/\Lambda_P$. Code tested against analytic solutions ($10^{-9}$) and an exact Floquet solver ($3\times10^{-7}$). {E0}{E42}
 
-![Snapshot at $\tilde t$ = 0.62: the profile inside the slab is the drive, the curve on the right the solved $I(\eta)$ of that same instant ($\alpha$ = 0.6, $S$ = 1.5, $\alpha_{ac}$ = 5).](figures/poster/f0_scheme.png){E0}
+![Calculation at $\tilde t = t/t_{tr}$ = 0.62. Left: strain inside the crystal. Right: calculated $I(\eta)$ at the same time ($\alpha$ = 0.6, $S$ = 1.5, $\alpha_{ac}$ = 5).](figures/poster/f0_scheme.png){E0}
 
-> **Main observation.** Each satellite grows like a crystal of depth $v_s t$ with its coupling reduced by $\left|J_n(S)\right|$, so it has its own growth time $\tau_n = \Lambda_P/(v_s\left|J_n(S)\right|)$. {E1}{E9}{E33}
+> **Main result.** Satellite $n$ at time $t$ has the intensity of a uniform crystal of thickness $v_s t$ and coupling $\alpha\left|J_n(S)\right|$ ($J_n$: Bessel function), so its formation time is $\tau_n = \Lambda_P/(v_s\left|J_n(S)\right|)$. {E1}{E9}{E33}
 
-## Satellite growth follows a thin-crystal formula
+## Formation time of each satellite
 
-- Satellite $n$ behaves like an unmodulated crystal of depth $v_s t$ with coupling $\alpha_n = \alpha\left|J_n(S)\right|$: $I_n \propto \sin^2(\pi\alpha_n \tilde t)$ in Laue, $\tanh^2(\pi\alpha_n \tilde t)$ in Bragg. {E1}{E9}
+- Satellite intensity: $I_n = \sin^2(\pi\alpha_n \tilde t)$ (Laue) and $\tanh^2(\pi\alpha_n \tilde t)$ (Bragg), with $\alpha_n = \alpha\left|J_n(S)\right|$. {E1}{E9}
 
-![Points: full Takagi–Taupin for four $(S, \alpha, n)$; lines: the formulas above, **no fitted parameter**. The Laue period $\Lambda_P/(v_s\left|J_n(S)\right|)$ does not depend on $L$. The order in which satellites form follows $\left|J_n(S)\right|$, so it changes with $S$ — at $S=3$: $n=2$, then 1, then 3.](figures/poster/f1_collapse.png){E1}{E9}{E24}
+![Points: full TT calculation for four $(S, \alpha, n)$. Lines: the formulas above, **no fitting parameter**. $\tau_n$ does not depend on $L$. The satellite with the largest $\left|J_n(S)\right|$ forms first; at $S=3$ the order is $n=2$, 1, 3.](figures/poster/f1_collapse.png){E1}{E9}{E24}
 
-## The satellite centre goes dark, its intensity does not
+## Satellite line shape at the intensity minimum
 
-- At $\alpha_n \tilde t = 1$ the centre drops to **0.1–0.2 %** of its maximum, but **≈52 %** of the integrated satellite intensity remains, in two side lobes that move toward the centre. {E23}
+- At $\alpha_n \tilde t = 1$ the intensity at the satellite centre is **0.1–0.2 %** of its maximum. However, **≈52 %** of the integrated intensity remains in two side peaks, which move toward the centre with time. {E23}
 
-![Satellite $n=1$, $S=1.5$, $\alpha=3$: the line gets narrower and its centre oscillates as the front fills the crystal.](figures/poster/f2_fringes.png){E22}{E23}
+![Satellite $n=1$, $S=1.5$, $\alpha=3$. Left: $I(\eta, \tilde t)$; the line becomes narrower with time. Right: intensity at the satellite centre.](figures/poster/f2_fringes.png){E22}{E23}
 
-## When can each satellite be treated separately?
+## Validity of the independent-satellite approximation
 
-- The single-satellite formulas stay within 5 % for $R \lesssim 0.3$; the computed limit is $R$ = **0.34–0.57**, depending on $S$. {E53}{E54}
-- For larger $R$ the satellites couple through side components of the forward beam. The same third-order path, $\pi\alpha (R/2)^2 C_n(S)$, makes an order with $J_n(S)=0$ weakly visible again. {E44}{E45}{E50}{E52}
+- The formulas above treat each satellite independently. Error < 5 % for $R \lesssim 0.3$; limit $R$ = **0.34–0.57**, depending on $S$. {E53}{E54}
+- For larger $R$ the satellites are coupled through the forward beam. By this third-order coupling, $\pi\alpha (R/2)^2 C_n(S)$, a satellite with $J_n(S)=0$ has a small nonzero intensity. {E44}{E45}{E50}{E52}
 
-![Population error of the single-satellite picture. Each point is one $(\alpha, \alpha_{ac}, S)$, averaged exactly over the acoustic phase.](figures/poster/f4_regime.png){E54}
+![Error of the independent-satellite approximation. Each point: one $(\alpha, \alpha_{ac}, S)$.](figures/poster/f4_regime.png){E54}
 
 @column
 
-## Ramped amplitude: satellites follow its history
+## Time-dependent acoustic amplitude
 
-- If the amplitude $A$ rises gradually, each depth holds sound emitted at a different time. Satellite $n$ then follows the amplitude over the last $t_{tr}$, $\Theta_n = \int J_n(S\,A(t-\zeta))\,d\zeta$, not the present one. An order with $J_1(S_f)=0$ at the final amplitude, absent in the steady state, is the **brightest** line for a while. Ramping the same final strain up or down gives different curves (right). {E28}{E30}{E34}
+- If the amplitude $A(t)$ changes in time, satellite $n$ depends on the amplitude during the last $t_{tr}$: $\Theta_n = \int J_n(S\,A(t-\zeta))\,d\zeta$. {E28}{E30}
+- If $J_1(S_f)=0$ at the final amplitude, $n=1$ is absent in the steady state but is the **strongest** satellite for some time (left). Increasing or decreasing $A$ to the same final value gives different intensities (right). {E28}{E30}{E34}
 
-![Laue, $\alpha=0.5$: points full TT, lines the $\Theta_n$ formula.](figures/poster/f3_memory.png){E28}{E30}
+![Laue, $\alpha=0.5$. Points: full TT. Lines: formula with $\Theta_n$.](figures/poster/f3_memory.png){E28}{E30}
 
-## Outlook: phonon spectrum from Bragg oscillations
+## Outlook: measurement of the phonon spectrum
 
-- For weak strain, the Fourier components of the reflectivity $R(t)$ are the strain spectrum times a crystal response $H(\omega)$, closed form at first order in $S$; full TT agrees to 2–5 %. {E59}
-- It also holds inside the Darwin width, where the plane-wave perturbation of Sondhauss & Wark (2003) differs from full TT by ×3–8 (Si 400 at 17 keV: **×2** at 20 GHz). Prior art still being checked. {E61}{E64}{E65}
+- For small strain, the Fourier component of $R(t)$ is the strain spectrum times a transfer function $H(\omega)$, obtained analytically to first order in $S$ (agreement with full TT: 2–5 %). {E59}
+- Valid inside the Darwin width, where the perturbation theory of Sondhauss & Wark (2003) differs from full TT by a factor 3–8. Comparison with previous work is not complete. {E61}{E64}
 
-![(a) Fourier weight over the kinematic value vs phonon frequency, $\kappa/2\pi\alpha$ = 0.12: three acoustic packets fall on one curve, so dividing by it recovers the spectrum. (b) Satellite weight of the first-order formulas over full TT, single mode.](figures/poster/f5_outlook.png){E59}{E64}
+![(a) Fourier weight / kinematic value ($\kappa/2\pi\alpha$ = 0.12): three acoustic pulses give one curve. (b) First-order theory / full TT.](figures/poster/f5_outlook.png){E59}{E64}
 
-## Summary
+## Conclusion
 
-%% $\tau_n \propto 1/\left\vert J_n\right\vert$ | each satellite has its own growth time {E1}{E9}
-%% $\Theta_n$ | ramped drive: satellites follow the last $t_{tr}$ of the amplitude {E28}{E30}
-%% $R \lesssim 0.3$ | single-satellite formulas within 5 % {E54}
+%% $\tau_n \propto 1/\left\vert J_n\right\vert$ | formation time is different for each satellite {E1}{E9}
+%% $\Theta_n$ | intensity depends on the amplitude during the last $t_{tr}$ {E28}{E30}
+%% $R \lesssim 0.3$ | independent-satellite approximation within 5 % {E54}
 
-- Simulation only so far. Si 440, 17–30 keV, 1–2 GHz: $\tau_1$ = 17–30 ns. {E20}
+- Calculation only. Proposed experiment: Si 440, 17–30 keV, 1–2 GHz, $\tau_1$ = 17–30 ns. {E20}
