@@ -2,9 +2,12 @@
 
 [![PyPI](https://img.shields.io/pypi/v/tratt)](https://pypi.org/project/tratt/) [![Tests](https://github.com/NaNIsaac/TraTT/actions/workflows/tests.yml/badge.svg)](https://github.com/NaNIsaac/TraTT/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-This repository simulates what an X-ray diffraction measurement would see while a sound wave is
-still entering a crystal, before it has filled the whole crystal. It contains the solver, the
-analysis scripts, a lab notebook of everything tried so far, and the source of a conference poster.
+TraTT is a time-dependent Takagi–Taupin solver: it simulates what an X-ray diffraction
+measurement would see while a GHz sound wave is still entering a perfect crystal, before it has
+filled the whole crystal. It is for people working on time-resolved X-ray diffraction from acoustic
+waves, who want to know how the acoustic satellites of a Bragg peak build up in time. The
+repository contains the solver (`pip install tratt`), the analysis scripts, a lab notebook of the
+results, and the source of a conference poster.
 
 **KPS 2026 Fall Meeting, poster P2.17** (Jeju, 22 October 2026). Isaac Yong, Ouyoung Kwon,
 Hyunjung Kim — Center for Ultrafast Phase Transformation, Sogang University.
@@ -80,8 +83,7 @@ compared with a synchrotron X-ray pulse (~100 ps), so the growth could in princi
 
 ## What we have seen so far
 
-These are simulation results only. Nothing has been compared with an experiment yet, and the
-literature check is not finished. Each item points to the notebook entries with the numbers,
+These are simulation results only; nothing has been compared with an experiment yet. Each item points to the notebook entries with the numbers,
 scripts and caveats.
 
 ![Schematic: the acoustic front fills the crystal; on the right, the rocking curve of that instant](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f0_scheme.png)
@@ -153,19 +155,6 @@ explore/        figure scripts; make_poster_figs.py draws the poster figures
 poster/         poster.md (the only source of poster text), build.py (layout + checks), fonts
 figures/        figures referenced by the notebook and the poster
 DESIGN.md       physics conventions, analytic limits, assumptions
-```
-
-Every item on the poster carries a tag pointing to a notebook entry. `poster/build.py` refuses to
-pass if a tag points to an entry that does not exist.
-
-## Notebooks
-
-`explore/*.ipynb` are tracked with `nbstripout` as a git filter (`.gitattributes`). Outputs are
-removed at commit time and stay in your working copy. If you move the repository or rebuild the
-venv, re-register the filter:
-
-```
-uv run nbstripout --install --attributes .gitattributes
 ```
 
 ## Acknowledgement
