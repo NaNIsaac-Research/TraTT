@@ -1,0 +1,124 @@
+{
+  "alpha": 0.5,
+  "alpha_ac": 40.0,
+  "order": 1,
+  "envelope": "linear ramp, then held",
+  "grid": [
+    101,
+    111
+  ],
+  "map_refinement_max_change": 4.493352813161877e-06,
+  "observable": "carrier-phase-averaged intensity at eta=q, incident intensity=1",
+  "map_method": "independent-satellite accumulated-coupling approximation",
+  "cases": [
+    {
+      "label": "A",
+      "S": 1.5,
+      "rise": 1.0,
+      "peak": 0.5905047979319379,
+      "steady": 0.5905047979319379,
+      "excess": 0.0,
+      "tt_refinement_max_change": 3.4025352068534076e-05,
+      "max_trace_error": 1.3576447023044835e-05
+    },
+    {
+      "label": "B",
+      "S": 3.0,
+      "rise": 1.0,
+      "peak": 0.4366651234371409,
+      "steady": 0.2578288745375755,
+      "excess": 0.1788362488995654,
+      "tt_refinement_max_change": 4.150284844239849e-06,
+      "max_trace_error": 3.9116145831630256e-05
+    },
+    {
+      "label": "C",
+      "S": 3.85,
+      "rise": 2.0,
+      "peak": 0.5327898144054963,
+      "steady": 0.00013329566998891246,
+      "excess": 0.5326565187355075,
+      "tt_refinement_max_change": 1.353910240586842e-06,
+      "max_trace_error": 1.2394855760350376e-05
+    }
+  ],
+  "checks": [
+    {
+      "S": 1.5,
+      "rise": 0.2,
+      "max_trace_error": 4.923346612173418e-05,
+      "excess_error": 0.0
+    },
+    {
+      "S": 1.5,
+      "rise": 1.0,
+      "max_trace_error": 4.648073832702604e-05,
+      "excess_error": 0.0
+    },
+    {
+      "S": 1.5,
+      "rise": 3.0,
+      "max_trace_error": 4.511188655920151e-05,
+      "excess_error": 2.220446049250313e-16
+    },
+    {
+      "S": 3.0,
+      "rise": 0.2,
+      "max_trace_error": 7.37690244508489e-05,
+      "excess_error": 5.2653552423120864e-05
+    },
+    {
+      "S": 3.0,
+      "rise": 1.0,
+      "max_trace_error": 4.099970439763734e-05,
+      "excess_error": 5.3324082525396665e-05
+    },
+    {
+      "S": 3.0,
+      "rise": 3.0,
+      "max_trace_error": 4.099970439763734e-05,
+      "excess_error": 3.120322288374666e-05
+    },
+    {
+      "S": 3.85,
+      "rise": 0.2,
+      "max_trace_error": 8.645235404596864e-05,
+      "excess_error": 8.176702510979614e-05
+    },
+    {
+      "S": 3.85,
+      "rise": 1.0,
+      "max_trace_error": 5.118554618227522e-05,
+      "excess_error": 4.273079085559406e-05
+    },
+    {
+      "S": 3.85,
+      "rise": 3.0,
+      "max_trace_error": 3.179387820517743e-05,
+      "excess_error": 4.4306995498066826e-06
+    },
+    {
+      "S": 5.0,
+      "rise": 0.2,
+      "max_trace_error": 8.612391719403211e-05,
+      "excess_error": 5.551115123125783e-17
+    },
+    {
+      "S": 5.0,
+      "rise": 1.0,
+      "max_trace_error": 6.61851203974384e-05,
+      "excess_error": 0.0
+    },
+    {
+      "S": 5.0,
+      "rise": 3.0,
+      "max_trace_error": 3.050110854675714e-05,
+      "excess_error": 1.1513815220132173e-06
+    }
+  ],
+  "map_maximum": {
+    "S": 3.8000000000000003,
+    "rise": 4.0,
+    "excess": 0.6034190113236777
+  }
+}

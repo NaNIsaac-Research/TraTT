@@ -1,0 +1,388 @@
+{
+  "date": "2026-10-19",
+  "git_head": "1f9f8f8",
+  "alpha": 0.5,
+  "alpha_ac": 40.0,
+  "python": "3.14.7",
+  "numpy": "2.5.2",
+  "scipy": "1.18.0",
+  "tolerance": 0.001,
+  "findings": [],
+  "observable": {
+    "definition": "|Dh(1)|^2 at the single point eta=+q (rocking called with eta=[q]); mean over equally spaced carrier phases with the envelope argument fixed at t; no eta integral, no time window",
+    "map_script_same": "e67_overshoot_map.tt_average: eta=np.array([q]); envelope uses t only, phase enters sin() only; traces are not smoothed",
+    "batched_vs_single_max_diff": 0.0,
+    "steady_phase_avg_time_spread": 1.4155676630878133e-11,
+    "steady_eta_plus_q": 0.2577881939945647,
+    "steady_eta_minus_q": 0.2577881939945645,
+    "steady_law": 0.2578288745375755
+  },
+  "laue_normalization": {
+    "source": "solve_laue: D0(0)=1, Dh(0)=0, both beams +z; intensity |Dh(1)|^2 is a fraction of the unit incident intensity; chi_0 gauged out, no absorption (real alpha)",
+    "pendelloesung_err": 4.440892098500626e-16,
+    "lossless_max_err": 3.831914274776693e-08
+  },
+  "quadrature": {
+    "method": "scipy.integrate.quad on the ramp segment [clip(t-T),clip(t)] plus exact J1(S)*clip(t-T) for the filled segment; map uses cumulative Simpson antiderivative of J1(Sx)",
+    "cases": {
+      "A": {
+        "S": 1.5,
+        "T": 1.0,
+        "steady": 0.5905047979319379,
+        "theta_before_arrival": 0.0,
+        "theta_end_minus_J1": 0.0,
+        "theta_after_minus_J1": 0.0,
+        "I_end_minus_steady": 0.0,
+        "direct_vs_map_law_max": 2.0553893587127448e-09,
+        "t_peak": 2.0,
+        "I_peak": 0.5905047979319379,
+        "excess": 0.0,
+        "time_sampling_peak_err": {
+          "101": 0.0,
+          "601": 0.0,
+          "1001": 0.0,
+          "2001": 0.0
+        },
+        "npz_nearest": {
+          "S": 1.5,
+          "T": 0.998,
+          "excess": 0.0
+        },
+        "direct_excess_at_npz_T": 0.0,
+        "npz_excess_diff": 0.0,
+        "json_case": {
+          "peak": 0.5905047979319379,
+          "excess": 0.0
+        },
+        "json_peak_diff": 0.0
+      },
+      "B": {
+        "S": 3.0,
+        "T": 1.0,
+        "steady": 0.2578288745375755,
+        "theta_before_arrival": 0.0,
+        "theta_end_minus_J1": 0.0,
+        "theta_after_minus_J1": 0.0,
+        "I_end_minus_steady": 0.0,
+        "direct_vs_map_law_max": 4.264827213606992e-09,
+        "t_peak": 1.2415517846834407,
+        "I_peak": 0.43666740644107893,
+        "excess": 0.1788385319035034,
+        "time_sampling_peak_err": {
+          "101": 2.2819626788739278e-06,
+          "601": 2.2819626788739278e-06,
+          "1001": 1.9015753671691726e-07,
+          "2001": 1.9015753671691726e-07
+        },
+        "npz_nearest": {
+          "S": 3.0,
+          "T": 0.998,
+          "excess": 0.17846290057408648
+        },
+        "direct_excess_at_npz_T": 0.1784629947245815,
+        "npz_excess_diff": 9.415049501138029e-08,
+        "json_case": {
+          "peak": 0.4366651234371409,
+          "excess": 0.1788362488995654
+        },
+        "json_peak_diff": 2.283003938008399e-06
+      },
+      "C": {
+        "S": 3.85,
+        "T": 2.0,
+        "steady": 0.00013329566998891246,
+        "theta_before_arrival": -0.0,
+        "theta_end_minus_J1": 0.0,
+        "theta_after_minus_J1": 0.0,
+        "I_end_minus_steady": 0.0,
+        "direct_vs_map_law_max": 1.569841678872308e-08,
+        "t_peak": 1.4640902232217232,
+        "I_peak": 0.5327906955305713,
+        "excess": 0.5326573998605825,
+        "time_sampling_peak_err": {
+          "101": 3.656191820766708e-05,
+          "601": 8.6674580257462e-07,
+          "1001": 8.524532857379086e-09,
+          "2001": 8.524532857379086e-09
+        },
+        "npz_nearest": {
+          "S": 3.85,
+          "T": 1.9855,
+          "excess": 0.5313102335337843
+        },
+        "direct_excess_at_npz_T": 0.5313103357746345,
+        "npz_excess_diff": 1.022408502304728e-07,
+        "json_case": {
+          "peak": 0.5327898144054963,
+          "excess": 0.5326565187355075
+        },
+        "json_peak_diff": 8.811250750140331e-07
+      },
+      "map_max": {
+        "S": 3.8,
+        "T": 4.0,
+        "steady": 0.00040553191382517904,
+        "theta_before_arrival": 0.0,
+        "theta_end_minus_J1": 0.0,
+        "theta_after_minus_J1": 0.0,
+        "I_end_minus_steady": 0.0,
+        "direct_vs_map_law_max": 1.6531754298831913e-08,
+        "t_peak": 2.4416554710848826,
+        "I_peak": 0.6038247519300648,
+        "excess": 0.6034192200162396,
+        "time_sampling_peak_err": {
+          "101": 1.9199651032031362e-05,
+          "601": 3.451605667947888e-11,
+          "1001": 7.558959598252812e-07,
+          "2001": 1.9669966355717605e-07
+        },
+        "npz_nearest": {
+          "S": 3.8000000000000003,
+          "T": 4.0,
+          "excess": 0.6034190113236777
+        },
+        "direct_excess_at_npz_T": 0.6034192200162396,
+        "npz_excess_diff": 2.0869256189826046e-07,
+        "json_map_maximum": {
+          "S": 3.8000000000000003,
+          "rise": 4.0,
+          "excess": 0.6034190113236777
+        }
+      },
+      "short_rise": {
+        "S": 6.0,
+        "T": 0.05,
+        "steady": 0.17729178237329696,
+        "theta_before_arrival": -0.0,
+        "theta_end_minus_J1": 0.0,
+        "theta_after_minus_J1": 0.0,
+        "I_end_minus_steady": 0.0,
+        "direct_vs_map_law_max": 3.154088934476107e-10,
+        "t_peak": 1.039072320659216,
+        "I_peak": 0.17789510154775798,
+        "excess": 0.00060331917446102,
+        "time_sampling_peak_err": {
+          "101": 2.74434004626789e-06,
+          "601": 2.74434004626789e-06,
+          "1001": 2.74434004626789e-06,
+          "2001": 1.4656454516703832e-07
+        },
+        "npz_nearest": {
+          "S": 6.0,
+          "T": 0.05,
+          "excess": 0.0006031724798484517
+        },
+        "direct_excess_at_npz_T": 0.00060331917446102,
+        "npz_excess_diff": 1.4669461256833216e-07
+      }
+    }
+  },
+  "tt": {
+    "A": {
+      "S": 1.5,
+      "T": 1.0,
+      "nz_base": 2000,
+      "nz_double": 4000,
+      "n_times": 61,
+      "seconds": 1.9416681000002427,
+      "depth_change": {
+        "max": 3.3988651362948374e-05,
+        "at_peak": 3.3988651362948374e-05,
+        "at_steady": 3.3988651362948374e-05
+      },
+      "phase_change_16_vs_32": {
+        "max": 2.3314683517128287e-15,
+        "at_peak": 2.3314683517128287e-15,
+        "at_steady": 2.3314683517128287e-15
+      },
+      "phase_change_8_vs_16": {
+        "max": 3.67007055857016e-08,
+        "at_peak": 3.67007055857016e-08,
+        "at_steady": 3.67007055857016e-08
+      },
+      "approx_error": {
+        "max_trace": 1.3578063069674684e-05,
+        "t_of_max": 1.5666666666666667,
+        "at_peak": 9.91398930139109e-06,
+        "at_steady": 9.91398930139109e-06
+      },
+      "tt_at_t0": 1.5005825935197337e-08,
+      "tt_steady": 0.5904948839426365,
+      "tt_steady_minus_law": -9.91398930139109e-06,
+      "tt_peak_grid": 0.5904948839426365,
+      "tt_peak_local_refined": 0.5904948839426365,
+      "tt_time_sampling_peak_err": 0.0,
+      "tt_excess": 0.0,
+      "approx_excess": 0.0,
+      "excess_error": 0.0,
+      "max_tt_intensity": 0.5904948839426365
+    },
+    "B": {
+      "S": 3.0,
+      "T": 1.0,
+      "nz_base": 3200,
+      "nz_double": 6400,
+      "n_times": 62,
+      "seconds": 3.1171628999982204,
+      "depth_change": {
+        "max": 2.544243168478566e-06,
+        "at_peak": 2.4401633108572796e-06,
+        "at_steady": 1.5643971787437927e-06
+      },
+      "phase_change_16_vs_32": {
+        "max": 9.928668998071544e-12,
+        "at_peak": 1.010858063921205e-13,
+        "at_steady": 9.928668998071544e-12
+      },
+      "phase_change_8_vs_16": {
+        "max": 1.7986508412670688e-06,
+        "at_peak": 1.7986508412670688e-06,
+        "at_steady": 3.191613863751108e-07
+      },
+      "approx_error": {
+        "max_trace": 3.9116145832074345e-05,
+        "t_of_max": 2.0,
+        "at_peak": 1.2809909313182821e-05,
+        "at_steady": 3.9116145832074345e-05
+      },
+      "tt_at_t0": 1.5048171290441508e-08,
+      "tt_steady": 0.25778975839174345,
+      "tt_steady_minus_law": -3.9116145832074345e-05,
+      "tt_peak_grid": 0.4366802163503921,
+      "tt_peak_local_refined": 0.4366802163503921,
+      "tt_time_sampling_peak_err": 0.0,
+      "tt_excess": 0.17889045795864866,
+      "approx_excess": 0.1788385319035034,
+      "excess_error": 5.1926055145257166e-05,
+      "max_tt_intensity": 0.4366802163503921
+    },
+    "C": {
+      "S": 3.85,
+      "T": 2.0,
+      "nz_base": 3880,
+      "nz_double": 7760,
+      "n_times": 62,
+      "seconds": 3.8073681999994733,
+      "depth_change": {
+        "max": 1.2432878685464388e-06,
+        "at_peak": 1.222827278879457e-06,
+        "at_steady": 3.269240296771385e-10
+      },
+      "phase_change_16_vs_32": {
+        "max": 7.528061507500183e-12,
+        "at_peak": 5.4289905904170155e-14,
+        "at_steady": 1.1217936302099218e-13
+      },
+      "phase_change_8_vs_16": {
+        "max": 3.6242869266844835e-07,
+        "at_peak": 1.993312499504185e-07,
+        "at_steady": 2.2881632060021279e-10
+      },
+      "approx_error": {
+        "max_trace": 1.238953792576103e-05,
+        "t_of_max": 2.0500000000000003,
+        "at_peak": 6.318614714007076e-06,
+        "at_steady": 4.918549538281982e-07
+      },
+      "tt_at_t0": 1.5052274319468775e-08,
+      "tt_steady": 0.00013378752494274066,
+      "tt_steady_minus_law": 4.918549538281982e-07,
+      "tt_peak_grid": 0.5327970141452854,
+      "tt_peak_local_refined": 0.5327970141452854,
+      "tt_time_sampling_peak_err": 0.0,
+      "tt_excess": 0.5326632266203426,
+      "approx_excess": 0.5326573998605825,
+      "excess_error": 5.826759760130251e-06,
+      "max_tt_intensity": 0.5327970141452854
+    },
+    "map_max": {
+      "S": 3.8,
+      "T": 4.0,
+      "nz_base": 3840,
+      "nz_double": 7680,
+      "n_times": 62,
+      "seconds": 3.7684436999988975,
+      "depth_change": {
+        "max": 1.4484468233710857e-06,
+        "at_peak": 1.444026229369122e-06,
+        "at_steady": 1.0374144412440833e-09
+      },
+      "phase_change_16_vs_32": {
+        "max": 1.4729287234338528e-11,
+        "at_peak": 2.375877272697835e-14,
+        "at_steady": 2.903301514131651e-13
+      },
+      "phase_change_8_vs_16": {
+        "max": 3.644496508248274e-06,
+        "at_peak": 2.463687585052554e-07,
+        "at_steady": 6.583946412694851e-10
+      },
+      "approx_error": {
+        "max_trace": 3.324747746319412e-05,
+        "t_of_max": 3.5,
+        "at_peak": 5.958721738696937e-06,
+        "at_steady": 9.29439215436147e-07
+      },
+      "tt_at_t0": 1.5052124772465306e-08,
+      "tt_steady": 0.0004046024746097429,
+      "tt_steady_minus_law": -9.29439215436147e-07,
+      "tt_peak_grid": 0.6038187932083261,
+      "tt_peak_local_refined": 0.6038187932083261,
+      "tt_time_sampling_peak_err": 0.0,
+      "tt_excess": 0.6034141907337164,
+      "approx_excess": 0.6034192200162396,
+      "excess_error": -5.0292825232167715e-06,
+      "max_tt_intensity": 0.6038187932083261
+    },
+    "short_rise": {
+      "S": 6.0,
+      "T": 0.05,
+      "nz_base": 5600,
+      "nz_double": 11200,
+      "n_times": 62,
+      "seconds": 5.370624899998802,
+      "depth_change": {
+        "max": 7.41477748367192e-08,
+        "at_peak": 5.972169808687866e-08,
+        "at_steady": 7.41477748367192e-08
+      },
+      "phase_change_16_vs_32": {
+        "max": 1.5055125257568136e-08,
+        "at_peak": 5.3068781036280654e-09,
+        "at_steady": 1.5055125257568136e-08
+      },
+      "phase_change_8_vs_16": {
+        "max": 6.020416745750046e-05,
+        "at_peak": 3.031978909273647e-06,
+        "at_steady": 2.6315969178791754e-07
+      },
+      "approx_error": {
+        "max_trace": 8.254594139399016e-05,
+        "t_of_max": 0.035,
+        "at_peak": 5.443422833567579e-06,
+        "at_steady": 1.017929887742186e-05
+      },
+      "tt_at_t0": 1.5054993930580385e-08,
+      "tt_steady": 0.17728160307441954,
+      "tt_steady_minus_law": -1.017929887742186e-05,
+      "tt_peak_grid": 0.17790054497059155,
+      "tt_peak_local_refined": 0.17790054497059155,
+      "tt_time_sampling_peak_err": 0.0,
+      "tt_excess": 0.0006189418961720095,
+      "approx_excess": 0.00060331917446102,
+      "excess_error": 1.562272171098944e-05,
+      "max_tt_intensity": 0.17790054497059155
+    }
+  },
+  "pendelloesung": {
+    "max_abs_J1": 0.581865224227643,
+    "pi_alpha_max_J1": 0.9139917569064704,
+    "half_pi": 1.5707963267948966,
+    "reachable_intensity_bound": 0.6271806321005887,
+    "max_abs_theta_cases": 0.5665782480913759,
+    "max_tt_intensity_cases": 0.6038187932083261,
+    "reason": "|Theta_1| <= max|J1| = 0.5819 for any S, so pi*alpha*|Theta_1| <= 0.914 < pi/2 at alpha=0.5: sin^2 is monotone on the reachable range and no intensity-exchange maximum is crossed. Overshoot is the Entry 15 Bessel-ladder re-weighting of the depth integral (Entry 5 law), and the T=4 boundary value approaches the Entry 28 quasi-static limit sin^2(pi alpha max J1).",
+    "map_max_is_boundary": true
+  },
+  "elapsed_s": 25.810764799996832
+}

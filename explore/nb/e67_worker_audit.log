@@ -1,0 +1,103 @@
+==== run 1 (original script, 2026-10-19) ====
+NOTE: this run's log file was overwritten by run 2 before the supervisor's correction request.
+The lines below are the complete stdout of run 1 as captured in the worker terminal; the
+per-line elapsed timestamps are lost (total elapsed 26.4 s, wall 28.1 s). Run 1 used
+loc = linspace(neighbours, 11) without the grid argmax, giving negative tt_time_sampling_peak_err.
+e67 worker audit 2026-10-19 python 3.14.7 numpy 2.5.2 scipy 1.18.0 HEAD 1f9f8f8
+command: .venv/Scripts/python.exe explore/nb/e67_worker_audit.py
+
+== 1. observable: single eta = +q, carrier-phase average at fixed envelope time ==
+batched vs single-time evaluation max diff 0.00e+00
+steady TT at t=1+T, +0.3, +0.013: [0.25778819 0.25778819 0.25778819]  spread 1.42e-11
+eta=+q vs eta=-q steady phase-avg: 0.257788 vs 0.257788
+
+== 2. Laue normalization ==
+unmodulated eta=0: |Dh|^2=1.0000000000, sin^2(pi alpha)=1.0000000000, err 4.4e-16
+lossless |D0|^2+|Dh|^2-1 at S=6,T=0.05, eta=q, 3 times x 16 phases: max 3.8e-08
+
+== 3. direct depth quadrature vs saved map law ==
+A: S=1.5 T=1.0 theta(t<0)=0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=2.06e-09 peak=0.590505@t=2.00000 excess=0.000000 npz(1.50,0.9980)=0.000000 diff=0.0e+00 grid peak err {101: 0.0, 601: 0.0, 1001: 0.0, 2001: 0.0}
+B: S=3.0 T=1.0 theta(t<0)=0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=4.26e-09 peak=0.436667@t=1.24155 excess=0.178839 npz(3.00,0.9980)=0.178463 diff=9.4e-08 grid peak err {101: 2.2819626788739278e-06, 601: 2.2819626788739278e-06, 1001: 1.9015753671691726e-07, 2001: 1.9015753671691726e-07}
+C: S=3.85 T=2.0 theta(t<0)=-0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=1.57e-08 peak=0.532791@t=1.46409 excess=0.532657 npz(3.85,1.9855)=0.531310 diff=1.0e-07 grid peak err {101: 3.656191820766708e-05, 601: 8.6674580257462e-07, 1001: 8.524532857379086e-09, 2001: 8.524532857379086e-09}
+map_max: S=3.8 T=4.0 theta(t<0)=0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=1.65e-08 peak=0.603825@t=2.44166 excess=0.603419 npz(3.80,4.0000)=0.603419 diff=2.1e-07 grid peak err {101: 1.9199651032031362e-05, 601: 3.451605667947888e-11, 1001: 7.558959598252812e-07, 2001: 1.9669966355717605e-07}
+short_rise: S=6.0 T=0.05 theta(t<0)=-0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=3.15e-10 peak=0.177895@t=1.03907 excess=0.000603 npz(6.00,0.0500)=0.000603 diff=1.5e-07 grid peak err {101: 2.74434004626789e-06, 601: 2.74434004626789e-06, 1001: 2.74434004626789e-06, 2001: 1.4656454516703832e-07}
+
+== 4. full TT convergence (separated) ==
+A: nz=2000 2.0s depth[max/peak/steady]=3.4e-05/3.4e-05/3.4e-05 phase16v32=2.3e-15 phase8v16=3.7e-08 approx[max/peak/steady]=1.4e-05/9.9e-06/9.9e-06 TT(0)=1.5e-08 TTsteady-law=-9.9e-06 TTexcess=0.000000 approx=0.000000 err=0.0e+00
+B: nz=3200 3.2s depth[max/peak/steady]=2.5e-06/2.4e-06/1.6e-06 phase16v32=9.9e-12 phase8v16=1.8e-06 approx[max/peak/steady]=3.9e-05/1.3e-05/3.9e-05 TT(0)=1.5e-08 TTsteady-law=-3.9e-05 TTexcess=0.178888 approx=0.178839 err=5.0e-05
+C: nz=3880 3.9s depth[max/peak/steady]=1.2e-06/1.2e-06/3.3e-10 phase16v32=7.5e-12 phase8v16=3.6e-07 approx[max/peak/steady]=1.2e-05/6.3e-06/4.9e-07 TT(0)=1.5e-08 TTsteady-law=4.9e-07 TTexcess=0.532662 approx=0.532657 err=4.9e-06
+map_max: nz=3840 3.9s depth[max/peak/steady]=1.4e-06/1.4e-06/1.0e-09 phase16v32=1.5e-11 phase8v16=3.6e-06 approx[max/peak/steady]=3.3e-05/6.0e-06/9.3e-07 TT(0)=1.5e-08 TTsteady-law=-9.3e-07 TTexcess=0.603414 approx=0.603419 err=-5.0e-06
+short_rise: nz=5600 5.4s depth[max/peak/steady]=7.4e-08/6.0e-08/7.4e-08 phase16v32=1.5e-08 phase8v16=6.0e-05 approx[max/peak/steady]=8.3e-05/5.4e-06/1.0e-05 TT(0)=1.5e-08 TTsteady-law=-1.0e-05 TTexcess=0.000615 approx=0.000603 err=1.1e-05
+
+== 5. Pendelloesung bound ==
+max|J1| on [0,6] = 0.58187; pi*alpha*max|J1| = 0.9140 < pi/2 = 1.5708; sin^2 bound 0.6272; max|theta| over cases 0.5666; max TT intensity 0.6038; npz excess growth at T boundary for S=3.8: 4.66e-04
+
+findings: []
+elapsed 26.4s; wrote e67_worker_audit.json
+JSON from run 1 (overwritten): tt_time_sampling_peak_err B -2.098e-6, C -8.970e-7, short_rise -4.393e-6.
+
+==== run 2 (interim: tt_peak_loc = max(local, grid); overwrote the run-1 log; superseded by run 3) ====
+[    0.0s] e67 worker audit 2026-10-19 python 3.14.7 numpy 2.5.2 scipy 1.18.0 HEAD 1f9f8f8
+[    0.0s] command: .venv/Scripts/python.exe explore/nb/e67_worker_audit.py
+[    0.0s] 
+== 1. observable: single eta = +q, carrier-phase average at fixed envelope time ==
+[    1.1s] batched vs single-time evaluation max diff 0.00e+00
+[    1.1s] steady TT at t=1+T, +0.3, +0.013: [0.25778819 0.25778819 0.25778819]  spread 1.42e-11
+[    1.1s] eta=+q vs eta=-q steady phase-avg: 0.257788 vs 0.257788
+[    1.1s] 
+== 2. Laue normalization ==
+[    1.6s] unmodulated eta=0: |Dh|^2=1.0000000000, sin^2(pi alpha)=1.0000000000, err 4.4e-16
+[    1.6s] lossless |D0|^2+|Dh|^2-1 at S=6,T=0.05, eta=q, 3 times x 16 phases: max 3.8e-08
+[    1.6s] 
+== 3. direct depth quadrature vs saved map law ==
+[    2.2s] A: S=1.5 T=1.0 theta(t<0)=0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=2.06e-09 peak=0.590505@t=2.00000 excess=0.000000 npz(1.50,0.9980)=0.000000 diff=0.0e+00 grid peak err {101: 0.0, 601: 0.0, 1001: 0.0, 2001: 0.0}
+[    2.8s] B: S=3.0 T=1.0 theta(t<0)=0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=4.26e-09 peak=0.436667@t=1.24155 excess=0.178839 npz(3.00,0.9980)=0.178463 diff=9.4e-08 grid peak err {101: 2.2819626788739278e-06, 601: 2.2819626788739278e-06, 1001: 1.9015753671691726e-07, 2001: 1.9015753671691726e-07}
+[    3.4s] C: S=3.85 T=2.0 theta(t<0)=-0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=1.57e-08 peak=0.532791@t=1.46409 excess=0.532657 npz(3.85,1.9855)=0.531310 diff=1.0e-07 grid peak err {101: 3.656191820766708e-05, 601: 8.6674580257462e-07, 1001: 8.524532857379086e-09, 2001: 8.524532857379086e-09}
+[    4.0s] map_max: S=3.8 T=4.0 theta(t<0)=0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=1.65e-08 peak=0.603825@t=2.44166 excess=0.603419 npz(3.80,4.0000)=0.603419 diff=2.1e-07 grid peak err {101: 1.9199651032031362e-05, 601: 3.451605667947888e-11, 1001: 7.558959598252812e-07, 2001: 1.9669966355717605e-07}
+[    4.4s] short_rise: S=6.0 T=0.05 theta(t<0)=-0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=3.15e-10 peak=0.177895@t=1.03907 excess=0.000603 npz(6.00,0.0500)=0.000603 diff=1.5e-07 grid peak err {101: 2.74434004626789e-06, 601: 2.74434004626789e-06, 1001: 2.74434004626789e-06, 2001: 1.4656454516703832e-07}
+[    4.4s] 
+== 4. full TT convergence (separated) ==
+[    6.7s] A: nz=2000 1.9s depth[max/peak/steady]=3.4e-05/3.4e-05/3.4e-05 phase16v32=2.3e-15 phase8v16=3.7e-08 approx[max/peak/steady]=1.4e-05/9.9e-06/9.9e-06 TT(0)=1.5e-08 TTsteady-law=-9.9e-06 TTexcess=0.000000 approx=0.000000 err=0.0e+00
+[   10.5s] B: nz=3200 3.2s depth[max/peak/steady]=2.5e-06/2.4e-06/1.6e-06 phase16v32=9.9e-12 phase8v16=1.8e-06 approx[max/peak/steady]=3.9e-05/1.3e-05/3.9e-05 TT(0)=1.5e-08 TTsteady-law=-3.9e-05 TTexcess=0.178890 approx=0.178839 err=5.2e-05
+[   15.1s] C: nz=3880 3.9s depth[max/peak/steady]=1.2e-06/1.2e-06/3.3e-10 phase16v32=7.5e-12 phase8v16=3.6e-07 approx[max/peak/steady]=1.2e-05/6.3e-06/4.9e-07 TT(0)=1.5e-08 TTsteady-law=4.9e-07 TTexcess=0.532663 approx=0.532657 err=5.8e-06
+[   19.7s] map_max: nz=3840 3.9s depth[max/peak/steady]=1.4e-06/1.4e-06/1.0e-09 phase16v32=1.5e-11 phase8v16=3.6e-06 approx[max/peak/steady]=3.3e-05/6.0e-06/9.3e-07 TT(0)=1.5e-08 TTsteady-law=-9.3e-07 TTexcess=0.603414 approx=0.603419 err=-5.0e-06
+[   26.0s] short_rise: nz=5600 5.4s depth[max/peak/steady]=7.4e-08/6.0e-08/7.4e-08 phase16v32=1.5e-08 phase8v16=6.0e-05 approx[max/peak/steady]=8.3e-05/5.4e-06/1.0e-05 TT(0)=1.5e-08 TTsteady-law=-1.0e-05 TTexcess=0.000619 approx=0.000603 err=1.6e-05
+[   26.0s] 
+== 5. Pendelloesung bound ==
+[   26.2s] max|J1| on [0,6] = 0.58187; pi*alpha*max|J1| = 0.9140 < pi/2 = 1.5708; sin^2 bound 0.6272; max|theta| over cases 0.5666; max TT intensity 0.6038; npz excess growth at T boundary for S=3.8: 4.66e-04
+[   26.2s] 
+findings: []
+[   26.2s] elapsed 26.2s; wrote e67_worker_audit.json
+==== run 3 (correction round 1: grid argmax retained in refinement set; append-mode log; time-refinement flag) ====
+[    0.0s] ==== run start ====
+[    0.0s] e67 worker audit 2026-10-19 python 3.14.7 numpy 2.5.2 scipy 1.18.0 HEAD 1f9f8f8
+[    0.0s] command: .venv/Scripts/python.exe explore/nb/e67_worker_audit.py
+[    0.0s] 
+== 1. observable: single eta = +q, carrier-phase average at fixed envelope time ==
+[    1.1s] batched vs single-time evaluation max diff 0.00e+00
+[    1.1s] steady TT at t=1+T, +0.3, +0.013: [0.25778819 0.25778819 0.25778819]  spread 1.42e-11
+[    1.1s] eta=+q vs eta=-q steady phase-avg: 0.257788 vs 0.257788
+[    1.1s] 
+== 2. Laue normalization ==
+[    1.6s] unmodulated eta=0: |Dh|^2=1.0000000000, sin^2(pi alpha)=1.0000000000, err 4.4e-16
+[    1.6s] lossless |D0|^2+|Dh|^2-1 at S=6,T=0.05, eta=q, 3 times x 16 phases: max 3.8e-08
+[    1.6s] 
+== 3. direct depth quadrature vs saved map law ==
+[    2.1s] A: S=1.5 T=1.0 theta(t<0)=0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=2.06e-09 peak=0.590505@t=2.00000 excess=0.000000 npz(1.50,0.9980)=0.000000 diff=0.0e+00 grid peak err {101: 0.0, 601: 0.0, 1001: 0.0, 2001: 0.0}
+[    2.8s] B: S=3.0 T=1.0 theta(t<0)=0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=4.26e-09 peak=0.436667@t=1.24155 excess=0.178839 npz(3.00,0.9980)=0.178463 diff=9.4e-08 grid peak err {101: 2.2819626788739278e-06, 601: 2.2819626788739278e-06, 1001: 1.9015753671691726e-07, 2001: 1.9015753671691726e-07}
+[    3.4s] C: S=3.85 T=2.0 theta(t<0)=-0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=1.57e-08 peak=0.532791@t=1.46409 excess=0.532657 npz(3.85,1.9855)=0.531310 diff=1.0e-07 grid peak err {101: 3.656191820766708e-05, 601: 8.6674580257462e-07, 1001: 8.524532857379086e-09, 2001: 8.524532857379086e-09}
+[    3.8s] map_max: S=3.8 T=4.0 theta(t<0)=0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=1.65e-08 peak=0.603825@t=2.44166 excess=0.603419 npz(3.80,4.0000)=0.603419 diff=2.1e-07 grid peak err {101: 1.9199651032031362e-05, 601: 3.451605667947888e-11, 1001: 7.558959598252812e-07, 2001: 1.9669966355717605e-07}
+[    4.3s] short_rise: S=6.0 T=0.05 theta(t<0)=-0.0e+00 theta(1+T)-J1=0.0e+00 |direct-maplaw|max=3.15e-10 peak=0.177895@t=1.03907 excess=0.000603 npz(6.00,0.0500)=0.000603 diff=1.5e-07 grid peak err {101: 2.74434004626789e-06, 601: 2.74434004626789e-06, 1001: 2.74434004626789e-06, 2001: 1.4656454516703832e-07}
+[    4.3s] 
+== 4. full TT convergence (separated) ==
+[    6.6s] A: nz=2000 1.9s depth[max/peak/steady]=3.4e-05/3.4e-05/3.4e-05 phase16v32=2.3e-15 phase8v16=3.7e-08 approx[max/peak/steady]=1.4e-05/9.9e-06/9.9e-06 TT(0)=1.5e-08 TTsteady-law=-9.9e-06 TTexcess=0.000000 approx=0.000000 err=0.0e+00
+[   10.3s] B: nz=3200 3.1s depth[max/peak/steady]=2.5e-06/2.4e-06/1.6e-06 phase16v32=9.9e-12 phase8v16=1.8e-06 approx[max/peak/steady]=3.9e-05/1.3e-05/3.9e-05 TT(0)=1.5e-08 TTsteady-law=-3.9e-05 TTexcess=0.178890 approx=0.178839 err=5.2e-05
+[   14.8s] C: nz=3880 3.8s depth[max/peak/steady]=1.2e-06/1.2e-06/3.3e-10 phase16v32=7.5e-12 phase8v16=3.6e-07 approx[max/peak/steady]=1.2e-05/6.3e-06/4.9e-07 TT(0)=1.5e-08 TTsteady-law=4.9e-07 TTexcess=0.532663 approx=0.532657 err=5.8e-06
+[   19.3s] map_max: nz=3840 3.8s depth[max/peak/steady]=1.4e-06/1.4e-06/1.0e-09 phase16v32=1.5e-11 phase8v16=3.6e-06 approx[max/peak/steady]=3.3e-05/6.0e-06/9.3e-07 TT(0)=1.5e-08 TTsteady-law=-9.3e-07 TTexcess=0.603414 approx=0.603419 err=-5.0e-06
+[   25.7s] short_rise: nz=5600 5.4s depth[max/peak/steady]=7.4e-08/6.0e-08/7.4e-08 phase16v32=1.5e-08 phase8v16=6.0e-05 approx[max/peak/steady]=8.3e-05/5.4e-06/1.0e-05 TT(0)=1.5e-08 TTsteady-law=-1.0e-05 TTexcess=0.000619 approx=0.000603 err=1.6e-05
+[   25.7s] 
+== 5. Pendelloesung bound ==
+[   25.8s] max|J1| on [0,6] = 0.58187; pi*alpha*max|J1| = 0.9140 < pi/2 = 1.5708; sin^2 bound 0.6272; max|theta| over cases 0.5666; max TT intensity 0.6038; npz excess growth at T boundary for S=3.8: 4.66e-04
+[   25.8s] 
+findings: []
+[   25.8s] elapsed 25.8s; wrote e67_worker_audit.json
