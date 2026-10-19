@@ -51,3 +51,6 @@ dev = [
     "jupytext>=1.19.5",
     "nbstripout>=0.9.1",
 ]
+
+[tool.ruff]
+line-length = 100
