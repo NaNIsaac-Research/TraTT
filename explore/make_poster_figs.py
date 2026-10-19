@@ -36,7 +36,8 @@ FONT = "IBM Plex Sans"   # same face as poster/build.py (f1 still carries Source
 
 FIG_W = 14.4          # inches = poster card inner width (~366 mm)
 INTRO_W = 12.5        # inches = left column of the introduction band (~317 mm)
-F1_H, F7_H = 8.8, 9.0  # heights of the two result figures (inches), set by the results band
+F1_H, F7_H = 7.3, 8.5  # heights of the two result figures (inches), set by the results band
+F1_KEY = 0.15         # fraction of the f1 height kept for its shared two-row key
 BIG, SMALL = 26, 23   # printed pt; smallest label 21 pt (SMALL - 2), readable at ~1.5 m on A0
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
@@ -183,25 +184,37 @@ def f1():
         bragg = np.array([M.centre(a, S, n, t, "bragg") for S, a, n in M.CASES])
         np.savez(cache, t=t, cases=np.array(M.CASES), laue=laue, bragg=bragg)
     fig, ax = plt.subplots(1, 2, figsize=(FIG_W, F1_H), constrained_layout=True, sharey=True)
+    fig.get_layout_engine().set(rect=(0, F1_KEY, 1, 1 - F1_KEY), w_pad=0.04, h_pad=0.02)  # key strip below
     s = np.linspace(0, 2.3, 500)
     for a, data, law, title in (
             (ax[0], laue, np.sin(np.pi * s) ** 2, r"Laue: $\sin^2(\pi\alpha_n\tilde t)$"),
             (ax[1], bragg, np.tanh(np.pi * s) ** 2, r"Bragg: $\tanh^2(\pi\alpha_n\tilde t)$")):
         # the law is drawn over the TT markers so the comparison stays visible where they crowd
-        a.plot(s, law, color=INK, lw=2.0, zorder=3, label="Independent-satellite law")
+        a.plot(s, law, color=INK, lw=2.0, zorder=3,
+               label="Independent-satellite approximation (no fitted parameters)")
         for (S, al, n), I, c, m in zip(M.CASES, data, (BLUE, ORANGE, AQUA, YELLOW), M.MARK):
             a.plot(al * abs(jv(n, S)) * t, I, m, color=c, mec="white", mew=0.8, ms=9.5, ls="none", zorder=2,
-                   label=rf"$S={S:g},\ \alpha={al:g},\ n={n}$")
+                   label=rf"$({S:g},\,{al:g},\,{n})$")
         a.set(xlim=(0, 2.3), ylim=(-0.03, 1.08), title=title,
               xlabel=r"$\alpha_n\tilde t$,  $\alpha_n=\alpha\left|J_n(S)\right|$")
     ax[0].set_ylabel(r"centre intensity $I_n$")
     ax[1].tick_params(labelleft=False)
-    h, lab = ax[1].get_legend_handles_labels()       # two keys: what is simulated, what it is compared with
-    sim = ax[1].legend(h[1:], lab[1:], title="Full TT simulation", frameon=False, loc="lower right",
-                       bbox_to_anchor=(1.0, 0.16), handletextpad=0.3, markerscale=1.4, alignment="left")
-    sim.get_title().set_fontweight("semibold")
-    ax[1].add_artist(sim)
-    ax[1].legend(h[:1], lab[:1], frameon=False, loc="lower right", handlelength=1.6, handletextpad=0.4)
+    # Shared key under both panels, two rows: the simulated cases, then the curve they are compared with.
+    h, lab = ax[1].get_legend_handles_labels()
+    sim = fig.legend(h[1:], lab[1:], ncol=4, frameon=False, loc="lower left", bbox_to_anchor=(0, 0.52 * F1_KEY),
+                     handletextpad=0.2, columnspacing=1.6, markerscale=1.4, borderaxespad=0, borderpad=0)
+    law = fig.legend(h[:1], lab[:1], frameon=False, loc="lower left", bbox_to_anchor=(0, 0.06 * F1_KEY),
+                     handlelength=2.2, handletextpad=0.5, borderaxespad=0, borderpad=0)
+    fig.canvas.draw()
+    lead = r"Full TT simulation, $(S,\,\alpha,\,n)$:"
+    probe = fig.text(0, 0, lead, fontsize=SMALL, fontweight="semibold")
+    wl = probe.get_window_extent().width / fig.bbox.width
+    probe.remove()
+    ws = sim.get_window_extent().width / fig.bbox.width
+    x0 = (1 - wl - 0.008 - ws) / 2                     # centre the labelled row under the panels
+    fig.text(x0, 0.52 * F1_KEY + 0.004, lead, fontsize=SMALL, fontweight="semibold", va="bottom")
+    sim.set_bbox_to_anchor((x0 + wl + 0.008, 0.52 * F1_KEY), transform=fig.transFigure)
+    law.set_bbox_to_anchor((x0, 0.06 * F1_KEY), transform=fig.transFigure)   # second row under the lead
     finish(fig, ax, "f1_collapse")
     for name, data, law in (("Laue", laue, lambda x: np.sin(np.pi * x) ** 2),
                             ("Bragg", bragg, lambda x: np.tanh(np.pi * x) ** 2)):
@@ -358,7 +371,7 @@ def f7():
     data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
     fig = plt.figure(figsize=(FIG_W, F7_H), constrained_layout=True)
-    grid = fig.add_gridspec(2, 3, height_ratios=[1.18, 1.20])
+    grid = fig.add_gridspec(2, 3, height_ratios=[1.6, 1.0])   # heatmap reads as a 2D map; traces stay legible
     ax = fig.add_subplot(grid[0, :])
     im = ax.pcolormesh(data["S"], data["rise"], data["excess"], shading="nearest",
                        cmap="YlOrRd", vmin=0)

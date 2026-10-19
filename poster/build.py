@@ -98,7 +98,7 @@ SPEC = dict(
     header_h=110, stripe_h=5, footer_h=53,
     title_pt=52, authors_pt=30, head_pt=40, badge_pt=30, body_pt=28, callout_pt=29, caption_pt=23,
     stat_pt=36, stat_label_pt=23, eq_pt=30, min_pt=23,
-    leading=1.3, para_gap=6, side_text=0.64, panel_gap=8, fig_gap=4,
+    leading=1.3, para_gap=6, side_text=0.64, panel_gap=8, fig_gap=4, spread_max=8,
     navy="#0f2a3a", accent="#e8743b", page="#ffffff", card="#ffffff", edge="#7d868f", key="#fbf1d9",
     ink="#111111", ink2="#3f4852", tint="#f4f6f7",
     stripe=("#3a3a3a", "#e04b3a", "#f08a3c"),
@@ -375,11 +375,15 @@ def aspect(path):
     return a.shape[0] / a.shape[1]
 
 
-def items(P, its, x, y, w, draw, check):
+def items(P, its, x, y, w, draw, check, spread=0.0):
     """Lay out a list of items in the column (x, w) from y down; returns the y below the last one.
-    With draw=False nothing is drawn, so the same call measures. check(it) records tag problems."""
+    With draw=False nothing is drawn, so the same call measures. check(it) records tag problems.
+    `spread` (mm) is added between consecutive items, to even out the two panels of a band; the
+    condition line keeps its place under the head, so both panels start alike."""
     s = SPEC
-    for it in its:
+    for i, it in enumerate(its):
+        if i and its[i - 1]["kind"] != "onset":
+            y += spread
         if draw:
             check(it)
         k = it["kind"]
@@ -548,12 +552,17 @@ def build(preview_dpi=60):
         n = len(b)
         pw = (full - (n - 1) * 2 * s["gap"]) / n
         ends = []
+        hs = [items(P, p["items"], 0.0, 0.0, pw - 2 * s["pad"], False, check) for p in b]
         for k, p in enumerate(b):
             x = M + s["pad"] + k * (pw + 2 * s["gap"])
             w = pw - 2 * s["pad"]
             if draw:
                 head(P, number[id(p)], p["title"], x, y0, w)
-            ends.append(items(P, p["items"], x, y0 + HEAD, w, draw, check))
+            # side by side, the shorter panel spreads its slack over its item gaps (capped), so the
+            # two captions end near the same line instead of leaving a hole under one of them
+            spread = (min(s["spread_max"], (max(hs) - hs[k]) / max(1, sum(it["kind"] != "onset" for it in p["items"][:-1])))
+                      if n == 2 else 0.0)
+            ends.append(items(P, p["items"], x, y0 + HEAD, w, draw, check, spread))
         if draw and n == 2:                                 # hairline between the two panels of a band
             mid = M + pw + s["gap"]
             ax.plot([mid, mid], [y0 + 2, max(ends) - s["para_gap"]], color=s["edge"], lw=0.8, zorder=2)
