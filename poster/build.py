@@ -99,8 +99,11 @@ SPEC = dict(
     title_pt=52, authors_pt=30, head_pt=40, badge_pt=30, body_pt=28, callout_pt=29, caption_pt=23,
     stat_pt=36, stat_label_pt=23, eq_pt=30, min_pt=23,
     leading=1.3, para_gap=6, side_text=0.64, panel_gap=8, fig_gap=4, spread_max=8,
-    navy="#0f2a3a", accent="#e8743b", page="#ffffff", card="#ffffff", edge="#7d868f", key="#fbf1d9",
-    ink="#111111", ink2="#3f4852", tint="#f4f6f7",
+    navy="#0f2a3a", accent="#e8743b", page="#ffffff", card="#ffffff", edge="#c3c9ce", key="#fbf1d9",
+    ink="#25282b", ink2="#454c54", tint="#f4f6f7", rule="#576a75", rule_w=0.45,
+    # page zones behind whole bands (full width, not cards): method and results share one light
+    # field, the conclusions sit on a slightly deeper neutral; the introduction stays on the page
+    zone_method="#f5f6f7", zone_results="#f5f6f7", zone_end="#eceeed",
     stripe=("#3a3a3a", "#e04b3a", "#f08a3c"),
 )
 PT_MM = 25.4 / 72
@@ -202,7 +205,7 @@ class Page:
 
     def flow(self, text, x, y, w, pt, color=None, weight="normal", indent=0.0, align="left", z=3, draw=True,
              strong=None):
-        """Word-by-word placement with wrapping; $..$ and **..** stay atomic, **..** is semibold (in colour
+        """Word-by-word placement with wrapping; $..$ and **..** stay atomic, **..** is medium weight (in colour
         `strong` if given). Returns the y (mm) just below the last line."""
         color = color or SPEC["ink"]
         lh = pt * PT_MM * SPEC["leading"]
@@ -214,7 +217,7 @@ class Page:
             prev = m.end()
             s, wgt, col = m[0], weight, color
             if s.startswith("**"):
-                s, wgt, col = s[2:-2], "semibold", strong or color
+                s, wgt, col = s[2:-2], "medium", strong or color
             toks.append((s, wgt, col, glue))
         lines, line, lw = [], [], 0.0
         for s, wgt, col, g in toks:
@@ -278,10 +281,10 @@ def bullet(P, it, x, y, w, draw=True):
 
 def callout(P, it, x, y, w, draw=True):
     s = SPEC
-    y1 = P.flow(it["text"], x + 10, y + 9, w - 20, s["callout_pt"], s["ink"], draw=draw, strong=s["accent"]) + 8
+    y1 = P.flow(it["text"], x + 10, y + 9, w - 20, s["callout_pt"], s["ink"], draw=draw) + 8
     if draw:
         P.box(x, y, w, y1 - y, s["key"], r=0, z=2)
-        P.box(x, y, 2.4, y1 - y, s["accent"], r=0, z=2)
+        P.box(x, y, 1.4, y1 - y, s["accent"], r=0, z=2)
     return y1 + s["para_gap"]
 
 
@@ -366,7 +369,7 @@ def flow_diagram(P, it, x, y, w, draw=True):
                       arrowprops=dict(arrowstyle="-|>", color=s["ink2"], lw=1.8, mutation_scale=16), zorder=3)
         P.ax.text(x + w / 2, ly, r"next time step $\tilde t$", fontsize=s["caption_pt"], color=s["ink2"],
                   family=FONT, ha="center", va="center", zorder=4,
-                  bbox=dict(facecolor="white", edgecolor="none", pad=2))
+                  bbox=dict(facecolor=s["zone_method"], edgecolor="none", pad=2))
     return y + h + 5 + 4 + s["para_gap"]
 
 
@@ -439,9 +442,9 @@ def head(P, num, title, x, y0, w):
     P.box(x, y0 + 4, sq, sq, s["navy"], r=0, z=3)
     P.ax.text(x + sq / 2, y0 + 4 + sq / 2, str(num), fontsize=23.2, color="white", family=FONT,
               fontweight="bold", ha="center", va="center", zorder=4)
-    P.flow(title, x + sq + 4.5, y0 + 0.5, w - sq - 4.5, s["head_pt"], s["ink"], weight="semibold")
-    P.box(x, y0 + 24, w * 0.86, 0.7, s["navy"], r=0, z=3)
-    P.box(x + w * 0.875, y0 + 24, w * 0.125, 0.7, s["accent"], r=0, z=3)
+    P.flow(title, x + sq + 4.5, y0 + 0.5, w - sq - 4.5, s["head_pt"], s["ink"], weight="medium")
+    P.box(x, y0 + 24, w * 0.86, s["rule_w"], s["rule"], r=0, z=3)
+    P.box(x + w * 0.875, y0 + 24, w * 0.125, s["rule_w"], s["accent"], r=0, z=3)
 
 
 def fit(P, path, x, y, w, h, align="right"):
@@ -495,13 +498,13 @@ def build(preview_dpi=60):
 
     # Footer: stable zones for the grant, CUPT mark, and repository QR.
     fy = H - s["footer_h"]
-    ax.plot([M, W - M], [fy - 1.4, fy - 1.4], color=s["edge"], lw=0.9, zorder=2)
+    ax.plot([M, W - M], [fy - 1.4, fy - 1.4], color=s["edge"], lw=0.8, zorder=2)
     left = M + s["pad"]
     title_baseline = fy + 17.5
     sq = 6.7
     P.box(left, title_baseline - sq + 0.4, sq, sq, s["navy"], r=0, z=3)
     ax.text(left + sq + 3.2, title_baseline, "Acknowledgement", fontsize=s["head_pt"] - 6,
-            color=s["ink"], family=FONT, fontweight="semibold", va="baseline", zorder=3)
+            color=s["ink"], family=FONT, fontweight="medium", va="baseline", zorder=3)
 
     qr = ASSETS / "qr_repo.png"
     if not qr.exists():
@@ -565,7 +568,7 @@ def build(preview_dpi=60):
             ends.append(items(P, p["items"], x, y0 + HEAD, w, draw, check, spread))
         if draw and n == 2:                                 # hairline between the two panels of a band
             mid = M + pw + s["gap"]
-            ax.plot([mid, mid], [y0 + 2, max(ends) - s["para_gap"]], color=s["edge"], lw=0.8, zorder=2)
+            ax.plot([mid, mid], [y0 + 2, max(ends) - s["para_gap"]], color=s["edge"], lw=0.7, zorder=2)
         return max(ends) - s["para_gap"]
 
     number = {id(p): k + 1 for k, p in enumerate(panels)}
@@ -574,8 +577,12 @@ def build(preview_dpi=60):
     gap = s["panel_gap"] + max(0.0, spare) / max(1, len(bands) - 1)
     y = top
     for b, h in zip(bands, heights):
-        if b[0]["title"].startswith("Conclusion"):          # the summary sits on a light band
-            P.box(M, y - 5, full, h + 10, s["tint"], r=0, z=1)
+        t = b[0]["title"]
+        zone = (s["zone_results"] if len(b) == 2 else s["zone_method"] if t.startswith("Theoretical")
+                else s["zone_end"] if t.startswith("Conclusion") else None)
+        if zone:                                            # zones meet halfway across the gaps
+            z0, z1 = y - gap / 2, min(y + h + gap / 2, fy - 1.4)
+            ax.add_patch(plt.Rectangle((0, z0), W, z1 - z0, color=zone, lw=0, zorder=0.5))
         band(b, y, True)
         y += h + gap
     if spare < 0:

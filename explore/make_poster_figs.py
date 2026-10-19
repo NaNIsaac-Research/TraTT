@@ -51,7 +51,8 @@ def style():
         "xtick.major.size": 7, "ytick.major.size": 7, "axes.titlepad": 12,
         "axes.edgecolor": INK2, "axes.labelcolor": INK, "text.color": INK, "xtick.color": INK2,
         "ytick.color": INK2, "axes.spines.top": False, "axes.spines.right": False,
-        "figure.facecolor": "white", "savefig.facecolor": "white", "savefig.dpi": 200,
+        "figure.facecolor": "white", "savefig.facecolor": "none", "axes.facecolor": "white",
+        "savefig.dpi": 200,
         # Text in the poster's own face; math in STIX, the same pairing poster/build.py uses, so
         # an axis label and a panel equation are set identically. An all-Plex math fontset has no
         # \cdot and no \sim and falls back to DejaVu for them, and its \int is a text-sized glyph.
