@@ -107,8 +107,8 @@ def f0():
     ax.plot([xf, xf], [y0, y1], color=BLUE, lw=2.4, ls=(0, (4, 3)), zorder=4)
     # Separate the physical sound field (blue oscillation) from the X-ray probe
     # (dark straight incoming arrow) using a directly associated label.
-    ax.text(x0 + 1.35, y1 + 0.36, "acoustic wave", color=BLUE,
-            ha="center", va="bottom", fontsize=LAB - 3, fontweight="medium")
+    ax.text(x0 + 1.57, y1 + 0.36, "acoustic wave", color=BLUE,
+            ha="center", va="bottom", fontsize=LAB - 4, fontweight="medium")
 
     # transducer on the lower part of the entrance face, so the beam enters clear of it
     ty = y0 + 0.58 * (y1 - y0)
