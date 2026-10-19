@@ -99,11 +99,11 @@ Overshoot: $\Delta I=I_{max}-I_{steady}$ in incident-intensity units, for the fi
 
 ## Conclusions
 
-[[ 0.66 c
+[[ 0.59 c
 
 We calculated the formation of acoustic diffraction satellites while an acoustic wavefront propagates through the crystal, using the two-beam Takagi–Taupin equations. The simulations show satellite-dependent formation times, $\tau_n\propto1/\left|J_n(S)\right|$, and a transient intensity overshoot for finite acoustic rise times. {E0}{E1}{E9}{E67}
 
-|| 0.34 c
+|| 0.41 c
 
 > Steady-state satellite intensities alone do not determine their transient evolution. {E28}{E67}
 

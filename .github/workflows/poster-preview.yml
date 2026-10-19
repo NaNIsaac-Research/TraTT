@@ -1,39 +1,66 @@
-name: Poster figure proportions and conclusions proof
+name: Poster repair proof and README preview
 on:
   push:
     branches:
-      - design/poster-proportion-conclusion
+      - fix/poster-pr9-conflict
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build-poster:
+  poster:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
-      - name: Render from committed plot caches (no TT reruns)
+      - name: Regenerate plots from committed caches and build the A0 PDF
         run: |
           uv run --python 3.12 --extra dev python explore/make_poster_figs.py f1 f7
           uv run --python 3.12 --extra dev python poster/build.py 100
-      - name: Validate A0 page and text
+      - name: Rebuild the actual README preview from this exact poster
         run: |
-          python - <<'PY'
+          uv run --python 3.12 --extra dev python - <<'PY'
+          from PIL import Image
           from pathlib import Path
-          for x in ('poster/out/poster.pdf', 'poster/out/poster.png'):
-              f=Path(x)
-              assert f.is_file() and f.stat().st_size>20000, x
-              print(x, f.stat().st_size, 'bytes')
+          img=Image.open('poster/out/poster.png').convert('RGB')
+          out=Path('figures/poster/poster_preview.jpg')
+          out.parent.mkdir(parents=True, exist_ok=True)
+          width=1400
+          img=img.resize((width, round(img.height*width/img.width)), Image.Resampling.LANCZOS)
+          img.save(out, 'JPEG', quality=88, optimize=True, subsampling=0)
+          print('README preview:', out, img.size, out.stat().st_size)
           PY
+      - name: Verify all build outputs and updated README reference
+        run: |
+          uv run --python 3.12 --extra dev python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          for path in ('poster/out/poster.pdf', 'poster/out/poster.png',
+                       'figures/poster/poster_preview.jpg',
+                       'figures/poster/f1_collapse.png','figures/poster/f7_overshoot.png'):
+              f=Path(path)
+              assert f.is_file() and f.stat().st_size > 20000, path
+              print(path, f.stat().st_size)
+          assert 'figures/poster/poster_preview.jpg' in Path('README.md').read_text(encoding='utf-8')
+          with Image.open('figures/poster/poster_preview.jpg') as p:
+              assert p.width == 1400 and p.height > 1700
+          PY
+      - name: Commit generated plot assets and README preview on repair branch
+        run: |
+          git add figures/poster/f1_collapse.png figures/poster/f7_overshoot.png figures/poster/poster_preview.jpg
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Refresh restored poster figures and README preview [skip ci]"
+            git push origin HEAD:fix/poster-pr9-conflict
+          fi
       - uses: actions/upload-artifact@v4
         with:
-          name: tratt-poster-figure-proportion-proof
+          name: tratt-poster-pr9-recovery-proof
           path: |
             poster/out/poster.pdf
             poster/out/poster.png
-            figures/poster/f1_collapse.png
-            figures/poster/f7_overshoot.png
+            figures/poster/poster_preview.jpg
           retention-days: 14
