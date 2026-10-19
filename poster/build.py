@@ -28,23 +28,27 @@ Kept from v2:
 
 Manuscript syntax
   front matter: title ("//" = line break), authors, affiliation, contact, footer, session (header corner)
-  "## Title"      a panel (numbered automatically)        "@wide"   next panel spans both columns
-  "@column"       continue in the next column             "> text"  key-message band
-  "- text"        bullet                                  "![caption](path)" figure (width = card)
-  "%% value | label"  stat tile (consecutive lines form one row)
+  "## Title"      a panel (numbered automatically); every panel spans the page width
+  "@pair"         the next two panels share one band, side by side
+  "[[ 0.5 c" ... "|| 0.5" ... "]]"   a row inside a panel: columns with width fractions; "c"
+                  centres that column vertically in the row; rows nest
+  "> text"        key-message band                        "- text"  bullet
+  "![caption](path)" figure, as wide as its column
   "$$ text"       display line: centred, slightly larger, with space around it (equations)
-  "=> a | b | c"  flow diagram: boxes joined by arrows, a loop arrow back to the first box
+  "=> a // b | c" flow diagram: boxes joined by arrows, a loop arrow back to the first box; "//"
+                  splits a box into its symbol line and a smaller description line
   {E12}           notebook entry tag (stripped from print, required on every item)
 
 Checks
 1. every paragraph, bullet, band, tile and figure carries an {E..} tag, and each tagged Entry exists
    in notes/lab_notebook.md (nothing goes on the poster without its entry);
 2. every figure file exists;
-3. no column runs into the footer (no silent reflow: move "@column" instead);
+3. the bands fit between the header and the footer (no silent reflow);
 4. no text below SPEC["min_pt"].
 
-Layout runs twice: the first, unsaved pass measures each column; the second spreads the spare
-height evenly between the panels of that column, so both columns end level with the footer.
+Layout runs twice inside build(): the first pass measures every band, the second spreads the spare
+height evenly between the bands, so the last one ends level with the footer. Panels have no
+outline; the number square, the title rule and white space separate them.
 """
 
 from __future__ import annotations
@@ -115,48 +119,54 @@ def parse(text):
             k, v = line.split(":", 1)
             meta[k.strip()] = v.strip()
     body = re.sub(r"<!--.*?-->", "", body, flags=re.S)
-    panels, cur, wide = [], None, False
+    panels, cur, pending, stack, group = [], None, 0, [], 0
+
+    def add(item):
+        (stack[-1]["cols"][-1]["items"] if stack else cur["items"]).append(item)
+
     for block in re.split(r"\n\s*\n", body.strip()):
         block = block.strip()
-        if block in ("@column", "@wide"):
-            if block == "@column":
-                panels.append("@column")
-            wide = block == "@wide"
+        if block == "@pair":
+            pending, group = 2, group + 1
             continue
         if block.startswith("## "):
-            cur = dict(title=block[3:].strip(), items=[], wide=wide)
-            wide = False
+            cur = dict(title=block[3:].strip(), items=[], group=group if pending else None)
+            pending = max(0, pending - 1)
             panels.append(cur)
+            continue
+        if block.startswith("[["):
+            w, *opt = block[2:].split()
+            row = dict(kind="row", cols=[dict(w=float(w), center="c" in opt, items=[])], tags=None)
+            add(row)
+            stack.append(row)
+            continue
+        if block.startswith("||"):
+            w, *opt = block[2:].split()
+            stack[-1]["cols"].append(dict(w=float(w), center="c" in opt, items=[]))
+            continue
+        if block == "]]":
+            stack.pop()
             continue
         m = re.match(r"!\[(.*?)\]\((.*?)\)(.*)", block, re.S)
         if m:
-            cur["items"].append(dict(kind="fig", caption=m[1], path=m[2], tags=TAG.findall(m[3])))
-            continue
-        if block.startswith("%%"):
-            tiles = []
-            for line in block.splitlines():
-                v, lab = line[2:].split("|", 1)
-                tiles.append(dict(value=v.strip(), label=TAG.sub("", lab).strip(), tags=TAG.findall(lab)))
-            cur["items"].append(dict(kind="stats", tiles=tiles, tags=[t for x in tiles for t in x["tags"]],
-                                     ok=all(x["tags"] for x in tiles)))
+            add(dict(kind="fig", caption=m[1], path=m[2], tags=TAG.findall(m[3])))
             continue
         if block.startswith("- "):
             for b in re.split(r"\n- ", block[2:]):
                 b = " ".join(b.split())
-                cur["items"].append(dict(kind="bullet", text=TAG.sub("", b).strip(), tags=TAG.findall(b)))
+                add(dict(kind="bullet", text=TAG.sub("", b).strip(), tags=TAG.findall(b)))
             continue
         if block.startswith("=>"):
             t = " ".join(block[2:].split())
-            cur["items"].append(dict(kind="flow", boxes=[b.strip() for b in TAG.sub("", t).split("|")],
-                                     tags=TAG.findall(t)))
+            add(dict(kind="flow", boxes=[b.strip() for b in TAG.sub("", t).split("|")], tags=TAG.findall(t)))
             continue
         if block.startswith("$$"):
             t = " ".join(block[2:].split())
-            cur["items"].append(dict(kind="eq", text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
+            add(dict(kind="eq", text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
             continue
         kind = "callout" if block.startswith(">") else "para"
         t = " ".join(re.sub(r"^>\s?", "", block, flags=re.M).split())
-        cur["items"].append(dict(kind=kind, text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
+        add(dict(kind=kind, text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
     return meta, panels
 
 
@@ -295,50 +305,107 @@ def equation(P, it, x, y, w, draw=True):
 
 
 def flow_diagram(P, it, x, y, w, draw=True):
-    """Boxes left to right joined by arrows, with a return arrow underneath (one loop per time step)."""
+    """Boxes left to right joined by arrows, with a return arrow underneath (one loop per time step).
+    A box "symbol // description" sets the symbol large and the description small below it."""
     s = SPEC
-    n, aw, pt = len(it["boxes"]), 9.0, s["caption_pt"]
+    n, aw = len(it["boxes"]), 12.0
     bw = (w - (n - 1) * aw) / n
-    h = max(P.flow(b, 0, 0, bw - 4, pt, align="center", draw=False) for b in it["boxes"]) + 6
+    parts = [[t.strip() for t in b.split("//")] for b in it["boxes"]]
+
+    def block(ps, bx, by, draw):
+        yy = P.flow(ps[0], bx + 3, by, bw - 6, s["eq_pt"] - 2, align="center", draw=draw)
+        for t in ps[1:]:
+            yy = P.flow(t, bx + 3, yy + 1.5, bw - 6, s["caption_pt"], s["ink2"], align="center", draw=draw)
+        return yy - by
+
+    h = max(block(ps, 0, 0, False) for ps in parts) + 6
     if draw:
-        for i, b in enumerate(it["boxes"]):
+        for i, ps in enumerate(parts):
             bx = x + i * (bw + aw)
             P.box(bx, y, bw, h, s["key"], r=0, z=2)
-            th = P.flow(b, 0, 0, bw - 4, pt, align="center", draw=False)
-            P.flow(b, bx + 2, y + (h - th) / 2, bw - 4, pt, align="center")
+            P.box(bx, y, bw, 1.4, s["accent"], r=0, z=2)
+            block(ps, bx, y + (h - block(ps, 0, 0, False)) / 2, True)
             if i < n - 1:
-                P.ax.annotate("", xy=(bx + bw + aw - 0.5, y + h / 2), xytext=(bx + bw + 0.5, y + h / 2),
-                              arrowprops=dict(arrowstyle="-|>", color=s["accent"], lw=2.2, mutation_scale=16),
+                P.ax.annotate("", xy=(bx + bw + aw - 0.8, y + h / 2), xytext=(bx + bw + 0.8, y + h / 2),
+                              arrowprops=dict(arrowstyle="-|>", color=s["accent"], lw=2.6, mutation_scale=20),
                               zorder=3)
-        ly = y + h + 7                                      # loop: next time step
-        P.ax.plot([x + w - bw / 2, x + w - bw / 2, x + bw / 2], [y + h, ly, ly], color=s["ink2"], lw=1.6,
+        ly = y + h + 5                                      # loop: next time step
+        P.ax.plot([x + w - bw / 2, x + w - bw / 2, x + bw / 2], [y + h, ly, ly], color=s["ink2"], lw=1.8,
                   zorder=3)
         P.ax.annotate("", xy=(x + bw / 2, y + h + 0.3), xytext=(x + bw / 2, ly),
-                      arrowprops=dict(arrowstyle="-|>", color=s["ink2"], lw=1.6, mutation_scale=14), zorder=3)
-        P.ax.text(x + w / 2, ly, r"next $\tilde t$", fontsize=pt - 1, color=s["ink2"], family=FONT,
-                  ha="center", va="center", zorder=4,
-                  bbox=dict(facecolor="white", edgecolor="none", pad=1.5))
-    return y + h + 7 + 4 + s["para_gap"]
+                      arrowprops=dict(arrowstyle="-|>", color=s["ink2"], lw=1.8, mutation_scale=16), zorder=3)
+        P.ax.text(x + w / 2, ly, r"next time step $\tilde t$", fontsize=s["caption_pt"], color=s["ink2"],
+                  family=FONT, ha="center", va="center", zorder=4,
+                  bbox=dict(facecolor="white", edgecolor="none", pad=2))
+    return y + h + 5 + 4 + s["para_gap"]
 
 
-def text_height(P, items, ix, iw):
-    """Height of the text items of a panel, measured without drawing (for vertical centring)."""
-    s, y = SPEC, 0.0
-    for it in items:
-        if it["kind"] == "bullet":
-            y = bullet(P, it, ix, y, iw, draw=False)
-        elif it["kind"] == "callout":
-            y = callout(P, it, ix, y, iw, draw=False)
-        elif it["kind"] == "stats":
-            y = stats(P, it, ix, y, iw, draw=False)
-        elif it["kind"] == "eq":
-            y = equation(P, it, ix, y, iw, draw=False)
-        elif it["kind"] == "flow":
-            y = flow_diagram(P, it, ix, y, iw, draw=False)
-        elif it["kind"] == "para":
-            y = P.flow(it["text"], ix, y, iw, s["body_pt"], draw=False,
-                      strong=s["navy"]) + s["para_gap"]
+def aspect(path):
+    a = mpimg.imread(path)
+    return a.shape[0] / a.shape[1]
+
+
+def items(P, its, x, y, w, draw, check):
+    """Lay out a list of items in the column (x, w) from y down; returns the y below the last one.
+    With draw=False nothing is drawn, so the same call measures. check(it) records tag problems."""
+    s = SPEC
+    for it in its:
+        if draw:
+            check(it)
+        k = it["kind"]
+        if k == "row":
+            gap, xs, ws = s["gap"], [], []
+            avail = w - gap * (len(it["cols"]) - 1)
+            cx = x
+            for c in it["cols"]:
+                xs.append(cx)
+                ws.append(avail * c["w"])
+                cx += avail * c["w"] + gap
+            hs = [items(P, c["items"], cx_, 0.0, w_, False, check) for c, cx_, w_ in zip(it["cols"], xs, ws)]
+            rh = max(hs)
+            if draw:
+                for c, cx_, w_, h_ in zip(it["cols"], xs, ws, hs):
+                    items(P, c["items"], cx_, y + ((rh - h_) / 2 if c["center"] else 0.0), w_, True, check)
+            y += rh
+        elif k == "fig":
+            f = ROOT / it["path"]
+            if it["path"] == "none":                        # "![text](none)": a caption-size note
+                y = P.flow(it["caption"], x, y, w, s["caption_pt"], s["ink2"], draw=draw) + s["para_gap"]
+                continue
+            if not f.exists():
+                continue
+            h = w * aspect(f)
+            if draw:
+                P.image(f, x, y, w, h=h)
+            y += h + s["fig_gap"]
+            if it["caption"]:
+                y = P.flow(it["caption"], x, y, w, s["caption_pt"], s["ink2"], draw=draw)
+            y += s["para_gap"]
+        elif k == "bullet":
+            y = bullet(P, it, x, y, w, draw)
+        elif k == "callout":
+            y = callout(P, it, x, y, w, draw)
+        elif k == "eq":
+            y = equation(P, it, x, y, w, draw)
+        elif k == "flow":
+            y = flow_diagram(P, it, x, y, w, draw)
+        else:
+            y = P.flow(it["text"], x, y, w, s["body_pt"], draw=draw, strong=s["navy"]) + s["para_gap"]
     return y
+
+
+HEAD = 32.0     # number square, title and rule
+
+
+def head(P, num, title, x, y0, w):
+    s = SPEC
+    sq = 12.1
+    P.box(x, y0 + 4, sq, sq, s["navy"], r=0, z=3)
+    P.ax.text(x + sq / 2, y0 + 4 + sq / 2, str(num), fontsize=23.2, color="white", family=FONT,
+              fontweight="bold", ha="center", va="center", zorder=4)
+    P.flow(title, x + sq + 4.5, y0 + 0.5, w - sq - 4.5, s["head_pt"], s["ink"], weight="semibold")
+    P.box(x, y0 + 24, w * 0.86, 0.7, s["navy"], r=0, z=3)
+    P.box(x + w * 0.875, y0 + 24, w * 0.125, 0.7, s["accent"], r=0, z=3)
 
 
 def fit(P, path, x, y, w, h, align="right"):
@@ -352,11 +419,8 @@ def fit(P, path, x, y, w, h, align="right"):
 
 # ───────────── page ─────────────
 
-def build(preview_dpi=60, extra=None, save=True):
-    """One layout pass. extra[c] is added after each panel of column c except the last, so the
-    columns end level with the footer (filled in by a first, unsaved pass; see __main__)."""
+def build(preview_dpi=60):
     s = SPEC
-    extra = extra or [0.0] * s["cols"]
     meta, panels = parse(MS.read_text(encoding="utf8"))
     known = set(re.findall(r"^## .*?Entry (\d+)\b", NOTEBOOK.read_text(encoding="utf8"), flags=re.M))
     problems, used = [], set()
@@ -415,112 +479,69 @@ def build(preview_dpi=60, extra=None, save=True):
         right -= fit(P, ASSETS / "logo_cupt.png", right - 120, fy + 5, 120, (qw or 36) - 4, align="right") + 16
     P.flow(" · ".join(v for k, v in meta.items() if k in ("footer", "contact")), M + s["pad"],
            fy + 8 + s["head_pt"] * PT_MM, right - M - s["pad"], s["caption_pt"] + 2, s["ink"])
-    P.box(M, fy, W - 2 * M, s["footer_h"] - M * 0.75, s["card"], r=0, z=1, ec=s["edge"], lw=1.6)   # 0.56 mm
+    ax.plot([M, W - M], [fy - 1, fy - 1], color=s["edge"], lw=0.8, zorder=2)
 
-    cw = (W - 2 * M - (s["cols"] - 1) * s["gap"]) / s["cols"]
-    top = s["header_h"] + s["stripe_h"] + 2 + s["panel_gap"] + 2
-    bottom = fy - 4
-    ys = [top] * s["cols"]
-    count = [0] * s["cols"]
-    col = 0
-    num = 0
+    def check(it):
+        if it["tags"] is None:                              # rows carry no tag; their items do
+            return
+        if not it["tags"]:
+            problems.append(f"untagged {it['kind']}: {it.get('text', it.get('caption', ''))[:50]!r}")
+        for t in it["tags"]:
+            used.add(int(t))
+            if t not in known:
+                problems.append(f"tag E{t} is not an Entry in the notebook")
+        if it["kind"] == "fig" and it["path"] != "none" and not (ROOT / it["path"]).exists():
+            problems.append(f"missing figure {it['path']}")
+
+    bands = []
     for p in panels:
-        if p == "@column":
-            col += 1
-            continue
-        num += 1
-        if p["wide"]:
-            x, w, y0 = M, W - 2 * M, max(ys)
+        if p["group"] is not None and bands and bands[-1][0]["group"] == p["group"]:
+            bands[-1].append(p)
         else:
-            x, w, y0 = M + col * (cw + s["gap"]), cw, ys[col]
-        ix, iw = x + s["pad"], w - 2 * s["pad"]
-        card_top = y0
-        # section head: navy number square, title, then a navy rule ending in a short orange one
-        sq = 12.1
-        P.box(ix, y0 + 12.6, sq, sq, s["navy"], r=0, z=3)
-        ax.text(ix + sq / 2, y0 + 12.6 + sq / 2, str(num), fontsize=23.2, color="white", family=FONT,
-                fontweight="bold", ha="center", va="center", zorder=4)
-        P.flow(p["title"], ix + sq + 4.5, y0 + s["pad"] * 0.7, iw - sq - 4.5, s["head_pt"], s["ink"], weight="semibold")
-        P.box(ix, y0 + 32, iw * 0.86, 0.85, s["navy"], r=0, z=3)
-        P.box(ix + iw * 0.875, y0 + 32, iw * 0.125, 0.85, s["accent"], r=0, z=3)
-        y = y0 + 36.2
-        # A wide panel with figures is laid out side by side: text left, figures stacked on the
-        # right, all at one height chosen so the stack matches the text.
-        figs = [it for it in p["items"] if it["kind"] == "fig" and (ROOT / it["path"]).exists()]
-        side = p["wide"] and bool(figs)
-        if side:
-            split = s["side_text"] * iw
-            fx, fwid = ix + split + s["gap"] / 2, iw - split - s["gap"] / 2
-            iw = split - s["gap"] / 2
-            aspect = {it["path"]: (lambda a: a.shape[0] / a.shape[1])(mpimg.imread(ROOT / it["path"]))
-                      for it in figs}
-            th = text_height(P, p["items"], ix, iw) - s["para_gap"]
-            one = min((th - (len(figs) - 1) * s["fig_gap"]) / len(figs), *(fwid * a for a in aspect.values()))
-            fh = len(figs) * one + (len(figs) - 1) * s["fig_gap"]
-            fyy = y + max(0.0, (th - fh) / 2)
-            y += max(0.0, (fh - th) / 2)
-        for it in p["items"]:
-            if not it["tags"] or (it["kind"] == "stats" and not it["ok"]):
-                problems.append(f"panel {num:02d}: untagged {it['kind']}: {it.get('text', it.get('caption', ''))[:50]!r}")
-            for t in it["tags"]:
-                used.add(int(t))
-                if t not in known:
-                    problems.append(f"panel {num:02d}: tag E{t} is not an Entry in the notebook")
-            if it["kind"] == "fig":
-                f = ROOT / it["path"]
-                if not f.exists():
-                    problems.append(f"panel {num:02d}: missing figure {it['path']}")
-                    continue
-                if side:
-                    fw = one / aspect[it["path"]]
-                    fyy += P.image(f, fx + (fwid - fw) / 2, fyy, fw, h=one) + s["fig_gap"]
-                    continue
-                y += P.image(f, ix, y, iw) + s["fig_gap"]
-                if it["caption"]:
-                    y = P.flow(it["caption"], ix, y, iw, s["caption_pt"], s["ink2"],
-                                strong=s["accent"])
-                y += s["para_gap"]
-            elif it["kind"] == "bullet":
-                y = bullet(P, it, ix, y, iw)
-            elif it["kind"] == "callout":
-                y = callout(P, it, ix, y, iw)
-            elif it["kind"] == "stats":
-                y = stats(P, it, ix, y, iw)
-            elif it["kind"] == "eq":
-                y = equation(P, it, ix, y, iw)
-            elif it["kind"] == "flow":
-                y = flow_diagram(P, it, ix, y, iw)
-            else:
-                y = P.flow(it["text"], ix, y, iw, s["body_pt"],
-                           strong=s["navy"]) + s["para_gap"]
-        if side:
-            y = max(y, fyy - s["fig_gap"])
-        y += s["pad"] - s["para_gap"]
-        P.box(x, card_top, w, y - card_top, s["card"], r=0, z=1, ec=s["edge"], lw=1.1)   # 0.39 mm
-        y += s["panel_gap"]
-        if p["wide"]:
-            ys = [y] * s["cols"]
-        else:
-            count[col] += 1
-            ys[col] = y + extra[col]
-        if y - s["panel_gap"] > bottom + 0.5:
-            problems.append(f"panel {num:02d} ({p['title'][:30]}) runs {y - s['panel_gap'] - bottom:.0f} mm "
-                            f"into the footer")
+            bands.append([p])
+    top = s["header_h"] + s["stripe_h"] + 2 + s["panel_gap"] + 4
+    bottom = fy - 6
+    full = W - 2 * M
+
+    def band(b, y0, draw):
+        n = len(b)
+        pw = (full - (n - 1) * 2 * s["gap"]) / n
+        ends = []
+        for k, p in enumerate(b):
+            x = M + s["pad"] + k * (pw + 2 * s["gap"])
+            w = pw - 2 * s["pad"]
+            if draw:
+                head(P, number[id(p)], p["title"], x, y0, w)
+            ends.append(items(P, p["items"], x, y0 + HEAD, w, draw, check))
+        if draw and n == 2:                                 # hairline between the two panels of a band
+            mid = M + pw + s["gap"]
+            ax.plot([mid, mid], [y0 + 2, max(ends) - s["para_gap"]], color=s["edge"], lw=0.8, zorder=2)
+        return max(ends) - s["para_gap"]
+
+    number = {id(p): k + 1 for k, p in enumerate(panels)}
+    heights = [band(b, 0.0, False) for b in bands]
+    spare = bottom - top - sum(heights) - s["panel_gap"] * (len(bands) - 1)
+    gap = s["panel_gap"] + max(0.0, spare) / max(1, len(bands) - 1)
+    y = top
+    for b, h in zip(bands, heights):
+        if b[0]["title"].startswith("Conclusion"):          # the summary sits on a light band
+            P.box(M, y - 5, full, h + 10, s["tint"], r=0, z=1)
+        band(b, y, True)
+        y += h + gap
+    if spare < 0:
+        problems.append(f"the bands run {-spare:.0f} mm into the footer")
+
     for k in ("body_pt", "caption_pt", "head_pt", "stat_label_pt"):
         if s[k] < s["min_pt"]:
             problems.append(f"{k} = {s[k]} pt < min {s['min_pt']} pt")
     if not ASSETS.exists():
         print("note: poster/assets/ missing — logos skipped")
 
-    left = [bottom - (v - s["panel_gap"] - extra[i]) for i, v in enumerate(ys)]
-    if not save:
-        plt.close(P.fig)
-        return [lf / (n - 1) if n > 1 and lf > 0 else 0.0 for lf, n in zip(left, count)]
     OUT.mkdir(exist_ok=True)
     P.fig.savefig(OUT / "poster.pdf", dpi=300)       # raster figures are resampled to this; text stays vector
     P.fig.savefig(OUT / "poster.png", dpi=preview_dpi)
-    print("column space distributed between panels (mm per gap): " +
-          "  ".join(f"{i + 1}: {e:.0f}" for i, e in enumerate(extra)))
+    print(f"space between bands: {gap:.0f} mm")
+    print("band heights (mm): " + "  ".join(f"{b[0]['title'][:12]} {h:.0f}" for b, h in zip(bands, heights)))
     print("entries cited: " + ", ".join(f"E{e}" for e in sorted(used)))
     print(f"wrote {OUT / 'poster.pdf'} and poster.png")
     if problems:
@@ -534,4 +555,4 @@ def build(preview_dpi=60, extra=None, save=True):
 
 if __name__ == "__main__":
     dpi = int(sys.argv[1]) if len(sys.argv) > 1 else 60      # optional preview dpi
-    sys.exit(build(dpi, extra=build(save=False)))            # pass 1 measures, pass 2 balances the columns
+    sys.exit(build(dpi))
