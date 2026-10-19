@@ -1,8 +1,8 @@
-name: Poster PDF proof (final schematic and QR)
+name: Poster figure proportions and conclusions proof
 on:
   push:
     branches:
-      - design/poster-schematic-qr-final
+      - design/poster-proportion-conclusion
   workflow_dispatch:
 
 permissions:
@@ -17,7 +17,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - name: Render from committed plot caches (no TT reruns)
         run: |
-          uv run --python 3.12 --extra dev python explore/make_poster_figs.py f0
+          uv run --python 3.12 --extra dev python explore/make_poster_figs.py f1 f7
           uv run --python 3.12 --extra dev python poster/build.py 100
       - name: Validate A0 page and text
         run: |
@@ -28,20 +28,12 @@ jobs:
               assert f.is_file() and f.stat().st_size>20000, x
               print(x, f.stat().st_size, 'bytes')
           PY
-      - name: Track the regenerated acoustic schematic
-        run: |
-          if ! git diff --quiet -- figures/poster/f0_scheme.png; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add figures/poster/f0_scheme.png
-            git commit -m "Update acoustic wave schematic image [skip ci]"
-            git push origin HEAD:design/poster-schematic-qr-final
-          fi
       - uses: actions/upload-artifact@v4
         with:
-          name: tratt-poster-schematic-qr-proof
+          name: tratt-poster-figure-proportion-proof
           path: |
             poster/out/poster.pdf
             poster/out/poster.png
-            figures/poster/f0_scheme.png
+            figures/poster/f1_collapse.png
+            figures/poster/f7_overshoot.png
           retention-days: 14

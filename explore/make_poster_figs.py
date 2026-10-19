@@ -37,7 +37,7 @@ FONT = "IBM Plex Sans"   # same face as poster/build.py (f1 still carries Source
 
 FIG_W = 14.4          # inches = poster card inner width (~366 mm)
 INTRO_W = 12.5        # inches = left column of the introduction band (~317 mm)
-F1_H, F7_H = 8.8, 9.0  # heights of the two result figures (inches), set by the results band
+F1_H, F7_H = 7.15, 8.35  # heights of the two result figures (inches), set by the results band
 BIG, SMALL = 26, 23   # printed pt; smallest label 21 pt (SMALL - 2), readable at ~1.5 m on A0
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
@@ -183,7 +183,10 @@ def f1():
         laue = np.array([M.centre(a, S, n, t, "laue") for S, a, n in M.CASES])
         bragg = np.array([M.centre(a, S, n, t, "bragg") for S, a, n in M.CASES])
         np.savez(cache, t=t, cases=np.array(M.CASES), laue=laue, bragg=bragg)
-    fig, ax = plt.subplots(1, 2, figsize=(FIG_W, F1_H), constrained_layout=True, sharey=True)
+    fig, ax = plt.subplots(1, 2, figsize=(FIG_W, F1_H), sharey=True)
+    # Wide and shallow axes: avoid vertically stretched Laue/Bragg curves.
+    # A shared legend lives below both panels instead of covering the Bragg plot.
+    fig.subplots_adjust(left=0.082, right=0.985, bottom=0.255, top=0.885, wspace=0.13)
     s = np.linspace(0, 2.3, 500)
     for a, data, law, title in (
             (ax[0], laue, np.sin(np.pi * s) ** 2, r"Laue: $\sin^2(\pi\alpha_n\tilde t)$"),
@@ -197,7 +200,9 @@ def f1():
     ax[0].set_ylabel(r"centre intensity $I_n$")
     ax[1].tick_params(labelleft=False)
     h, lab = ax[1].get_legend_handles_labels()
-    ax[1].legend(h[1:] + h[:1], lab[1:] + lab[:1], frameon=False, loc="lower right", handletextpad=0.3)
+    fig.legend(h[1:] + h[:1], lab[1:] + lab[:1], frameon=False,
+               loc="lower center", bbox_to_anchor=(0.54, 0.012), ncol=3,
+               fontsize=SMALL - 2, columnspacing=1.4, handletextpad=0.35)
     finish(fig, ax, "f1_collapse")
     for name, data, law in (("Laue", laue, lambda x: np.sin(np.pi * x) ** 2),
                             ("Bragg", bragg, lambda x: np.tanh(np.pi * x) ** 2)):
@@ -354,14 +359,14 @@ def f7():
     data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
     fig = plt.figure(figsize=(FIG_W, F7_H), constrained_layout=True)
-    grid = fig.add_gridspec(2, 3, height_ratios=[1.18, 1.20])
+    grid = fig.add_gridspec(2, 3, height_ratios=[1.78, 1.0], hspace=0.18)
     ax = fig.add_subplot(grid[0, :])
     im = ax.pcolormesh(data["S"], data["rise"], data["excess"], shading="nearest",
                        cmap="YlOrRd", vmin=0)
     cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.045)
     cb.set_label(r"overshoot $\Delta I$")
     ax.set(xlabel=r"final sound amplitude $S$", ylabel=r"rise time $T_{rise}/t_{tr}$",
-           title=r"Linear turn-on, then held: first satellite ($n=1$)")
+           title=r"Overshoot within the scanned domain: first satellite ($n=1$)")
     for case, color, label in zip(summary["cases"], (BLUE, ORANGE, AQUA),
                                   ("A: monotonic", r"B: peak $1.69\times$ final",
                                    r"C: $0.53\rightarrow1.3\times10^{-4}$")):
