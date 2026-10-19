@@ -100,10 +100,11 @@ SPEC = dict(
     stat_pt=36, stat_label_pt=23, eq_pt=30, min_pt=23,
     leading=1.3, para_gap=6, side_text=0.64, panel_gap=8, fig_gap=4, spread_max=8,
     navy="#0f2a3a", accent="#e8743b", page="#ffffff", card="#ffffff", edge="#c3c9ce", key="#fbf1d9",
-    ink="#25282b", ink2="#454c54", tint="#f4f6f7", rule="#576a75", rule_w=0.45,
-    # page zones behind whole bands (full width, not cards): method and results share one light
-    # field, the conclusions sit on a slightly deeper neutral; the introduction stays on the page
-    zone_method="#f5f6f7", zone_results="#f5f6f7", zone_end="#eceeed",
+    ink="#25282b", ink2="#454c54", tint="#f4f6f7", rule="#7d8d98", rule_w=0.4, key_soft="#fcf5e6",
+    # page zones behind whole bands (full width, not cards), a weak white / tint rhythm:
+    # introduction white, method light blue-grey, results white (figures sit on the page), conclusions
+    # a soft neutral
+    zone_method="#f7f8f9", zone_end="#f4f5f3",
     stripe=("#3a3a3a", "#e04b3a", "#f08a3c"),
 )
 PT_MM = 25.4 / 72
@@ -283,7 +284,7 @@ def callout(P, it, x, y, w, draw=True):
     s = SPEC
     y1 = P.flow(it["text"], x + 10, y + 9, w - 20, s["callout_pt"], s["ink"], draw=draw) + 8
     if draw:
-        P.box(x, y, w, y1 - y, s["key"], r=0, z=2)
+        P.box(x, y, w, y1 - y, s["key_soft"], r=0, z=2)
         P.box(x, y, 1.4, y1 - y, s["accent"], r=0, z=2)
     return y1 + s["para_gap"]
 
@@ -443,8 +444,8 @@ def head(P, num, title, x, y0, w):
     P.ax.text(x + sq / 2, y0 + 4 + sq / 2, str(num), fontsize=23.2, color="white", family=FONT,
               fontweight="bold", ha="center", va="center", zorder=4)
     P.flow(title, x + sq + 4.5, y0 + 0.5, w - sq - 4.5, s["head_pt"], s["ink"], weight="medium")
-    P.box(x, y0 + 24, w * 0.86, s["rule_w"], s["rule"], r=0, z=3)
-    P.box(x + w * 0.875, y0 + 24, w * 0.125, s["rule_w"], s["accent"], r=0, z=3)
+    P.box(x, y0 + 24, w * 0.62, s["rule_w"], s["rule"], r=0, z=3)
+    P.box(x + w * 0.635, y0 + 24, w * 0.085, s["rule_w"], s["accent"], r=0, z=3)
 
 
 def fit(P, path, x, y, w, h, align="right"):
@@ -578,7 +579,7 @@ def build(preview_dpi=60):
     y = top
     for b, h in zip(bands, heights):
         t = b[0]["title"]
-        zone = (s["zone_results"] if len(b) == 2 else s["zone_method"] if t.startswith("Theoretical")
+        zone = (s["zone_method"] if t.startswith("Theoretical")
                 else s["zone_end"] if t.startswith("Conclusion") else None)
         if zone:                                            # zones meet halfway across the gaps
             z0, z1 = y - gap / 2, min(y + h + gap / 2, fy - 1.4)
