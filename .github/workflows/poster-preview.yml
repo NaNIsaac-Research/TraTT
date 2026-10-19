@@ -1,8 +1,8 @@
-name: Poster PDF preview (design branch)
+name: Poster PDF proof (final schematic and QR)
 on:
   push:
     branches:
-      - design/poster-final-polish-20261019
+      - design/poster-schematic-qr-final
   workflow_dispatch:
 
 permissions:
@@ -17,7 +17,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - name: Render from committed plot caches (no TT reruns)
         run: |
-          uv run --python 3.12 --extra dev python explore/make_poster_figs.py f1 f7
+          uv run --python 3.12 --extra dev python explore/make_poster_figs.py f0
           uv run --python 3.12 --extra dev python poster/build.py 100
       - name: Validate A0 page and text
         run: |
@@ -30,8 +30,9 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: tratt-poster-polished
+          name: tratt-poster-schematic-qr-proof
           path: |
             poster/out/poster.pdf
             poster/out/poster.png
+            figures/poster/f0_scheme.png
           retention-days: 14
