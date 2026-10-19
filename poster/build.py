@@ -34,6 +34,7 @@ Manuscript syntax
                   centres that column vertically in the row; rows nest
   "> text"        key-message band                        "- text"  bullet
   "![caption](path)" figure, as wide as its column
+  "~ step | text" input-condition line: a small envelope glyph (step or ramp) followed by the text
   "$$ text"       display line: centred, slightly larger, with space around it (equations)
   "=> a // b | c" flow diagram: boxes joined by arrows, a loop arrow back to the first box; "//"
                   splits a box into its symbol line and a smaller description line
@@ -97,9 +98,13 @@ SPEC = dict(
     header_h=110, stripe_h=5, footer_h=53,
     title_pt=52, authors_pt=30, head_pt=40, badge_pt=30, body_pt=28, callout_pt=29, caption_pt=23,
     stat_pt=36, stat_label_pt=23, eq_pt=30, min_pt=23,
-    leading=1.3, para_gap=6, side_text=0.64, panel_gap=8, fig_gap=4,
-    navy="#0f2a3a", accent="#e8743b", page="#ffffff", card="#ffffff", edge="#7d868f", key="#fbf1d9",
-    ink="#111111", ink2="#3f4852", tint="#f4f6f7",
+    leading=1.3, para_gap=6, side_text=0.64, panel_gap=8, fig_gap=4, spread_max=8,
+    navy="#0f2a3a", accent="#e8743b", page="#ffffff", card="#ffffff", edge="#c3c9ce", key="#fbf1d9",
+    ink="#25282b", ink2="#454c54", tint="#f4f6f7", rule="#a9b2b9", rule_w=0.4, key_soft="#fcf5e6",
+    # page zones behind whole bands (full width, not cards), a weak white / tint rhythm:
+    # introduction white, method light blue-grey, results white (figures sit on the page), conclusions
+    # a soft neutral
+    zone_method="#f7f8f9", zone_end="#f4f5f3",
     stripe=("#3a3a3a", "#e04b3a", "#f08a3c"),
 )
 PT_MM = 25.4 / 72
@@ -160,6 +165,11 @@ def parse(text):
             t = " ".join(block[2:].split())
             add(dict(kind="flow", boxes=[b.strip() for b in TAG.sub("", t).split("|")], tags=TAG.findall(t)))
             continue
+        if block.startswith("~"):
+            shape, t = block[1:].split("|", 1)
+            t = " ".join(t.split())
+            add(dict(kind="onset", shape=shape.strip(), text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
+            continue
         if block.startswith("$$"):
             t = " ".join(block[2:].split())
             add(dict(kind="eq", text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
@@ -196,7 +206,7 @@ class Page:
 
     def flow(self, text, x, y, w, pt, color=None, weight="normal", indent=0.0, align="left", z=3, draw=True,
              strong=None):
-        """Word-by-word placement with wrapping; $..$ and **..** stay atomic, **..** is semibold (in colour
+        """Word-by-word placement with wrapping; $..$ and **..** stay atomic, **..** is medium weight (in colour
         `strong` if given). Returns the y (mm) just below the last line."""
         color = color or SPEC["ink"]
         lh = pt * PT_MM * SPEC["leading"]
@@ -208,7 +218,7 @@ class Page:
             prev = m.end()
             s, wgt, col = m[0], weight, color
             if s.startswith("**"):
-                s, wgt, col = s[2:-2], "semibold", strong or color
+                s, wgt, col = s[2:-2], "medium", strong or color
             toks.append((s, wgt, col, glue))
         lines, line, lw = [], [], 0.0
         for s, wgt, col, g in toks:
@@ -272,10 +282,10 @@ def bullet(P, it, x, y, w, draw=True):
 
 def callout(P, it, x, y, w, draw=True):
     s = SPEC
-    y1 = P.flow(it["text"], x + 10, y + 9, w - 20, s["callout_pt"], s["ink"], draw=draw, strong=s["accent"]) + 8
+    y1 = P.flow(it["text"], x + 10, y + 9, w - 20, s["callout_pt"], s["ink"], draw=draw) + 8
     if draw:
-        P.box(x, y, w, y1 - y, s["key"], r=0, z=2)
-        P.box(x, y, 2.4, y1 - y, s["accent"], r=0, z=2)
+        P.box(x, y, w, y1 - y, s["key_soft"], r=0, z=2)
+        P.box(x, y, 1.4, y1 - y, s["accent"], r=0, z=2)
     return y1 + s["para_gap"]
 
 
@@ -304,6 +314,30 @@ def equation(P, it, x, y, w, draw=True):
     return P.flow(it["text"], x, y + 1, w, s["eq_pt"], align="center", draw=draw) + s["para_gap"] + 1.5
 
 
+def onset(P, it, x, y, w, draw=True):
+    """Input condition of a result panel on one line: envelope glyph A(s) (step or linear ramp,
+    onset at s = 0), then the condition in body type."""
+    s = SPEC
+    gw, x0, top, base = 46.0, x + 11.0, y + 3.0, y + 12.5     # glyph width, onset, A = 1, A = 0
+    knee = x0 + (17.0 if it["shape"] == "ramp" else 0.0)
+    lab = s["caption_pt"] * PT_MM
+    if draw:
+        P.ax.annotate("", xy=(x + gw, base), xytext=(x, base), zorder=3,
+                      arrowprops=dict(arrowstyle="-|>", color=s["ink2"], lw=1.4, mutation_scale=14))
+        P.ax.plot([x, x0, knee, x + gw - 6], [base, base, top, top], color=s["navy"], lw=3.0,
+                  solid_joinstyle="miter", zorder=4)
+        P.ax.text(x + gw + 1.2, base, "$s$", fontsize=s["caption_pt"], color=s["ink2"], va="center", zorder=4)
+        ticks = [(x0, "$0$")] + ([(knee, "$T_{rise}$")] if knee > x0 else [])
+        for tx, t in ticks:
+            P.ax.plot([tx, tx], [base, base + 1.6], color=s["ink2"], lw=1.4, zorder=3)
+            P.ax.text(tx, base + 2.0, t, fontsize=s["caption_pt"], color=s["ink2"], ha="center", va="top",
+                      zorder=4)
+        if knee > x0:
+            P.ax.plot([knee, knee], [top, base], color=s["ink2"], lw=1.0, ls=(0, (2, 2)), zorder=3)
+    y1 = P.flow(it["text"], x + gw + 9, y + 0.6, w - gw - 9, s["body_pt"], draw=draw, strong=s["navy"])
+    return max(y1, base + 2.0 + lab) + s["para_gap"]
+
+
 def flow_diagram(P, it, x, y, w, draw=True):
     """Boxes left to right joined by arrows, with a return arrow underneath (one loop per time step).
     A box "symbol // description" sets the symbol large and the description small below it."""
@@ -322,12 +356,12 @@ def flow_diagram(P, it, x, y, w, draw=True):
     if draw:
         for i, ps in enumerate(parts):
             bx = x + i * (bw + aw)
-            P.box(bx, y, bw, h, s["key"], r=0, z=2)
-            P.box(bx, y, bw, 1.4, s["accent"], r=0, z=2)
+            P.box(bx, y, bw, h, s["key_soft"], r=0, z=2)
+            P.box(bx, y, bw, 0.6, s["accent"], r=0, z=2)
             block(ps, bx, y + (h - block(ps, 0, 0, False)) / 2, True)
             if i < n - 1:
                 P.ax.annotate("", xy=(bx + bw + aw - 0.8, y + h / 2), xytext=(bx + bw + 0.8, y + h / 2),
-                              arrowprops=dict(arrowstyle="-|>", color=s["accent"], lw=2.6, mutation_scale=20),
+                              arrowprops=dict(arrowstyle="-|>", color=s["accent"], lw=1.8, mutation_scale=16),
                               zorder=3)
         ly = y + h + 5                                      # loop: next time step
         P.ax.plot([x + w - bw / 2, x + w - bw / 2, x + bw / 2], [y + h, ly, ly], color=s["ink2"], lw=1.8,
@@ -336,7 +370,7 @@ def flow_diagram(P, it, x, y, w, draw=True):
                       arrowprops=dict(arrowstyle="-|>", color=s["ink2"], lw=1.8, mutation_scale=16), zorder=3)
         P.ax.text(x + w / 2, ly, r"next time step $\tilde t$", fontsize=s["caption_pt"], color=s["ink2"],
                   family=FONT, ha="center", va="center", zorder=4,
-                  bbox=dict(facecolor="white", edgecolor="none", pad=2))
+                  bbox=dict(facecolor=s["zone_method"], edgecolor="none", pad=2))
     return y + h + 5 + 4 + s["para_gap"]
 
 
@@ -345,11 +379,15 @@ def aspect(path):
     return a.shape[0] / a.shape[1]
 
 
-def items(P, its, x, y, w, draw, check):
+def items(P, its, x, y, w, draw, check, spread=0.0):
     """Lay out a list of items in the column (x, w) from y down; returns the y below the last one.
-    With draw=False nothing is drawn, so the same call measures. check(it) records tag problems."""
+    With draw=False nothing is drawn, so the same call measures. check(it) records tag problems.
+    `spread` (mm) is added between consecutive items, to even out the two panels of a band; the
+    condition line keeps its place under the head, so both panels start alike."""
     s = SPEC
-    for it in its:
+    for i, it in enumerate(its):
+        if i and its[i - 1]["kind"] != "onset":
+            y += spread
         if draw:
             check(it)
         k = it["kind"]
@@ -387,6 +425,8 @@ def items(P, its, x, y, w, draw, check):
             y = callout(P, it, x, y, w, draw)
         elif k == "eq":
             y = equation(P, it, x, y, w, draw)
+        elif k == "onset":
+            y = onset(P, it, x, y, w, draw)
         elif k == "flow":
             y = flow_diagram(P, it, x, y, w, draw)
         else:
@@ -403,9 +443,9 @@ def head(P, num, title, x, y0, w):
     P.box(x, y0 + 4, sq, sq, s["navy"], r=0, z=3)
     P.ax.text(x + sq / 2, y0 + 4 + sq / 2, str(num), fontsize=23.2, color="white", family=FONT,
               fontweight="bold", ha="center", va="center", zorder=4)
-    P.flow(title, x + sq + 4.5, y0 + 0.5, w - sq - 4.5, s["head_pt"], s["ink"], weight="semibold")
-    P.box(x, y0 + 24, w * 0.86, 0.7, s["navy"], r=0, z=3)
-    P.box(x + w * 0.875, y0 + 24, w * 0.125, 0.7, s["accent"], r=0, z=3)
+    P.flow(title, x + sq + 4.5, y0 + 0.5, w - sq - 4.5, s["head_pt"], s["ink"], weight="medium")
+    P.box(x, y0 + 24, w * 0.88, s["rule_w"], s["rule"], r=0, z=3)
+    P.box(x + w * 0.88, y0 + 24, w * 0.12, s["rule_w"], s["accent"], r=0, z=3)
 
 
 def fit(P, path, x, y, w, h, align="right"):
@@ -459,13 +499,13 @@ def build(preview_dpi=60):
 
     # Footer: stable zones for the grant, CUPT mark, and repository QR.
     fy = H - s["footer_h"]
-    ax.plot([M, W - M], [fy - 1.4, fy - 1.4], color=s["edge"], lw=0.9, zorder=2)
+    ax.plot([M, W - M], [fy - 1.4, fy - 1.4], color=s["edge"], lw=0.8, zorder=2)
     left = M + s["pad"]
     title_baseline = fy + 17.5
     sq = 6.7
     P.box(left, title_baseline - sq + 0.4, sq, sq, s["navy"], r=0, z=3)
     ax.text(left + sq + 3.2, title_baseline, "Acknowledgement", fontsize=s["head_pt"] - 6,
-            color=s["ink"], family=FONT, fontweight="semibold", va="baseline", zorder=3)
+            color=s["ink"], family=FONT, fontweight="medium", va="baseline", zorder=3)
 
     qr = ASSETS / "qr_repo.png"
     if not qr.exists():
@@ -516,15 +556,20 @@ def build(preview_dpi=60):
         n = len(b)
         pw = (full - (n - 1) * 2 * s["gap"]) / n
         ends = []
+        hs = [items(P, p["items"], 0.0, 0.0, pw - 2 * s["pad"], False, check) for p in b]
         for k, p in enumerate(b):
             x = M + s["pad"] + k * (pw + 2 * s["gap"])
             w = pw - 2 * s["pad"]
             if draw:
                 head(P, number[id(p)], p["title"], x, y0, w)
-            ends.append(items(P, p["items"], x, y0 + HEAD, w, draw, check))
+            # side by side, the shorter panel spreads its slack over its item gaps (capped), so the
+            # two captions end near the same line instead of leaving a hole under one of them
+            spread = (min(s["spread_max"], (max(hs) - hs[k]) / max(1, sum(it["kind"] != "onset" for it in p["items"][:-1])))
+                      if n == 2 else 0.0)
+            ends.append(items(P, p["items"], x, y0 + HEAD, w, draw, check, spread))
         if draw and n == 2:                                 # hairline between the two panels of a band
             mid = M + pw + s["gap"]
-            ax.plot([mid, mid], [y0 + 2, max(ends) - s["para_gap"]], color=s["edge"], lw=0.8, zorder=2)
+            ax.plot([mid, mid], [y0 + 2, max(ends) - s["para_gap"]], color=s["edge"], lw=0.7, zorder=2)
         return max(ends) - s["para_gap"]
 
     number = {id(p): k + 1 for k, p in enumerate(panels)}
@@ -533,8 +578,12 @@ def build(preview_dpi=60):
     gap = s["panel_gap"] + max(0.0, spare) / max(1, len(bands) - 1)
     y = top
     for b, h in zip(bands, heights):
-        if b[0]["title"].startswith("Conclusion"):          # the summary sits on a light band
-            P.box(M, y - 5, full, h + 10, s["tint"], r=0, z=1)
+        t = b[0]["title"]
+        zone = (s["zone_method"] if t.startswith("Theoretical")
+                else s["zone_end"] if t.startswith("Conclusion") else None)
+        if zone:                                            # zones meet halfway across the gaps
+            z0, z1 = y - gap / 2, min(y + h + gap / 2, fy - 1.4)
+            ax.add_patch(plt.Rectangle((0, z0), W, z1 - z0, color=zone, lw=0, zorder=0.5))
         band(b, y, True)
         y += h + gap
     if spare < 0:
