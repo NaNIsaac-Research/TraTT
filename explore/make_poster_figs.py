@@ -12,7 +12,6 @@ f5  outlook: Fourier weight / kinematic law (Entry 59, e58 data) and the satelli
     first-order forms against full TT (Entry 64, e64_sw.json); reads stored results only
 f6  introductory Bessel coupling weights for a sinusoidal grating
 f7  linear-ramp overshoot map and three TT-checked traces (Entry 67)
-f8  envelope strips for the two result panels: step (Drive, rise = 0) and linear ramp (Entry 67)
 """
 
 from __future__ import annotations
@@ -37,7 +36,7 @@ FONT = "IBM Plex Sans"   # same face as poster/build.py (f1 still carries Source
 
 FIG_W = 14.4          # inches = poster card inner width (~366 mm)
 INTRO_W = 12.5        # inches = left column of the introduction band (~317 mm)
-F1_H, F7_H = 8.8, 9.0  # heights of the two result figures (inches), set by the results band
+F1_H, F7_H = 7.65, 8.5  # heights of the two result figures (inches), set by the results band
 BIG, SMALL = 26, 23   # printed pt; smallest label 21 pt (SMALL - 2), readable at ~1.5 m on A0
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
@@ -51,7 +50,8 @@ def style():
         "xtick.major.size": 7, "ytick.major.size": 7, "axes.titlepad": 12,
         "axes.edgecolor": INK2, "axes.labelcolor": INK, "text.color": INK, "xtick.color": INK2,
         "ytick.color": INK2, "axes.spines.top": False, "axes.spines.right": False,
-        "figure.facecolor": "white", "savefig.facecolor": "white", "savefig.dpi": 200,
+        "figure.facecolor": "white", "savefig.facecolor": "none", "axes.facecolor": "white",
+        "savefig.dpi": 200,
         # Text in the poster's own face; math in STIX, the same pairing poster/build.py uses, so
         # an axis label and a panel equation are set identically. An all-Plex math fontset has no
         # \cdot and no \sim and falls back to DejaVu for them, and its \int is a text-sized glyph.
@@ -183,21 +183,44 @@ def f1():
         laue = np.array([M.centre(a, S, n, t, "laue") for S, a, n in M.CASES])
         bragg = np.array([M.centre(a, S, n, t, "bragg") for S, a, n in M.CASES])
         np.savez(cache, t=t, cases=np.array(M.CASES), laue=laue, bragg=bragg)
+    row = SMALL * 1.6 / 72 / F1_H                    # one key row, as a fraction of the figure height
+    key = 3 * row + 0.02                              # key strip under both panels: 2 case rows + the law
     fig, ax = plt.subplots(1, 2, figsize=(FIG_W, F1_H), constrained_layout=True, sharey=True)
+    fig.get_layout_engine().set(rect=(0, key, 1, 1 - key), w_pad=0.04, h_pad=0.02)
     s = np.linspace(0, 2.3, 500)
+    # the laws themselves are written in the panel text, so the titles only name the geometry
     for a, data, law, title in (
-            (ax[0], laue, np.sin(np.pi * s) ** 2, r"Laue: $\sin^2(\pi\alpha_n\tilde t)$"),
-            (ax[1], bragg, np.tanh(np.pi * s) ** 2, r"Bragg: $\tanh^2(\pi\alpha_n\tilde t)$")):
-        a.plot(s, law, color=INK, lw=2.4, zorder=1, label="expression")
+            (ax[0], laue, np.sin(np.pi * s) ** 2, "Laue geometry"),
+            (ax[1], bragg, np.tanh(np.pi * s) ** 2, "Bragg geometry")):
+        # the law is drawn over the TT markers so the comparison stays visible where they crowd
+        a.plot(s, law, color=INK, lw=2.0, zorder=3,
+               label="Independent-satellite approximation (no fitted parameters)")
         for (S, al, n), I, c, m in zip(M.CASES, data, (BLUE, ORANGE, AQUA, YELLOW), M.MARK):
-            a.plot(al * abs(jv(n, S)) * t, I, m, color=c, mec="white", mew=0.9, ms=9, ls="none",
+            a.plot(al * abs(jv(n, S)) * t, I, m, color=c, mec="white", mew=0.8, ms=9.5, ls="none", zorder=2,
                    label=rf"$S={S:g},\ \alpha={al:g},\ n={n}$")
         a.set(xlim=(0, 2.3), ylim=(-0.03, 1.08), title=title,
               xlabel=r"$\alpha_n\tilde t$,  $\alpha_n=\alpha\left|J_n(S)\right|$")
     ax[0].set_ylabel(r"centre intensity $I_n$")
     ax[1].tick_params(labelleft=False)
+    # Shared key under both panels: the simulated cases (2 x 2, after their lead), then the curve
+    # they are compared with on a row of its own.
     h, lab = ax[1].get_legend_handles_labels()
-    ax[1].legend(h[1:] + h[:1], lab[1:] + lab[:1], frameon=False, loc="lower right", handletextpad=0.3)
+    sim = fig.legend(h[1:], lab[1:], ncol=2, frameon=False, loc="lower left", bbox_to_anchor=(0, 0.01 + row),
+                     handletextpad=0.2, columnspacing=2.0, labelspacing=0.45, markerscale=1.4,
+                     borderaxespad=0, borderpad=0)
+    law = fig.legend(h[:1], lab[:1], frameon=False, loc="lower left", bbox_to_anchor=(0, 0.01),
+                     handlelength=2.2, handletextpad=0.5, borderaxespad=0, borderpad=0)
+    fig.canvas.draw()
+    lead = "Full TT simulation:"
+    probe = fig.text(0, 0, lead, fontsize=SMALL, fontweight="semibold")
+    wl = probe.get_window_extent().width / fig.bbox.width
+    probe.remove()
+    box = sim.get_window_extent()
+    ws, top = box.width / fig.bbox.width, box.y1 / fig.bbox.height
+    x0 = (1 - wl - 0.012 - ws) / 2                     # centre the labelled block under the panels
+    fig.text(x0, top, lead, fontsize=SMALL, fontweight="semibold", va="top")
+    sim.set_bbox_to_anchor((x0 + wl + 0.012, 0.01 + row), transform=fig.transFigure)
+    law.set_bbox_to_anchor((x0, 0.01), transform=fig.transFigure)
     finish(fig, ax, "f1_collapse")
     for name, data, law in (("Laue", laue, lambda x: np.sin(np.pi * x) ** 2),
                             ("Bragg", bragg, lambda x: np.tanh(np.pi * x) ** 2)):
@@ -354,17 +377,24 @@ def f7():
     data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
     fig = plt.figure(figsize=(FIG_W, F7_H), constrained_layout=True)
-    grid = fig.add_gridspec(2, 3, height_ratios=[1.18, 1.20])
+    grid = fig.add_gridspec(2, 3, height_ratios=[1.6, 1.0])   # heatmap reads as a 2D map; traces stay legible
     ax = fig.add_subplot(grid[0, :])
     im = ax.pcolormesh(data["S"], data["rise"], data["excess"], shading="nearest",
                        cmap="YlOrRd", vmin=0)
     cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.045)
     cb.set_label(r"overshoot $\Delta I$")
+    # the map is the reduced coupling law over the scanned grid; only A-C are checked against full TT
     ax.set(xlabel=r"final sound amplitude $S$", ylabel=r"rise time $T_{rise}/t_{tr}$",
-           title=r"Linear turn-on, then held: first satellite ($n=1$)")
+           title=r"Parameter scan, reduced coupling model: first satellite ($n=1$)")
+
+    def num(v):
+        if v >= 0.01:
+            return f"{v:.2f}"
+        m, e = f"{v:.1e}".split("e")
+        return rf"${m}\times10^{{{int(e)}}}$"
+
     for case, color, label in zip(summary["cases"], (BLUE, ORANGE, AQUA),
-                                  ("A: monotonic", r"B: peak $1.69\times$ final",
-                                   r"C: $0.53\rightarrow1.3\times10^{-4}$")):
+                                  ("A: monotonic growth", "B: finite overshoot", "C: near-zero steady state")):
         letter, S, rise = case["label"], case["S"], case["rise"]
         ax.plot(S, rise, "o", color=color, mec="white", mew=2, ms=13)
         ax.annotate(letter, (S, rise), xytext=(9, 9), textcoords="offset points",
@@ -382,9 +412,14 @@ def f7():
                                        shrinkA=0, shrinkB=0))
             a.text(tb + 0.08, case["steady"] + 0.3 * (float(data["B_I"][k]) - case["steady"]), r"$\Delta I$",
                    fontsize=SMALL, va="center", color=INK)
-        a.set(xlabel=r"time / $t_{tr}$", ylim=(-0.025, 0.8), title=label)
-        a.text(0.04, 0.94, f"S={S:g}, rise={rise:g}", transform=a.transAxes,
-               fontsize=SMALL - 2, va="top", bbox=dict(facecolor="white", edgecolor="none", pad=2))
+        a.set(xlabel=r"time / $t_{tr}$", ylim=(-0.025, 1.0))   # headroom for the two-line case label
+        a.set_title(label, color=color, fontsize=SMALL, fontweight="semibold")   # colour = map marker
+        peak, steady = case["peak"], case["steady"]
+        values = (f"peak = steady = {num(steady)}" if peak - steady < 1e-9
+                  else f"peak {num(peak)}, steady {num(steady)}")
+        a.text(0.04, 0.95, rf"$S={S:g}$, $T_{{rise}}/t_{{tr}}={rise:g}$" + "\n" + values, transform=a.transAxes,
+               fontsize=SMALL - 2, va="top", linespacing=1.25,
+               bbox=dict(facecolor="white", edgecolor="none", pad=2))
         if letter == "A":
             a.set_ylabel("satellite intensity")
         else:
@@ -396,37 +431,6 @@ def f7():
     print("wrote", OUT / "f7_overshoot.png")
 
 
-def f8():
-    """Envelope strips that open the two result panels, drawn from the envelopes the results used:
-    the step of `Drive` (rise = 0, Entries 1 and 9) and the linear ramp of memory_drive.ramp (Entry 67)."""
-    sys.path.insert(0, str(ROOT / "explore" / "nb"))
-    from memory_drive import ramp
-
-    style()
-    s = np.linspace(-0.6, 2.6, 801)
-    for name, A, color, text in (
-            ("f8_onset_step", Drive(S=1.0, alpha_ac=20.0).envelope(s), BLUE,
-             r"Sudden onset: $A(s)=1$ for $s\geq0$,  $s=\tilde t-\zeta$"),
-            ("f8_onset_ramp", ramp(1.5)(s) * (s >= 0), ORANGE,
-             r"Gradual onset: $A(s)=\min(s/T_{rise},\,1)$ for $s\geq0$")):
-        fig = plt.figure(figsize=(FIG_W, 0.95))
-        ax = fig.add_axes([0.035, 0.30, 0.20, 0.62])
-        ax.plot(s, A, color=color, lw=3.2)
-        ax.set(xlim=(-0.6, 2.6), ylim=(-0.15, 1.75), xticks=[0], yticks=[0, 1])
-        ax.set_xticklabels([r"$0$"])
-        ax.tick_params(labelsize=SMALL - 2, length=4, pad=2)
-        ax.text(1.03, 0.04, r"$s$", transform=ax.transAxes, fontsize=SMALL - 2, va="center")
-        ax.set_ylabel(r"$A$", fontsize=SMALL - 2, rotation=0, labelpad=10, va="center")
-        if "ramp" in name:
-            ax.annotate("", xy=(1.5, 1.25), xytext=(0, 1.25),
-                        arrowprops=dict(arrowstyle="<|-|>", color=INK2, lw=1.2, mutation_scale=12))
-            ax.text(0.75, 1.3, r"$T_{rise}$", ha="center", va="bottom", fontsize=SMALL - 2, color=INK2)
-        fig.text(0.27, 0.55, text, fontsize=BIG, va="center", color=INK)
-        OUT.mkdir(parents=True, exist_ok=True)
-        fig.savefig(OUT / f"{name}.png")
-        print("wrote", OUT / f"{name}.png")
-
-
 if __name__ == "__main__":
-    for name in (sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"]):
+    for name in (sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7"]):
         globals()[name]()
