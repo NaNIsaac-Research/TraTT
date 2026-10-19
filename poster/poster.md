@@ -40,11 +40,11 @@ conclusions. Numbers follow notes/tasks/poster_facts.md.
 
 [[ 0.5
 
-**1 Two-beam diffraction.** The X-ray field near a Bragg reflection consists of the transmitted wave $D_0$ and the diffracted wave $D_h$, which exchange intensity with depth $\zeta=z/L\in[0,1]$. They obey the coupled Takagi–Taupin (TT) equations: {E0}
+**1 Two-beam diffraction.** The X-ray field near a Bragg reflection consists of the transmitted wave $D_0$ and the diffracted wave $D_h$, which exchange intensity with depth $\zeta=z/L\in[0,1]$. In Laue geometry they obey the coupled Takagi–Taupin (TT) equations: {E0}
 
 $$ $dD_0/d\zeta = i\pi\alpha\,e^{+i\phi}D_h,\qquad dD_h/d\zeta = i\pi\alpha\,e^{-i\phi}D_0 + i\eta D_h$ {E0}
 
-$\pi\alpha$ couples the beams, $i\eta D_h$ is the angular detuning ($\eta$ in units of $1/L$), and the lattice displacement enters only as the phase $e^{\pm i\phi}$ of the coupling. {E0}
+$\pi\alpha$ couples the beams, $i\eta D_h$ is the angular detuning ($\eta$: dimensionless, scaled by $L$), and the lattice displacement enters only as the phase $e^{\pm i\phi}$ of the coupling. {E0}
 
 **2 Travelling acoustic deformation,** with $\tilde t=t/t_{tr}$: {E0}
 
@@ -73,7 +73,7 @@ $$ $dR/d\zeta=-i\pi\alpha\,e^{-i\phi}-i\eta R-i\pi\alpha\,e^{+i\phi}R^2,\qquad R
 
 @pair
 
-## Numerical Simulation of Acoustic Satellite Formation
+## Satellite Formation Dynamics
 
 ~ step | **Sudden acoustic onset:** $A(s)=H(s)$, $s=\tilde t-\zeta$ {E0}
 
@@ -83,7 +83,7 @@ $$ $I_n=\sin^2(\pi\alpha_n\tilde t)$ (Laue), $\qquad I_n=\tanh^2(\pi\alpha_n\til
 
 The formation time $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$ is independent of $L$, and the order follows $\left|J_n(S)\right|$ rather than $n$ (at $S=3$: $n=2,1,3$). {E1}{E6}
 
-![Markers: full TT simulations; solid lines: independent-satellite approximation, without fitting parameters. Deviations reflect the approximation rather than numerical solver error.](figures/poster/f1_collapse.png){E1}{E9}{E19}{E26}
+![Deviations of the TT markers from the lines reflect the approximation, not numerical solver error.](figures/poster/f1_collapse.png){E1}{E9}{E19}{E26}
 
 ## Transient Intensity Overshoot
 
@@ -95,17 +95,17 @@ $$ $\Theta_n(\tilde t)=\int_0^1 J_n(S\,A(\tilde t-\zeta))\,d\zeta,\qquad I_n\app
 
 Overshoot: $\Delta I=I_{max}-I_{steady}$ in incident-intensity units, for the first Laue satellite at $L/\Lambda_P=0.5$, $0.5\leq S\leq6$, $0.05\leq T_{rise}/t_{tr}\leq4$. {E67}
 
-![Top: $\Delta I$ map from $\Theta_n$ (11,211 parameter sets; maximum scanned value 0.603). Bottom: A–C time traces (lines: reduced law; dots: full TT; dashed: steady state). Overshoot can remain strong when the final Bessel coupling is small.](figures/poster/f7_overshoot.png){E15}{E28}{E67}
+![Top: $\Delta I$ from the reduced coupling model $\Theta_n$ over 11,211 parameter sets (maximum 0.603). Bottom: cases A–C, reduced model (lines) checked against full TT (dots); dashed: steady state. Overshoot can remain strong when the final Bessel coupling is small.](figures/poster/f7_overshoot.png){E15}{E28}{E67}
 
 ## Conclusions
 
-[[ 0.6 c
+[[ 0.66 c
 
 We calculated the formation of acoustic diffraction satellites while an acoustic wavefront propagates through the crystal, using the two-beam Takagi–Taupin equations. The simulations show satellite-dependent formation times, $\tau_n\propto1/\left|J_n(S)\right|$, and a transient intensity overshoot for finite acoustic rise times. {E0}{E1}{E9}{E67}
 
-|| 0.4 c
+|| 0.34 c
 
-> **Main implication.** The steady-state satellite intensity alone does not determine its transient evolution. {E28}{E67}
+> Steady-state satellite intensities alone do not determine their transient evolution. {E28}{E67}
 
 ]]
 

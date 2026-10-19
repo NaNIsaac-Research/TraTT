@@ -36,8 +36,7 @@ FONT = "IBM Plex Sans"   # same face as poster/build.py (f1 still carries Source
 
 FIG_W = 14.4          # inches = poster card inner width (~366 mm)
 INTRO_W = 12.5        # inches = left column of the introduction band (~317 mm)
-F1_H, F7_H = 7.3, 8.5  # heights of the two result figures (inches), set by the results band
-F1_KEY = 0.15         # fraction of the f1 height kept for its shared two-row key
+F1_H, F7_H = 7.65, 8.5  # heights of the two result figures (inches), set by the results band
 BIG, SMALL = 26, 23   # printed pt; smallest label 21 pt (SMALL - 2), readable at ~1.5 m on A0
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
@@ -184,38 +183,44 @@ def f1():
         laue = np.array([M.centre(a, S, n, t, "laue") for S, a, n in M.CASES])
         bragg = np.array([M.centre(a, S, n, t, "bragg") for S, a, n in M.CASES])
         np.savez(cache, t=t, cases=np.array(M.CASES), laue=laue, bragg=bragg)
+    row = SMALL * 1.6 / 72 / F1_H                    # one key row, as a fraction of the figure height
+    key = 3 * row + 0.02                              # key strip under both panels: 2 case rows + the law
     fig, ax = plt.subplots(1, 2, figsize=(FIG_W, F1_H), constrained_layout=True, sharey=True)
-    fig.get_layout_engine().set(rect=(0, F1_KEY, 1, 1 - F1_KEY), w_pad=0.04, h_pad=0.02)  # key strip below
+    fig.get_layout_engine().set(rect=(0, key, 1, 1 - key), w_pad=0.04, h_pad=0.02)
     s = np.linspace(0, 2.3, 500)
+    # the laws themselves are written in the panel text, so the titles only name the geometry
     for a, data, law, title in (
-            (ax[0], laue, np.sin(np.pi * s) ** 2, r"Laue: $\sin^2(\pi\alpha_n\tilde t)$"),
-            (ax[1], bragg, np.tanh(np.pi * s) ** 2, r"Bragg: $\tanh^2(\pi\alpha_n\tilde t)$")):
+            (ax[0], laue, np.sin(np.pi * s) ** 2, "Laue geometry"),
+            (ax[1], bragg, np.tanh(np.pi * s) ** 2, "Bragg geometry")):
         # the law is drawn over the TT markers so the comparison stays visible where they crowd
         a.plot(s, law, color=INK, lw=2.0, zorder=3,
                label="Independent-satellite approximation (no fitted parameters)")
         for (S, al, n), I, c, m in zip(M.CASES, data, (BLUE, ORANGE, AQUA, YELLOW), M.MARK):
             a.plot(al * abs(jv(n, S)) * t, I, m, color=c, mec="white", mew=0.8, ms=9.5, ls="none", zorder=2,
-                   label=rf"$({S:g},\,{al:g},\,{n})$")
+                   label=rf"$S={S:g},\ \alpha={al:g},\ n={n}$")
         a.set(xlim=(0, 2.3), ylim=(-0.03, 1.08), title=title,
               xlabel=r"$\alpha_n\tilde t$,  $\alpha_n=\alpha\left|J_n(S)\right|$")
     ax[0].set_ylabel(r"centre intensity $I_n$")
     ax[1].tick_params(labelleft=False)
-    # Shared key under both panels, two rows: the simulated cases, then the curve they are compared with.
+    # Shared key under both panels: the simulated cases (2 x 2, after their lead), then the curve
+    # they are compared with on a row of its own.
     h, lab = ax[1].get_legend_handles_labels()
-    sim = fig.legend(h[1:], lab[1:], ncol=4, frameon=False, loc="lower left", bbox_to_anchor=(0, 0.52 * F1_KEY),
-                     handletextpad=0.2, columnspacing=1.6, markerscale=1.4, borderaxespad=0, borderpad=0)
-    law = fig.legend(h[:1], lab[:1], frameon=False, loc="lower left", bbox_to_anchor=(0, 0.06 * F1_KEY),
+    sim = fig.legend(h[1:], lab[1:], ncol=2, frameon=False, loc="lower left", bbox_to_anchor=(0, 0.01 + row),
+                     handletextpad=0.2, columnspacing=2.0, labelspacing=0.45, markerscale=1.4,
+                     borderaxespad=0, borderpad=0)
+    law = fig.legend(h[:1], lab[:1], frameon=False, loc="lower left", bbox_to_anchor=(0, 0.01),
                      handlelength=2.2, handletextpad=0.5, borderaxespad=0, borderpad=0)
     fig.canvas.draw()
-    lead = r"Full TT simulation, $(S,\,\alpha,\,n)$:"
+    lead = "Full TT simulation:"
     probe = fig.text(0, 0, lead, fontsize=SMALL, fontweight="semibold")
     wl = probe.get_window_extent().width / fig.bbox.width
     probe.remove()
-    ws = sim.get_window_extent().width / fig.bbox.width
-    x0 = (1 - wl - 0.008 - ws) / 2                     # centre the labelled row under the panels
-    fig.text(x0, 0.52 * F1_KEY + 0.004, lead, fontsize=SMALL, fontweight="semibold", va="bottom")
-    sim.set_bbox_to_anchor((x0 + wl + 0.008, 0.52 * F1_KEY), transform=fig.transFigure)
-    law.set_bbox_to_anchor((x0, 0.06 * F1_KEY), transform=fig.transFigure)   # second row under the lead
+    box = sim.get_window_extent()
+    ws, top = box.width / fig.bbox.width, box.y1 / fig.bbox.height
+    x0 = (1 - wl - 0.012 - ws) / 2                     # centre the labelled block under the panels
+    fig.text(x0, top, lead, fontsize=SMALL, fontweight="semibold", va="top")
+    sim.set_bbox_to_anchor((x0 + wl + 0.012, 0.01 + row), transform=fig.transFigure)
+    law.set_bbox_to_anchor((x0, 0.01), transform=fig.transFigure)
     finish(fig, ax, "f1_collapse")
     for name, data, law in (("Laue", laue, lambda x: np.sin(np.pi * x) ** 2),
                             ("Bragg", bragg, lambda x: np.tanh(np.pi * x) ** 2)):
@@ -378,11 +383,18 @@ def f7():
                        cmap="YlOrRd", vmin=0)
     cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.045)
     cb.set_label(r"overshoot $\Delta I$")
+    # the map is the reduced coupling law over the scanned grid; only A-C are checked against full TT
     ax.set(xlabel=r"final sound amplitude $S$", ylabel=r"rise time $T_{rise}/t_{tr}$",
-           title=r"Linear turn-on, then held: first satellite ($n=1$)")
+           title=r"Parameter scan, reduced coupling model: first satellite ($n=1$)")
+
+    def num(v):
+        if v >= 0.01:
+            return f"{v:.2f}"
+        m, e = f"{v:.1e}".split("e")
+        return rf"${m}\times10^{{{int(e)}}}$"
+
     for case, color, label in zip(summary["cases"], (BLUE, ORANGE, AQUA),
-                                  ("A: monotonic", r"B: peak $1.69\times$ final",
-                                   r"C: $0.53\rightarrow1.3\times10^{-4}$")):
+                                  ("A: monotonic growth", "B: finite overshoot", "C: near-zero steady state")):
         letter, S, rise = case["label"], case["S"], case["rise"]
         ax.plot(S, rise, "o", color=color, mec="white", mew=2, ms=13)
         ax.annotate(letter, (S, rise), xytext=(9, 9), textcoords="offset points",
@@ -400,9 +412,14 @@ def f7():
                                        shrinkA=0, shrinkB=0))
             a.text(tb + 0.08, case["steady"] + 0.3 * (float(data["B_I"][k]) - case["steady"]), r"$\Delta I$",
                    fontsize=SMALL, va="center", color=INK)
-        a.set(xlabel=r"time / $t_{tr}$", ylim=(-0.025, 0.8), title=label)
-        a.text(0.04, 0.94, f"S={S:g}, rise={rise:g}", transform=a.transAxes,
-               fontsize=SMALL - 2, va="top", bbox=dict(facecolor="white", edgecolor="none", pad=2))
+        a.set(xlabel=r"time / $t_{tr}$", ylim=(-0.025, 1.0))   # headroom for the two-line case label
+        a.set_title(label, color=color, fontsize=SMALL, fontweight="semibold")   # colour = map marker
+        peak, steady = case["peak"], case["steady"]
+        values = (f"peak = steady = {num(steady)}" if peak - steady < 1e-9
+                  else f"peak {num(peak)}, steady {num(steady)}")
+        a.text(0.04, 0.95, rf"$S={S:g}$, $T_{{rise}}/t_{{tr}}={rise:g}$" + "\n" + values, transform=a.transAxes,
+               fontsize=SMALL - 2, va="top", linespacing=1.25,
+               bbox=dict(facecolor="white", edgecolor="none", pad=2))
         if letter == "A":
             a.set_ylabel("satellite intensity")
         else:

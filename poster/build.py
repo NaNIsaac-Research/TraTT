@@ -100,7 +100,7 @@ SPEC = dict(
     stat_pt=36, stat_label_pt=23, eq_pt=30, min_pt=23,
     leading=1.3, para_gap=6, side_text=0.64, panel_gap=8, fig_gap=4, spread_max=8,
     navy="#0f2a3a", accent="#e8743b", page="#ffffff", card="#ffffff", edge="#c3c9ce", key="#fbf1d9",
-    ink="#25282b", ink2="#454c54", tint="#f4f6f7", rule="#7d8d98", rule_w=0.4, key_soft="#fcf5e6",
+    ink="#25282b", ink2="#454c54", tint="#f4f6f7", rule="#a9b2b9", rule_w=0.4, key_soft="#fcf5e6",
     # page zones behind whole bands (full width, not cards), a weak white / tint rhythm:
     # introduction white, method light blue-grey, results white (figures sit on the page), conclusions
     # a soft neutral
@@ -356,12 +356,12 @@ def flow_diagram(P, it, x, y, w, draw=True):
     if draw:
         for i, ps in enumerate(parts):
             bx = x + i * (bw + aw)
-            P.box(bx, y, bw, h, s["key"], r=0, z=2)
-            P.box(bx, y, bw, 1.4, s["accent"], r=0, z=2)
+            P.box(bx, y, bw, h, s["key_soft"], r=0, z=2)
+            P.box(bx, y, bw, 0.6, s["accent"], r=0, z=2)
             block(ps, bx, y + (h - block(ps, 0, 0, False)) / 2, True)
             if i < n - 1:
                 P.ax.annotate("", xy=(bx + bw + aw - 0.8, y + h / 2), xytext=(bx + bw + 0.8, y + h / 2),
-                              arrowprops=dict(arrowstyle="-|>", color=s["accent"], lw=2.6, mutation_scale=20),
+                              arrowprops=dict(arrowstyle="-|>", color=s["accent"], lw=1.8, mutation_scale=16),
                               zorder=3)
         ly = y + h + 5                                      # loop: next time step
         P.ax.plot([x + w - bw / 2, x + w - bw / 2, x + bw / 2], [y + h, ly, ly], color=s["ink2"], lw=1.8,
@@ -444,8 +444,8 @@ def head(P, num, title, x, y0, w):
     P.ax.text(x + sq / 2, y0 + 4 + sq / 2, str(num), fontsize=23.2, color="white", family=FONT,
               fontweight="bold", ha="center", va="center", zorder=4)
     P.flow(title, x + sq + 4.5, y0 + 0.5, w - sq - 4.5, s["head_pt"], s["ink"], weight="medium")
-    P.box(x, y0 + 24, w * 0.62, s["rule_w"], s["rule"], r=0, z=3)
-    P.box(x + w * 0.635, y0 + 24, w * 0.085, s["rule_w"], s["accent"], r=0, z=3)
+    P.box(x, y0 + 24, w * 0.88, s["rule_w"], s["rule"], r=0, z=3)
+    P.box(x + w * 0.88, y0 + 24, w * 0.12, s["rule_w"], s["accent"], r=0, z=3)
 
 
 def fit(P, path, x, y, w, h, align="right"):
