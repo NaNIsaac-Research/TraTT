@@ -1,6 +1,6 @@
 # TraTT — X-ray diffraction satellites while a sound wave enters a crystal
 
-[![PyPI](https://img.shields.io/pypi/v/tratt)](https://pypi.org/project/tratt/) [![Tests](https://github.com/NaNIsaac/TraTT/actions/workflows/tests.yml/badge.svg)](https://github.com/NaNIsaac/TraTT/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/tratt)](https://pypi.org/project/tratt/) [![Tests](https://github.com/NaNIsaac/TraTT/actions/workflows/ci.yml/badge.svg)](https://github.com/NaNIsaac/TraTT/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 TraTT is a time-dependent Takagi–Taupin solver: it simulates what an X-ray diffraction
 measurement would see while a GHz sound wave is still entering a perfect crystal, before it has
