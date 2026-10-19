@@ -34,6 +34,7 @@ Manuscript syntax
                   centres that column vertically in the row; rows nest
   "> text"        key-message band                        "- text"  bullet
   "![caption](path)" figure, as wide as its column
+  "~ step | text" input-condition line: a small envelope glyph (step or ramp) followed by the text
   "$$ text"       display line: centred, slightly larger, with space around it (equations)
   "=> a // b | c" flow diagram: boxes joined by arrows, a loop arrow back to the first box; "//"
                   splits a box into its symbol line and a smaller description line
@@ -159,6 +160,11 @@ def parse(text):
         if block.startswith("=>"):
             t = " ".join(block[2:].split())
             add(dict(kind="flow", boxes=[b.strip() for b in TAG.sub("", t).split("|")], tags=TAG.findall(t)))
+            continue
+        if block.startswith("~"):
+            shape, t = block[1:].split("|", 1)
+            t = " ".join(t.split())
+            add(dict(kind="onset", shape=shape.strip(), text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
             continue
         if block.startswith("$$"):
             t = " ".join(block[2:].split())
@@ -304,6 +310,30 @@ def equation(P, it, x, y, w, draw=True):
     return P.flow(it["text"], x, y + 1, w, s["eq_pt"], align="center", draw=draw) + s["para_gap"] + 1.5
 
 
+def onset(P, it, x, y, w, draw=True):
+    """Input condition of a result panel on one line: envelope glyph A(s) (step or linear ramp,
+    onset at s = 0), then the condition in body type."""
+    s = SPEC
+    gw, x0, top, base = 46.0, x + 11.0, y + 3.0, y + 12.5     # glyph width, onset, A = 1, A = 0
+    knee = x0 + (17.0 if it["shape"] == "ramp" else 0.0)
+    lab = s["caption_pt"] * PT_MM
+    if draw:
+        P.ax.annotate("", xy=(x + gw, base), xytext=(x, base), zorder=3,
+                      arrowprops=dict(arrowstyle="-|>", color=s["ink2"], lw=1.4, mutation_scale=14))
+        P.ax.plot([x, x0, knee, x + gw - 6], [base, base, top, top], color=s["navy"], lw=3.0,
+                  solid_joinstyle="miter", zorder=4)
+        P.ax.text(x + gw + 1.2, base, "$s$", fontsize=s["caption_pt"], color=s["ink2"], va="center", zorder=4)
+        ticks = [(x0, "$0$")] + ([(knee, "$T_{rise}$")] if knee > x0 else [])
+        for tx, t in ticks:
+            P.ax.plot([tx, tx], [base, base + 1.6], color=s["ink2"], lw=1.4, zorder=3)
+            P.ax.text(tx, base + 2.0, t, fontsize=s["caption_pt"], color=s["ink2"], ha="center", va="top",
+                      zorder=4)
+        if knee > x0:
+            P.ax.plot([knee, knee], [top, base], color=s["ink2"], lw=1.0, ls=(0, (2, 2)), zorder=3)
+    y1 = P.flow(it["text"], x + gw + 9, y + 0.6, w - gw - 9, s["body_pt"], draw=draw, strong=s["navy"])
+    return max(y1, base + 2.0 + lab) + s["para_gap"]
+
+
 def flow_diagram(P, it, x, y, w, draw=True):
     """Boxes left to right joined by arrows, with a return arrow underneath (one loop per time step).
     A box "symbol // description" sets the symbol large and the description small below it."""
@@ -387,6 +417,8 @@ def items(P, its, x, y, w, draw, check):
             y = callout(P, it, x, y, w, draw)
         elif k == "eq":
             y = equation(P, it, x, y, w, draw)
+        elif k == "onset":
+            y = onset(P, it, x, y, w, draw)
         elif k == "flow":
             y = flow_diagram(P, it, x, y, w, draw)
         else:

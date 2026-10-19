@@ -73,9 +73,9 @@ $$ $dR/d\zeta=-i\pi\alpha\,e^{-i\phi}-i\eta R-i\pi\alpha\,e^{+i\phi}R^2,\qquad R
 
 @pair
 
-## Formation Dynamics of Acoustic Satellites
+## Numerical Simulation of Acoustic Satellite Formation
 
-![](figures/poster/f8_onset_step.png){E0}
+~ step | **Sudden acoustic onset:** $A(s)=H(s)$, $s=\tilde t-\zeta$ {E0}
 
 With the satellites treated as independent, the strained layer acts as a uniform crystal of thickness $\tilde t$ and coupling $\alpha_n=\alpha\left|J_n(S)\right|$: {E1}{E9}
 
@@ -83,11 +83,11 @@ $$ $I_n=\sin^2(\pi\alpha_n\tilde t)$ (Laue), $\qquad I_n=\tanh^2(\pi\alpha_n\til
 
 The formation time $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$ is independent of $L$, and the order follows $\left|J_n(S)\right|$ rather than $n$ (at $S=3$: $n=2,1,3$). {E1}{E6}
 
-![Points: full TT; lines: independent-satellite expressions without fitting parameters. Deviations reflect the approximation, not solver error; see the research notebook for validity limits.](figures/poster/f1_collapse.png){E1}{E9}{E19}{E26}
+![Markers: full TT simulations; solid lines: independent-satellite approximation, without fitting parameters. Deviations reflect the approximation rather than numerical solver error.](figures/poster/f1_collapse.png){E1}{E9}{E19}{E26}
 
 ## Transient Intensity Overshoot
 
-![](figures/poster/f8_onset_ramp.png){E28}{E67}
+~ ramp | **Gradual acoustic onset:** $A(s)=\min(s/T_{rise},\,1)$ for $s\geq0$ {E28}{E67}
 
 The depth-dependent amplitude gives satellite $n$ a depth-averaged coupling: {E5}{E28}
 

@@ -12,7 +12,6 @@ f5  outlook: Fourier weight / kinematic law (Entry 59, e58 data) and the satelli
     first-order forms against full TT (Entry 64, e64_sw.json); reads stored results only
 f6  introductory Bessel coupling weights for a sinusoidal grating
 f7  linear-ramp overshoot map and three TT-checked traces (Entry 67)
-f8  envelope strips for the two result panels: step (Drive, rise = 0) and linear ramp (Entry 67)
 """
 
 from __future__ import annotations
@@ -188,16 +187,21 @@ def f1():
     for a, data, law, title in (
             (ax[0], laue, np.sin(np.pi * s) ** 2, r"Laue: $\sin^2(\pi\alpha_n\tilde t)$"),
             (ax[1], bragg, np.tanh(np.pi * s) ** 2, r"Bragg: $\tanh^2(\pi\alpha_n\tilde t)$")):
-        a.plot(s, law, color=INK, lw=2.4, zorder=1, label="expression")
+        # the law is drawn over the TT markers so the comparison stays visible where they crowd
+        a.plot(s, law, color=INK, lw=2.0, zorder=3, label="Independent-satellite law")
         for (S, al, n), I, c, m in zip(M.CASES, data, (BLUE, ORANGE, AQUA, YELLOW), M.MARK):
-            a.plot(al * abs(jv(n, S)) * t, I, m, color=c, mec="white", mew=0.9, ms=9, ls="none",
+            a.plot(al * abs(jv(n, S)) * t, I, m, color=c, mec="white", mew=0.8, ms=9.5, ls="none", zorder=2,
                    label=rf"$S={S:g},\ \alpha={al:g},\ n={n}$")
         a.set(xlim=(0, 2.3), ylim=(-0.03, 1.08), title=title,
               xlabel=r"$\alpha_n\tilde t$,  $\alpha_n=\alpha\left|J_n(S)\right|$")
     ax[0].set_ylabel(r"centre intensity $I_n$")
     ax[1].tick_params(labelleft=False)
-    h, lab = ax[1].get_legend_handles_labels()
-    ax[1].legend(h[1:] + h[:1], lab[1:] + lab[:1], frameon=False, loc="lower right", handletextpad=0.3)
+    h, lab = ax[1].get_legend_handles_labels()       # two keys: what is simulated, what it is compared with
+    sim = ax[1].legend(h[1:], lab[1:], title="Full TT simulation", frameon=False, loc="lower right",
+                       bbox_to_anchor=(1.0, 0.16), handletextpad=0.3, markerscale=1.4, alignment="left")
+    sim.get_title().set_fontweight("semibold")
+    ax[1].add_artist(sim)
+    ax[1].legend(h[:1], lab[:1], frameon=False, loc="lower right", handlelength=1.6, handletextpad=0.4)
     finish(fig, ax, "f1_collapse")
     for name, data, law in (("Laue", laue, lambda x: np.sin(np.pi * x) ** 2),
                             ("Bragg", bragg, lambda x: np.tanh(np.pi * x) ** 2)):
@@ -396,37 +400,6 @@ def f7():
     print("wrote", OUT / "f7_overshoot.png")
 
 
-def f8():
-    """Envelope strips that open the two result panels, drawn from the envelopes the results used:
-    the step of `Drive` (rise = 0, Entries 1 and 9) and the linear ramp of memory_drive.ramp (Entry 67)."""
-    sys.path.insert(0, str(ROOT / "explore" / "nb"))
-    from memory_drive import ramp
-
-    style()
-    s = np.linspace(-0.6, 2.6, 801)
-    for name, A, color, text in (
-            ("f8_onset_step", Drive(S=1.0, alpha_ac=20.0).envelope(s), BLUE,
-             r"Sudden onset: $A(s)=1$ for $s\geq0$,  $s=\tilde t-\zeta$"),
-            ("f8_onset_ramp", ramp(1.5)(s) * (s >= 0), ORANGE,
-             r"Gradual onset: $A(s)=\min(s/T_{rise},\,1)$ for $s\geq0$")):
-        fig = plt.figure(figsize=(FIG_W, 0.95))
-        ax = fig.add_axes([0.035, 0.30, 0.20, 0.62])
-        ax.plot(s, A, color=color, lw=3.2)
-        ax.set(xlim=(-0.6, 2.6), ylim=(-0.15, 1.75), xticks=[0], yticks=[0, 1])
-        ax.set_xticklabels([r"$0$"])
-        ax.tick_params(labelsize=SMALL - 2, length=4, pad=2)
-        ax.text(1.03, 0.04, r"$s$", transform=ax.transAxes, fontsize=SMALL - 2, va="center")
-        ax.set_ylabel(r"$A$", fontsize=SMALL - 2, rotation=0, labelpad=10, va="center")
-        if "ramp" in name:
-            ax.annotate("", xy=(1.5, 1.25), xytext=(0, 1.25),
-                        arrowprops=dict(arrowstyle="<|-|>", color=INK2, lw=1.2, mutation_scale=12))
-            ax.text(0.75, 1.3, r"$T_{rise}$", ha="center", va="bottom", fontsize=SMALL - 2, color=INK2)
-        fig.text(0.27, 0.55, text, fontsize=BIG, va="center", color=INK)
-        OUT.mkdir(parents=True, exist_ok=True)
-        fig.savefig(OUT / f"{name}.png")
-        print("wrote", OUT / f"{name}.png")
-
-
 if __name__ == "__main__":
-    for name in (sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"]):
+    for name in (sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7"]):
         globals()[name]()
