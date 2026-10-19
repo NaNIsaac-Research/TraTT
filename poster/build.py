@@ -477,11 +477,9 @@ def build(preview_dpi=60):
         P.image(qr, qr_x, qr_y, qr_w, h=qr_w)
     else:
         problems.append("missing footer QR")
-    label_x, label_w = qr_x - 72.0, 63.0
-    P.flow("Code &", label_x, fy + 10, label_w, s["caption_pt"], s["ink2"], align="center")
-    P.flow("notebook", label_x, fy + 23, label_w, s["caption_pt"], s["ink2"], align="center")
-
-    cupt_right = label_x - 15.0
+    # QR destination is the project repository; remove the awkward side caption.
+    # Keep the logo and QR as a restrained, aligned footer group.
+    cupt_right = qr_x - 16.0
     cupt_left = cupt_right - 115.0
     cupt = ASSETS / "logo_cupt.png"
     if cupt.exists():

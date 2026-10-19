@@ -99,9 +99,16 @@ def f0():
     zz = np.linspace(0.0, 1.0, 1200)
     phi = d.phi(t)(zz)
     amp = 0.33 * (y1 - y0) / max(abs(phi).max(), 1e-9)
-    ax.plot(x0 + zz * (x1 - x0), ymid + amp * phi, color=BLUE, lw=2.6, zorder=3,
-            solid_capstyle="round")
+    # Draw the propagating acoustic displacement only where the wave has arrived.
+    # A flat phi=0 line ahead of the front can be mistaken for the X-ray path.
+    vibrating = zz <= t
+    ax.plot(x0 + zz[vibrating] * (x1 - x0), ymid + amp * phi[vibrating],
+            color=BLUE, lw=2.8, zorder=3, solid_capstyle="round")
     ax.plot([xf, xf], [y0, y1], color=BLUE, lw=2.4, ls=(0, (4, 3)), zorder=4)
+    # Separate the physical sound field (blue oscillation) from the X-ray probe
+    # (dark straight incoming arrow) using a directly associated label.
+    ax.text(x0 + 1.57, y1 + 0.36, "acoustic wave", color=BLUE,
+            ha="center", va="bottom", fontsize=LAB - 4, fontweight="medium")
 
     # transducer on the lower part of the entrance face, so the beam enters clear of it
     ty = y0 + 0.58 * (y1 - y0)
