@@ -130,7 +130,6 @@ line-length = 100
 "explore/nb/nonideal.py" = ["UP035"]
 "explore/nb/qmod.py" = ["C408", "UP035"]
 "explore/p0_equations.ipynb" = ["I001"]
-"poster/build.py" = ["C408", "FURB167", "RUF100"]
 "poster/build.py" = ["C408", "FURB167", "PLC3002", "RUF100"]
 "src/tratt/core.py" = ["RUF022"]
 "src/tratt/cube.py" = ["RUF022"]
