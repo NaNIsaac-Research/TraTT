@@ -183,7 +183,7 @@ def f1():
             (ax[1], bragg, np.tanh(np.pi * s) ** 2, r"Bragg: $\tanh^2(\pi\alpha_n\tilde t)$")):
         a.plot(s, law, color=INK, lw=2.4, zorder=1, label="expression")
         for (S, al, n), I, c, m in zip(M.CASES, data, (BLUE, ORANGE, AQUA, YELLOW), M.MARK):
-            a.plot(al * abs(jv(n, S)) * t, I, m, color=c, mec="white", mew=1.2, ms=11, ls="none",
+            a.plot(al * abs(jv(n, S)) * t, I, m, color=c, mec="white", mew=0.9, ms=9, ls="none",
                    label=rf"$S={S:g},\ \alpha={al:g},\ n={n}$")
         a.set(xlim=(0, 2.3), ylim=(-0.03, 1.08), title=title,
               xlabel=r"$\alpha_n\tilde t$,  $\alpha_n=\alpha\left|J_n(S)\right|$")
@@ -347,7 +347,7 @@ def f7():
     data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
     fig = plt.figure(figsize=(FIG_W, F7_H), constrained_layout=True)
-    grid = fig.add_gridspec(2, 3, height_ratios=[1.4, 1])
+    grid = fig.add_gridspec(2, 3, height_ratios=[1.18, 1.20])
     ax = fig.add_subplot(grid[0, :])
     im = ax.pcolormesh(data["S"], data["rise"], data["excess"], shading="nearest",
                        cmap="YlOrRd", vmin=0)
@@ -365,7 +365,7 @@ def f7():
         a = fig.add_subplot(grid[1, ord(letter) - ord("A")])
         a.plot(data[f"{letter}_t"], data[f"{letter}_I"], color=color)
         a.plot(data[f"{letter}_tt_t"][::3], data[f"{letter}_tt_I"][::3], "o",
-               color=color, mec="white", ms=7)
+               color=color, mec="white", ms=8)
         a.axhline(case["steady"], color=INK2, ls="--", lw=1.5)
         if letter == "B":   # mark the quantity the map shows
             k = int(np.argmax(data["B_I"]))

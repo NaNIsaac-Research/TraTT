@@ -99,7 +99,7 @@ SPEC = dict(
     stat_pt=36, stat_label_pt=23, eq_pt=30, min_pt=23,
     leading=1.3, para_gap=6, side_text=0.64, panel_gap=8, fig_gap=4,
     navy="#0f2a3a", accent="#e8743b", page="#ffffff", card="#ffffff", edge="#7d868f", key="#fbf1d9",
-    ink="#111111", ink2="#4f5560", tint="#f2f4f7",
+    ink="#111111", ink2="#3f4852", tint="#f4f6f7",
     stripe=("#3a3a3a", "#e04b3a", "#f08a3c"),
 )
 PT_MM = 25.4 / 72
@@ -457,29 +457,40 @@ def build(preview_dpi=60):
     y = P.flow(meta.get("authors", ""), M + logo_w, y + 13, tw, s["authors_pt"], "white", align="center")
     P.flow(meta.get("affiliation", ""), M + logo_w, y + 4, tw, s["authors_pt"] - 8, "#c9d6e0", align="center")
 
-    # footer: an Acknowledgement box, as on the lab posters
+    # Footer: stable zones for the grant, CUPT mark, and repository QR.
     fy = H - s["footer_h"]
-    base = fy + 6 + s["head_pt"] * PT_MM * 0.9
-    sq = (s["head_pt"] - 6) * PT_MM * 0.62                  # drawn: Plex Sans has no U+25A0
-    P.box(M + s["pad"], base - sq, sq, sq, s["navy"], r=0, z=3)
-    ax.text(M + s["pad"] + sq + 3, base, "Acknowledgement", fontsize=s["head_pt"] - 6,
+    ax.plot([M, W - M], [fy - 1.4, fy - 1.4], color=s["edge"], lw=0.9, zorder=2)
+    left = M + s["pad"]
+    title_baseline = fy + 17.5
+    sq = 6.7
+    P.box(left, title_baseline - sq + 0.4, sq, sq, s["navy"], r=0, z=3)
+    ax.text(left + sq + 3.2, title_baseline, "Acknowledgement", fontsize=s["head_pt"] - 6,
             color=s["ink"], family=FONT, fontweight="semibold", va="baseline", zorder=3)
+
     qr = ASSETS / "qr_repo.png"
     if not qr.exists():
         qr = ROOT / "figures" / "poster" / "qr_repo.png"
-    qw = s["footer_h"] - M * 0.75 - 6 if qr.exists() else 0
-    right = W - M - 3                                       # right edge of the free part of the box
-    if qw:
-        P.image(qr, right - qw, fy + 3, qw, h=qw)
-        P.flow("code and lab notebook", right - qw - 73, fy + 3 + qw / 2 - 4, 68, s["caption_pt"],
-               s["ink2"], align="center")
-        right -= qw + 80
-    if (ASSETS / "logo_cupt.png").exists():
-        right -= 30                                         # keep the logo clear of the QR caption
-        right -= fit(P, ASSETS / "logo_cupt.png", right - 120, fy + 5, 120, (qw or 36) - 4, align="right") + 16
-    P.flow(" · ".join(v for k, v in meta.items() if k in ("footer", "contact")), M + s["pad"],
-           fy + 8 + s["head_pt"] * PT_MM, right - M - s["pad"], s["caption_pt"] + 2, s["ink"])
-    ax.plot([M, W - M], [fy - 1, fy - 1], color=s["edge"], lw=0.8, zorder=2)
+    qr_w = min(37.0, s["footer_h"] - 12.0)
+    qr_x = W - M - qr_w - 1.5
+    qr_y = fy + (s["footer_h"] - qr_w) / 2
+    if qr.exists():
+        P.image(qr, qr_x, qr_y, qr_w, h=qr_w)
+    else:
+        problems.append("missing footer QR")
+    label_x, label_w = qr_x - 72.0, 63.0
+    P.flow("Code &", label_x, fy + 10, label_w, s["caption_pt"], s["ink2"], align="center")
+    P.flow("notebook", label_x, fy + 23, label_w, s["caption_pt"], s["ink2"], align="center")
+
+    cupt_right = label_x - 15.0
+    cupt_left = cupt_right - 115.0
+    cupt = ASSETS / "logo_cupt.png"
+    if cupt.exists():
+        fit(P, cupt, cupt_left, fy + 7, 115.0, s["footer_h"] - 14, align="right")
+    else:
+        problems.append("missing CUPT footer logo")
+    acknowledgements = " · ".join(v for k, v in meta.items() if k in ("footer", "contact"))
+    grant_width = cupt_left - left - 22
+    P.flow(acknowledgements, left, fy + 23.0, grant_width, s["caption_pt"] + 2, s["ink"])
 
     def check(it):
         if it["tags"] is None:                              # rows carry no tag; their items do

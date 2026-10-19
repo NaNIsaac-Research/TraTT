@@ -1,0 +1,37 @@
+name: Poster PDF preview (design branch)
+on:
+  push:
+    branches:
+      - design/poster-final-polish-20261019
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-poster:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Render from committed plot caches (no TT reruns)
+        run: |
+          uv run --python 3.12 --extra dev python explore/make_poster_figs.py f1 f7
+          uv run --python 3.12 --extra dev python poster/build.py 100
+      - name: Validate A0 page and text
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for x in ('poster/out/poster.pdf', 'poster/out/poster.png'):
+              f=Path(x)
+              assert f.is_file() and f.stat().st_size>20000, x
+              print(x, f.stat().st_size, 'bytes')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tratt-poster-polished
+          path: |
+            poster/out/poster.pdf
+            poster/out/poster.png
+          retention-days: 14
