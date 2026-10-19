@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-poster:
@@ -28,6 +28,15 @@ jobs:
               assert f.is_file() and f.stat().st_size>20000, x
               print(x, f.stat().st_size, 'bytes')
           PY
+      - name: Track the regenerated acoustic schematic
+        run: |
+          if ! git diff --quiet -- figures/poster/f0_scheme.png; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add figures/poster/f0_scheme.png
+            git commit -m "Update acoustic wave schematic image [skip ci]"
+            git push origin HEAD:design/poster-schematic-qr-final
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: tratt-poster-schematic-qr-proof
