@@ -36,7 +36,7 @@ FONT = "IBM Plex Sans"   # same face as poster/build.py (f1 still carries Source
 
 FIG_W = 14.4          # inches = poster card inner width (~366 mm)
 INTRO_W = 12.5        # inches = left column of the introduction band (~317 mm)
-F1_H, F7_H = 7.65, 8.5  # heights of the two result figures (inches), set by the results band
+F1_H, F7_H = 7.15, 8.35  # heights of the two result figures (inches), set by the results band
 BIG, SMALL = 26, 23   # printed pt; smallest label 21 pt (SMALL - 2), readable at ~1.5 m on A0
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
@@ -377,7 +377,7 @@ def f7():
     data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
     fig = plt.figure(figsize=(FIG_W, F7_H), constrained_layout=True)
-    grid = fig.add_gridspec(2, 3, height_ratios=[1.6, 1.0])   # heatmap reads as a 2D map; traces stay legible
+    grid = fig.add_gridspec(2, 3, height_ratios=[1.78, 1.0], hspace=0.18)  # PR #9: show the full 2D scan
     ax = fig.add_subplot(grid[0, :])
     im = ax.pcolormesh(data["S"], data["rise"], data["excess"], shading="nearest",
                        cmap="YlOrRd", vmin=0)
