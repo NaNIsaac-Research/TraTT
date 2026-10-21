@@ -137,6 +137,22 @@ not complete (Entries 60, 61).
 pip install tratt
 ```
 
+With [uv](https://docs.astral.sh/uv/), in a new environment:
+
+<!-- test unix -->
+```bash
+uv venv
+uv pip install tratt
+.venv/bin/python -c "import tratt"
+```
+
+<!-- test windows -->
+```powershell
+uv venv
+uv pip install tratt
+.venv\Scripts\python -c "import tratt"
+```
+
 Requires Python 3.12+; the package is the solver (`src/tratt`, numpy and scipy only). Notebooks, figure scripts and the poster build need a
 clone of this repository.
 
