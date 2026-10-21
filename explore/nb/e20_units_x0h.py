@@ -9,6 +9,7 @@ Key identity: alpha / alpha_ac = Lambda_ac / Lambda_P. The resolved-channel rule
 wavelength alone, so the minimum drive frequency f = v_s / Lambda_ac is set by Lambda_P,
 independent of the crystal thickness.
 """
+
 import numpy as np
 from scipy.special import jv
 
@@ -26,19 +27,23 @@ X0H = {
     (30, "440"): (98.759, 12.430, 0.40866e-6, 0.15857e-8, 0.18195e-8, 2.7663),
 }
 S = 1.5
-print(f"v_T = {V_T:.0f} m/s, S = {S}, L = 3 Lambda_P (alpha = 3, alpha_1 = {3*jv(1,S):.2f})")
-print("E keV hkl | Lambda_P um | L um | t_tr ns | tau_1 ns | f_min GHz (0.05 / 0.1) | strain at 0.1 | "
-      "kappa | a''/a' | contrast t=1 | exp(-mu L/cos)")
+print(f"v_T = {V_T:.0f} m/s, S = {S}, L = 3 Lambda_P (alpha = 3, alpha_1 = {3 * jv(1, S):.2f})")
+print(
+    "E keV hkl | Lambda_P um | L um | t_tr ns | tau_1 ns | f_min GHz (0.05 / 0.1) | strain at 0.1 | "
+    "kappa | a''/a' | contrast t=1 | exp(-mu L/cos)"
+)
 for (E, hkl), (lp, th, xr, xi, xi0, mu) in X0H.items():
     Lp = lp * 1e-6
     L = 3 * Lp
     t_tr = L / V_T
     tau1 = Lp / (V_T * jv(1, S))
     f05, f10 = V_T / (0.05 * Lp), V_T / (0.1 * Lp)
-    strain = S * D[hkl] / (0.1 * Lp)          # K u0 = S d / Lambda_ac
-    a_im = 3 * xi / xr                         # alpha'' with alpha' = 3
+    strain = S * D[hkl] / (0.1 * Lp)  # K u0 = S d / Lambda_ac
+    a_im = 3 * xi / xr  # alpha'' with alpha' = 3
     contrast = 1 / np.cosh(2 * np.pi * a_im * jv(1, S))
     trans = np.exp(-mu * 100 * L / np.cos(np.radians(th)))
-    print(f"{E:5g} {hkl} | {lp:7.2f} | {L*1e6:6.1f} | {t_tr*1e9:6.2f} | {tau1*1e9:6.2f} | "
-          f"{f05/1e9:5.2f} / {f10/1e9:5.2f} | {strain:.1e} | {xi/xi0:.3f} | {xi/xr:.4f} | "
-          f"{contrast:.3f} | {trans:.3f}")
+    print(
+        f"{E:5g} {hkl} | {lp:7.2f} | {L * 1e6:6.1f} | {t_tr * 1e9:6.2f} | {tau1 * 1e9:6.2f} | "
+        f"{f05 / 1e9:5.2f} / {f10 / 1e9:5.2f} | {strain:.1e} | {xi / xi0:.3f} | {xi / xr:.4f} | "
+        f"{contrast:.3f} | {trans:.3f}"
+    )

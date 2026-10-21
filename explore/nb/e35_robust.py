@@ -10,6 +10,7 @@ Cases: FAST  alpha = 1,   T = 0.5  (T < t_tr: the genuine transient)
        SLOW  alpha = 0.5, T = 8    (adiabatic scan; reference only)
 Usage: python e35_robust.py [section ...]   sections: base atten disp nl ring combo retune integ
 """
+
 import sys
 from pathlib import Path
 
@@ -21,6 +22,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1] / "src"))
 sys.path.insert(0, str(HERE))
 from nonideal import GeneralDrive, dispersed_ramp, ramp, ringing_ramp, theta_law  # noqa: E402
+
 from tratt.core import required_nz  # noqa: E402
 from tratt.cube import rocking_cube  # noqa: E402
 
@@ -36,11 +38,12 @@ def nz_for(d, extra=0.0):
 def run(d, alpha, T, extra_t=0.5, nz=None, eta=None, law=True):
     """Centre (or eta-integrated if eta is an array) I_1 vs t; returns dict of observables."""
     t_end = 1.0 + T + extra_t
-    t = np.concatenate([np.linspace(0.0, t_end - 1 / AAC, 81) + 0.0037,
-                        np.linspace(t_end - 1 / AAC, t_end, 16)])
+    t = np.concatenate(
+        [np.linspace(0.0, t_end - 1 / AAC, 81) + 0.0037, np.linspace(t_end - 1 / AAC, t_end, 16)]
+    )
     nz = nz or nz_for(d)
     if eta is None:
-        I = rocking_cube(alpha, d, np.array([d.q]), t, n_z=nz)[:, 0]   # all times in one sweep
+        I = rocking_cube(alpha, d, np.array([d.q]), t, n_z=nz)[:, 0]  # all times in one sweep
     else:
         I = np.trapezoid(rocking_cube(alpha, d, eta, t, n_z=nz), eta, axis=1)
     out = dict(I_max=I[:81].max(), t_max=t[np.argmax(I[:81])], I_fin=I[81:].mean(), I=I, t=t)
@@ -69,8 +72,10 @@ def section_base():
         alpha, T = CASES[name]
         d = GeneralDrive(S=Z, alpha_ac=AAC, amp=ramp(T))
         a, b = run(d, alpha, T, law=False), run(d, alpha, T, nz=2 * nz_for(d), law=False)
-        print(f"  convergence {name}: nz {nz_for(d)} vs x2: I_max {a['I_max']:.5f}/{b['I_max']:.5f}, "
-              f"I_fin {a['I_fin']:.2e}/{b['I_fin']:.2e}")
+        print(
+            f"  convergence {name}: nz {nz_for(d)} vs x2: I_max {a['I_max']:.5f}/{b['I_max']:.5f}, "
+            f"I_fin {a['I_fin']:.2e}/{b['I_fin']:.2e}"
+        )
     # step to S below the zero: n = 1 bright at the end (what a non-forbidden final looks like)
     d = GeneralDrive(S=2.5, alpha_ac=AAC, amp=ramp(0.5))
     print(f"  reference S_f=2.5 (J1={jv(1, 2.5):.3f}), FAST: {fmt(run(d, 1.0, 0.5))}")
@@ -111,46 +116,69 @@ def section_ring():
     print("== 4. transducer ringing after the ramp: R e^{-x/tau} sin(2 pi f x + psi), x = s - T ==")
     for name in ("FAST", "MID", "STEP"):
         alpha, T = CASES[name]
-        for R, tau, f, psi in [(0.0, 1, 1, 0), (0.02, 0.2, 3, 0), (0.05, 0.2, 3, 0), (0.1, 0.2, 3, 0),
-                               (0.2, 0.2, 3, 0), (0.1, 0.05, 3, 0), (0.1, 1.0, 3, 0), (0.1, 3.0, 3, 0),
-                               (0.1, 0.2, 0.5, 0), (0.1, 0.2, 10, 0), (0.1, 0.2, 3, np.pi / 2),
-                               (0.1, 0.2, 3, np.pi)]:
+        for R, tau, f, psi in [
+            (0.0, 1, 1, 0),
+            (0.02, 0.2, 3, 0),
+            (0.05, 0.2, 3, 0),
+            (0.1, 0.2, 3, 0),
+            (0.2, 0.2, 3, 0),
+            (0.1, 0.05, 3, 0),
+            (0.1, 1.0, 3, 0),
+            (0.1, 3.0, 3, 0),
+            (0.1, 0.2, 0.5, 0),
+            (0.1, 0.2, 10, 0),
+            (0.1, 0.2, 3, np.pi / 2),
+            (0.1, 0.2, 3, np.pi),
+        ]:
             amp = ringing_ramp(T, R, tau, f, psi) if R else ramp(T)
             d = GeneralDrive(S=Z, alpha_ac=AAC, amp=amp)
-            o_meas = run(d, alpha, T, extra_t=0.5)                      # fixed measurement window
-            o_late = run(d, alpha, T, extra_t=0.5 + 6 * tau, law=False)  # after the ringing has died
-            print(f"  {name:4s} R {R:.2f} tau {tau:4.2f} f {f:4.1f} psi {psi:4.2f}: {fmt(o_meas)} "
-                  f"|| late I_fin {o_late['I_fin']:.2e}, C {o_late['C']:.1f}")
+            o_meas = run(d, alpha, T, extra_t=0.5)  # fixed measurement window
+            o_late = run(
+                d, alpha, T, extra_t=0.5 + 6 * tau, law=False
+            )  # after the ringing has died
+            print(
+                f"  {name:4s} R {R:.2f} tau {tau:4.2f} f {f:4.1f} psi {psi:4.2f}: {fmt(o_meas)} "
+                f"|| late I_fin {o_late['I_fin']:.2e}, C {o_late['C']:.1f}"
+            )
 
 
 def section_combo():
     print("== 5. combined ==")
     for name in ("FAST", "MID"):
         alpha, T = CASES[name]
-        for label, kw in [("atten 10% + ringing R .05 tau .2 f 3",
-                           dict(amp=ringing_ramp(T, 0.05, 0.2, 3.0), gamma=-np.log(0.9))),
-                          ("dispersion sig1 .1 + NL eps2 .02",
-                           dict(amp=dispersed_ramp(T, 0.1), eps2=0.02)),
-                          ("atten 5% + NL eps2 .02 + ringing R .02",
-                           dict(amp=ringing_ramp(T, 0.02, 0.2, 3.0), gamma=-np.log(0.95), eps2=0.02))]:
+        for label, kw in [
+            (
+                "atten 10% + ringing R .05 tau .2 f 3",
+                dict(amp=ringing_ramp(T, 0.05, 0.2, 3.0), gamma=-np.log(0.9)),
+            ),
+            ("dispersion sig1 .1 + NL eps2 .02", dict(amp=dispersed_ramp(T, 0.1), eps2=0.02)),
+            (
+                "atten 5% + NL eps2 .02 + ringing R .02",
+                dict(amp=ringing_ramp(T, 0.02, 0.2, 3.0), gamma=-np.log(0.95), eps2=0.02),
+            ),
+        ]:
             d = GeneralDrive(S=Z, alpha_ac=AAC, **kw)
             print(f"  {name:4s} {label}: {fmt(run(d, alpha, T))}")
 
 
 def section_retune():
-    print("== 6. essence test: with attenuation, retune S so that int_0^1 J1(S e^{-gamma z}) dz = 0 ==")
+    print(
+        "== 6. essence test: with attenuation, retune S so that int_0^1 J1(S e^{-gamma z}) dz = 0 =="
+    )
     z = np.linspace(0, 1, 4001)
     for loss in (0.1, 0.2, 0.4):
         g = -np.log(1 - loss)
-        Sst = brentq(lambda S: np.trapezoid(jv(1, S * np.exp(-g * z)), z), 3.5, 6.0)
+        Sst = brentq(lambda S: np.trapezoid(jv(1, S * np.exp(-g * z)), z), 3.5, 6.0)  # noqa: B023 - called within the iteration
         frac = np.mean(np.abs(jv(1, Sst * np.exp(-g * z))) > 0.05)
         for name in ("FAST", "STEP"):
             alpha, T = CASES[name]
             d0 = GeneralDrive(S=Z, alpha_ac=AAC, amp=ramp(T), gamma=g)
             d1 = GeneralDrive(S=Sst, alpha_ac=AAC, amp=ramp(T), gamma=g)
             print(f"  loss {loss:.0%} {name}: S=j11 -> {fmt(run(d0, alpha, T))}")
-            print(f"  loss {loss:.0%} {name}: S*={Sst:.4f} (|J1|>0.05 on {frac:.0%} of depth) -> "
-                  f"{fmt(run(d1, alpha, T))}")
+            print(
+                f"  loss {loss:.0%} {name}: S*={Sst:.4f} (|J1|>0.05 on {frac:.0%} of depth) -> "
+                f"{fmt(run(d1, alpha, T))}"
+            )
 
 
 def section_integ():
@@ -158,13 +186,19 @@ def section_integ():
     q = 2 * np.pi * AAC
     eta = np.linspace(0.5 * q, 1.5 * q, 801)
     alpha, T = CASES["FAST"]
-    for label, kw in [("ideal", {}), ("atten 20%", dict(gamma=-np.log(0.8))),
-                      ("NL eps2 .05", dict(eps2=0.05)), ("ring R .1 tau .2", dict(amp=ringing_ramp(T, 0.1, 0.2, 3.0)))]:
+    for label, kw in [
+        ("ideal", {}),
+        ("atten 20%", dict(gamma=-np.log(0.8))),
+        ("NL eps2 .05", dict(eps2=0.05)),
+        ("ring R .1 tau .2", dict(amp=ringing_ramp(T, 0.1, 0.2, 3.0))),
+    ]:
         kw.setdefault("amp", ramp(T))
         d = GeneralDrive(S=Z, alpha_ac=AAC, **kw)
         oc, oi = run(d, alpha, T), run(d, alpha, T, eta=eta, law=False)
-        print(f"  FAST {label:16s}: centre C {oc['C']:9.1f} | integrated I_max {oi['I_max']:.3f} "
-              f"I_fin {oi['I_fin']:.2e} C {oi['C']:9.1f}")
+        print(
+            f"  FAST {label:16s}: centre C {oc['C']:9.1f} | integrated I_max {oi['I_max']:.3f} "
+            f"I_fin {oi['I_fin']:.2e} C {oi['C']:9.1f}"
+        )
 
 
 if __name__ == "__main__":

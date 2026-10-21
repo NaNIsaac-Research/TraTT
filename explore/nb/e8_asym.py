@@ -4,6 +4,7 @@ A_1 = (p_{+1} - p_{-1}) / (p_{+1} + p_{-1}), window integrals of raw I.
 The collapse law is symmetric in n (|J_{-n}| = |J_n|), so any asymmetry is beyond it.
 Scan alpha_ac; also report the intensity-weighted rms over the transit.
 """
+
 import sys
 from pathlib import Path
 
@@ -26,5 +27,7 @@ for alpha in (0.05, 1.3):
         A = (pp - pm) / (pp + pm)
         w = pp + pm
         rms_w = np.sqrt(np.sum(w * A**2) / np.sum(w))
-        print(f"alpha={alpha} aac={aac:>4}: max|A|={np.max(np.abs(A)):.3f} at t={t[np.argmax(np.abs(A))]:.3f}  "
-              f"weighted rms={rms_w:.4f}  rms(t>0.3)={np.sqrt(np.mean(A[t > 0.3]**2)):.4f}")
+        print(
+            f"alpha={alpha} aac={aac:>4}: max|A|={np.max(np.abs(A)):.3f} at t={t[np.argmax(np.abs(A))]:.3f}  "
+            f"weighted rms={rms_w:.4f}  rms(t>0.3)={np.sqrt(np.mean(A[t > 0.3] ** 2)):.4f}"
+        )

@@ -5,6 +5,7 @@ can make it vanish exactly at
 Test: scan S around j, find the minimum of the channel population max_eta |b_{-n}(1)|^2,
 compare S* (numerical) with the prediction, and check how deep the minimum is.
 """
+
 import os
 
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "8")
@@ -28,9 +29,14 @@ if __name__ == "__main__":
         dJ = jvp(-n, j) if n else jvp(0, j)
         for alpha, aac in ((1.0, 5.0), (1.0, 3.0), (2.0, 5.0), (2.0, 3.0), (1.0, 2.0), (2.0, 2.0)):
             R = alpha / aac
-            f = lambda S: np.log(channel_population(alpha, aac, S, n)[0] + 1e-300)  # noqa: E731
+            f = lambda S: np.log(channel_population(alpha, aac, S, n)[0] + 1e-300)  # noqa: E731, B023
             pred = j + (R / 2) ** 2 * Cn / dJ
             span = max(4 * abs(pred - j), 0.02)
-            res = minimize_scalar(f, bounds=(j - span, j + span), method="bounded", options={"xatol": 1e-6})
-            print(f" {n:+d} {alpha:5.2f} {aac:4.1f} {R:5.2f} | {res.x:.6f}  {pred:.6f}  {j:.6f} | "
-                  f"{np.exp(res.fun):.2e}  ({channel_population(alpha, aac, j, n)[0]:.2e})", flush=True)
+            res = minimize_scalar(
+                f, bounds=(j - span, j + span), method="bounded", options={"xatol": 1e-6}
+            )
+            print(
+                f" {n:+d} {alpha:5.2f} {aac:4.1f} {R:5.2f} | {res.x:.6f}  {pred:.6f}  {j:.6f} | "
+                f"{np.exp(res.fun):.2e}  ({channel_population(alpha, aac, j, n)[0]:.2e})",
+                flush=True,
+            )

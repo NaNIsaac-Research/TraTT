@@ -6,6 +6,7 @@ Predictions (no fit parameter):
 The n = 0 law: filled layer (coupling pi alpha J_0) and unfilled layer (pi alpha)
 are both on Bragg at eta = 0, so their Laue rotations add.
 """
+
 import sys
 from pathlib import Path
 
@@ -26,12 +27,17 @@ for S, alpha in [(0.5, 2.0), (1.0, 2.0), (3.0, 2.0), (3.0, 1.0)]:
     print(f"S={S} alpha={alpha}")
     for j, n in enumerate(ns):
         J = jv(n, S)
-        th = (np.sin(np.pi * alpha * (1 - (1 - J) * t)) ** 2 if n == 0
-              else np.sin(np.pi * alpha * abs(J) * t) ** 2)
+        th = (
+            np.sin(np.pi * alpha * (1 - (1 - J) * t)) ** 2
+            if n == 0
+            else np.sin(np.pi * alpha * abs(J) * t) ** 2
+        )
         err = np.max(np.abs(I[:, j] - th))
         # first local maximum of the simulated centre intensity (n != 0)
         y = I[:, j]
         k = int(np.argmax(y)) if n and 1 / (2 * alpha * abs(J)) < 1 else None
         tstar = t[k] if k is not None else np.nan
         pred = 1 / (2 * alpha * abs(J)) if n else np.nan
-        print(f"  n={n} J_n={J:+.3f} max|I-th|={err:.3f}  first max sim t*={tstar:.3f} pred={pred:.3f}")
+        print(
+            f"  n={n} J_n={J:+.3f} max|I-th|={err:.3f}  first max sim t*={tstar:.3f} pred={pred:.3f}"
+        )

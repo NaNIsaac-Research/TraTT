@@ -19,10 +19,11 @@ Envelopes (all of retarded time s, units of t_tr):
   dispersed_ramp(T, sig1)       ramp convolved with a Gaussian of width sig1 * sqrt(zeta)
   ringing_ramp(T, R, tau, f, psi)  ramp + R e^{-(s-T)/tau} sin(2 pi f (s - T) + psi) for s > T
 """
+
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import numpy as np
 from scipy.special import erf
@@ -47,9 +48,11 @@ def ramp(T: float) -> Callable:
 
 def _ramp_conv(s, T, sig):
     """Linear ramp (0 -> 1 over T) convolved with a unit Gaussian of width sig (closed form)."""
+
     def F(x):  # (x)_+ convolved with the Gaussian
         u = x / sig
         return x * 0.5 * (1 + erf(u / np.sqrt(2))) + sig * np.exp(-0.5 * u * u) / np.sqrt(2 * np.pi)
+
     if T == 0.0:
         return 0.5 * (1 + erf(s / (sig * np.sqrt(2))))
     return (F(s) - F(s - T)) / T
@@ -58,6 +61,7 @@ def _ramp_conv(s, T, sig):
 def dispersed_ramp(T: float, sig1: float) -> Callable:
     """Envelope broadened by propagation: Gaussian width sig1 * sqrt(zeta) (diffusive spreading).
     Non-causal tails ahead of the front are kept (a dispersive precursor); A -> 1 behind."""
+
     def A(s, z):
         s = np.asarray(s, dtype=np.float64)
         sig = sig1 * np.sqrt(np.maximum(np.asarray(z, dtype=np.float64), 1e-12))
@@ -65,6 +69,7 @@ def dispersed_ramp(T: float, sig1: float) -> Callable:
         tiny = sig < 1e-6
         out = np.where(tiny, ramp(T)(s), _ramp_conv(s, T, np.where(tiny, 1.0, sig)))
         return out
+
     return A
 
 
@@ -74,8 +79,11 @@ def ringing_ramp(T: float, R: float, tau: float, f: float, psi: float = 0.0) -> 
     def A(s, z=0.0):
         s = np.asarray(s, dtype=np.float64)
         x = s - T
-        ring = np.where(x > 0, R * np.exp(-np.clip(x, 0, None) / tau) * np.sin(2 * np.pi * f * x + psi), 0.0)
+        ring = np.where(
+            x > 0, R * np.exp(-np.clip(x, 0, None) / tau) * np.sin(2 * np.pi * f * x + psi), 0.0
+        )
         return base(s) + ring
+
     return A
 
 

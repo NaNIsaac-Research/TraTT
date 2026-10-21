@@ -5,6 +5,7 @@ independent-channel values; ratio D_n = p_n / p_n^ind. Dark valleys D_n << 1 wit
 multi-path dark states; valleys that start at Bessel zeros j_{n,k} as R -> 0 are renormalised zeros.
 Third-order prediction of the renormalised zero: J_{-n}(S) = (R/2)^2 C_n(S).
 """
+
 import os
 
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
@@ -19,6 +20,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1] / "src"))
 sys.path.insert(0, str(HERE))
 from e43_phase import laue_line  # noqa: E402
+
 from tratt.core import required_nz, solve_laue  # noqa: E402
 from tratt.drive import Drive  # noqa: E402
 
@@ -30,13 +32,26 @@ def point(args):
     q = 2 * np.pi * aac
     eta = np.arange(-2.5 * q, 2.5 * q, 0.15)
     nz = required_nz(alpha, aac, S=S, eta_max=2.5 * q)
-    I = np.mean([np.abs(solve_laue(alpha, eta, phi=Drive(S=S, alpha_ac=aac).steady_phi(k / (4 * aac)),
-                                   n_z=nz)[1]) ** 2 for k in range(4)], axis=0)
+    I = np.mean(
+        [
+            np.abs(
+                solve_laue(
+                    alpha, eta, phi=Drive(S=S, alpha_ac=aac).steady_phi(k / (4 * aac)), n_z=nz
+                )[1]
+            )
+            ** 2
+            for k in range(4)
+        ],
+        axis=0,
+    )
     out = []
     for n in NS:
         w = np.abs(eta - n * q) < q / 2
         ind = laue_line(eta - n * q, np.pi * alpha * abs(jv(n, S)))
-        out.append(np.trapezoid(np.where(w, I, 0), eta) / max(np.trapezoid(np.where(w, ind, 0), eta), 1e-30))
+        out.append(
+            np.trapezoid(np.where(w, I, 0), eta)
+            / max(np.trapezoid(np.where(w, ind, 0), eta), 1e-30)
+        )
     return out
 
 
@@ -51,6 +66,11 @@ if __name__ == "__main__":
         print(f"aac={aac} done", flush=True)
         for j, n in enumerate(NS):
             print(f"  n={n}: darkest points with |J_n| > 0.3 (R, S, D):")
-            cand = [(D[i, k, j], Rs[i], Ss[k]) for i in range(len(Rs)) for k in range(len(Ss)) if abs(jv(n, Ss[k])) > 0.3]
+            cand = [
+                (D[i, k, j], Rs[i], Ss[k])
+                for i in range(len(Rs))
+                for k in range(len(Ss))
+                if abs(jv(n, Ss[k])) > 0.3
+            ]
             for d, R, S in sorted(cand)[:6]:
-                print(f"    R={R:.2f} S={S:.2f} D={d:.4f} |J_n|={abs(jv(n,S)):.3f}")
+                print(f"    R={R:.2f} S={S:.2f} D={d:.4f} |J_n|={abs(jv(n, S)):.3f}")

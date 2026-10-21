@@ -18,10 +18,11 @@ The uniform travelling wave of `Drive` is theta = q0 (zeta - t) = -q0 s. General
 Dh = i pi alpha int_0^1 e^{-i phi(zeta)} e^{i eta (1 - zeta)} dzeta, evaluated with the full
 e^{-i phi} (all harmonics), as the control for "is it just a Fourier transform".
 """
+
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import numpy as np
 
@@ -90,8 +91,8 @@ def kinematic(alpha, d, eta, t, nz=8001):
     eta = np.asarray(eta, dtype=np.float64)
     out = np.empty(eta.size)
     for i in range(0, eta.size, 256):
-        e = eta[i:i + 256, None]
-        out[i:i + 256] = np.abs(np.pi * alpha * (np.exp(1j * e * (1 - z[None, :])) @ f)) ** 2
+        e = eta[i : i + 256, None]
+        out[i : i + 256] = np.abs(np.pi * alpha * (np.exp(1j * e * (1 - z[None, :])) @ f)) ** 2
     return out
 
 
@@ -99,7 +100,11 @@ def features(x, y, rel=0.1):
     """Line-shape features of y(x) on a window: peaks above rel*max, FWHM of the envelope
     (outermost half-max crossings), centroid, skewness, central-minimum depth."""
     ymax = y.max()
-    pk = [i for i in range(1, y.size - 1) if y[i] > y[i - 1] and y[i] >= y[i + 1] and y[i] > rel * ymax]
+    pk = [
+        i
+        for i in range(1, y.size - 1)
+        if y[i] > y[i - 1] and y[i] >= y[i + 1] and y[i] > rel * ymax
+    ]
     above = np.flatnonzero(y > 0.5 * ymax)
     width = x[above[-1]] - x[above[0]] if above.size else np.nan
     p = np.trapezoid(y, x)
@@ -107,6 +112,14 @@ def features(x, y, rel=0.1):
     var = np.trapezoid((x - c) ** 2 * y, x) / p if p > 0 else np.nan
     skew = np.trapezoid((x - c) ** 3 * y, x) / p / var**1.5 if p > 0 else np.nan
     k0 = int(np.argmin(np.abs(x)))
-    return dict(npk=len(pk), peaks=[float(x[i]) for i in pk], width=float(width), peak=float(ymax),
-                integral=float(p), centroid=float(c), skew=float(skew), centre=float(y[k0]),
-                xpeak=float(x[int(np.argmax(y))]))
+    return dict(
+        npk=len(pk),
+        peaks=[float(x[i]) for i in pk],
+        width=float(width),
+        peak=float(ymax),
+        integral=float(p),
+        centroid=float(c),
+        skew=float(skew),
+        centre=float(y[k0]),
+        xpeak=float(x[int(np.argmax(y))]),
+    )

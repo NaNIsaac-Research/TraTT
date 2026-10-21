@@ -42,8 +42,14 @@ from numpy.typing import NDArray
 
 from tratt.drive import Drive
 
-__all__ = ["channel_window", "channel_stats", "ChannelStats", "Formation",
-           "formation_time", "peak_fwhm"]
+__all__ = [
+    "channel_window",
+    "channel_stats",
+    "ChannelStats",
+    "Formation",
+    "formation_time",
+    "peak_fwhm",
+]
 
 
 @dataclass(frozen=True)

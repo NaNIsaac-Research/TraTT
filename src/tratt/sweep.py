@@ -36,6 +36,9 @@ class Grid:
     n_z: int | None = None  # None -> required_nz(alpha, alpha_ac, S=S, eta_max=eta_span*q)
 
 
+DEFAULT_GRID = Grid()
+
+
 def condition(
     alpha: float,
     S: float,
@@ -44,7 +47,7 @@ def condition(
     geometry: str = "laue",
     channels: tuple[int, ...] = (0, 1, -1, 2, -2),
     eps: tuple[float, ...] = (0.02, 0.05, 0.10),
-    grid: Grid = Grid(),
+    grid: Grid = DEFAULT_GRID,
 ) -> list[dict]:
     """Formation times for one parameter point, one row per channel."""
     d = Drive(S=S, alpha_ac=alpha_ac, rise=rise)
@@ -61,8 +64,14 @@ def condition(
         cs = channel_stats(eta, I_full, d, n)
         p_static = float(channel_stats(eta, I_static, d, n).p[0])
         row = dict(
-            alpha=alpha, S=S, alpha_ac=alpha_ac, rise=rise, geometry=geometry, n=n,
-            n_z=n_z, **{f"grid_{k}": v for k, v in asdict(grid).items() if k != "n_z"},
+            alpha=alpha,
+            S=S,
+            alpha_ac=alpha_ac,
+            rise=rise,
+            geometry=geometry,
+            n=n,
+            n_z=n_z,
+            **{f"grid_{k}": v for k, v in asdict(grid).items() if k != "n_z"},
             p_static=p_static,
             p_steady_mean=float(np.mean(cs.p)),
             sigma_steady_mean=float(np.nanmean(cs.sigma)),
@@ -74,7 +83,7 @@ def condition(
             row[f"t_f_induced_{e:g}"] = F_ind.t_f
             row[f"status_induced_{e:g}"] = F_ind.status
             row[f"t_f_window_{e:g}"] = F_win.t_f
-            row["a_induced"], row["a_window"] = F_ind.a, F_win.a   # the scales do not depend on eps
+            row["a_induced"], row["a_window"] = F_ind.a, F_win.a  # the scales do not depend on eps
         rows.append(row)
     return rows
 

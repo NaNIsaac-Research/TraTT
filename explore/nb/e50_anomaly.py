@@ -12,6 +12,7 @@ Scores per point (alpha_ac >= 2, so that windows are channels at small R):
 Prints the top cases by E_g3 (unexplained even with indirect coupling), by darkness and brightness,
 and the regime split of E_g3.
 """
+
 import glob
 import json
 import sys
@@ -29,7 +30,11 @@ def window_laue(a, q):
     """Integral of the thickness-1 Laue line of coupling a over |d| < q/2."""
     d = np.linspace(-q / 2, q / 2, 2001)
     s2 = a * a + d * d / 4
-    return np.trapezoid(a * a * np.sin(np.sqrt(s2)) ** 2 / np.where(s2 > 0, s2, 1), d) if a > 0 else 0.0
+    return (
+        np.trapezoid(a * a * np.sin(np.sqrt(s2)) ** 2 / np.where(s2 > 0, s2, 1), d)
+        if a > 0
+        else 0.0
+    )
 
 
 if __name__ == "__main__":
@@ -56,7 +61,19 @@ if __name__ == "__main__":
         dark = float(np.min(p[big] / g3[big])) if big.any() else np.nan
         nd = int(ns[big][np.argmin(p[big] / g3[big])]) if big.any() else 0
         bright = float(np.max(p[small] / p.max())) if small.any() else np.nan
-        out.append(dict(alpha=alpha, aac=aac, S=S, R=R, E_ind=E_ind, E_g3=E_g3, dark=dark, n_dark=nd, bright=bright))
+        out.append(
+            dict(
+                alpha=alpha,
+                aac=aac,
+                S=S,
+                R=R,
+                E_ind=E_ind,
+                E_g3=E_g3,
+                dark=dark,
+                n_dark=nd,
+                bright=bright,
+            )
+        )
     json.dump(out, open(HERE / "e50_anomaly.json", "w"))
     R = np.array([o["R"] for o in out])
     Ei, Eg = np.array([o["E_ind"] for o in out]), np.array([o["E_g3"] for o in out])
@@ -64,10 +81,15 @@ if __name__ == "__main__":
     for lo, hi in [(0, 0.1), (0.1, 0.3), (0.3, 0.6), (0.6, 1), (1, 2), (2, 30)]:
         m = (R > lo) & (R <= hi)
         print(f"  R ({lo},{hi}]: {np.median(Ei[m]):.4f} / {np.median(Eg[m]):.4f}  (n={m.sum()})")
-    for key, rev, title in (("E_g3", True, "unexplained even with third-order coupling"),
-                            ("dark", False, "darkest strong orders (vs G3)"), ("bright", True, "brightest near-zero orders")):
+    for key, rev, title in (
+        ("E_g3", True, "unexplained even with third-order coupling"),
+        ("dark", False, "darkest strong orders (vs G3)"),
+        ("bright", True, "brightest near-zero orders"),
+    ):
         print(f"== top 10 {title} ==")
         good = [o for o in out if np.isfinite(o[key])]
         for o in sorted(good, key=lambda o: o[key], reverse=rev)[:10]:
-            print(f"  alpha={o['alpha']:5.2f} aac={o['aac']:4.1f} S={o['S']:3.1f} R={o['R']:5.2f} | E_ind {o['E_ind']:.3f} "
-                  f"E_g3 {o['E_g3']:.3f} | dark {o['dark']:.3f} (n={o['n_dark']}) | bright {o['bright']:.3f}")
+            print(
+                f"  alpha={o['alpha']:5.2f} aac={o['aac']:4.1f} S={o['S']:3.1f} R={o['R']:5.2f} | E_ind {o['E_ind']:.3f} "
+                f"E_g3 {o['E_g3']:.3f} | dark {o['dark']:.3f} (n={o['n_dark']}) | bright {o['bright']:.3f}"
+            )

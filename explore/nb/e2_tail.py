@@ -5,6 +5,7 @@ integrated over the window (q/2, 3q/2) gives 8 (pi alpha)^2 / (3 q).
 Test: (i) excess scales as alpha^2 / alpha_ac; (ii) subtracting the S = 0 window
 integral removes it.
 """
+
 import sys
 from pathlib import Path
 
@@ -28,9 +29,13 @@ for alpha in (1.0, 2.0):
         p = np.trapezoid(I, eta, axis=1)
         p0 = np.trapezoid(rocking(alpha, eta, n_z=1200), eta)
         an = alpha * abs(jv(n, S))
-        th = np.array([np.pi**2 * an * quad(lambda x: jv(0, x), 0, 2 * np.pi * an * x)[0] for x in t])
+        th = np.array(
+            [np.pi**2 * an * quad(lambda x: jv(0, x), 0, 2 * np.pi * an * x)[0] for x in t]
+        )
         est = 8 * (np.pi * alpha) ** 2 / (3 * q)
         ex = p - th
-        print(f"alpha={alpha} aac={aac:>4} est_tail={est:.3f} S0_window={p0:.3f} "
-              f"excess={np.array2string(ex, precision=3)} "
-              f"excess-S0={np.array2string(ex - p0, precision=3)} rel_after={np.max(np.abs(ex - p0) / th):.3f}")
+        print(
+            f"alpha={alpha} aac={aac:>4} est_tail={est:.3f} S0_window={p0:.3f} "
+            f"excess={np.array2string(ex, precision=3)} "
+            f"excess-S0={np.array2string(ex - p0, precision=3)} rel_after={np.max(np.abs(ex - p0) / th):.3f}"
+        )

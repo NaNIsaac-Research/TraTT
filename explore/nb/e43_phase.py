@@ -14,6 +14,7 @@ Solver: full TT (RK4) or the exact Floquet expansion, whichever is cheaper (both
 to ~1e-5, tests/test_floquet.py).
 Usage: python e43_phase.py            (full scan)   |  python e43_phase.py point a aac S
 """
+
 import os
 
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
@@ -67,22 +68,32 @@ def metrics(alpha, aac, S, nphase=1):
     I0 = np.mean([x[2] for x in Is], axis=0)
     ns = np.arange(-N, N + 1)
     a = np.pi * alpha * np.abs(jv(ns, S))
-    Iind = sum(laue_line(eta - n * q, an) for n, an in zip(ns, a))
+    Iind = sum(laue_line(eta - n * q, an) for n, an in zip(ns, a, strict=False))
     p = np.array([np.trapezoid(np.where(np.abs(eta - n * q) < q / 2, I, 0), eta) for n in ns])
     pi = np.array([np.trapezoid(np.where(np.abs(eta - n * q) < q / 2, Iind, 0), eta) for n in ns])
     ctr = np.array([np.interp(n * q, eta, I) for n in ns])
     sel = np.abs(jv(ns, S)) > 0.02
     pk = np.flatnonzero((I[1:-1] > I[:-2]) & (I[1:-1] >= I[2:]) & (I[1:-1] > 0.01 * I.max())) + 1
     tot, tot_ind = np.trapezoid(I, eta), np.trapezoid(Iind, eta)
-    return dict(alpha=alpha, aac=aac, S=S, R=alpha / aac, solver=use,
-                E_spec=float(np.trapezoid(np.abs(I - Iind), eta) / max(tot_ind, 1e-30)) if S > 0 else 0.0,
-                E_pop=float(np.abs(p - pi).sum() / max(pi.sum(), 1e-30)),
-                E_ctr=float(np.max(np.abs(ctr[sel] - np.sin(a[sel]) ** 2))) if sel.any() else 0.0,
-                PR=float(p.sum() ** 2 / max((p ** 2).sum(), 1e-30)),
-                PR_ind=float(pi.sum() ** 2 / max((pi ** 2).sum(), 1e-30)),
-                tot=float(tot), tot_ind=float(tot_ind), npk=int(pk.size),
-                flux=float(np.max(np.abs(I + I0 - 1))),
-                p=p.tolist(), p_ind=pi.tolist(), ns=ns.tolist())
+    return dict(
+        alpha=alpha,
+        aac=aac,
+        S=S,
+        R=alpha / aac,
+        solver=use,
+        E_spec=float(np.trapezoid(np.abs(I - Iind), eta) / max(tot_ind, 1e-30)) if S > 0 else 0.0,
+        E_pop=float(np.abs(p - pi).sum() / max(pi.sum(), 1e-30)),
+        E_ctr=float(np.max(np.abs(ctr[sel] - np.sin(a[sel]) ** 2))) if sel.any() else 0.0,
+        PR=float(p.sum() ** 2 / max((p**2).sum(), 1e-30)),
+        PR_ind=float(pi.sum() ** 2 / max((pi**2).sum(), 1e-30)),
+        tot=float(tot),
+        tot_ind=float(tot_ind),
+        npk=int(pk.size),
+        flux=float(np.max(np.abs(I + I0 - 1))),
+        p=p.tolist(),
+        p_ind=pi.tolist(),
+        ns=ns.tolist(),
+    )
 
 
 NPHASE = int(os.environ.get("E43_NPHASE", "1"))
@@ -109,7 +120,7 @@ if __name__ == "__main__":
     grid = [(a, q, s) for s in SS for a in ALPHAS for q in AACS]
     grid.sort(key=lambda x: x[2])
     with Pool(11) as pool:
-        for i, r in enumerate(pool.imap_unordered(cached, grid, chunksize=2)):
+        for i, _r in enumerate(pool.imap_unordered(cached, grid, chunksize=2)):
             if i % 50 == 0:
                 print(f"{i}/{len(grid)}", flush=True)
     print("done", flush=True)

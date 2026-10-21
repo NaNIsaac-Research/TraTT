@@ -5,6 +5,7 @@ lobes eta_+-(t) - n q. Theory (satellite = Laue slab, coupling a = pi alpha_n, t
 detuning d = eta - n q):  f(d) = a^2 sin^2(t sqrt(a^2 + d^2/4)) / (a^2 + d^2/4)
 so the lobe positions obey (eta_+- - n q) * t = G_+-(alpha_n t)  (universal).
 """
+
 import sys
 from pathlib import Path
 
@@ -45,18 +46,24 @@ def run(S, alpha, aac, n, label):
     k0 = np.argmin(np.abs(dd))
     total = np.trapezoid(I, eta, axis=1)
     p = np.trapezoid(I[:, win], eta[win], axis=1)
-    print(f"--- {label}: S={S} alpha={alpha} aac={aac} n={n} alpha_n={an:.3f} "
-          f"(dark at t={1/an:.3f})")
-    print(" alpha_n t | centre  th    | window p/(pi^2 a_n)  th   | total  | lobes (eta-nq)*t sim  th")
+    print(
+        f"--- {label}: S={S} alpha={alpha} aac={aac} n={n} alpha_n={an:.3f} "
+        f"(dark at t={1 / an:.3f})"
+    )
+    print(
+        " alpha_n t | centre  th    | window p/(pi^2 a_n)  th   | total  | lobes (eta-nq)*t sim  th"
+    )
     for k in range(0, t.size, 2):
         x = an * t[k]
         thp = quad(lambda u: jv(0, u), 0, 2 * np.pi * x)[0]
         lo = lobes(dd, I[k], q / 2)
         dth = np.linspace(-q / 2, q / 2, 20001)
         lth = lobes(dth, laue_line(dth, np.pi * an, t[k]), q / 2)
-        print(f"  {x:6.3f}  | {I[k, k0]:.3f} {np.sin(np.pi*x)**2:.3f} | "
-              f"{p[k]/(np.pi**2*an):6.3f}            {thp:6.3f} | {total[k]:7.3f} | "
-              f"{lo[0]*t[k]:+6.2f} {lo[1]*t[k]:+6.2f}   {lth[0]*t[k]:+6.2f} {lth[1]*t[k]:+6.2f}")
+        print(
+            f"  {x:6.3f}  | {I[k, k0]:.3f} {np.sin(np.pi * x) ** 2:.3f} | "
+            f"{p[k] / (np.pi**2 * an):6.3f}            {thp:6.3f} | {total[k]:7.3f} | "
+            f"{lo[0] * t[k]:+6.2f} {lo[1] * t[k]:+6.2f}   {lth[0] * t[k]:+6.2f} {lth[1] * t[k]:+6.2f}"
+        )
 
 
 if __name__ == "__main__":

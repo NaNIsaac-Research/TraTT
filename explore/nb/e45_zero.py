@@ -14,6 +14,7 @@ second-order level shifts), the physical window integral and window maximum, for
 half-integer alpha_ac; plus path removal of the dominant (m, k) terms.
 Usage: python e45_zero.py [scan] [paths] [phys]
 """
+
 import os
 
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "4")
@@ -76,31 +77,39 @@ def section_scan():
                 P, sh, _, _ = channel_population(alpha, aac, S, n)
                 g = np.pi * alpha * (jv(-n, S) - (alpha / (2 * aac)) ** 2 * Cn)
                 pred = np.sin(abs(g)) ** 2
-                print(f" {n:+d} {S:.3f} {alpha:5.2f} {aac:5.1f} | {P:12.3e} {pred:12.3e} {P / pred:9.3f} | {sh:+.3f}")
+                print(
+                    f" {n:+d} {S:.3f} {alpha:5.2f} {aac:5.1f} | {P:12.3e} {pred:12.3e} {P / pred:9.3f} | {sh:+.3f}"
+                )
 
 
 def section_paths():
     print("== which (m, k) paths carry the resurrection: largest terms of C_n and removal tests ==")
     for n, S in ZEROS.items():
         T = terms(n, S)
-        print(f" n={n} S={S:.4f}: top terms (value, m, k): " +
-              ", ".join(f"({v:+.4f}, m={m}, k={k})" for v, m, k in T[:6]))
+        print(
+            f" n={n} S={S:.4f}: top terms (value, m, k): "
+            + ", ".join(f"({v:+.4f}, m={m}, k={k})" for v, m, k in T[:6])
+        )
         alpha, aac = 1.0, 3.0
         P0, _, _, _ = channel_population(alpha, aac, S, n)
         # remove the dominant intermediate b_m entirely (all its couplings) and the dominant a_k
         _, m1, k1 = T[0]
-        Pm, _, _, _ = channel_population(alpha, aac, S, n, mask=lambda k, m: m != m1)
-        Pk, _, _, _ = channel_population(alpha, aac, S, n, mask=lambda k, m: k != k1)
+        Pm, _, _, _ = channel_population(alpha, aac, S, n, mask=lambda k, m: m != m1)  # noqa: B023 - called within the iteration
+        Pk, _, _, _ = channel_population(alpha, aac, S, n, mask=lambda k, m: k != k1)  # noqa: B023 - called within the iteration
         # keep only the dominant path's three couplings + the resonant pair
         keep = {(0, m1), (k1, m1), (k1, -n), (0, -n)}
-        Pkeep, _, _, _ = channel_population(alpha, aac, S, n, mask=lambda k, m: (k, m) in keep)
+        Pkeep, _, _, _ = channel_population(alpha, aac, S, n, mask=lambda k, m: (k, m) in keep)  # noqa: B023 - called within the iteration
         g1 = np.pi * alpha * (alpha / (2 * aac)) ** 2 * T[0][0]
-        print(f"   alpha={alpha} aac={aac}: full {P0:.3e} | without b_{m1}: {Pm:.3e} | without a_{k1}: {Pk:.3e}"
-              f" | only path (m={m1},k={k1}): {Pkeep:.3e} (pred sin^2 of that term {np.sin(abs(g1))**2:.3e})")
+        print(
+            f"   alpha={alpha} aac={aac}: full {P0:.3e} | without b_{m1}: {Pm:.3e} | without a_{k1}: {Pk:.3e}"
+            f" | only path (m={m1},k={k1}): {Pkeep:.3e} (pred sin^2 of that term {np.sin(abs(g1)) ** 2:.3e})"
+        )
 
 
 def section_phys():
-    print("== physical intensity near eta = n q at the zero: window max, window integral, Floquet component ==")
+    print(
+        "== physical intensity near eta = n q at the zero: window max, window integral, Floquet component =="
+    )
     for n, S in ((1, ZEROS[1]),):
         for alpha in (1.0, 2.0):
             for aac in (20.0, 20.5, 5.0, 5.5, 2.0, 2.5, 1.0):
@@ -110,10 +119,12 @@ def section_phys():
                 I = np.abs(Dh) ** 2
                 ref = FloquetLaue(alpha, aac, 1.0, fl.K)  # same alpha, a bright S for scale
                 Ir = np.abs(ref.fields(eta)[1]) ** 2
-                print(f"  n={n} alpha={alpha} aac={aac:5.1f}: |b_-n|^2 max {P:.2e} | phys window max {I.max():.2e}"
-                      f" int {np.trapezoid(I, eta):.3e} | same window at S=1: max {Ir.max():.2f} int {np.trapezoid(Ir, eta):.2f}")
+                print(
+                    f"  n={n} alpha={alpha} aac={aac:5.1f}: |b_-n|^2 max {P:.2e} | phys window max {I.max():.2e}"
+                    f" int {np.trapezoid(I, eta):.3e} | same window at S=1: max {Ir.max():.2f} int {np.trapezoid(Ir, eta):.2f}"
+                )
 
 
 if __name__ == "__main__":
-    for s in (sys.argv[1:] or ["scan", "paths", "phys"]):
+    for s in sys.argv[1:] or ["scan", "paths", "phys"]:
         globals()[f"section_{s}"]()

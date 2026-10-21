@@ -7,6 +7,7 @@ Optimum for n = 1: S1 = 1.841 (J_1 max), S2 = 5.331 (J_1 min) -> r* = 0.373.
 Checks: each domain alone (the other region unmodulated), full line shape and window
 integral at the dark moment, other orders (order selection), Bragg, sharpness of the dark.
 """
+
 import sys
 from pathlib import Path
 
@@ -18,6 +19,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1] / "src"))
 sys.path.insert(0, str(HERE))
 from memory_drive import HistoryDrive, theta  # noqa: E402
+
 from tratt.core import required_nz, rocking  # noqa: E402
 from tratt.cube import rocking_cube  # noqa: E402
 
@@ -25,7 +27,7 @@ AAC = 40.0
 S1 = minimize_scalar(lambda s: -jv(1, s), bounds=(1, 3), method="bounded").x
 S2 = minimize_scalar(lambda s: jv(1, s), bounds=(4, 7), method="bounded").x
 R = jv(1, S2) / (jv(1, S2) - jv(1, S1))
-print(f"S1={S1:.4f} (J1={jv(1,S1):+.4f}), S2={S2:.4f} (J1={jv(1,S2):+.4f}), r*={R:.4f}")
+print(f"S1={S1:.4f} (J1={jv(1, S1):+.4f}), S2={S2:.4f} (J1={jv(1, S2):+.4f}), r*={R:.4f}")
 
 
 def drive(a2, a1):
@@ -48,11 +50,17 @@ for geom in ("laue", "bragg"):
         k = np.argmin(np.where(m, I[:, 0], 9))
         ok = m & (I[:, 0] < 0.01 * I[m, 0].max())
         width = (t[ok][-1] - t[ok][0]) if ok.any() else 0.0
-        print(f"--- {geom} alpha={alpha}: law max err (n=1,2,3) {np.round(np.abs(I-law).max(0), 4)}")
-        print(f"    at the wall position r*: S1 domain alone {a1:.3f}, S2 domain alone {a2:.3f}, "
-              f"both {both:.2e}")
-        print(f"    n=1 minimum {I[k,0]:.2e} at t={t[k]:.3f} (pred {1+R:.3f}); <1% of max for dt={width:.3f} t_tr; "
-              f"n=2, n=3 there: {I[k,1]:.3f}, {I[k,2]:.3f}")
+        print(
+            f"--- {geom} alpha={alpha}: law max err (n=1,2,3) {np.round(np.abs(I - law).max(0), 4)}"
+        )
+        print(
+            f"    at the wall position r*: S1 domain alone {a1:.3f}, S2 domain alone {a2:.3f}, "
+            f"both {both:.2e}"
+        )
+        print(
+            f"    n=1 minimum {I[k, 0]:.2e} at t={t[k]:.3f} (pred {1 + R:.3f}); <1% of max for dt={width:.3f} t_tr; "
+            f"n=2, n=3 there: {I[k, 1]:.3f}, {I[k, 2]:.3f}"
+        )
 
 # full line shape at the dark moment vs single-domain dark (Pendellosung zero) for comparison
 alpha = 2.0
@@ -64,11 +72,16 @@ I_dark = rocking(alpha, eta, phi=d.phi(1.0 + R + 0.0037), n_z=nz)
 I_S1 = rocking(alpha, eta, phi=drive(0.0, S1).phi(1.0 + R + 0.0037), n_z=nz)
 p = lambda y: np.trapezoid(y, eta)  # noqa: E731
 k0 = np.argmin(np.abs(eta - q))
-pk = [round(float(eta[i] - q), 2) for i in range(1, eta.size - 1)
-      if I_dark[i] > I_dark[i - 1] and I_dark[i] >= I_dark[i + 1] and I_dark[i] > 0.05 * I_dark.max()]
-print(f"line shape at the cancellation (alpha=2): centre {I_dark[k0]:.2e}, window integral {p(I_dark):.3f} "
-      f"(S1 domain alone: centre {I_S1[k0]:.3f}, integral {p(I_S1):.3f}); max {I_dark.max():.3f}; "
-      f"side maxima at eta-q = {pk[:8]}")
+pk = [
+    round(float(eta[i] - q), 2)
+    for i in range(1, eta.size - 1)
+    if I_dark[i] > I_dark[i - 1] and I_dark[i] >= I_dark[i + 1] and I_dark[i] > 0.05 * I_dark.max()
+]
+print(
+    f"line shape at the cancellation (alpha=2): centre {I_dark[k0]:.2e}, window integral {p(I_dark):.3f} "
+    f"(S1 domain alone: centre {I_S1[k0]:.3f}, integral {p(I_S1):.3f}); max {I_dark.max():.3f}; "
+    f"side maxima at eta-q = {pk[:8]}"
+)
 
 # order selection: cancel n = 1 while keeping n = 2 (or the reverse), weak coupling alpha = 0.5
 print("order selection (domain fractions at which each order cancels):")
@@ -77,7 +90,13 @@ for Sa, Sb in ((S1, S2), (1.0, 4.5), (2.5, 4.2), (3.0, 6.5)):
     for n in (1, 2, 3):
         ja, jb = jv(n, Sa), jv(n, Sb)
         rs[n] = jb / (jb - ja) if ja * jb < 0 else None
-    print(f"  S_a={Sa:.3f} S_b={Sb:.3f}: r* for n=1,2,3 = " +
-          ", ".join(f"{rs[n]:.3f}" if rs[n] is not None else "none" for n in (1, 2, 3)) +
-          " | Theta_2, Theta_3 at r*_1: " +
-          (", ".join(f"{rs[1]*jv(n,Sa)+(1-rs[1])*jv(n,Sb):+.3f}" for n in (2, 3)) if rs[1] else "-"))
+    print(
+        f"  S_a={Sa:.3f} S_b={Sb:.3f}: r* for n=1,2,3 = "
+        + ", ".join(f"{rs[n]:.3f}" if rs[n] is not None else "none" for n in (1, 2, 3))
+        + " | Theta_2, Theta_3 at r*_1: "
+        + (
+            ", ".join(f"{rs[1] * jv(n, Sa) + (1 - rs[1]) * jv(n, Sb):+.3f}" for n in (2, 3))
+            if rs[1]
+            else "-"
+        )
+    )

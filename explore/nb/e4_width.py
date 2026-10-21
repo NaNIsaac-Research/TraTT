@@ -5,6 +5,7 @@ Theory: satellite n is a Laue slab of thickness t and coupling a = pi alpha_n,
 so t * FWHM = G(alpha_n t) is universal. G(0) = 5.566 (finite-depth sinc^2).
 Measured on raw I with the same FWHM routine used for the theory curve.
 """
+
 import sys
 from pathlib import Path
 
@@ -32,7 +33,9 @@ def G(x, halfwin=200.0):
 if __name__ == "__main__":
     xs = np.linspace(0.02, 1.4, 70)
     Gs = np.array([G(x) for x in xs])
-    print("theory t*W:", " ".join(f"{x:.2f}:{g:.2f}" for x, g in zip(xs[::7], Gs[::7])))
+    print(
+        "theory t*W:", " ".join(f"{x:.2f}:{g:.2f}" for x, g in zip(xs[::7], Gs[::7], strict=False))
+    )
     t = np.linspace(0.1, 1.0, 46) + 0.0037  # off the acoustic period grid
     for S, alpha, n in [(1.5, 1.0, 1), (1.5, 2.0, 1), (3.0, 2.0, 2), (0.5, 4.0, 1)]:
         d = Drive(S=S, alpha_ac=20.0)
@@ -43,7 +46,9 @@ if __name__ == "__main__":
         tw = np.array([peak_fwhm(eta, I[k], n * q, q / 2)[0] * t[k] for k in range(t.size)])
         th = np.interp(an * t, xs, Gs)
         m = an * t < 0.9
-        print(f"S={S} a={alpha} n={n} alpha_n={an:.2f}  max rel dev (alpha_n t<0.9) = "
-              f"{np.nanmax(np.abs(tw[m] / th[m] - 1)):.3f}")
+        print(
+            f"S={S} a={alpha} n={n} alpha_n={an:.2f}  max rel dev (alpha_n t<0.9) = "
+            f"{np.nanmax(np.abs(tw[m] / th[m] - 1)):.3f}"
+        )
         for k in range(0, t.size, 6):
-            print(f"   alpha_n t={an*t[k]:.2f}  sim t*W={tw[k]:.2f}  th={th[k]:.2f}")
+            print(f"   alpha_n t={an * t[k]:.2f}  sim t*W={tw[k]:.2f}  th={th[k]:.2f}")

@@ -21,10 +21,11 @@ The eigenvalues of H are the Floquet propagation constants (dispersion-surface b
 
 `mask(k, m) -> bool` removes individual couplings a_k <-> b_m (path-removal diagnostics).
 """
+
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import numpy as np
 from scipy.special import jv
@@ -81,15 +82,15 @@ class FloquetLaue:
         x0 = np.zeros(2 * self.n, dtype=np.complex128)
         x0[self.K] = 1.0  # a_0
         for i in range(0, eta.size, chunk):
-            w, U = np.linalg.eigh(self.H(eta[i:i + chunk]))
+            w, U = np.linalg.eigh(self.H(eta[i : i + chunk]))
             c = np.conj(U[:, self.K, :])  # U^dagger x0
-            out[i:i + chunk] = np.einsum("eij,ej->ei", U, np.exp(1j * w * zeta) * c)
+            out[i : i + chunk] = np.einsum("eij,ej->ei", U, np.exp(1j * w * zeta) * c)
         return out
 
     def fields(self, eta, zeta=1.0):
         """Physical exit amplitudes (D0, Dh) at depth zeta."""
         x = self.propagate(eta, zeta)
-        a, b = x[:, : self.n], x[:, self.n:]
+        a, b = x[:, : self.n], x[:, self.n :]
         D0 = a @ np.exp(1j * self.ks * self.q * zeta)
         Dh = b @ np.exp(-1j * self.ms * self.q * zeta)
         return D0, Dh

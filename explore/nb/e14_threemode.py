@@ -14,6 +14,7 @@ Output Dh(1) = [layer 2] (D0(t), H0(t) + Hn(t) e^{i n q t}).
 
 Compared with full TT on the window |eta - n q| < q/2.
 """
+
 import sys
 from pathlib import Path
 
@@ -33,9 +34,9 @@ def model(alpha, S, q, n, eta, t, keep_tail=True):
     out = np.empty(eta.size, dtype=complex)
     for k, e in enumerate(eta):
         j0 = J0 if keep_tail else 0.0
-        M1 = np.array([[0, c * j0, c * Jn * ph],
-                       [c * j0, 1j * e, 0],
-                       [c * Jn / ph, 0, 1j * (e - n * q)]])
+        M1 = np.array(
+            [[0, c * j0, c * Jn * ph], [c * j0, 1j * e, 0], [c * Jn / ph, 0, 1j * (e - n * q)]]
+        )
         D0, H0, Hn = expm(M1 * t) @ np.array([1, 0, 0], dtype=complex)
         M2 = np.array([[0, c], [c, 1j * e]])
         out[k] = (expm(M2 * (1 - t)) @ np.array([D0, H0 + Hn * ph]))[1]
@@ -54,6 +55,8 @@ if __name__ == "__main__":
             Im = model(alpha, S, q, n, eta, tt)
             In = model(alpha, S, q, n, eta, tt, keep_tail=False)
             nrm = I[k].max()
-            row.append(f"t={tt:.2f}: 3-mode {np.max(np.abs(Im - I[k]))/nrm:.3f} "
-                       f"no-tail {np.max(np.abs(In - I[k]))/nrm:.3f}")
+            row.append(
+                f"t={tt:.2f}: 3-mode {np.max(np.abs(Im - I[k])) / nrm:.3f} "
+                f"no-tail {np.max(np.abs(In - I[k])) / nrm:.3f}"
+            )
         print(f"S={S} alpha={alpha} n={n}  max|model-TT|/peak\n   " + "\n   ".join(row))

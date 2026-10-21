@@ -15,6 +15,7 @@ Reference: S << 1 and q0 >> Darwin half-width 2 pi alpha. Then one variable at a
   q0 sweep toward the Darwin scale (R_D = 2 pi alpha / q0) at fixed S.
 Usage: python e58_chalise_ref.py [ref] [abs] [darwin]
 """
+
 import os
 import sys
 
@@ -34,6 +35,7 @@ def packet(S, q0, ncyc=3.0):
 
     def g(tau):
         return np.where(tau > 0, np.exp(-np.clip(tau, 0, None) / tau_d) * np.sin(q0 * tau), 0.0)
+
     return g, tau_d
 
 
@@ -44,9 +46,12 @@ def run(alpha, S, q0, eta, T=0.6, nt=1200, nz=None, kappa=0.0):
 
     def phi(zeta):
         return S * g(t[:, None] - zeta)
-    R = np.abs(solve_bragg(alpha, eta, phi=phi, n_z=nz, kappa=kappa)) ** 2          # (nt, n_eta)
+
+    R = np.abs(solve_bragg(alpha, eta, phi=phi, n_z=nz, kappa=kappa)) ** 2  # (nt, n_eta)
     # Fourier component exactly at omega = |eta| (a nearest-FFT-bin pick adds ~15 % leakage noise, Entry 59)
-    W = np.abs(np.mean((R - R.mean(axis=0)) * np.exp(1j * np.abs(eta)[None, :] * t[:, None]), axis=0))
+    W = np.abs(
+        np.mean((R - R.mean(axis=0)) * np.exp(1j * np.abs(eta)[None, :] * t[:, None]), axis=0)
+    )
     # strain and displacement spectra of the packet (time axis at fixed depth = space axis, v = 1)
     tau = np.linspace(0, 40 * tau_d, 20001)
     gg = g(tau)
@@ -64,7 +69,7 @@ def shape_err(a, b):
 
 def report(lab, r):
     print(f" {lab}: n_z = {r['nz']}; peak of W at eta = {r['eta'][np.argmax(r['W'])]:.0f}")
-    r["W_r0"] = r["W"] / np.sqrt(r["R0"])                    # heterodyne reference divided out
+    r["W_r0"] = r["W"] / np.sqrt(r["R0"])  # heterodyne reference divided out
     for k in ("eps", "phi", "eps_w2"):
         print(f"   max |W/maxW - {k}/max{k}| = {shape_err(r['W'], r[k]):.3f}")
 
@@ -76,11 +81,22 @@ def section_ref():
     for S in (0.02, 0.05):
         for sgn in (+1, -1):
             r = run(alpha, S, q0, sgn * eta)
-            report(f"S={S} eta sign {sgn:+d} (R_D = 2 pi alpha / q0 = {2*np.pi*alpha/q0:.3f})", r)
+            report(
+                f"S={S} eta sign {sgn:+d} (R_D = 2 pi alpha / q0 = {2 * np.pi * alpha / q0:.3f})", r
+            )
             out[f"S{S}_{sgn}"] = {k: np.asarray(v).tolist() for k, v in r.items()}
-    r2 = run(alpha, 0.02, q0, eta, nt=2400, nz=2 * required_nz(alpha, 40, per_cycle=24, S=0.02, eta_max=eta.max()))
+    r2 = run(
+        alpha,
+        0.02,
+        q0,
+        eta,
+        nt=2400,
+        nz=2 * required_nz(alpha, 40, per_cycle=24, S=0.02, eta_max=eta.max()),
+    )
     report("convergence (nt x2, n_z x2), S=0.02, +eta", r2)
-    print(f"   W change vs base: {np.max(np.abs(r2['W'] - np.array(out['S0.02_1']['W']))) / max(r2['W']):.2e}")
+    print(
+        f"   W change vs base: {np.max(np.abs(r2['W'] - np.array(out['S0.02_1']['W']))) / max(r2['W']):.2e}"
+    )
     json.dump(out, open(HERE / "e58_ref.json", "w"))
 
 
@@ -111,15 +127,21 @@ def section_darwin():
         q0 = w_d / RD
         eta = np.linspace(0.3 * w_d, 3 * q0 + 2 * w_d, 160)
         r = run(alpha, S, q0, eta, kappa=kappa)
-        D = r["W"] * eta ** 2 / r["eps"]
+        D = r["W"] * eta**2 / r["eps"]
         D = D / np.median(D[eta > 2.5 * w_d]) if np.any(eta > 2.5 * w_d) else D / D[-1]
-        out[f"RD{RD}"] = {k: np.asarray(v).tolist() for k, v in r.items()} | {"D": D.tolist(), "q0": q0}
+        out[f"RD{RD}"] = {k: np.asarray(v).tolist() for k, v in r.items()} | {
+            "D": D.tolist(),
+            "q0": q0,
+        }
         sel = [np.argmin(abs(eta / w_d - x)) for x in (0.4, 0.7, 1.0, 1.5, 2, 3, 5, 8)]
-        print(f" R_D={RD}: q0={q0:.0f}, n_z={r['nz']}; D(eta/2pi alpha) = " +
-              "  ".join(f"{eta[i] / w_d:.1f}:{D[i]:.2f}" for i in sel), flush=True)
+        print(
+            f" R_D={RD}: q0={q0:.0f}, n_z={r['nz']}; D(eta/2pi alpha) = "
+            + "  ".join(f"{eta[i] / w_d:.1f}:{D[i]:.2f}" for i in sel),
+            flush=True,
+        )
     json.dump(out, open(HERE / "e58_darwin.json", "w"))
 
 
 if __name__ == "__main__":
-    for s in (sys.argv[1:] or ["ref"]):
+    for s in sys.argv[1:] or ["ref"]:
         globals()[f"section_{s}"]()

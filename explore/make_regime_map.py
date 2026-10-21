@@ -25,11 +25,19 @@ from tratt.cube import rocking_cube  # noqa: E402
 from tratt.drive import Drive  # noqa: E402
 
 INK, INK2 = "#0b0b0b", "#52514e"
-mpl.rcParams.update({
-    "font.size": 10, "axes.edgecolor": INK2, "axes.labelcolor": INK, "text.color": INK,
-    "xtick.color": INK2, "ytick.color": INK2, "figure.facecolor": "white",
-    "savefig.facecolor": "white", "savefig.dpi": 200,
-})
+mpl.rcParams.update(
+    {
+        "font.size": 10,
+        "axes.edgecolor": INK2,
+        "axes.labelcolor": INK,
+        "text.color": INK,
+        "xtick.color": INK2,
+        "ytick.color": INK2,
+        "figure.facecolor": "white",
+        "savefig.facecolor": "white",
+        "savefig.dpi": 200,
+    }
+)
 
 
 def main(out="figures/regime_map.png"):
@@ -53,12 +61,22 @@ def main(out="figures/regime_map.png"):
     im = ax.pcolormesh(xs, ys, E, cmap="Blues", shading="nearest", vmin=0, vmax=0.5)
     for i, y in enumerate(ys):
         for j, x in enumerate(xs):
-            ax.text(x, y, f"{E[i, j]:.2f}", ha="center", va="center", fontsize=7,
-                    color="white" if E[i, j] > 0.3 else INK)
-    ax.set(xscale="log", yscale="log",
-           xlabel=r"$\Lambda_{\rm ac}/\Lambda_P=\alpha/\alpha_{\rm ac}$  (set by drive frequency)",
-           ylabel=r"$\alpha_1=L|J_1(S)|/\Lambda_P$  (turns in transit)",
-           title=r"Error of $\sin^2(\pi\alpha_1\tilde t)$, Laue $n=1$, $S=1.5$")
+            ax.text(
+                x,
+                y,
+                f"{E[i, j]:.2f}",
+                ha="center",
+                va="center",
+                fontsize=7,
+                color="white" if E[i, j] > 0.3 else INK,
+            )
+    ax.set(
+        xscale="log",
+        yscale="log",
+        xlabel=r"$\Lambda_{\rm ac}/\Lambda_P=\alpha/\alpha_{\rm ac}$  (set by drive frequency)",
+        ylabel=r"$\alpha_1=L|J_1(S)|/\Lambda_P$  (turns in transit)",
+        title=r"Error of $\sin^2(\pi\alpha_1\tilde t)$, Laue $n=1$, $S=1.5$",
+    )
     fig.colorbar(im, ax=ax, label=r"max$_{\tilde t}\,|I-\sin^2|$")
     fig.savefig(ROOT / out)
     print("wrote", out)

@@ -44,6 +44,7 @@ def laue_exact(alpha: float, eta: np.ndarray):
 
 # --- full rocking curve, not just the centre ------------------------------------
 
+
 @pytest.mark.parametrize("alpha", [0.3, 1.0, 2.7])
 def test_laue_full_rocking_curve_matches_closed_form(alpha):
     # n_z is set by the RK4 truncation error, which scales like h^4 eta^5:
@@ -63,6 +64,7 @@ def test_bragg_centre_matches_tanh_squared(alpha):
 
 # --- the integrator is genuinely fourth order -----------------------------------
 
+
 def _laue_error(alpha, eta, n_z):
     D0, Dh = solve_laue(alpha, eta, phi=None, n_z=n_z)
     D0_ex, Dh_ex = laue_exact(alpha, eta)
@@ -76,7 +78,7 @@ def test_laue_error_decays_at_fourth_order():
     """
     alpha, eta = 1.7, np.linspace(-40.0, 40.0, 81)
     errs = [_laue_error(alpha, eta, n) for n in (64, 128, 256, 512)]
-    orders = [np.log2(a / b) for a, b in zip(errs[:-1], errs[1:])]
+    orders = [np.log2(a / b) for a, b in zip(errs[:-1], errs[1:], strict=False)]
     assert all(o > 3.8 for o in orders), f"errors {errs}, observed orders {orders}"
 
 
@@ -93,6 +95,7 @@ def test_losslessness_error_shrinks_with_the_grid():
 
 # --- structural invariants -------------------------------------------------------
 
+
 def test_zero_coupling_is_transparent():
     eta = np.linspace(-20.0, 20.0, 51)
     D0, Dh = solve_laue(0.0, eta, phi=Drive(S=1.0, alpha_ac=3.0).phi(0.7), n_z=256)
@@ -104,8 +107,9 @@ def test_constant_phase_offset_leaves_intensity_unchanged():
     """phi = phi0 rotates Dh only; with Dh(0) = 0 the exit intensity is invariant."""
     alpha, eta = 1.1, np.linspace(-30.0, 30.0, 121)
     I0 = rocking(alpha, eta, phi=None, geometry="laue", n_z=1024)
-    I1 = rocking(alpha, eta, phi=lambda z: np.full_like(np.asarray(z, float), 0.9),
-                 geometry="laue", n_z=1024)
+    I1 = rocking(
+        alpha, eta, phi=lambda z: np.full_like(np.asarray(z, float), 0.9), geometry="laue", n_z=1024
+    )
     assert np.allclose(I0, I1, atol=1e-10)
 
 

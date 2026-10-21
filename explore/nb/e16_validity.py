@@ -1,4 +1,5 @@
 """Entry 16: where does the filled-depth law break? Error of the centre law vs alpha / alpha_ac."""
+
 import sys
 from pathlib import Path
 
@@ -16,11 +17,17 @@ rows = []
 for aac in (5.0, 10.0, 20.0, 40.0):
     d = Drive(S=S, alpha_ac=aac)
     for alpha in (0.5, 1.0, 2.0, 4.0, 8.0):
-        I = rocking_cube(alpha, d, np.array([n * d.q]), t, n_z=int(max(1500, 60 * max(aac, alpha))))[:, 0]
+        I = rocking_cube(
+            alpha, d, np.array([n * d.q]), t, n_z=int(max(1500, 60 * max(aac, alpha)))
+        )[:, 0]
         e = I - np.sin(np.pi * alpha * abs(jv(n, S)) * t) ** 2
         rows.append((alpha / aac, np.max(np.abs(e))))
-        print(f"{aac:8.0f} {alpha:6.1f} {alpha/aac:14.3f} {np.max(np.abs(e)):12.3f} {np.sqrt(np.mean(e**2)):6.3f}")
+        print(
+            f"{aac:8.0f} {alpha:6.1f} {alpha / aac:14.3f} {np.max(np.abs(e)):12.3f} {np.sqrt(np.mean(e**2)):6.3f}"
+        )
 r = np.array(rows)
 ok = r[:, 0] <= 0.1
-print(f"worst max error with alpha/alpha_ac <= 0.1: {r[ok, 1].max():.3f};  with 0.1 < ratio <= 0.2: "
-      f"{r[(r[:, 0] > 0.1) & (r[:, 0] <= 0.2), 1].max():.3f}")
+print(
+    f"worst max error with alpha/alpha_ac <= 0.1: {r[ok, 1].max():.3f};  with 0.1 < ratio <= 0.2: "
+    f"{r[(r[:, 0] > 0.1) & (r[:, 0] <= 0.2), 1].max():.3f}"
+)

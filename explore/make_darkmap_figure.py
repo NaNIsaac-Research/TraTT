@@ -22,9 +22,19 @@ sys.path.insert(0, str(ROOT / "explore" / "nb"))
 from e45_zero import C_n  # noqa: E402
 
 INK, INK2 = "#0b0b0b", "#52514e"
-mpl.rcParams.update({"font.size": 9, "axes.edgecolor": INK2, "axes.labelcolor": INK, "text.color": INK,
-                     "xtick.color": INK2, "ytick.color": INK2, "figure.facecolor": "white",
-                     "savefig.facecolor": "white", "savefig.dpi": 200})
+mpl.rcParams.update(
+    {
+        "font.size": 9,
+        "axes.edgecolor": INK2,
+        "axes.labelcolor": INK,
+        "text.color": INK,
+        "xtick.color": INK2,
+        "ytick.color": INK2,
+        "figure.facecolor": "white",
+        "savefig.facecolor": "white",
+        "savefig.dpi": 200,
+    }
+)
 
 
 def main(out="figures/darkmap.png"):
@@ -35,8 +45,15 @@ def main(out="figures/darkmap.png"):
         Rs, Ss, D = d["Rs"], d["Ss"], d["D"]
         for j, n in enumerate((0, 1, 2)):
             a = ax[r, j]
-            im = a.pcolormesh(Ss, Rs, np.log10(np.clip(D[:, :, j], 1e-3, 10)), cmap="RdBu", vmin=-2, vmax=1,
-                              shading="nearest")
+            im = a.pcolormesh(
+                Ss,
+                Rs,
+                np.log10(np.clip(D[:, :, j], 1e-3, 10)),
+                cmap="RdBu",
+                vmin=-2,
+                vmax=1,
+                shading="nearest",
+            )
             for z in jn_zeros(n, 2):
                 a.axvline(z, color=INK, lw=0.8, ls="--")
             # third-order renormalised zero near the first Bessel zero
@@ -53,7 +70,12 @@ def main(out="figures/darkmap.png"):
                 a.set_xlabel("S")
             if j == 0:
                 a.set_ylabel(r"$R=\alpha/\alpha_{ac}=\Lambda_{ac}/\Lambda_P$")
-    fig.colorbar(im, ax=ax, shrink=0.7, label=r"$\log_{10} D_n$  (red: darker, blue: brighter than independent)")
+    fig.colorbar(
+        im,
+        ax=ax,
+        shrink=0.7,
+        label=r"$\log_{10} D_n$  (red: darker, blue: brighter than independent)",
+    )
     fig.savefig(ROOT / out)
     print("wrote", out)
 

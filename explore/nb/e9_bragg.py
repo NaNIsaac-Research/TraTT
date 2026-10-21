@@ -5,6 +5,7 @@ the filled layer [0, t] is a Bragg slab of coupling pi alpha_n; the unfilled lay
 behind it is off-Bragg. Centre reflectivity of a non-absorbing Bragg slab of
 thickness t at exact Bragg: tanh^2(pi alpha_n t).
 """
+
 import sys
 from pathlib import Path
 
@@ -23,5 +24,7 @@ for S, alpha, n in [(1.5, 0.5, 1), (1.5, 1.0, 1), (1.5, 2.0, 1), (3.0, 2.0, 2)]:
     an = alpha * abs(jv(n, S))
     th = np.tanh(np.pi * an * np.minimum(t, 1)) ** 2
     k = [10, 30, 60, 99]
-    print(f"S={S} alpha={alpha} n={n} alpha_n={an:.2f} max|I-tanh2|={np.max(np.abs(I - th)):.3f}  "
-          + " ".join(f"t={t[i]:.2f}:{I[i]:.3f}/{th[i]:.3f}" for i in k))
+    print(
+        f"S={S} alpha={alpha} n={n} alpha_n={an:.2f} max|I-tanh2|={np.max(np.abs(I - th)):.3f}  "
+        + " ".join(f"t={t[i]:.2f}:{I[i]:.3f}/{th[i]:.3f}" for i in k)
+    )

@@ -1,4 +1,5 @@
 """Entry 3b: scaling of the raw satellite peak shift at t = 0.3 (off the period grid)."""
+
 import sys
 from pathlib import Path
 
@@ -28,6 +29,10 @@ for S in (1.5, -1.5):
                 eta = np.linspace(n * q - 15, n * q + 15, 3001)
                 A = amplitude(alpha, eta, phi=d.phi(t), n_z=nz)
                 A0 = amplitude(alpha, eta, n_z=nz)
-                s.append((peakpos(eta, abs(A) ** 2) - n * q, peakpos(eta, abs(A - A0) ** 2) - n * q))
-            row.append(f"a={alpha}: raw {s[0][0]:+.3f}/{s[1][0]:+.3f} diff {s[0][1]:+.3f}/{s[1][1]:+.3f}")
+                s.append(
+                    (peakpos(eta, abs(A) ** 2) - n * q, peakpos(eta, abs(A - A0) ** 2) - n * q)
+                )
+            row.append(
+                f"a={alpha}: raw {s[0][0]:+.3f}/{s[1][0]:+.3f} diff {s[0][1]:+.3f}/{s[1][1]:+.3f}"
+            )
         print(f"S={S:+} aac={aac}: " + " | ".join(row))

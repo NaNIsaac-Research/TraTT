@@ -7,6 +7,7 @@ alpha_ac = 2, S in {0.5, 1.0, 2.3}, R = alpha / alpha_ac from 0.05 to 2. For eac
 Distinguishes "dark because the coupling cancels" from "dark because the line moved".
 Saves e48_traj_S{S}.npz.
 """
+
 import os
 
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
@@ -20,6 +21,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1] / "src"))
 sys.path.insert(0, str(HERE))
 from e46_bands import bands  # noqa: E402
+
 from tratt.core import required_nz, solve_laue  # noqa: E402
 from tratt.drive import Drive  # noqa: E402
 
@@ -32,9 +34,23 @@ def one(args):
     q = 2 * np.pi * AAC
     eta = np.arange(-3.5 * q, 3.5 * q, 0.08)
     nz = required_nz(alpha, AAC, S=S, eta_max=3.5 * q)
-    I = np.mean([np.abs(solve_laue(alpha, eta, phi=Drive(S=S, alpha_ac=AAC).steady_phi(k / (8 * AAC)),
-                                   n_z=nz)[1]) ** 2 for k in range(8)], axis=0)
-    pk = [i for i in range(1, I.size - 1) if I[i] > I[i - 1] and I[i] >= I[i + 1] and I[i] > 0.05 * I.max()]
+    I = np.mean(
+        [
+            np.abs(
+                solve_laue(
+                    alpha, eta, phi=Drive(S=S, alpha_ac=AAC).steady_phi(k / (8 * AAC)), n_z=nz
+                )[1]
+            )
+            ** 2
+            for k in range(8)
+        ],
+        axis=0,
+    )
+    pk = [
+        i
+        for i in range(1, I.size - 1)
+        if I[i] > I[i - 1] and I[i] >= I[i + 1] and I[i] > 0.05 * I.max()
+    ]
     e = np.linspace(0.0, 0.5 * q, 201)
     _, _, mix, _ = bands(alpha, AAC, S, e)
     m = mix[:, 0]
@@ -47,11 +63,20 @@ if __name__ == "__main__":
         Rs = np.linspace(0.05, 2.0, 40)
         with Pool(11) as pool:
             res = pool.map(one, [(R, S) for R in Rs])
-        np.savez(HERE / f"e48_traj_S{S}.npz", Rs=Rs, peaks=np.array([r[1] for r in res], dtype=object),
-                 heights=np.array([r[2] for r in res], dtype=object), cross=np.array([r[3] for r in res], dtype=object),
-                 spec=np.array([r[4] for r in res]), allow_pickle=True)
+        np.savez(
+            HERE / f"e48_traj_S{S}.npz",
+            Rs=Rs,
+            peaks=np.array([r[1] for r in res], dtype=object),
+            heights=np.array([r[2] for r in res], dtype=object),
+            cross=np.array([r[3] for r in res], dtype=object),
+            spec=np.array([r[4] for r in res]),
+            allow_pickle=True,
+        )
         print(f"S={S}:")
-        for R, pk, h, cr, _ in res[::4]:
+        for R, pk, _h, cr, _ in res[::4]:
             inner = sorted(p for p in pk if 0 <= p <= 1.6)
-            print(f"  R={R:.2f}: peaks in [0,1.6] q: {np.round(inner, 3).tolist()} | Bloch mixing points in [0, q/2]: "
-                  f"{np.round(cr, 3).tolist()}", flush=True)
+            print(
+                f"  R={R:.2f}: peaks in [0,1.6] q: {np.round(inner, 3).tolist()} | Bloch mixing points in [0, q/2]: "
+                f"{np.round(cr, 3).tolist()}",
+                flush=True,
+            )

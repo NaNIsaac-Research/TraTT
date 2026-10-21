@@ -6,6 +6,7 @@ Scalings distinguish candidates:
   tail slope pulling the peak   ~ alpha^2 / q^3 / (h t^2)   (artifact of reading)
   Floquet level shift           ~ (pi alpha J)^2 / q         (genuine resonance shift)
 """
+
 import sys
 from pathlib import Path
 
@@ -37,7 +38,16 @@ for aac in (20.0, 40.0):
                 eta = np.linspace(n * q - 12, n * q + 12, 2401)
                 A = amplitude(alpha, eta, phi=d.phi(t), n_z=max(1500, int(40 * aac)))
                 A0 = amplitude(alpha, eta, n_z=max(1500, int(40 * aac)))
-                row.append((peakpos(eta, np.abs(A) ** 2) - n * q, peakpos(eta, np.abs(A - A0) ** 2) - n * q))
-            out.append(f"t={t}: raw(+1,-1)=({row[0][0]:+.3f},{row[1][0]:+.3f}) diff=({row[0][1]:+.3f},{row[1][1]:+.3f})")
-        print(f"aac={aac} alpha={alpha} (pi a J0)^2/q={(np.pi*alpha*jv(0,S))**2/q:.4f} "
-              f"(pi a)^2/q={(np.pi*alpha)**2/q:.4f} alpha_n={an:.2f}\n   " + "\n   ".join(out))
+                row.append(
+                    (
+                        peakpos(eta, np.abs(A) ** 2) - n * q,
+                        peakpos(eta, np.abs(A - A0) ** 2) - n * q,
+                    )
+                )
+            out.append(
+                f"t={t}: raw(+1,-1)=({row[0][0]:+.3f},{row[1][0]:+.3f}) diff=({row[0][1]:+.3f},{row[1][1]:+.3f})"
+            )
+        print(
+            f"aac={aac} alpha={alpha} (pi a J0)^2/q={(np.pi * alpha * jv(0, S)) ** 2 / q:.4f} "
+            f"(pi a)^2/q={(np.pi * alpha) ** 2 / q:.4f} alpha_n={an:.2f}\n   " + "\n   ".join(out)
+        )

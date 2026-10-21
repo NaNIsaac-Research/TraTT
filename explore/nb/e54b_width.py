@@ -8,6 +8,7 @@ to 0.45 q, and report the fraction F(w) = int target / int total and the w at wh
 Grid convergence: the same with twice the points.
 Usage: python e54b_width.py [base] [eps] [map]
 """
+
 import os
 import sys
 
@@ -33,7 +34,10 @@ def resonance(fl, q):
         w = np.linalg.eigvalsh(fl.H(np.array([N * q + d]))[0])
         two = np.sort(w[np.argsort(np.abs(w))[:2]])
         return (two[1] - two[0]) / 2
-    return minimize_scalar(split, bounds=(-0.05, 0.05), method="bounded", options={"xatol": 1e-12}).x
+
+    return minimize_scalar(
+        split, bounds=(-0.05, 0.05), method="bounded", options={"xatol": 1e-12}
+    ).x
 
 
 def profile(aac, center, npts=1500, K=None):
@@ -43,22 +47,24 @@ def profile(aac, center, npts=1500, K=None):
     u = np.concatenate([[0.0], np.geomspace(1e-8 * q, 0.45 * q, npts)])
     eta = np.concatenate([center - u[::-1][:-1], center + u])
     x = fl.propagate(eta)
-    b = x[:, fl.n:]
+    b = x[:, fl.n :]
     tgt = np.abs(b[:, list(fl.ms).index(-N)]) ** 2
     tot = np.sum(np.abs(b) ** 2, axis=1)
     i0 = u.size - 1
+
     # integrals over [c - w, c + w] for each w = u
     def sym(y):
         right = cumulative_trapezoid(y[i0:], eta[i0:], initial=0.0)
         left = cumulative_trapezoid(y[i0::-1][::1], -eta[i0::-1], initial=0.0)
         return right + left
+
     return u, sym(tgt), sym(tot), fl, q
 
 
 def crossings(u, F, q):
     out = {}
     for thr in (0.5, 0.9):
-        bad = np.flatnonzero(~(F[1:] >= thr)) + 1       # F >= thr contiguously from the centre up to w
+        bad = np.flatnonzero(~(F[1:] >= thr)) + 1  # F >= thr contiguously from the centre up to w
         k = bad[0] - 1 if bad.size else u.size - 1
         out[thr] = float(u[k] / q) if k >= 1 else None
     return out
@@ -77,15 +83,29 @@ def section_base():
             F = np.where(Ia > 0, It / Ia, np.nan)
             cr = crossings(u, F, q)
             res[(lab, npts)] = (u, It, Ia, F)
-            sel = [np.argmin(abs(u - w * q)) for w in (1e-6, 1e-5, 1e-4, 1e-3, 3e-3, 1e-2, 3e-2, 0.1, 0.45)]
-            print(f" {lab:9s} npts {npts} K {KK}: F at w/q = " + " ".join(f"{u[i]/q:.0e}:{F[i]:.4f}" for i in sel) +
-                  f" | w/q at F=0.5: {cr[0.5]}, F=0.9: {cr[0.9]}")
+            sel = [
+                np.argmin(abs(u - w * q))
+                for w in (1e-6, 1e-5, 1e-4, 1e-3, 3e-3, 1e-2, 3e-2, 0.1, 0.45)
+            ]
+            print(
+                f" {lab:9s} npts {npts} K {KK}: F at w/q = "
+                + " ".join(f"{u[i] / q:.0e}:{F[i]:.4f}" for i in sel)
+                + f" | w/q at F=0.5: {cr[0.5]}, F=0.9: {cr[0.9]}"
+            )
             for thr in (0.5, 0.9):
                 if cr[thr]:
                     i = np.argmin(abs(u - cr[thr] * q))
-                    print(f"     F >= {thr}: w/q <= {cr[thr]:.4e}; there int target {It[i]:.3e}, int total {Ia[i]:.3e}")
-    json.dump({f"{k[0]}_{k[1]}": dict(wq=(v[0] / q).tolist(), It=v[1].tolist(), Ia=v[2].tolist())
-               for k, v in res.items() if k[1] == 3000}, open(HERE / "e54b_base.json", "w"))
+                    print(
+                        f"     F >= {thr}: w/q <= {cr[thr]:.4e}; there int target {It[i]:.3e}, int total {Ia[i]:.3e}"
+                    )
+    json.dump(
+        {
+            f"{k[0]}_{k[1]}": dict(wq=(v[0] / q).tolist(), It=v[1].tolist(), Ia=v[2].tolist())
+            for k, v in res.items()
+            if k[1] == 3000
+        },
+        open(HERE / "e54b_base.json", "w"),
+    )
 
 
 def section_eps():
@@ -99,10 +119,23 @@ def section_eps():
         u, It, Ia, _, _ = profile(aac, N * q + dstar, 1500)
         F = np.where(Ia > 0, It / Ia, np.nan)
         cr = crossings(u, F, q)
-        rows.append(dict(eps=float(e), dstar=float(dstar), wq=(u / q).tolist(), F=np.nan_to_num(F).tolist(),
-                         It=It.tolist(), Ia=Ia.tolist(), w50=cr[0.5], w90=cr[0.9]))
-        print(f" eps={e:+.4e}: delta*={dstar:+.3e} | w/q (F>=0.5) {cr[0.5]} | (F>=0.9) {cr[0.9]} | "
-              f"F at w=1e-3 q {F[np.argmin(abs(u - 1e-3 * q))]:.3f}, at 0.45 q {F[-1]:.2e}", flush=True)
+        rows.append(
+            dict(
+                eps=float(e),
+                dstar=float(dstar),
+                wq=(u / q).tolist(),
+                F=np.nan_to_num(F).tolist(),
+                It=It.tolist(),
+                Ia=Ia.tolist(),
+                w50=cr[0.5],
+                w90=cr[0.9],
+            )
+        )
+        print(
+            f" eps={e:+.4e}: delta*={dstar:+.3e} | w/q (F>=0.5) {cr[0.5]} | (F>=0.9) {cr[0.9]} | "
+            f"F at w=1e-3 q {F[np.argmin(abs(u - 1e-3 * q))]:.3f}, at 0.45 q {F[-1]:.2e}",
+            flush=True,
+        )
     json.dump(rows, open(HERE / "e54b_eps.json", "w"))
 
 
@@ -114,13 +147,18 @@ def section_res():
             fl = FloquetLaue(ALPHA, aac, J11, K)
 
             def split(d):
-                w = np.linalg.eigvalsh(fl.H(np.array([N * q + d]))[0])
+                w = np.linalg.eigvalsh(fl.H(np.array([N * q + d]))[0])  # noqa: B023 - called within the iteration
                 two = np.sort(w[np.argsort(np.abs(w))[:2]])
                 return (two[1] - two[0]) / 2
+
             for tol in (1e-9, 1e-12):
-                d = minimize_scalar(split, bounds=(-0.05, 0.05), method="bounded", options={"xatol": tol}).x
-                print(f" alpha_ac {aac:6.2f} K {K} xatol {tol:.0e}: delta* = {d:+.4e}, g(delta*) = {split(d):.10e}, "
-                      f"g(0) - g(delta*) = {split(0.0) - split(d):.2e}, delta*/q = {d / q:+.1e}")
+                d = minimize_scalar(
+                    split, bounds=(-0.05, 0.05), method="bounded", options={"xatol": tol}
+                ).x
+                print(
+                    f" alpha_ac {aac:6.2f} K {K} xatol {tol:.0e}: delta* = {d:+.4e}, g(delta*) = {split(d):.10e}, "
+                    f"g(0) - g(delta*) = {split(0.0) - split(d):.2e}, delta*/q = {d / q:+.1e}"
+                )
 
 
 def map_point(e):
@@ -131,13 +169,20 @@ def map_point(e):
     with np.errstate(invalid="ignore", divide="ignore"):
         F = It / Ia
     cr = crossings(u, F, q)
-    return dict(eps=float(e), dstar=float(dstar), F=np.nan_to_num(F).tolist(), Ia=Ia.tolist(),
-                w50=cr[0.5], w90=cr[0.9])
+    return dict(
+        eps=float(e),
+        dstar=float(dstar),
+        F=np.nan_to_num(F).tolist(),
+        Ia=Ia.tolist(),
+        w50=cr[0.5],
+        w90=cr[0.9],
+    )
 
 
 def section_map():
     """Linear eps grid for the summary figure; u/q is the same grid for every alpha_ac."""
     from multiprocessing import Pool
+
     eps = np.round(np.arange(-0.008, 0.00801, 2.5e-4), 6)
     with Pool(11) as pool:
         rows = pool.map(map_point, eps)
@@ -149,5 +194,5 @@ def section_map():
 
 
 if __name__ == "__main__":
-    for s in (sys.argv[1:] or ["base", "eps"]):
+    for s in sys.argv[1:] or ["base", "eps"]:
         globals()[f"section_{s}"]()

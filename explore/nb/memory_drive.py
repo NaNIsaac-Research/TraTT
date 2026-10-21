@@ -13,10 +13,11 @@ tanh^2(pi alpha |Theta_n|) (dR/dzeta = -i kappa (1 + R^2) gives R = -i tanh int 
 for any real, depth-dependent kappa). Only phase jumps of 0 or pi are allowed: other
 phases rotate about different axes and the angles no longer add.
 """
+
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import numpy as np
 from scipy.special import jv
@@ -33,7 +34,11 @@ class HistoryDrive(Drive):
 
     def envelope(self, s):
         s = np.asarray(s, dtype=np.float64)
-        return np.where(s >= 0.0, self.env(np.clip(s, 0.0, None)), 0.0) if self.env else super().envelope(s)
+        return (
+            np.where(s >= 0.0, self.env(np.clip(s, 0.0, None)), 0.0)
+            if self.env
+            else super().envelope(s)
+        )
 
     def phi(self, t):
         S, q = self.S, self.q

@@ -5,6 +5,7 @@ non-integer in [20, 45], n in {1, 2, -1}, rise in {0, U[0, 0.6]}. Law: accumulat
 coupling (Entry 5), which is the step law when rise = 0. Report the error against
 alpha / alpha_ac.
 """
+
 import sys
 from pathlib import Path
 
@@ -30,10 +31,14 @@ for i in range(30):
     Th = np.array([abs(np.trapezoid(jv(n, S * d.envelope(x - z)), z)) for x in t])
     err = np.max(np.abs(I - np.sin(np.pi * alpha * Th) ** 2))
     rows.append((alpha / aac, err))
-    print(f"{i:2d} S={S:.2f} alpha={alpha:.2f} aac={aac:.2f} n={n:+d} rise={rise:.2f} "
-          f"ratio={alpha/aac:.3f} max err={err:.3f}")
+    print(
+        f"{i:2d} S={S:.2f} alpha={alpha:.2f} aac={aac:.2f} n={n:+d} rise={rise:.2f} "
+        f"ratio={alpha / aac:.3f} max err={err:.3f}"
+    )
 r = np.array(rows)
 for lo, hi in [(0, 0.05), (0.05, 0.1), (0.1, 0.2)]:
     m = (r[:, 0] > lo) & (r[:, 0] <= hi)
     if m.any():
-        print(f"ratio in ({lo}, {hi}]: {m.sum()} cases, worst {r[m, 1].max():.3f}, median {np.median(r[m, 1]):.3f}")
+        print(
+            f"ratio in ({lo}, {hi}]: {m.sum()} cases, worst {r[m, 1].max():.3f}, median {np.median(r[m, 1]):.3f}"
+        )

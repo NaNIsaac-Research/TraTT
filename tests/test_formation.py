@@ -14,8 +14,8 @@ from tratt.cube import front_and_full, rocking_cube
 from tratt.drive import Drive
 from tratt.observe import channel_stats, channel_window, formation_time
 
-
 # --- the steady reference itself ------------------------------------------------
+
 
 def test_steady_phi_is_periodic_in_time():
     d = Drive(S=0.8, alpha_ac=5.0, rise=0.3)
@@ -62,6 +62,7 @@ def test_cubes_agree_after_transit():
 
 # --- channel observables ---------------------------------------------------------
 
+
 def test_channel_windows_tile_without_overlap():
     d = Drive(S=1.0, alpha_ac=5.0)
     eta = np.linspace(-2.5 * d.q, 2.5 * d.q, 1001)
@@ -91,6 +92,7 @@ def test_channel_stats_flag_an_empty_window():
 
 # --- formation time verdicts -----------------------------------------------------
 
+
 def test_formation_time_requires_the_tolerance_to_hold_forever_after():
     t = np.linspace(0.0, 3.0, 601)
     p_full = np.ones_like(t)
@@ -115,13 +117,19 @@ def test_step_onset_formation_time_never_exceeds_the_transit():
     times = d.times(t_max=1.6, per_period=16)
     If, Is = front_and_full(alpha, d, eta, times, n_z=required_nz(alpha, d.alpha_ac))
     for n in (0, 1, -1):
-        F = formation_time(times, channel_stats(eta, If, d, n).p,
-                           channel_stats(eta, Is, d, n).p, d.period, eps=0.05)
+        F = formation_time(
+            times,
+            channel_stats(eta, If, d, n).p,
+            channel_stats(eta, Is, d, n).p,
+            d.period,
+            eps=0.05,
+        )
         assert F.status == "formed", (n, F.status)
         assert F.t_f <= 1.0 + 1e-12, f"channel {n}: t_f = {F.t_f} exceeds the transit time"
 
 
 # --- satellite formation = Laue thickness curve of the filled depth -------------
+
 
 def test_satellite_formation_follows_filled_depth_pendelloesung():
     """Channel n inside the filled depth is a two-beam Laue slab of coupling
@@ -159,7 +167,10 @@ def test_accumulated_coupling_law_all_channels_with_rise():
         I = rocking_cube(alpha, d, np.array([0.0, d.q, 2 * d.q]), t, n_z=1200)
         for j, n in enumerate((0, 1, 2)):
             Th = [abs(np.trapezoid(jv(n, S * d.envelope(x - z)), z)) for x in t]
-            assert np.allclose(I[:, j], np.sin(np.pi * alpha * np.array(Th)) ** 2, atol=0.06), (rise, n)
+            assert np.allclose(I[:, j], np.sin(np.pi * alpha * np.array(Th)) ** 2, atol=0.06), (
+                rise,
+                n,
+            )
 
 
 def test_bragg_satellite_saturates_as_filled_depth_slab():
@@ -212,11 +223,13 @@ def test_history_law_transient_only_and_phase_coded_packet():
     assert I[0] > 0.4 and I[1] < 1e-4, I
     assert np.allclose(I, np.sin(np.pi * alpha * np.abs(theta(d, 1, t))) ** 2, atol=0.01)
 
-    d = HistoryDrive(S=1.5, alpha_ac=40.0, env=box(0.8), flip=lambda s: np.where(s >= 0.4, 1.0, 0.0))
+    d = HistoryDrive(
+        S=1.5, alpha_ac=40.0, env=box(0.8), flip=lambda s: np.where(s >= 0.4, 1.0, 0.0)
+    )
     t = np.array([0.4037, 0.9037, 1.4037])
     I = rocking_cube(alpha, d, np.array([d.q, 2 * d.q]), t, n_z=1600)
-    assert I[1, 0] < 1e-3 and I[0, 0] > 0.1 and I[2, 0] > 0.1, I[:, 0]   # n = 1 cancels, revives
-    assert I[1, 1] > 0.07, I[:, 1]                                          # n = 2 adds meanwhile
+    assert I[1, 0] < 1e-3 and I[0, 0] > 0.1 and I[2, 0] > 0.1, I[:, 0]  # n = 1 cancels, revives
+    assert I[1, 1] > 0.07, I[:, 1]  # n = 2 adds meanwhile
 
 
 def test_transient_only_contrast_set_by_accumulated_coupling():
@@ -236,7 +249,7 @@ def test_transient_only_contrast_set_by_accumulated_coupling():
     from nonideal import GeneralDrive, ramp, theta_law
 
     Z, alpha, aac, g = jn_zeros(1, 1)[0], 1.0, 40.0, -np.log(0.8)
-    t = np.array([0.9937, 2.0037])                     # transient peak region, final state
+    t = np.array([0.9937, 2.0037])  # transient peak region, final state
     nz = required_nz(alpha, aac, S=1.6 * Z, eta_max=2 * np.pi * aac)
     for kw in (dict(gamma=g), dict(eps2=0.1)):
         d = GeneralDrive(S=Z, alpha_ac=aac, amp=ramp(0.5), **kw)
@@ -277,8 +290,8 @@ def test_two_domains_cancel_at_centre_but_add_in_the_integral():
         d = HistoryDrive(S=1.0, alpha_ac=aac, env=lambda s, a2=a2, a1=a1: np.where(s < 1.0, a2, a1))
         I = rocking(alpha, eta, phi=d.phi(ts), n_z=nz)
         res[key] = (I[np.argmin(np.abs(eta - q))], np.trapezoid(I - I0, eta))
-    assert res["both"][0] < 1e-4 * res["one"][0]                       # centre cancels
-    assert abs(res["both"][1] / (res["one"][1] + res["two"][1]) - 1) < 0.03   # integrals add
+    assert res["both"][0] < 1e-4 * res["one"][0]  # centre cancels
+    assert abs(res["both"][1] / (res["one"][1] + res["two"][1]) - 1) < 0.03  # integrals add
 
 
 def test_chirp_landau_zener_plateau_and_phase_wall_integral():
@@ -315,5 +328,5 @@ def test_chirp_landau_zener_plateau_and_phase_wall_integral():
         d = PhaseDrive(S=S, alpha_ac=aac, theta_fn=phase_wall(q0, dphi, t - 0.3))
         p[dphi] = np.trapezoid(rocking(alpha, eta, phi=d.phi(t), n_z=nz) - I0, eta)
         k[dphi] = np.trapezoid(kinematic(alpha, d, eta, t) - K0, eta)
-    assert abs(k[np.pi] / k[0.0] - 1) < 0.02     # Parseval: phase wall changes nothing kinematically
-    assert p[np.pi] / p[0.0] > 2.0               # dynamically the integral more than doubles
+    assert abs(k[np.pi] / k[0.0] - 1) < 0.02  # Parseval: phase wall changes nothing kinematically
+    assert p[np.pi] / p[0.0] > 2.0  # dynamically the integral more than doubles

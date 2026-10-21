@@ -46,8 +46,15 @@ from typing import Protocol
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
-__all__ = ["PhaseField", "ZERO_PHASE", "required_nz", "solve_laue", "solve_bragg",
-           "amplitude", "rocking"]
+__all__ = [
+    "PhaseField",
+    "ZERO_PHASE",
+    "required_nz",
+    "solve_laue",
+    "solve_bragg",
+    "amplitude",
+    "rocking",
+]
 
 
 class PhaseField(Protocol):
@@ -186,7 +193,10 @@ def solve_bragg(
 
     start = _couplings(phase, c, 1.0)
     for i in range(n_z):
-        mid, end = _couplings(phase, c, 1.0 + (i + 0.5) * h), _couplings(phase, c, 1.0 + (i + 1) * h)
+        mid, end = (
+            _couplings(phase, c, 1.0 + (i + 0.5) * h),
+            _couplings(phase, c, 1.0 + (i + 1) * h),
+        )
         k1 = f(*start, R)
         k2 = f(*mid, R + 0.5 * h * k1)
         k3 = f(*mid, R + 0.5 * h * k2)

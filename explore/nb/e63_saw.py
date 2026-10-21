@@ -57,8 +57,14 @@ def law_vs_tt():
             law = np.sin(np.pi * alpha * abs(th)) ** 2
             # average over acoustic phase: the skin is static, the carrier still moves
             ts = np.linspace(0.0, d.period, 8, endpoint=False)
-            tt = float(np.mean([rocking(alpha, d.eta_channel(n), phi=skin_phi(S, d.q, zeta_d, t),
-                                        n_z=n_z) for t in ts]))
+            tt = float(
+                np.mean(
+                    [
+                        rocking(alpha, d.eta_channel(n), phi=skin_phi(S, d.q, zeta_d, t), n_z=n_z)
+                        for t in ts
+                    ]
+                )
+            )
             worst = max(worst, abs(tt - law))
             print(f"{S:5.1f} {zeta_d:7.3f} {th:9.5f} {law:10.5f} {tt:9.5f} {tt - law:9.2e}")
     print(f"worst |TT - law| = {worst:.2e}")
@@ -84,18 +90,24 @@ def saw_bound():
     print("SAW depth bound (Si).")
     print(f"  c_L = {cL:.0f} m/s, c_T = {cT:.0f} m/s")
     for cR in (4920.0, 5378.0):
-        kT = np.sqrt(1 - (cR / cT) ** 2)          # slower-decaying Rayleigh partial wave
-        dec = 1.0 / (2 * np.pi * kT)              # decay length in units of Lambda_ac
-        print(f"  c_R = {cR:.0f} m/s -> kappa_T/q = {kT:.3f}, skin = {dec:.3f} Lambda_ac, "
-              f"modulated fraction of Lambda_P = {dec:.3f} R")
+        kT = np.sqrt(1 - (cR / cT) ** 2)  # slower-decaying Rayleigh partial wave
+        dec = 1.0 / (2 * np.pi * kT)  # decay length in units of Lambda_ac
+        print(
+            f"  c_R = {cR:.0f} m/s -> kappa_T/q = {kT:.3f}, skin = {dec:.3f} Lambda_ac, "
+            f"modulated fraction of Lambda_P = {dec:.3f} R"
+        )
     dec = 1.0 / (2 * np.pi * np.sqrt(1 - (4920.0 / cT) ** 2))
     print()
-    print(f"  resolved channels need R <= 0.34-0.57 (Entry 54), so the fraction is capped at "
-          f"{dec * 0.34:.3f}-{dec * 0.57:.3f}")
+    print(
+        f"  resolved channels need R <= 0.34-0.57 (Entry 54), so the fraction is capped at "
+        f"{dec * 0.34:.3f}-{dec * 0.57:.3f}"
+    )
 
     print()
-    print(f"{'f GHz':>7} {'Lam_ac um':>10} {'skin um':>8} | "
-          f"{'Si440 17keV R':>14} {'frac':>6} | {'Si440 30keV R':>14} {'frac':>6}")
+    print(
+        f"{'f GHz':>7} {'Lam_ac um':>10} {'skin um':>8} | "
+        f"{'Si440 17keV R':>14} {'frac':>6} | {'Si440 30keV R':>14} {'frac':>6}"
+    )
     for f in (0.2, 0.5, 1.0, 2.0, 5.0):
         lam = 4920.0 / (f * 1e9) * 1e6
         skin = dec * lam

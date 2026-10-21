@@ -77,12 +77,26 @@ FONT = os.environ.get("TRATT_FONT", "IBM Plex Sans")
 # falls back to DejaVu for "h . u_0" and "R ~ 1"; its \int is also a text-sized glyph, which
 # the Theta_n equation needs to be bigger than. Set TRATT_MATH to compare.
 MATH = os.environ.get("TRATT_MATH", "stix")
-_math = ({"mathtext.fontset": "custom", "mathtext.rm": FONT, "mathtext.it": f"{FONT}:italic",
-          "mathtext.bf": f"{FONT}:bold", "mathtext.sf": FONT}
-         if MATH == "plex" else {"mathtext.fontset": MATH})
-matplotlib.rcParams.update({"text.hinting": "none", "text.hinting_factor": 1, "font.family": FONT,
-                            "pdf.fonttype": 42,   # TrueType in the PDF: editable, accepted by print shops
-                            **_math})
+_math = (
+    {
+        "mathtext.fontset": "custom",
+        "mathtext.rm": FONT,
+        "mathtext.it": f"{FONT}:italic",
+        "mathtext.bf": f"{FONT}:bold",
+        "mathtext.sf": FONT,
+    }
+    if MATH == "plex"
+    else {"mathtext.fontset": MATH}
+)
+matplotlib.rcParams.update(
+    {
+        "text.hinting": "none",
+        "text.hinting_factor": 1,
+        "font.family": FONT,
+        "pdf.fonttype": 42,  # TrueType in the PDF: editable, accepted by print shops
+        **_math,
+    }
+)
 import matplotlib.image as mpimg  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.patches import FancyBboxPatch  # noqa: E402
@@ -94,21 +108,53 @@ NOTEBOOK = ROOT / "notes" / "lab_notebook.md"
 
 # A0 portrait, same as the ICAMD 2025 poster (841 x 1189 mm). Check the KPS rule before printing.
 SPEC = dict(
-    W=841, H=1189, margin=16, gap=14, cols=2, pad=11,
-    header_h=110, stripe_h=5, footer_h=53,
-    title_pt=52, authors_pt=30, head_pt=40, badge_pt=30, body_pt=28, callout_pt=29, caption_pt=23,
-    stat_pt=36, stat_label_pt=23, eq_pt=30, min_pt=23,
-    leading=1.3, para_gap=6, side_text=0.64, panel_gap=8, fig_gap=4, spread_max=8,
-    navy="#0f2a3a", accent="#e8743b", page="#ffffff", card="#ffffff", edge="#c3c9ce", key="#fbf1d9",
-    ink="#25282b", ink2="#454c54", tint="#f4f6f7", rule="#a9b2b9", rule_w=0.4, key_soft="#fcf5e6",
+    W=841,
+    H=1189,
+    margin=16,
+    gap=14,
+    cols=2,
+    pad=11,
+    header_h=110,
+    stripe_h=5,
+    footer_h=53,
+    title_pt=52,
+    authors_pt=30,
+    head_pt=40,
+    badge_pt=30,
+    body_pt=28,
+    callout_pt=29,
+    caption_pt=23,
+    stat_pt=36,
+    stat_label_pt=23,
+    eq_pt=30,
+    min_pt=23,
+    leading=1.3,
+    para_gap=6,
+    side_text=0.64,
+    panel_gap=8,
+    fig_gap=4,
+    spread_max=8,
+    navy="#0f2a3a",
+    accent="#e8743b",
+    page="#ffffff",
+    card="#ffffff",
+    edge="#c3c9ce",
+    key="#fbf1d9",
+    ink="#25282b",
+    ink2="#454c54",
+    tint="#f4f6f7",
+    rule="#a9b2b9",
+    rule_w=0.4,
+    key_soft="#fcf5e6",
     # page zones behind whole bands (full width, not cards), a weak white / tint rhythm:
     # introduction white, method light blue-grey, results white (figures sit on the page), conclusions
     # a soft neutral
-    zone_method="#f7f8f9", zone_end="#f4f5f3",
+    zone_method="#f7f8f9",
+    zone_end="#f4f5f3",
     stripe=("#3a3a3a", "#e04b3a", "#f08a3c"),
 )
 PT_MM = 25.4 / 72
-XH = {"IBM Plex Sans": 0.516}.get(FONT, 0.49)   # x-height / em (Source Sans 3: 0.49)
+XH = {"IBM Plex Sans": 0.516}.get(FONT, 0.49)  # x-height / em (Source Sans 3: 0.49)
 
 
 # ───────────── manuscript ─────────────
@@ -163,12 +209,25 @@ def parse(text):
             continue
         if block.startswith("=>"):
             t = " ".join(block[2:].split())
-            add(dict(kind="flow", boxes=[b.strip() for b in TAG.sub("", t).split("|")], tags=TAG.findall(t)))
+            add(
+                dict(
+                    kind="flow",
+                    boxes=[b.strip() for b in TAG.sub("", t).split("|")],
+                    tags=TAG.findall(t),
+                )
+            )
             continue
         if block.startswith("~"):
             shape, t = block[1:].split("|", 1)
             t = " ".join(t.split())
-            add(dict(kind="onset", shape=shape.strip(), text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
+            add(
+                dict(
+                    kind="onset",
+                    shape=shape.strip(),
+                    text=TAG.sub("", t).strip(),
+                    tags=TAG.findall(t),
+                )
+            )
             continue
         if block.startswith("$$"):
             t = " ".join(block[2:].split())
@@ -182,7 +241,9 @@ def parse(text):
 
 # ───────────── typesetting ─────────────
 
-TOKEN = re.compile(r"\$[^$]+\$|\*\*[^*]+\*\*|[^\s$*]+|\*")   # a lone * (corresponding author) is a word
+TOKEN = re.compile(
+    r"\$[^$]+\$|\*\*[^*]+\*\*|[^\s$*]+|\*"
+)  # a lone * (corresponding author) is a word
 
 
 class Page:
@@ -204,14 +265,27 @@ class Page:
             t.remove()
         return self._w[key]
 
-    def flow(self, text, x, y, w, pt, color=None, weight="normal", indent=0.0, align="left", z=3, draw=True,
-             strong=None):
+    def flow(
+        self,
+        text,
+        x,
+        y,
+        w,
+        pt,
+        color=None,
+        weight="normal",
+        indent=0.0,
+        align="left",
+        z=3,
+        draw=True,
+        strong=None,
+    ):
         """Word-by-word placement with wrapping; $..$ and **..** stay atomic, **..** is medium weight (in colour
         `strong` if given). Returns the y (mm) just below the last line."""
         color = color or SPEC["ink"]
         lh = pt * PT_MM * SPEC["leading"]
         sp = self.width("a a", pt) - 2 * self.width("a", pt)
-        y = y + pt * PT_MM                                  # baseline of the first line
+        y = y + pt * PT_MM  # baseline of the first line
         toks, prev = [], 0
         for m in TOKEN.finditer(text):
             glue = m.start() == prev and bool(toks)
@@ -225,15 +299,19 @@ class Page:
             tw = self.width(s, pt, wgt)
             add = tw + (0 if g or not line else sp)
             if line and lw + add > w - indent:
-                k = len(line)                                # a glued run ending the line moves along
+                k = len(line)  # a glued run ending the line moves along
                 while g and k > 1 and line[k - 1][3]:
                     k -= 1
                 if g:
                     k -= 1
                 carry = line[k:] if k > 0 else []
                 kept = line[:k] if k > 0 else line
-                lines.append((kept, sum(t[4] for t in kept) + sp * sum(1 for t in kept[1:] if not t[3])))
-                line = [(cs, cw, cc, i > 0 and cg, ctw) for i, (cs, cw, cc, cg, ctw) in enumerate(carry)]
+                lines.append(
+                    (kept, sum(t[4] for t in kept) + sp * sum(1 for t in kept[1:] if not t[3]))
+                )
+                line = [
+                    (cs, cw, cc, i > 0 and cg, ctw) for i, (cs, cw, cc, cg, ctw) in enumerate(carry)
+                ]
                 lw = sum(t[4] for t in line) + sp * sum(1 for t in line[1:] if not t[3])
                 add = tw if not line else tw + (0 if g else sp)
             line.append((s, wgt, col, g if line else False, tw))
@@ -247,8 +325,17 @@ class Page:
                 if not g and not first:
                     cx += sp
                 if draw:
-                    self.ax.text(cx, y, s, fontsize=pt, color=col, family=FONT, zorder=z, fontweight=wgt,
-                                 va="baseline")
+                    self.ax.text(
+                        cx,
+                        y,
+                        s,
+                        fontsize=pt,
+                        color=col,
+                        family=FONT,
+                        zorder=z,
+                        fontweight=wgt,
+                        va="baseline",
+                    )
                 cx += tw
                 first = False
             y += lh
@@ -258,26 +345,41 @@ class Page:
         """Place an image at (x, y) mm, width w; height from the aspect ratio unless given."""
         img = mpimg.imread(path)
         h = h or w * img.shape[0] / img.shape[1]
-        a = self.fig.add_axes([x / SPEC["W"], 1 - (y + h) / SPEC["H"], w / SPEC["W"], h / SPEC["H"]], zorder=z)
+        a = self.fig.add_axes(
+            [x / SPEC["W"], 1 - (y + h) / SPEC["H"], w / SPEC["W"], h / SPEC["H"]], zorder=z
+        )
         a.imshow(img, cmap="gray", interpolation="lanczos")
         a.axis("off")
         return h
 
     def box(self, x, y, w, h, fc, r=2.5, z=1, ec="none", lw=0.0):
-        self.ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle=f"round,pad=0,rounding_size={r}",
-                                         fc=fc, ec=ec, lw=lw, zorder=z))
+        self.ax.add_patch(
+            FancyBboxPatch(
+                (x, y),
+                w,
+                h,
+                boxstyle=f"round,pad=0,rounding_size={r}",
+                fc=fc,
+                ec=ec,
+                lw=lw,
+                zorder=z,
+            )
+        )
 
 
 # ───────────── items ─────────────
 
+
 def bullet(P, it, x, y, w, draw=True):
     s = SPEC
     if draw:
-        d = s["body_pt"] * PT_MM * 0.24                     # marker side
-        mid = y + s["body_pt"] * PT_MM * (1 - XH / 2)       # middle of the x-height of the first line
+        d = s["body_pt"] * PT_MM * 0.24  # marker side
+        mid = y + s["body_pt"] * PT_MM * (1 - XH / 2)  # middle of the x-height of the first line
         P.box(x + 0.5, mid - d / 2, d, d, s["ink"], r=0, z=3)
-    return P.flow(it["text"], x, y, w, s["body_pt"], indent=7, draw=draw,
-                  strong=s["navy"]) + s["para_gap"]
+    return (
+        P.flow(it["text"], x, y, w, s["body_pt"], indent=7, draw=draw, strong=s["navy"])
+        + s["para_gap"]
+    )
 
 
 def callout(P, it, x, y, w, draw=True):
@@ -299,9 +401,28 @@ def stats(P, it, x, y, w, draw=True):
     for i, t in enumerate(it["tiles"]):
         tx = x + i * (tw + g)
         if draw:
-            P.flow(t["value"], tx, y + 3, tw, s["stat_pt"], s["accent"], weight="semibold", align="center")
-        bottoms.append(P.flow(t["label"], tx + 4, y + 3 + vh + 1, tw - 8, s["stat_label_pt"], s["ink2"],
-                              align="center", draw=draw))
+            P.flow(
+                t["value"],
+                tx,
+                y + 3,
+                tw,
+                s["stat_pt"],
+                s["accent"],
+                weight="semibold",
+                align="center",
+            )
+        bottoms.append(
+            P.flow(
+                t["label"],
+                tx + 4,
+                y + 3 + vh + 1,
+                tw - 8,
+                s["stat_label_pt"],
+                s["ink2"],
+                align="center",
+                draw=draw,
+            )
+        )
     y1 = max(bottoms) + 4
     if draw:
         for i in range(n):
@@ -311,30 +432,61 @@ def stats(P, it, x, y, w, draw=True):
 
 def equation(P, it, x, y, w, draw=True):
     s = SPEC
-    return P.flow(it["text"], x, y + 1, w, s["eq_pt"], align="center", draw=draw) + s["para_gap"] + 1.5
+    return (
+        P.flow(it["text"], x, y + 1, w, s["eq_pt"], align="center", draw=draw) + s["para_gap"] + 1.5
+    )
 
 
 def onset(P, it, x, y, w, draw=True):
     """Input condition of a result panel on one line: envelope glyph A(s) (step or linear ramp,
     onset at s = 0), then the condition in body type."""
     s = SPEC
-    gw, x0, top, base = 46.0, x + 11.0, y + 3.0, y + 12.5     # glyph width, onset, A = 1, A = 0
+    gw, x0, top, base = 46.0, x + 11.0, y + 3.0, y + 12.5  # glyph width, onset, A = 1, A = 0
     knee = x0 + (17.0 if it["shape"] == "ramp" else 0.0)
     lab = s["caption_pt"] * PT_MM
     if draw:
-        P.ax.annotate("", xy=(x + gw, base), xytext=(x, base), zorder=3,
-                      arrowprops=dict(arrowstyle="-|>", color=s["ink2"], lw=1.4, mutation_scale=14))
-        P.ax.plot([x, x0, knee, x + gw - 6], [base, base, top, top], color=s["navy"], lw=3.0,
-                  solid_joinstyle="miter", zorder=4)
-        P.ax.text(x + gw + 1.2, base, "$s$", fontsize=s["caption_pt"], color=s["ink2"], va="center", zorder=4)
+        P.ax.annotate(
+            "",
+            xy=(x + gw, base),
+            xytext=(x, base),
+            zorder=3,
+            arrowprops=dict(arrowstyle="-|>", color=s["ink2"], lw=1.4, mutation_scale=14),
+        )
+        P.ax.plot(
+            [x, x0, knee, x + gw - 6],
+            [base, base, top, top],
+            color=s["navy"],
+            lw=3.0,
+            solid_joinstyle="miter",
+            zorder=4,
+        )
+        P.ax.text(
+            x + gw + 1.2,
+            base,
+            "$s$",
+            fontsize=s["caption_pt"],
+            color=s["ink2"],
+            va="center",
+            zorder=4,
+        )
         ticks = [(x0, "$0$")] + ([(knee, "$T_{rise}$")] if knee > x0 else [])
         for tx, t in ticks:
             P.ax.plot([tx, tx], [base, base + 1.6], color=s["ink2"], lw=1.4, zorder=3)
-            P.ax.text(tx, base + 2.0, t, fontsize=s["caption_pt"], color=s["ink2"], ha="center", va="top",
-                      zorder=4)
+            P.ax.text(
+                tx,
+                base + 2.0,
+                t,
+                fontsize=s["caption_pt"],
+                color=s["ink2"],
+                ha="center",
+                va="top",
+                zorder=4,
+            )
         if knee > x0:
             P.ax.plot([knee, knee], [top, base], color=s["ink2"], lw=1.0, ls=(0, (2, 2)), zorder=3)
-    y1 = P.flow(it["text"], x + gw + 9, y + 0.6, w - gw - 9, s["body_pt"], draw=draw, strong=s["navy"])
+    y1 = P.flow(
+        it["text"], x + gw + 9, y + 0.6, w - gw - 9, s["body_pt"], draw=draw, strong=s["navy"]
+    )
     return max(y1, base + 2.0 + lab) + s["para_gap"]
 
 
@@ -349,7 +501,9 @@ def flow_diagram(P, it, x, y, w, draw=True):
     def block(ps, bx, by, draw):
         yy = P.flow(ps[0], bx + 3, by, bw - 6, s["eq_pt"] - 2, align="center", draw=draw)
         for t in ps[1:]:
-            yy = P.flow(t, bx + 3, yy + 1.5, bw - 6, s["caption_pt"], s["ink2"], align="center", draw=draw)
+            yy = P.flow(
+                t, bx + 3, yy + 1.5, bw - 6, s["caption_pt"], s["ink2"], align="center", draw=draw
+            )
         return yy - by
 
     h = max(block(ps, 0, 0, False) for ps in parts) + 6
@@ -360,17 +514,40 @@ def flow_diagram(P, it, x, y, w, draw=True):
             P.box(bx, y, bw, 0.6, s["accent"], r=0, z=2)
             block(ps, bx, y + (h - block(ps, 0, 0, False)) / 2, True)
             if i < n - 1:
-                P.ax.annotate("", xy=(bx + bw + aw - 0.8, y + h / 2), xytext=(bx + bw + 0.8, y + h / 2),
-                              arrowprops=dict(arrowstyle="-|>", color=s["accent"], lw=1.8, mutation_scale=16),
-                              zorder=3)
-        ly = y + h + 5                                      # loop: next time step
-        P.ax.plot([x + w - bw / 2, x + w - bw / 2, x + bw / 2], [y + h, ly, ly], color=s["ink2"], lw=1.8,
-                  zorder=3)
-        P.ax.annotate("", xy=(x + bw / 2, y + h + 0.3), xytext=(x + bw / 2, ly),
-                      arrowprops=dict(arrowstyle="-|>", color=s["ink2"], lw=1.8, mutation_scale=16), zorder=3)
-        P.ax.text(x + w / 2, ly, r"next time step $\tilde t$", fontsize=s["caption_pt"], color=s["ink2"],
-                  family=FONT, ha="center", va="center", zorder=4,
-                  bbox=dict(facecolor=s["zone_method"], edgecolor="none", pad=2))
+                P.ax.annotate(
+                    "",
+                    xy=(bx + bw + aw - 0.8, y + h / 2),
+                    xytext=(bx + bw + 0.8, y + h / 2),
+                    arrowprops=dict(arrowstyle="-|>", color=s["accent"], lw=1.8, mutation_scale=16),
+                    zorder=3,
+                )
+        ly = y + h + 5  # loop: next time step
+        P.ax.plot(
+            [x + w - bw / 2, x + w - bw / 2, x + bw / 2],
+            [y + h, ly, ly],
+            color=s["ink2"],
+            lw=1.8,
+            zorder=3,
+        )
+        P.ax.annotate(
+            "",
+            xy=(x + bw / 2, y + h + 0.3),
+            xytext=(x + bw / 2, ly),
+            arrowprops=dict(arrowstyle="-|>", color=s["ink2"], lw=1.8, mutation_scale=16),
+            zorder=3,
+        )
+        P.ax.text(
+            x + w / 2,
+            ly,
+            r"next time step $\tilde t$",
+            fontsize=s["caption_pt"],
+            color=s["ink2"],
+            family=FONT,
+            ha="center",
+            va="center",
+            zorder=4,
+            bbox=dict(facecolor=s["zone_method"], edgecolor="none", pad=2),
+        )
     return y + h + 5 + 4 + s["para_gap"]
 
 
@@ -399,16 +576,30 @@ def items(P, its, x, y, w, draw, check, spread=0.0):
                 xs.append(cx)
                 ws.append(avail * c["w"])
                 cx += avail * c["w"] + gap
-            hs = [items(P, c["items"], cx_, 0.0, w_, False, check) for c, cx_, w_ in zip(it["cols"], xs, ws)]
+            hs = [
+                items(P, c["items"], cx_, 0.0, w_, False, check)
+                for c, cx_, w_ in zip(it["cols"], xs, ws, strict=False)
+            ]
             rh = max(hs)
             if draw:
-                for c, cx_, w_, h_ in zip(it["cols"], xs, ws, hs):
-                    items(P, c["items"], cx_, y + ((rh - h_) / 2 if c["center"] else 0.0), w_, True, check)
+                for c, cx_, w_, h_ in zip(it["cols"], xs, ws, hs, strict=False):
+                    items(
+                        P,
+                        c["items"],
+                        cx_,
+                        y + ((rh - h_) / 2 if c["center"] else 0.0),
+                        w_,
+                        True,
+                        check,
+                    )
             y += rh
         elif k == "fig":
             f = ROOT / it["path"]
-            if it["path"] == "none":                        # "![text](none)": a caption-size note
-                y = P.flow(it["caption"], x, y, w, s["caption_pt"], s["ink2"], draw=draw) + s["para_gap"]
+            if it["path"] == "none":  # "![text](none)": a caption-size note
+                y = (
+                    P.flow(it["caption"], x, y, w, s["caption_pt"], s["ink2"], draw=draw)
+                    + s["para_gap"]
+                )
                 continue
             if not f.exists():
                 continue
@@ -430,19 +621,32 @@ def items(P, its, x, y, w, draw, check, spread=0.0):
         elif k == "flow":
             y = flow_diagram(P, it, x, y, w, draw)
         else:
-            y = P.flow(it["text"], x, y, w, s["body_pt"], draw=draw, strong=s["navy"]) + s["para_gap"]
+            y = (
+                P.flow(it["text"], x, y, w, s["body_pt"], draw=draw, strong=s["navy"])
+                + s["para_gap"]
+            )
     return y
 
 
-HEAD = 32.0     # number square, title and rule
+HEAD = 32.0  # number square, title and rule
 
 
 def head(P, num, title, x, y0, w):
     s = SPEC
     sq = 12.1
     P.box(x, y0 + 4, sq, sq, s["navy"], r=0, z=3)
-    P.ax.text(x + sq / 2, y0 + 4 + sq / 2, str(num), fontsize=23.2, color="white", family=FONT,
-              fontweight="bold", ha="center", va="center", zorder=4)
+    P.ax.text(
+        x + sq / 2,
+        y0 + 4 + sq / 2,
+        str(num),
+        fontsize=23.2,
+        color="white",
+        family=FONT,
+        fontweight="bold",
+        ha="center",
+        va="center",
+        zorder=4,
+    )
     P.flow(title, x + sq + 4.5, y0 + 0.5, w - sq - 4.5, s["head_pt"], s["ink"], weight="medium")
     P.box(x, y0 + 24, w * 0.88, s["rule_w"], s["rule"], r=0, z=3)
     P.box(x + w * 0.88, y0 + 24, w * 0.12, s["rule_w"], s["accent"], r=0, z=3)
@@ -459,10 +663,13 @@ def fit(P, path, x, y, w, h, align="right"):
 
 # ───────────── page ─────────────
 
+
 def build(preview_dpi=60):
     s = SPEC
     meta, panels = parse(MS.read_text(encoding="utf8"))
-    known = set(re.findall(r"^## .*?Entry (\d+)\b", NOTEBOOK.read_text(encoding="utf8"), flags=re.M))
+    known = set(
+        re.findall(r"^## .*?Entry (\d+)\b", NOTEBOOK.read_text(encoding="utf8"), flags=re.M)
+    )
     problems, used = [], set()
     P = Page()
     ax = P.ax
@@ -471,31 +678,65 @@ def build(preview_dpi=60):
     # page, header, stripe
     ax.add_patch(plt.Rectangle((0, 0), W, H, color=s["page"], lw=0, zorder=0))
     ax.add_patch(plt.Rectangle((0, 0), W, s["header_h"], color=s["navy"], lw=0, zorder=1))
-    if (ASSETS / "header_bg.png").exists():             # in the page axes, under the title text
-        bg = mpimg.imread(ASSETS / "header_bg.png")          # drawn for 130 mm; trim rows, never stretch
+    if (ASSETS / "header_bg.png").exists():  # in the page axes, under the title text
+        bg = mpimg.imread(ASSETS / "header_bg.png")  # drawn for 130 mm; trim rows, never stretch
         keep = min(bg.shape[0], round(bg.shape[0] * s["header_h"] / 130))
         top = (bg.shape[0] - keep) // 2
-        ax.imshow(bg[top:top + keep], extent=(0, W, s["header_h"], 0), aspect="auto",
-                  zorder=1.5, interpolation="lanczos")
+        ax.imshow(
+            bg[top : top + keep],
+            extent=(0, W, s["header_h"], 0),
+            aspect="auto",
+            zorder=1.5,
+            interpolation="lanczos",
+        )
         ax.set_xlim(0, W)
         ax.set_ylim(H, 0)
     seg = (0.0, 0.58, 0.60, 0.84, 0.86, 1.0)
     for i, c in enumerate(s["stripe"]):
-        ax.add_patch(plt.Rectangle((seg[2 * i] * W, s["header_h"] + 2), (seg[2 * i + 1] - seg[2 * i]) * W,
-                                   s["stripe_h"], color=c, lw=0, zorder=1))
+        ax.add_patch(
+            plt.Rectangle(
+                (seg[2 * i] * W, s["header_h"] + 2),
+                (seg[2 * i + 1] - seg[2 * i]) * W,
+                s["stripe_h"],
+                color=c,
+                lw=0,
+                zorder=1,
+            )
+        )
     logo_w = 0
-    if (ASSETS / "logo_ihs.png").exists():                  # same size and inset as on the Oct 15 poster, mirrored
+    if (ASSETS / "logo_ihs.png").exists():  # same size and inset as on the Oct 15 poster, mirrored
         logo_w = 100
         P.image(ASSETS / "logo_ihs.png", W - 22.4 - 55.4, (s["header_h"] - 79.7) / 2, 55.4, h=79.7)
-    if meta.get("session"):                                 # kept out of the way, in the empty left corner
+    if meta.get("session"):  # kept out of the way, in the empty left corner
         P.flow(meta["session"], M + 6, 14, 150, s["caption_pt"], "#9fb3c2")
     tw = W - 2 * M - 2 * logo_w
     y = 15 - s["title_pt"] * PT_MM * (s["leading"] - 1)
-    for line in meta.get("title", "").split("//"):           # "//" in the title = manual line break
-        y = P.flow(line.strip(), M + logo_w, y + s["title_pt"] * PT_MM * (s["leading"] - 1), tw, s["title_pt"],
-                   "white", weight="semibold", align="center") - s["title_pt"] * PT_MM * 0.35
-    y = P.flow(meta.get("authors", ""), M + logo_w, y + 13, tw, s["authors_pt"], "white", align="center")
-    P.flow(meta.get("affiliation", ""), M + logo_w, y + 4, tw, s["authors_pt"] - 8, "#c9d6e0", align="center")
+    for line in meta.get("title", "").split("//"):  # "//" in the title = manual line break
+        y = (
+            P.flow(
+                line.strip(),
+                M + logo_w,
+                y + s["title_pt"] * PT_MM * (s["leading"] - 1),
+                tw,
+                s["title_pt"],
+                "white",
+                weight="semibold",
+                align="center",
+            )
+            - s["title_pt"] * PT_MM * 0.35
+        )
+    y = P.flow(
+        meta.get("authors", ""), M + logo_w, y + 13, tw, s["authors_pt"], "white", align="center"
+    )
+    P.flow(
+        meta.get("affiliation", ""),
+        M + logo_w,
+        y + 4,
+        tw,
+        s["authors_pt"] - 8,
+        "#c9d6e0",
+        align="center",
+    )
 
     # Footer: stable zones for the grant, CUPT mark, and repository QR.
     fy = H - s["footer_h"]
@@ -504,8 +745,17 @@ def build(preview_dpi=60):
     title_baseline = fy + 17.5
     sq = 6.7
     P.box(left, title_baseline - sq + 0.4, sq, sq, s["navy"], r=0, z=3)
-    ax.text(left + sq + 3.2, title_baseline, "Acknowledgement", fontsize=s["head_pt"] - 6,
-            color=s["ink"], family=FONT, fontweight="medium", va="baseline", zorder=3)
+    ax.text(
+        left + sq + 3.2,
+        title_baseline,
+        "Acknowledgement",
+        fontsize=s["head_pt"] - 6,
+        color=s["ink"],
+        family=FONT,
+        fontweight="medium",
+        va="baseline",
+        zorder=3,
+    )
 
     qr = ASSETS / "qr_repo.png"
     if not qr.exists():
@@ -531,10 +781,12 @@ def build(preview_dpi=60):
     P.flow(acknowledgements, left, fy + 23.0, grant_width, s["caption_pt"] + 2, s["ink"])
 
     def check(it):
-        if it["tags"] is None:                              # rows carry no tag; their items do
+        if it["tags"] is None:  # rows carry no tag; their items do
             return
         if not it["tags"]:
-            problems.append(f"untagged {it['kind']}: {it.get('text', it.get('caption', ''))[:50]!r}")
+            problems.append(
+                f"untagged {it['kind']}: {it.get('text', it.get('caption', ''))[:50]!r}"
+            )
         for t in it["tags"]:
             used.add(int(t))
             if t not in known:
@@ -564,12 +816,21 @@ def build(preview_dpi=60):
                 head(P, number[id(p)], p["title"], x, y0, w)
             # side by side, the shorter panel spreads its slack over its item gaps (capped), so the
             # two captions end near the same line instead of leaving a hole under one of them
-            spread = (min(s["spread_max"], (max(hs) - hs[k]) / max(1, sum(it["kind"] != "onset" for it in p["items"][:-1])))
-                      if n == 2 else 0.0)
+            spread = (
+                min(
+                    s["spread_max"],
+                    (max(hs) - hs[k])
+                    / max(1, sum(it["kind"] != "onset" for it in p["items"][:-1])),
+                )
+                if n == 2
+                else 0.0
+            )
             ends.append(items(P, p["items"], x, y0 + HEAD, w, draw, check, spread))
-        if draw and n == 2:                                 # hairline between the two panels of a band
+        if draw and n == 2:  # hairline between the two panels of a band
             mid = M + pw + s["gap"]
-            ax.plot([mid, mid], [y0 + 2, max(ends) - s["para_gap"]], color=s["edge"], lw=0.7, zorder=2)
+            ax.plot(
+                [mid, mid], [y0 + 2, max(ends) - s["para_gap"]], color=s["edge"], lw=0.7, zorder=2
+            )
         return max(ends) - s["para_gap"]
 
     number = {id(p): k + 1 for k, p in enumerate(panels)}
@@ -577,11 +838,16 @@ def build(preview_dpi=60):
     spare = bottom - top - sum(heights) - s["panel_gap"] * (len(bands) - 1)
     gap = s["panel_gap"] + max(0.0, spare) / max(1, len(bands) - 1)
     y = top
-    for b, h in zip(bands, heights):
+    for b, h in zip(bands, heights, strict=False):
         t = b[0]["title"]
-        zone = (s["zone_method"] if t.startswith("Theoretical")
-                else s["zone_end"] if t.startswith("Conclusion") else None)
-        if zone:                                            # zones meet halfway across the gaps
+        zone = (
+            s["zone_method"]
+            if t.startswith("Theoretical")
+            else s["zone_end"]
+            if t.startswith("Conclusion")
+            else None
+        )
+        if zone:  # zones meet halfway across the gaps
             z0, z1 = y - gap / 2, min(y + h + gap / 2, fy - 1.4)
             ax.add_patch(plt.Rectangle((0, z0), W, z1 - z0, color=zone, lw=0, zorder=0.5))
         band(b, y, True)
@@ -596,10 +862,15 @@ def build(preview_dpi=60):
         print("note: poster/assets/ missing — logos skipped")
 
     OUT.mkdir(exist_ok=True)
-    P.fig.savefig(OUT / "poster.pdf", dpi=300)       # raster figures are resampled to this; text stays vector
+    P.fig.savefig(
+        OUT / "poster.pdf", dpi=300
+    )  # raster figures are resampled to this; text stays vector
     P.fig.savefig(OUT / "poster.png", dpi=preview_dpi)
     print(f"space between bands: {gap:.0f} mm")
-    print("band heights (mm): " + "  ".join(f"{b[0]['title'][:12]} {h:.0f}" for b, h in zip(bands, heights)))
+    print(
+        "band heights (mm): "
+        + "  ".join(f"{b[0]['title'][:12]} {h:.0f}" for b, h in zip(bands, heights, strict=False))
+    )
     print("entries cited: " + ", ".join(f"E{e}" for e in sorted(used)))
     print(f"wrote {OUT / 'poster.pdf'} and poster.png")
     if problems:
@@ -612,5 +883,5 @@ def build(preview_dpi=60):
 
 
 if __name__ == "__main__":
-    dpi = int(sys.argv[1]) if len(sys.argv) > 1 else 60      # optional preview dpi
+    dpi = int(sys.argv[1]) if len(sys.argv) > 1 else 60  # optional preview dpi
     sys.exit(build(dpi))

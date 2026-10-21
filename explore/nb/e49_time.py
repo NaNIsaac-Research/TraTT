@@ -6,6 +6,7 @@ formation law p_n^ind(t) = window integral of the Laue line of thickness t, coup
 Fourier analysis of p_n(t) for t < 1: dominant frequencies (cycles per transit) vs the independent
 expectation ~ alpha |J_n|.
 """
+
 import os
 
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "8")
@@ -37,7 +38,11 @@ def laue_thick(d, a, t):
 
 
 def peaks_of(f, P, k=5, floor=0.05):
-    i = [j for j in range(1, P.size - 1) if P[j] > P[j - 1] and P[j] >= P[j + 1] and P[j] > floor * P.max()]
+    i = [
+        j
+        for j in range(1, P.size - 1)
+        if P[j] > P[j - 1] and P[j] >= P[j + 1] and P[j] > floor * P.max()
+    ]
     return [float(f[j]) for j in sorted(i, key=lambda j: -P[j])[:k]]
 
 
@@ -57,14 +62,19 @@ if __name__ == "__main__":
             p = np.trapezoid(np.where(w, I, 0), eta, axis=1)
             c = I[:, np.argmin(np.abs(eta - n * q))]
             a = np.pi * alpha * abs(jv(n, S))
-            pind = np.array([np.trapezoid(np.where(w, laue_thick(eta - n * q, a, x), 0), eta) for x in t])
+            pind = np.array(
+                [np.trapezoid(np.where(w, laue_thick(eta - n * q, a, x), 0), eta) for x in t]
+            )
             f = np.fft.rfftfreq(t.size, t[1] - t[0])
             Pp = np.abs(np.fft.rfft((p - p.mean()) * np.hanning(t.size)))
             Pc = np.abs(np.fft.rfft((c - c.mean()) * np.hanning(t.size)))
             res.append((n, p, pind, c))
             err = np.trapezoid(np.abs(p - pind), t) / max(np.trapezoid(pind, t), 1e-30)
-            print(f"{name:34s} n={n}: alpha|J_n|={alpha*abs(jv(n,S)):.2f} | dev from independent formation {err:.3f} | "
-                  f"integral spectrum peaks {np.round(peaks_of(f, Pp), 1).tolist()} | centre spectrum peaks "
-                  f"{np.round(peaks_of(f, Pc), 1).tolist()}", flush=True)
+            print(
+                f"{name:34s} n={n}: alpha|J_n|={alpha * abs(jv(n, S)):.2f} | dev from independent formation {err:.3f} | "
+                f"integral spectrum peaks {np.round(peaks_of(f, Pp), 1).tolist()} | centre spectrum peaks "
+                f"{np.round(peaks_of(f, Pc), 1).tolist()}",
+                flush=True,
+            )
         out[name] = (t, eta, res)
     np.save(HERE / "e49_time.npy", np.array(out, dtype=object), allow_pickle=True)

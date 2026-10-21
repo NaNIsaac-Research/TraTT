@@ -1,4 +1,5 @@
 """Repository QR. Run: uv run --with segno==1.6.6 python explore/make_poster_qr.py"""
+
 from pathlib import Path
 
 import segno

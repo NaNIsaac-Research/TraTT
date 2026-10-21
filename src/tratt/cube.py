@@ -65,8 +65,13 @@ def rocking_cube(
     """
     eta = np.asarray(eta, dtype=np.float64)
     n_z = _default_nz(alpha, drive, eta, n_z)
-    return _over_time(lambda phi: rocking(alpha, eta, phi=phi, geometry=geometry, n_z=n_z),
-                      drive, eta, np.asarray(times, dtype=np.float64), steady)
+    return _over_time(
+        lambda phi: rocking(alpha, eta, phi=phi, geometry=geometry, n_z=n_z),
+        drive,
+        eta,
+        np.asarray(times, dtype=np.float64),
+        steady,
+    )
 
 
 def front_and_full(
@@ -115,5 +120,10 @@ def satellite_cube(
     eta = np.asarray(eta, dtype=np.float64)
     n_z = _default_nz(alpha, drive, eta, n_z)
     A0 = amplitude(alpha, eta, phi=None, geometry=geometry, n_z=n_z)
-    return _over_time(lambda phi: np.abs(amplitude(alpha, eta, phi=phi, geometry=geometry, n_z=n_z) - A0) ** 2,
-                      drive, eta, np.asarray(times, dtype=np.float64), steady)
+    return _over_time(
+        lambda phi: np.abs(amplitude(alpha, eta, phi=phi, geometry=geometry, n_z=n_z) - A0) ** 2,
+        drive,
+        eta,
+        np.asarray(times, dtype=np.float64),
+        steady,
+    )

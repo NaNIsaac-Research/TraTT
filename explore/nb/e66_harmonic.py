@@ -14,6 +14,7 @@ Weight W(eta) = |Fourier component of R(t) at omega = |eta|| over the window, as
 Nonlinearity: K(eta) = (W(eta; S) / S) / (W(eta; S_lin) / S_lin), S_lin = S / 100.
 Usage: python e66_harmonic.py [check] [run]
 """
+
 import json
 import sys
 from pathlib import Path
@@ -26,8 +27,8 @@ sys.path.insert(0, str(HERE))
 from e65_si400 import params, root  # noqa: E402
 
 P = params(17.48)
-T_UNIT = P["Lambda_um"] * 1e-6 / 8433.0          # s per time unit
-G_LAMBDA = 2 * np.pi / 1.3577e-10 * P["Lambda_um"] * 1e-6   # G Lambda, Si 400
+T_UNIT = P["Lambda_um"] * 1e-6 / 8433.0  # s per time unit
+G_LAMBDA = 2 * np.pi / 1.3577e-10 * P["Lambda_um"] * 1e-6  # G Lambda, Si 400
 
 
 def to_q(f_ghz):
@@ -53,6 +54,7 @@ def surface_R(alpha, kappa, eta, phi, T, per_unit):
     def f(si, r):
         e = np.exp(1j * phi(si))
         return c * np.conj(e) + (ie + c * e * r) * r
+
     out = np.empty((n + 1, eta.size), complex)
     out[0] = R
     for i in range(n):
@@ -82,6 +84,7 @@ def strain_spec(g, eta, s_max):
 def section_check():
     """Against tratt.core.solve_bragg (slab, back face hidden by kappa = 6) at the Entry 59 case."""
     from tratt.core import required_nz, solve_bragg
+
     alpha, kappa, S = 8.0, 6.0, 0.3
     q0 = 2 * np.pi * alpha / 0.2
     g = g_packet(q0, 3.0)
@@ -91,7 +94,9 @@ def section_check():
     ref = solve_bragg(alpha, eta, phi=lambda z: S * g(tt[:, None] - z), n_z=nz, kappa=kappa)
     s, R = surface_R(alpha, kappa, eta, lambda x: S * g(x), 0.6, 20000)
     mine = R[np.searchsorted(s, tt - 1e-12)]
-    print(f"check vs solve_bragg: max |dR| = {np.max(np.abs(mine - ref)):.2e}, max |R| = {np.max(np.abs(ref)):.2e}")
+    print(
+        f"check vs solve_bragg: max |dR| = {np.max(np.abs(mine - ref)):.2e}, max |R| = {np.max(np.abs(ref)):.2e}"
+    )
 
 
 def section_run():
@@ -103,20 +108,36 @@ def section_run():
         q0 = to_q(f0)
         for ncyc in (0.9, 2.0):
             g = g_packet(q0, ncyc)
-            S = 1e-3 * G_LAMBDA / q0          # peak strain 1e-3, since max |g'| = q0 at the front
+            S = 1e-3 * G_LAMBDA / q0  # peak strain 1e-3, since max |g'| = q0 at the front
             E = strain_spec(g, eta, 40 * ncyc * 2 * np.pi / q0)
             for T_ps in (140.0, 1400.0):
                 T = T_ps * 1e-12 / T_UNIT
                 res = {}
                 for lab, SS in (("lin", S / 100), ("S", S)):
-                    s, R = surface_R(1.0, kappa, eta, lambda x, SS=SS: SS * g(x), T, 64 * (eta.max() + SS * q0) / (2 * np.pi))
+                    s, R = surface_R(
+                        1.0,
+                        kappa,
+                        eta,
+                        lambda x, SS=SS: SS * g(x),  # noqa: B023 - called within the iteration
+                        T,
+                        64 * (eta.max() + SS * q0) / (2 * np.pi),
+                    )
                     res[lab] = weight(s, R, eta) / SS
                 K = res["S"] / res["lin"]
                 key = f"f0={f0:g} ncyc={ncyc:g} T={T_ps:g}ps"
                 i0, i2 = np.argmin(abs(f - f0)), np.argmin(abs(f - 2 * f0))
-                print(f"{key}: S={S:.2f}  K(f0)={K[i0]:.3f}  K(2f0)={K[i2]:.2f}  K max={K.max():.2f} at {f[np.argmax(K)]:.0f} GHz"
-                      f"  |eps(2f0)|/|eps(f0)|={E[i2] / E[i0]:.3f}", flush=True)
-                out[key] = dict(S=S, K=K.tolist(), W_S=res["S"].tolist(), W_lin=res["lin"].tolist(), eps=E.tolist())
+                print(
+                    f"{key}: S={S:.2f}  K(f0)={K[i0]:.3f}  K(2f0)={K[i2]:.2f}  K max={K.max():.2f} at {f[np.argmax(K)]:.0f} GHz"
+                    f"  |eps(2f0)|/|eps(f0)|={E[i2] / E[i0]:.3f}",
+                    flush=True,
+                )
+                out[key] = dict(
+                    S=S,
+                    K=K.tolist(),
+                    W_S=res["S"].tolist(),
+                    W_lin=res["lin"].tolist(),
+                    eps=E.tolist(),
+                )
     json.dump(dict(f=f.tolist(), runs=out), open(HERE / "e66_harmonic.json", "w"))
 
 
@@ -124,6 +145,7 @@ def section_fig():
     """Like their Fig. 2b/d: strain spectrum vs the reflectivity spectrum with the linear transfer divided out
     (K |eps|), both peak-normalised, so what is left is the strain non-linearity alone."""
     import matplotlib.pyplot as plt
+
     d = json.load(open(HERE / "e66_harmonic.json"))
     f = np.array(d["f"])
     fig, axs = plt.subplots(2, 2, figsize=(9, 6), sharex=True, constrained_layout=True)
@@ -133,7 +155,13 @@ def section_fig():
             r = d["runs"][f"f0={f0} ncyc={ncyc:g} T=140ps"]
             E, K = np.array(r["eps"]), np.array(r["K"])
             ax.plot(f, E / E.max(), "k-", label="strain |ε(f)|")
-            ax.plot(f, K * E / (K * E).max(), "--", color="C3", label=f"reflectivity, S = {r['S']:.2f}, linear transfer divided out")
+            ax.plot(
+                f,
+                K * E / (K * E).max(),
+                "--",
+                color="C3",
+                label=f"reflectivity, S = {r['S']:.2f}, linear transfer divided out",
+            )
             ax.axvline(2 * f0, color="0.6", lw=0.8, ls=":")
             ax2 = ax.twinx()
             ax2.plot(f, K, color="C0", lw=1)
@@ -148,10 +176,12 @@ def section_fig():
             if i == 1:
                 ax.set_xlabel("frequency (GHz)")
     axs[0, 0].legend(fontsize=8, loc="upper right")
-    fig.suptitle("Si 400, 17.48 keV, peak strain 1e-3, 140 ps window, full TT (semi-infinite)", fontsize=11)
+    fig.suptitle(
+        "Si 400, 17.48 keV, peak strain 1e-3, 140 ps window, full TT (semi-infinite)", fontsize=11
+    )
     fig.savefig(HERE.parents[1] / "figures" / "si400_harmonic.png", dpi=150)
 
 
 if __name__ == "__main__":
-    for sec in (sys.argv[1:] or ["check", "run"]):
+    for sec in sys.argv[1:] or ["check", "run"]:
         globals()[f"section_{sec}"]()

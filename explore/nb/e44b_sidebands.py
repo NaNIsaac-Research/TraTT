@@ -5,6 +5,7 @@ against the converged solution. Also the analogous truncation of the diffracted 
 (all a_k kept, |m + n_dom| limited) is reported for comparison. Output feeds the
 convergence figure.
 """
+
 import os
 
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "8")
@@ -17,8 +18,9 @@ import numpy as np  # noqa: E402
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1] / "src"))
 sys.path.insert(0, str(HERE))
-from tratt.floquet import FloquetLaue, auto_K  # noqa: E402
 from e44_mechanism import windows  # noqa: E402
+
+from tratt.floquet import FloquetLaue, auto_K  # noqa: E402
 
 if __name__ == "__main__":
     out = []
@@ -35,9 +37,15 @@ if __name__ == "__main__":
                 pf = windows(eta, FloquetLaue(alpha, aac, S, K).rocking(eta), q, ns)
                 errs = []
                 for kmax in range(0, 9):
-                    I = FloquetLaue(alpha, aac, S, K, mask=lambda k, m, kmax=kmax: abs(k) <= kmax).rocking(eta)
+                    I = FloquetLaue(
+                        alpha, aac, S, K, mask=lambda k, m, kmax=kmax: abs(k) <= kmax
+                    ).rocking(eta)
                     errs.append(float(np.abs(windows(eta, I, q, ns) - pf).sum() / pf.sum()))
                 kreq = next((i for i, e in enumerate(errs) if e < 0.02), None)
                 out.append(dict(S=S, aac=aac, R=R, errs=errs, kreq=kreq))
-                print(f"S={S} aac={aac} R={R}: k_req={kreq}  errs " + " ".join(f"{e:.3f}" for e in errs), flush=True)
+                print(
+                    f"S={S} aac={aac} R={R}: k_req={kreq}  errs "
+                    + " ".join(f"{e:.3f}" for e in errs),
+                    flush=True,
+                )
     json.dump(out, open(HERE / "e44b_sidebands.json", "w"))

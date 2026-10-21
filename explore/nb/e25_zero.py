@@ -5,6 +5,7 @@ What survives at the zero comes from couplings the law drops (other harmonics,
 main-line tail). Measure: (a) centre I at t = 1 vs S across the zero, (b) the
 residual at the zero vs alpha_ac and alpha, (c) where the minimum sits in S.
 """
+
 import sys
 from pathlib import Path
 
@@ -29,8 +30,10 @@ for dS in (-0.3, -0.1, -0.03, -0.01, 0.0, 0.01, 0.03, 0.1, 0.3):
     S = Z + dS
     I = centre(S, 3.0, 60.0)
     th = np.sin(np.pi * 3.0 * jv(1, S) * t) ** 2
-    print(f"  S-Z={dS:+.2f} J1={jv(1,S):+.4f}  max I={I.max():.2e} (law {th.max():.2e})  "
-          f"I(t=1)={I[-1]:.2e} (law {th[-1]:.2e})")
+    print(
+        f"  S-Z={dS:+.2f} J1={jv(1, S):+.4f}  max I={I.max():.2e} (law {th.max():.2e})  "
+        f"I(t=1)={I[-1]:.2e} (law {th[-1]:.2e})"
+    )
 
 print("(b) residual at the zero: max over t of I(q, t)")
 for alpha in (1.0, 2.0, 3.0):
@@ -45,4 +48,4 @@ for aac in (30.0, 60.0):
     Ss = Z + np.linspace(-0.06, 0.06, 25)
     m = [centre(S, 3.0, aac).max() for S in Ss]
     k = int(np.argmin(m))
-    print(f"  aac={aac}: min at S-Z={Ss[k]-Z:+.4f}, value {m[k]:.2e}")
+    print(f"  aac={aac}: min at S-Z={Ss[k] - Z:+.4f}, value {m[k]:.2e}")

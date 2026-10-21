@@ -8,6 +8,7 @@ Extra test: is each channel's line shape that of a *uniform* crystal with the sa
 accumulated coupling Theta_n (Laue slab, coupling pi alpha Theta_n, thickness 1)?
 If yes, the depth history is compressed into one number per channel.
 """
+
 import sys
 from pathlib import Path
 
@@ -17,6 +18,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1] / "src"))
 sys.path.insert(0, str(HERE))
 from memory_drive import HistoryDrive, theta, triangle  # noqa: E402
+
 from tratt.core import required_nz, rocking  # noqa: E402
 
 AAC, SMAX = 40.0, 3.0
@@ -41,8 +43,11 @@ def fwhm(x, y):
 
 
 def local_peaks(x, y, rel=0.05):
-    return [round(float(x[i]), 2) for i in range(1, y.size - 1)
-            if y[i] > y[i - 1] and y[i] >= y[i + 1] and y[i] > rel * y.max()]
+    return [
+        round(float(x[i]), 2)
+        for i in range(1, y.size - 1)
+        if y[i] > y[i - 1] and y[i] >= y[i + 1] and y[i] > rel * y.max()
+    ]
 
 
 # "partial": first run, where t_up < 1 (crystal not yet filled on the way up - confounded).
@@ -57,9 +62,13 @@ for alpha, T, A in CASES:
     eta = np.arange(-3.5 * q, 3.5 * q, 0.25)
     nz = required_nz(alpha, AAC, S=SMAX, eta_max=3.5 * q)
     Iu, Id = (rocking(alpha, eta, phi=d.phi(x), n_z=nz) for x in (tu, td))
-    print(f"=== alpha={alpha} T={T}: transducer amplitude S A = {SMAX*A:.2f} at t_up={tu:.3f}, t_down={td:.3f}")
-    print("  n | window p up/down | centre up/down | FWHM up/down (uniform-Theta FWHM) | "
-          "shape diff | peaks within ±q/2 (up ; down)")
+    print(
+        f"=== alpha={alpha} T={T}: transducer amplitude S A = {SMAX * A:.2f} at t_up={tu:.3f}, t_down={td:.3f}"
+    )
+    print(
+        "  n | window p up/down | centre up/down | FWHM up/down (uniform-Theta FWHM) | "
+        "shape diff | peaks within ±q/2 (up ; down)"
+    )
     for n in NS:
         m = np.abs(eta - n * q) < q / 2
         x = eta[m] - n * q
@@ -70,10 +79,17 @@ for alpha, T, A in CASES:
         wu0 = fwhm(x, uniform_line(x, np.pi * alpha * thu)) if thu > 1e-3 else np.nan
         wd0 = fwhm(x, uniform_line(x, np.pi * alpha * thd)) if thd > 1e-3 else np.nan
         diff = np.max(np.abs(Iu[m] / max(pu, 1e-12) - Id[m] / max(pd, 1e-12))) * max(wu, wd)
-        print(f"  {n:+d} | {pu:7.3f}/{pd:7.3f} | {Iu[m][k0]:.3f}/{Id[m][k0]:.3f} | "
-              f"{wu:6.2f}/{wd:6.2f} ({wu0:6.2f}/{wd0:6.2f}) | {diff:5.2f} | "
-              f"{local_peaks(x, Iu[m])[:5]} ; {local_peaks(x, Id[m])[:5]}")
-    gaps = [(float(eta[i]) / q) for i in range(1, eta.size - 1)
-            if Iu[i] > 0.02 * Iu.max() and Iu[i] > Iu[i - 1] and Iu[i] >= Iu[i + 1]
-            and min(abs(eta[i] / q - round(eta[i] / q)), 1) > 0.25]
+        print(
+            f"  {n:+d} | {pu:7.3f}/{pd:7.3f} | {Iu[m][k0]:.3f}/{Id[m][k0]:.3f} | "
+            f"{wu:6.2f}/{wd:6.2f} ({wu0:6.2f}/{wd0:6.2f}) | {diff:5.2f} | "
+            f"{local_peaks(x, Iu[m])[:5]} ; {local_peaks(x, Id[m])[:5]}"
+        )
+    gaps = [
+        (float(eta[i]) / q)
+        for i in range(1, eta.size - 1)
+        if Iu[i] > 0.02 * Iu.max()
+        and Iu[i] > Iu[i - 1]
+        and Iu[i] >= Iu[i + 1]
+        and min(abs(eta[i] / q - round(eta[i] / q)), 1) > 0.25
+    ]
     print(f"  peaks > 2 % of max outside ±q/4 of any channel (up): {np.round(gaps, 3)}")

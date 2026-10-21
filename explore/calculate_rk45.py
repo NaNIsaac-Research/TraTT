@@ -12,8 +12,19 @@ import numpy as np
 from scipy.integrate import solve_ivp
 
 
-def propagate_rk45(wavelength_m, chi_0, chi_h, chi_hbar, eta, z_grid_m, phi_z,
-                   D0_in=1.0 + 0.0j, Dh_in=0.0 + 0.0j, rtol=1e-7, atol=1e-10):
+def propagate_rk45(
+    wavelength_m,
+    chi_0,
+    chi_h,
+    chi_hbar,
+    eta,
+    z_grid_m,
+    phi_z,
+    D0_in=1.0 + 0.0j,
+    Dh_in=0.0 + 0.0j,
+    rtol=1e-7,
+    atol=1e-10,
+):
     """Exit amplitudes (Dh, D0) after integrating through z_grid_m with phase phi_z sampled on it."""
     pref = 1j * np.pi / wavelength_m  # i k / 2
 
@@ -26,7 +37,9 @@ def propagate_rk45(wavelength_m, chi_0, chi_h, chi_hbar, eta, z_grid_m, phi_z,
         return [dD0.real, dD0.imag, dDh.real, dDh.imag]
 
     y0 = [D0_in.real, D0_in.imag, Dh_in.real, Dh_in.imag]
-    yL = solve_ivp(rhs, (z_grid_m[0], z_grid_m[-1]), y0, method="RK45", rtol=rtol, atol=atol).y[:, -1]
+    yL = solve_ivp(rhs, (z_grid_m[0], z_grid_m[-1]), y0, method="RK45", rtol=rtol, atol=atol).y[
+        :, -1
+    ]
     return yL[2] + 1j * yL[3], yL[0] + 1j * yL[1]
 
 
@@ -35,5 +48,7 @@ if __name__ == "__main__":
     lam, chi_h, L = 1e-10, 1.3e-6, 300e-6
     z = np.linspace(0.0, L, 150)
     Dh, D0 = propagate_rk45(lam, -1e-6, chi_h, chi_h, 0.0, z, np.zeros_like(z))
-    print(f"|Dh|^2 = {abs(Dh)**2:.6f} (analytic {np.sin(np.pi * chi_h * L / lam)**2:.6f}), "
-          f"|D0|^2 + |Dh|^2 = {abs(D0)**2 + abs(Dh)**2:.6f}")
+    print(
+        f"|Dh|^2 = {abs(Dh) ** 2:.6f} (analytic {np.sin(np.pi * chi_h * L / lam) ** 2:.6f}), "
+        f"|D0|^2 + |Dh|^2 = {abs(D0) ** 2 + abs(Dh) ** 2:.6f}"
+    )

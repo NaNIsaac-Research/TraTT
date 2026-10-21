@@ -4,6 +4,7 @@ For each candidate: integrated satellite and peak with (base grid) / (2 n_z) / (
 / (window x 1.5) / (wall smoothed over one and three acoustic wavelengths, where applicable),
 plus the kinematic integral and the uniform-q control.
 """
+
 import sys
 from pathlib import Path
 
@@ -13,6 +14,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1] / "src"))
 sys.path.insert(0, str(HERE))
 from qmod import PhaseDrive, kinematic, phase_wall, q_wall, spatial_chirp, uniform  # noqa: E402
+
 from tratt.core import required_nz, rocking  # noqa: E402
 
 AAC, S = 40.0, 1.5
@@ -34,7 +36,13 @@ CANDIDATES = [
     ("chirp beta=0.1, alpha=4", 4.0, lambda w: spatial_chirp(Q0, 0.1), Q0 * 1.05, False),
     ("pi wall zb=0.3, alpha=2", 2.0, lambda w: phase_wall(Q0, np.pi, T - 0.3, w), Q0, True),
     ("pi wall zb=0.5, alpha=2", 2.0, lambda w: phase_wall(Q0, np.pi, T - 0.5, w), Q0, True),
-    ("q wall dc=2 zb=0.5, alpha=2", 2.0, lambda w: q_wall(Q0, Q0 + 4 * np.pi, T - 0.5, w), Q0 + 4 * np.pi, True),
+    (
+        "q wall dc=2 zb=0.5, alpha=2",
+        2.0,
+        lambda w: q_wall(Q0, Q0 + 4 * np.pi, T - 0.5, w),
+        Q0 + 4 * np.pi,
+        True,
+    ),
 ]
 
 if __name__ == "__main__":
@@ -43,12 +51,24 @@ if __name__ == "__main__":
         print(f"uniform control alpha={alpha}: integral {p_u:.3f}, peak {pk_u:.3f}")
     for name, alpha, mk, qmax, wall in CANDIDATES:
         base = measure(alpha, mk(0.0), qmax)
-        res = [("base", base), ("2 n_z", measure(alpha, mk(0.0), qmax, nzmul=2)),
-               ("eta/2", measure(alpha, mk(0.0), qmax, step=0.05)),
-               ("window x1.5", measure(alpha, mk(0.0), qmax, half=0.6))]
+        res = [
+            ("base", base),
+            ("2 n_z", measure(alpha, mk(0.0), qmax, nzmul=2)),
+            ("eta/2", measure(alpha, mk(0.0), qmax, step=0.05)),
+            ("window x1.5", measure(alpha, mk(0.0), qmax, half=0.6)),
+        ]
         if wall:
-            res += [("smooth 1 wl", measure(alpha, mk(W1), qmax)), ("smooth 3 wl", measure(alpha, mk(3 * W1), qmax))]
+            res += [
+                ("smooth 1 wl", measure(alpha, mk(W1), qmax)),
+                ("smooth 3 wl", measure(alpha, mk(3 * W1), qmax)),
+            ]
         d, eta = base[2], base[3]
-        kin = np.trapezoid(kinematic(alpha, d, eta, T) - kinematic(alpha, PhaseDrive(S=0.0, alpha_ac=AAC), eta, T), eta)
-        print(f"{name}: " + " | ".join(f"{k}: int {v[0]:.3f} peak {v[1]:.3f}" for k, v in res)
-              + f" | kinematic int {kin:.3f}")
+        kin = np.trapezoid(
+            kinematic(alpha, d, eta, T) - kinematic(alpha, PhaseDrive(S=0.0, alpha_ac=AAC), eta, T),
+            eta,
+        )
+        print(
+            f"{name}: "
+            + " | ".join(f"{k}: int {v[0]:.3f} peak {v[1]:.3f}" for k, v in res)
+            + f" | kinematic int {kin:.3f}"
+        )

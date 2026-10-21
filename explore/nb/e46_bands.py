@@ -9,6 +9,7 @@ Independent-channel picture: gaps of width 2 pi alpha |J_n| at eta = n q, isolat
 Also: eigenvector mixing (how much each Bloch mode is 'forward' vs 'diffracted').
 Outputs: e46_bands.npz for the figure; printed gap table.
 """
+
 import os
 
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "8")
@@ -32,6 +33,7 @@ def monodromy(alpha, aac, S, eta, nz=4000):
     # integrate the slab problem on [0, lam] by rescaling: zeta = lam * u, u in [0, 1]
     # equivalent coupling alpha * lam and detuning eta * lam with phase phi(lam u)
     from tratt import core
+
     cols = []
     for D0i, Dhi in ((1.0, 0.0), (0.0, 1.0)):
         D0 = np.full(eta.shape, D0i, dtype=complex)
@@ -41,7 +43,7 @@ def monodromy(alpha, aac, S, eta, nz=4000):
 
         def f(u, d0, dh):
             e = np.exp(1j * phi(np.float64(lam * u)))
-            return c * e * dh, c * np.conj(e) * d0 + 1j * eta * lam * dh
+            return c * e * dh, c * np.conj(e) * d0 + 1j * eta * lam * dh  # noqa: B023 - called within the iteration
 
         for i in range(nz):
             u = i * h
@@ -72,7 +74,9 @@ def bands(alpha, aac, S, eta, nz=None):
 
 if __name__ == "__main__":
     out = {}
-    print(" S    aac  alpha   R   | gaps at eta = n q (n = 0..3): measured / 2 pi alpha |J_n| | max gap / q | |det M|-1")
+    print(
+        " S    aac  alpha   R   | gaps at eta = n q (n = 0..3): measured / 2 pi alpha |J_n| | max gap / q | |det M|-1"
+    )
     for S in (1.5, 3.8317):
         for aac, alpha in ((5.0, 0.25), (5.0, 1.0), (5.0, 2.5), (5.0, 5.0), (2.0, 4.0)):
             q = 2 * np.pi * aac
@@ -80,8 +84,11 @@ if __name__ == "__main__":
             lam, gap, mix, det = bands(alpha, aac, S, eta)
             gs = [gap[np.argmin(np.abs(eta - n * q))] for n in range(4)]
             pred = [2 * np.pi * alpha * abs(jv(n, S)) for n in range(4)]
-            print(f" {S:4.2f} {aac:4.1f} {alpha:5.2f} {alpha/aac:4.2f} | " +
-                  " ".join(f"{g:6.2f}/{p:6.2f}" for g, p in zip(gs, pred)) +
-                  f" | {gap.max()/q:.3f} | {np.abs(det-1).max():.1e}", flush=True)
+            print(
+                f" {S:4.2f} {aac:4.1f} {alpha:5.2f} {alpha / aac:4.2f} | "
+                + " ".join(f"{g:6.2f}/{p:6.2f}" for g, p in zip(gs, pred, strict=False))
+                + f" | {gap.max() / q:.3f} | {np.abs(det - 1).max():.1e}",
+                flush=True,
+            )
             out[f"S{S}_q{aac}_a{alpha}"] = np.array([eta, lam[:, 0], lam[:, 1], gap, mix[:, 0]])
     np.savez(HERE / "e46_bands.npz", **out)

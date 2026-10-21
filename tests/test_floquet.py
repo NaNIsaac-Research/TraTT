@@ -8,17 +8,23 @@ from tratt.drive import Drive
 from tratt.floquet import FloquetLaue, auto_K
 
 
-@pytest.mark.parametrize("alpha,aac,S,t", [(1.0, 10.0, 1.5, 0.0), (2.0, 2.0, 3.0, 0.3), (3.0, 0.75, 2.0, 0.1)])
+@pytest.mark.parametrize(
+    "alpha,aac,S,t", [(1.0, 10.0, 1.5, 0.0), (2.0, 2.0, 3.0, 0.3), (3.0, 0.75, 2.0, 0.1)]
+)
 def test_floquet_matches_full_tt(alpha, aac, S, t):
     q = 2 * np.pi * aac
     K = auto_K(S) + int(2 * alpha / aac) + 2
     eta = np.linspace(-(S + 2) * q - 3 * alpha, (S + 2) * q + 3 * alpha, 801)
     fl = FloquetLaue(alpha, aac, S, K, t=t)
-    D0, Dh = solve_laue(alpha, eta, phi=Drive(S=S, alpha_ac=aac).steady_phi(t),
-                        n_z=2 * required_nz(alpha, aac, S=S, eta_max=np.abs(eta).max()))
+    D0, Dh = solve_laue(
+        alpha,
+        eta,
+        phi=Drive(S=S, alpha_ac=aac).steady_phi(t),
+        n_z=2 * required_nz(alpha, aac, S=S, eta_max=np.abs(eta).max()),
+    )
     D0f, Dhf = fl.fields(eta)
     assert np.allclose(np.abs(Dhf) ** 2, np.abs(Dh) ** 2, atol=5e-5)
-    assert np.allclose(np.abs(D0f) ** 2 + np.abs(Dhf) ** 2, 1.0, atol=1e-6)   # flux conservation
+    assert np.allclose(np.abs(D0f) ** 2 + np.abs(Dhf) ** 2, 1.0, atol=1e-6)  # flux conservation
 
 
 def test_floquet_truncation_converges_and_mask_removes_coupling():
@@ -92,10 +98,10 @@ def test_effective_2x2_hamiltonian_third_order():
         alpha, aac, S, n = R * 10.0, 10.0, 1.5, 1
         ge, de = exact(alpha, aac, S, n)
         g1, g3C, g3, ds = predictions(alpha, aac, S, n)
-        assert abs(ge - abs(g3)) < 1e-3 * abs(ge - abs(g1))      # full third order >> first order
+        assert abs(ge - abs(g3)) < 1e-3 * abs(ge - abs(g1))  # full third order >> first order
         assert abs(de - ds) < 0.01 * abs(ds)
         errs.append(abs(ge - abs(g3)) / (np.pi * alpha))
-    assert 3.5 < np.log(errs[1] / errs[0]) / np.log(2) < 4.5         # relative error ~ R^4
+    assert 3.5 < np.log(errs[1] / errs[0]) / np.log(2) < 4.5  # relative error ~ R^4
 
 
 def test_exact_acoustic_phase_average_is_sum_of_floquet_populations():
@@ -108,14 +114,26 @@ def test_exact_acoustic_phase_average_is_sum_of_floquet_populations():
     q = 2 * np.pi * aac
     eta = np.array([q])
     K = auto_K(S) + 6
-    b0 = FloquetLaue(alpha, aac, S, K).propagate(eta)[0, 2 * K + 1:]
+    b0 = FloquetLaue(alpha, aac, S, K).propagate(eta)[0, 2 * K + 1 :]
     ms = np.arange(-K, K + 1)
     phi = 0.7
-    b1 = FloquetLaue(alpha, aac, S, K, t=phi / q).propagate(eta)[0, 2 * K + 1:]
+    b1 = FloquetLaue(alpha, aac, S, K, t=phi / q).propagate(eta)[0, 2 * K + 1 :]
     assert np.allclose(b1, np.exp(1j * ms * phi) * b0, atol=1e-12)
     exact = np.sum(np.abs(b0) ** 2)
     nz = 2 * required_nz(alpha, aac, S=S, eta_max=q)
-    tt = lambda N: np.mean([abs(solve_laue(alpha, eta, phi=Drive(S=S, alpha_ac=aac).steady_phi(k / (N * aac)),  # noqa: E731
-                                           n_z=nz)[1][0]) ** 2 for k in range(N)])
+    tt = lambda N: np.mean(
+        [
+            abs(
+                solve_laue(
+                    alpha,
+                    eta,
+                    phi=Drive(S=S, alpha_ac=aac).steady_phi(k / (N * aac)),  # noqa: E731
+                    n_z=nz,
+                )[1][0]
+            )
+            ** 2
+            for k in range(N)
+        ]
+    )
     assert abs(tt(16) / exact - 1) < 1e-3
     assert abs(tt(4) / exact - 1) > 0.1

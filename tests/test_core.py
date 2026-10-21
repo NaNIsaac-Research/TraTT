@@ -11,8 +11,8 @@ from scipy.special import jv
 from tratt.core import required_nz, rocking, solve_bragg, solve_laue
 from tratt.drive import Drive
 
-
 # --- fact 1: Laue Pendelloesung -------------------------------------------------
+
 
 @pytest.mark.parametrize("alpha", [0.25, 0.5, 0.9, 1.7])
 def test_laue_pendelloesung(alpha):
@@ -22,6 +22,7 @@ def test_laue_pendelloesung(alpha):
 
 
 # --- fact 2: losslessness -------------------------------------------------------
+
 
 def test_laue_is_lossless_with_modulation():
     """|D0|^2 + |Dh|^2 = 1 for real eta and any real phase profile."""
@@ -33,6 +34,7 @@ def test_laue_is_lossless_with_modulation():
 
 
 # --- fact 3: satellites sit at analytically known eta ---------------------------
+
 
 def test_satellites_land_on_predicted_channels():
     """Peaks of I(eta) coincide with drive.eta_channel(n) = -n*q."""
@@ -51,6 +53,7 @@ def test_satellites_land_on_predicted_channels():
 
 
 # --- fact 4: kinematic limit reproduces the Bessel ladder -----------------------
+
 
 def test_kinematic_limit_matches_the_born_integral():
     """For alpha -> 0 the solver must reproduce the single-scattering integral.
@@ -92,6 +95,7 @@ def test_kinematic_channel_heights_follow_the_bessel_ladder(S):
 
 # --- fact 5: after transit the state is exactly periodic ------------------------
 
+
 def test_step_onset_is_periodic_after_transit():
     """t >= 1 with a hard step: I(eta, t) repeats with the acoustic period.
 
@@ -114,6 +118,7 @@ def test_step_onset_is_periodic_after_transit():
 
 
 # --- Bragg: Darwin plateau ------------------------------------------------------
+
 
 def test_bragg_total_reflection_plateau():
     """Unmodulated thick Bragg: |R|^2 -> 1 inside |eta| < 2 pi alpha, < 1 outside."""
@@ -140,7 +145,7 @@ def test_bragg_absorption_gives_darwin_prins_root():
     roots = [np.roots([c, 1j * (e + 1j * kappa), c]) for e in eta]
     R_dp = np.array([r[np.argmin(np.abs(r))] for r in roots])
     assert np.max(np.abs(R - R_dp)) < 1e-5
-    assert np.all(np.abs(R) < 1.0)          # absorption: no total reflection
+    assert np.all(np.abs(R) < 1.0)  # absorption: no total reflection
 
 
 def test_bragg_reflectivity_bounded_with_modulation():
@@ -162,10 +167,13 @@ def test_bragg_fourier_weight_matches_first_order_transfer_function():
     def g(tau):
         return np.where(tau > 0, np.exp(-np.clip(tau, 0, None) / tau_d) * np.sin(q0 * tau), 0.0)
 
-    T, nt = 2.4, 2400            # the window must outlast the slowest response near omega = q0
+    T, nt = 2.4, 2400  # the window must outlast the slowest response near omega = q0
     t = np.linspace(0.0, T, nt, endpoint=False)
     eta = np.array([0.6, 1.0, 1.5, 2.5]) * q0
-    R = np.abs(solve_bragg(alpha, eta, phi=lambda z: S * g(t[:, None] - z), n_z=1500, kappa=kappa)) ** 2
+    R = (
+        np.abs(solve_bragg(alpha, eta, phi=lambda z: S * g(t[:, None] - z), n_z=1500, kappa=kappa))
+        ** 2
+    )
     W = np.abs(np.mean((R - R.mean(axis=0)) * np.exp(1j * eta[None, :] * t[:, None]), axis=0))
 
     tau = np.linspace(0, 40 * tau_d, 40001)
@@ -180,6 +188,7 @@ def test_bragg_fourier_weight_matches_first_order_transfer_function():
         lam = 1j * (e + 1j * kappa) + 2 * c * R0
 
         def A(w):
-            return 1j * c * S * (1 - R0 ** 2) * G(w) / (lam + 1j * w)
+            return 1j * c * S * (1 - R0**2) * G(w) / (lam + 1j * w)  # noqa: B023 - called within the iteration
+
         pred.append(abs(np.conj(R0) * A(e) + R0 * np.conj(A(-e))) / T)
     assert np.allclose(W / np.array(pred), 1.0, atol=0.03)

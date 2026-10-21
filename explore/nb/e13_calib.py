@@ -5,6 +5,7 @@ multiplicative noise and an unknown overall scale (flux/gain). Fit each trace
 with c * sin^2(pi f t) (f free, c free), then solve |J_2(S)/J_1(S)| = f_2/f_1 for S
 on the first branch (S < 3.83, first zero of J_1). alpha is NOT used.
 """
+
 import sys
 from pathlib import Path
 
@@ -30,13 +31,19 @@ for S_true, alpha in [(1.0, 3.0), (1.5, 3.0), (2.0, 3.0), (2.5, 4.0)]:
     fs = []
     for j, n in enumerate((1, 2)):
         y = 0.37 * I[:, j] * (1 + 0.03 * rng.standard_normal(t.size))  # unknown gain, 3 % noise
-        f0 = alpha * abs(jv(n, S_true)) * rng.uniform(0.8, 1.2)       # rough starting guess only
-        best = min((curve_fit(model, t, y, p0=(y.max(), f), maxfev=20000) for f in
-                    np.linspace(0.3 * f0, 1.7 * f0, 15)),
-                   key=lambda r: np.sum((model(t, *r[0]) - y) ** 2))
+        f0 = alpha * abs(jv(n, S_true)) * rng.uniform(0.8, 1.2)  # rough starting guess only
+        best = min(
+            (
+                curve_fit(model, t, y, p0=(y.max(), f), maxfev=20000)
+                for f in np.linspace(0.3 * f0, 1.7 * f0, 15)
+            ),
+            key=lambda r: np.sum((model(t, *r[0]) - y) ** 2),
+        )
         fs.append(abs(best[0][1]))
     r = fs[1] / fs[0]
-    S_fit = brentq(lambda s: jv(2, s) / jv(1, s) - r, 0.05, 3.8)
-    print(f"S_true={S_true} alpha={alpha}: f1={fs[0]:.3f} (th {alpha*abs(jv(1,S_true)):.3f}) "
-          f"f2={fs[1]:.3f} (th {alpha*abs(jv(2,S_true)):.3f})  S_recovered={S_fit:.3f}  "
-          f"error={100*(S_fit/S_true-1):+.1f} %")
+    S_fit = brentq(lambda s: jv(2, s) / jv(1, s) - r, 0.05, 3.8)  # noqa: B023 - called within the iteration
+    print(
+        f"S_true={S_true} alpha={alpha}: f1={fs[0]:.3f} (th {alpha * abs(jv(1, S_true)):.3f}) "
+        f"f2={fs[1]:.3f} (th {alpha * abs(jv(2, S_true)):.3f})  S_recovered={S_fit:.3f}  "
+        f"error={100 * (S_fit / S_true - 1):+.1f} %"
+    )

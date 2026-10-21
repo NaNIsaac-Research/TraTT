@@ -6,12 +6,12 @@ Entry 59 packet (e58_chalise_ref.run): alpha = 40, kappa = 6 (g = 0.024), R_D = 
 S = 0.02, 0.2, 0.7. The weight W / S against the S = 0.02 result measures the nonlinearity.
 Usage: python e65_packet.py
 """
+
 import json
 
 import numpy as np
-from scipy.special import jv
-
 from e58_chalise_ref import packet, run
+from scipy.special import jv
 
 alpha, kappa, RD = 40.0, 6.0, 0.2
 wd = 2 * np.pi * alpha
@@ -26,8 +26,14 @@ for S in (0.02, 0.2, 0.7):
     base = w if base is None else base
     nu = np.pi * alpha * abs(jv(1, S)) * tau_d
     dev = np.max(np.abs(w / base - 1))
-    print(f"S={S:<5} nu_est={nu:.3f} nu^2={nu**2:.3f}  max |W/S / (W/S)_lin - 1| = {dev:.3f}   "
-          f"per eta: " + " ".join(f"{v:.3f}" for v in w / base), flush=True)
+    print(
+        f"S={S:<5} nu_est={nu:.3f} nu^2={nu**2:.3f}  max |W/S / (W/S)_lin - 1| = {dev:.3f}   "
+        f"per eta: " + " ".join(f"{v:.3f}" for v in w / base),
+        flush=True,
+    )
     out[str(S)] = dict(nu=nu, dev=float(dev), ratio=(w / base).tolist(), n_z=int(r["nz"]))
-json.dump(dict(alpha=alpha, kappa=kappa, RD=RD, eta=eta.tolist(), tau_d=tau_d, runs=out),
-          open("e65_packet.json", "w"), indent=1)
+json.dump(
+    dict(alpha=alpha, kappa=kappa, RD=RD, eta=eta.tolist(), tau_d=tau_d, runs=out),
+    open("e65_packet.json", "w"),
+    indent=1,
+)

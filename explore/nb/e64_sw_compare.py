@@ -18,6 +18,7 @@ delta = (A_s, B_s) e^{i s W (t - zeta)} times a depth factor e^{lam zeta}; with 
          dR = B - R0 A. Must equal the Entry 59 Riccati form D_s = i c S (1 - R0^2) / (2 (Lambda - i s W)).
 Usage: python e64_sw_compare.py
 """
+
 import json
 import os
 import sys
@@ -30,6 +31,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parents[1] / "src"))
 sys.path.insert(0, str(HERE))
 from e59_transfer import root  # noqa: E402
+
 from tratt.core import required_nz, solve_bragg  # noqa: E402
 
 ALPHA, KAPPA, S = 8.0, 6.0, 0.02
@@ -45,7 +47,7 @@ def modes(eta, W, kind):
     for s in (+1, -1):
         if kind == "Riccati":
             lam_r = 1j * eta_c + 2 * C * R0
-            out.append(1j * C * S * (1 - R0 ** 2) / (2 * (lam_r - 1j * s * W)))
+            out.append(1j * C * S * (1 - R0**2) / (2 * (lam_r - 1j * s * W)))
             continue
         lam = C * R0 if kind == "Bloch" else 0.0
         L = lam - 1j * s * W
@@ -68,6 +70,7 @@ def tt(eta, W, nt=32, nz=None):
 
     def phi(zeta):
         return S * np.cos(W * (t[:, None] - zeta))
+
     R = np.abs(solve_bragg(ALPHA, eta, phi=phi, n_z=nz, kappa=KAPPA)) ** 2
     return np.mean((R - R.mean(axis=0)) * np.exp(1j * W * t[:, None]), axis=0), nz
 
@@ -100,20 +103,26 @@ if __name__ == "__main__":
         print(f"\nR_D = {RD} (W = {W:.0f} = {1 / RD:.1f} Darwin half-widths), n_z = {nz}")
         if RD == 0.5:
             Ft2, _ = tt(eta, W, nt=64, nz=2 * nz)
-            print(f"  convergence (nt x2, n_z x2): max |dF| / max|F| = "
-                  f"{np.max(np.abs(Ft2 - Ft)) / np.abs(Ft).max():.1e}")
+            print(
+                f"  convergence (nt x2, n_z x2): max |dF| / max|F| = "
+                f"{np.max(np.abs(Ft2 - Ft)) / np.abs(Ft).max():.1e}"
+            )
         rec = {"eta": eta.tolist(), "W": W, "TT": [Ft.real.tolist(), Ft.imag.tolist()]}
         for kind in ("SW", "SWn", "Riccati"):
             Fp = predict(eta, W, kind)
             med, lo, hi, cmed, cmax = stats(Ft, Fp)
-            print(f"  {kind:8s} |F_pred|/|F_TT| median {med:.3f} range [{lo:.3f}, {hi:.3f}];"
-                  f"  complex rel err median {cmed:.3f} max {cmax:.2f}")
+            print(
+                f"  {kind:8s} |F_pred|/|F_TT| median {med:.3f} range [{lo:.3f}, {hi:.3f}];"
+                f"  complex rel err median {cmed:.3f} max {cmax:.2f}"
+            )
             rec[kind] = [Fp.real.tolist(), Fp.imag.tolist()]
         # the point a measurer reads: the satellite, eta = +-W
         for x in (W, -W):  # F(eta = 0) = 0 by symmetry, so no ratio there
             i = np.argmin(np.abs(eta - x))
-            print(f"   eta = {eta[i]:+8.1f}: |F_TT| {abs(Ft[i]):.3e}  SW/TT {abs(predict(eta[i:i+1], W, 'SW')[0]) / abs(Ft[i]):.3f}"
-                  f"  SWn/TT {abs(predict(eta[i:i+1], W, 'SWn')[0]) / abs(Ft[i]):.3f}"
-                  f"  Riccati/TT {abs(predict(eta[i:i+1], W, 'Riccati')[0]) / abs(Ft[i]):.3f}")
+            print(
+                f"   eta = {eta[i]:+8.1f}: |F_TT| {abs(Ft[i]):.3e}  SW/TT {abs(predict(eta[i : i + 1], W, 'SW')[0]) / abs(Ft[i]):.3f}"
+                f"  SWn/TT {abs(predict(eta[i : i + 1], W, 'SWn')[0]) / abs(Ft[i]):.3f}"
+                f"  Riccati/TT {abs(predict(eta[i : i + 1], W, 'Riccati')[0]) / abs(Ft[i]):.3f}"
+            )
         out[f"RD{RD}"] = rec
     json.dump(out, open(HERE / "e64_sw.json", "w"))
