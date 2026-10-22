@@ -27,6 +27,7 @@ Where each part stands:
 | H is a factor-2 bias for Si 400 at 17.5 keV over 20–100 GHz | confirmed **only for a long window** (the strain must travel ≥ max(1/κ, x/π) Λ during the window, whether it is a train or a ps packet followed for ≥ 50 ns); wrong for the 140 ps Chalise window, where H is flat to 4 % | Entries 65, 71, 75 |
 | anomalous absorption χ_ih as a second crystal parameter | **rule fired** (Entry 77): with the X0h ratio χ_ih/χ_i0 = 0.93, H changes by 0.9 % (steady), 1.0 % (14 ns), 1.4 % (52 ns window) in the 20–150 GHz band at 17.48 keV and 3–4 % at 8 keV, opposite in sign on the two sides of the Bragg peak; the extended closed form (complex c) is TT-verified to 0.3 %; the ±η side asymmetry H(−η)/H(+η) = 1.02–1.09 is strain-spectrum-free and predicted, not verified | Entry 77 |
 | ±η side asymmetry of H with χ_ih, strain-spectrum-free, reads χ_ih/χ_i0 | **confirmed in the model** (Entry 78, pre-registered): full TT vs closed form to 0.06 % at two energies, four windows; two packets agree to 0.1 %; size 1.9 % (17.48 keV, steady), 2.8 % (52 ns), 6.2 % (8 keV, 20 GHz); sensitivity dA/d(χ_ih/χ_i0) = 0.02–0.07; \|R0\| ratio 1.0000 in the phonon band (x ≥ 27), to be carried near the Darwin width | Entry 78 |
+| asymmetric Bragg geometry | **confirmed, no solver change** (Entry 81): exact rescaling of the symmetric solver (TT to 1e-16), one geometry factor g → g(√b + 1/√b)/2 with b = γ_0/\|γ_h\|, window numbers scale with Λ_asym (T_90 52 → 33 ns at b = 4, 16.5 ns at b = 10 for Si 400 / 17.48 keV) | Entry 81 |
 | closed form in the window length, H(f; T_w) | confirmed: the packet-kept first-order form (CF-B) matches TT to 0.3 % at every window 0.14–300 ns, two energies, three packet lengths; the packet-free short form (CF-A, Entry 71's hand estimate) is **rejected** below ~100 τ by the pre-registered 1 % rule | Entry 75 |
 | signal maximum ≠ Fisher-information maximum (directive B2) | **negative** for a ps packet at one angle: amplitude maxima coincide (3 GHz apart), crystal moves nothing | Entry 70 |
 | formation law I_n = sin²/tanh²(πα\|J_n\|t̃), no fit | confirmed | Entries 1, 9, 19, 24; tests |
@@ -83,8 +84,8 @@ form is what goes into the paper.
 1. Anomalous absorption χ_ih in Bragg: done (Entry 77, `solve_bragg(kappa_h=)`); rule fired at the
    52 ns window (1.4 %), second parameter kept. Next smallest: pre-register the ±η side asymmetry
    as a claim and test it in full TT with a packet (not a single mode) at both energies. (T2c)
-2. Asymmetric geometry (γ_0 ≠ γ_h): the χ_0 gauge of DESIGN.md fails; H may acquire a geometry
-   factor. Needs a solver change.
+2. Asymmetric geometry (γ_0 ≠ γ_h): done, Entry 81 (T2g). No solver change: exact rescaling, one
+   geometry factor in g, window condition in units of Λ_asym.
 3. A smooth strain front instead of the step front of the Entry 58 packet: changes the high-frequency
    wing, and may change the saturation route of Entry 68.
 4. Read Chukhovskii & Förster 1995 and Wark & Lee 1999 (time-dependent TT) for an earlier Bloch-wave
@@ -149,7 +150,7 @@ Risks, in order:
   acoustically modulated crystals, Grigoriev et al. APL (2006). The novelty sentences are to be
   written against these.
 - Chalise's energy and normalisation are unknown; the comparison stays "same sign, same order".
-- Model limits: symmetric, σ, normal + anomalous absorption in Bragg (Entry 77; Laue still lossless), plane wave, no instrument resolution.
+- Model limits: σ, normal + anomalous absorption in Bragg (Entry 77; Laue still lossless), symmetric or asymmetric Bragg by rescaling (Entry 81; Laue symmetric only), plane wave, no instrument resolution.
 
 ## 3. Figure plan (figures go to `figures/paper/`; poster figures are frozen)
 
@@ -183,7 +184,9 @@ Risks, in order:
 
 - Paper = P1 (transfer function) with P2 inside, or P2 (formation) as the first paper? P1 is
   closer to finished and tied to a current measurement; P2 is the poster's identity.
-- χ_ih is in `solve_bragg` (Entry 77, PR #16). Whether to add asymmetric geometry (Tier physics) before writing.
+- χ_ih is in `solve_bragg` (Entry 77, PR #16). Asymmetric geometry needs no solver change (Entry 81):
+  closed. Whether an asymmetric cut (b = 4–10, T_90 = 33–16 ns) goes into the proposal as the way
+  to shorten the delay scan.
 - Whether the ±η side asymmetry (Entry 78, model-confirmed, unobserved) goes into the paper as a
   proposed measurement of χ_ih/χ_i0.
 - Library access for Chukhovskii & Förster 1995 and Wark & Lee 1999.

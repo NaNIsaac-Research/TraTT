@@ -5237,3 +5237,53 @@ distinct (c_h ≠ c_0), Entry 66 packet at S/100, Si 400 / 17.48 keV constants, 
 - otherwise the mapping is exact and the geometry factor of H is g → g (√b + 1/√b)/2, reported
   for Si 400 at b = 1, 2, 4, 10 from the closed form (H(20)/H(100) and the window numbers T_flat,
   T_half, T_90 rescaled).
+
+**Run.** `uv run python explore/nb/e81_asym_map.py run` (11 s); data `e81_asym_map.json`, log
+`e81_asym_map.log`. The asymmetry angle χ is solved from b = sin(θ_B + χ)/sin(θ_B − χ) at
+θ_B = 15.14°; Λ_asym/Λ_sym = √(γ_0|γ_h|)/sin θ_B; the same peak strain 1e-5 (S is unit-free).
+
+**Results.**
+
+| b = γ_0/\|γ_h\| | χ | Λ_asym µm | g_asym = g (√b + 1/√b)/2 | max \|R_asym − √b R̃\| (packet grid) | W_asym/(b W̃) − 1 at 14 ns | H_TT(b)/CF-B(g_asym) worst |
+|---|---|---|---|---|---|---|
+| 0.5 | −5.15° | 10.84 | 0.01061 | 7e-17 | 2e-12 | 0.30 % |
+| 2 | +5.15° | 10.84 | 0.01061 | 1e-16 | 1e-12 | 0.30 % |
+| 4 | +9.22° | 9.12 | 0.01251 | 0 | 0 | 0.30 % |
+
+- **Mapping exact** (rule: < 1e-6; found machine precision), so `solve_bragg` already covers
+  asymmetric Bragg: call it with α_asym = L|χ_rh|/(λ√(γ_0|γ_h|)), κ = μL(1/γ_0 + 1/|γ_h|)/2,
+  κ_h likewise, and multiply |R|² by γ_0/|γ_h|. The symmetric limit is the same function, so the
+  bit-identity test of T2g is satisfied by construction; no src change, no new test.
+- **One geometry factor** (boss's criterion, TT vs closed form 0.3 %): H keeps its form with
+  g → g (√b + 1/√b)/2 and the frequency axis in units of f_D = v/Λ_asym; the 0.30 % is the Entry 75
+  second-order residual at S/100, identical for all b (as it must be for an exact mapping). b and
+  1/b give the same H, since the factor is symmetric under √b ↔ 1/√b.
+
+Closed-form consequences for Si 400 at 17.48 keV (g_sym = 0.0100), 20 against 100 GHz:
+
+| b | Λ_asym µm | g_asym | steady H(20) / H(100) | ratio | T_flat / T_half / T_90 ns |
+|---|---|---|---|---|---|
+| 1 | 11.54 | 0.01001 | 0.480 / 0.939 | 0.511 | 19.6 / 32.7 / 52.3 |
+| 2 (or 0.5) | 10.84 | 0.01061 | 0.479 / 0.939 | 0.510 | 17.3 / 28.8 / 46.2 |
+| 4 | 9.12 | 0.01251 | 0.475 / 0.938 | 0.507 | 12.2 / 20.5 / 32.7 |
+| 10 | 6.48 | 0.01740 | 0.471 / 0.937 | 0.503 | 6.1 / 10.4 / 16.5 |
+
+- The steady crystal factor is almost geometry-independent at these x (the 20 GHz suppression
+  moves from 0.480 to 0.471 at b = 10), because in the kinematic tail H ≈ κ/|κ + iπ/x| depends on
+  g and x through the product g·x = κ/(2π)·f/f_D ∝ κΛ/v·f, and κΛ ∝ (1/γ_0 + 1/|γ_h|)√(γ_0|γ_h|)
+  changes by only (√b + 1/√b)/2 while the frequency scale changes by 1/Λ_asym — the two nearly
+  cancel for the ratio.
+- The **window numbers do shrink**: T_90 goes from 52 ns (symmetric) to 33 ns at b = 4 and 16.5 ns
+  at b = 10 (χ = 12.5°, grazing exit at 2.7°), because both the extinction depth Λ_asym and 1/κ in
+  physical units get shorter. So an asymmetric cut is a way to bring the steady H within a shorter
+  delay scan, at the price of the γ_0/|γ_h| intensity factor and a grazing beam.
+
+**Answer to T2g.** Asymmetric Bragg needs no solver extension: it is an exact rescaling, and the
+crystal factor has one geometry factor, g → g (√b + 1/√b)/2, with the window condition rescaled by
+Λ_asym. Class: **confirmed** (algebra + TT to machine precision; closed form at the usual 0.3 %).
+The open decision in paper_candidates §4 is closed. Laue asymmetry is a different matter (the χ_0
+term does not cancel there) and is not touched.
+
+**Scope.** σ polarisation, centrosymmetric, bulk wave along the surface normal (φ = φ(z, t)
+unchanged by the cut), semi-infinite; grazing-exit geometries (b ≳ 10) bring in the specular
+refraction and beam-footprint effects the plane-wave model does not have.
