@@ -17,6 +17,15 @@ Fourier weight at a nominal phonon frequency collects only rays within that line
 | A, ordinary beam | ≳ 0.3 Darwin half-widths (≳ 2.5 µrad or ≳ 25 meV) | kinematic law × a flat factor κ√(π/2)/σ_η, at every window; no crystal factor, no window law, no ±ω asymmetry | the estimator "divide by \|R0\|/ω" and the flat factor's scaling with the beam's σ |
 | B, single-ray | ≲ 0.4 µrad **and** ≲ 4 meV (angle-resolving detector + meV monochromator) | H(f; T_w), its window law, the χ_ih correction, the ±ω asymmetry | Entries 65, 75, 77, 78 |
 
+σ_η is the beam's spread in the deviation parameter η ∝ Δθ − (ΔE/E) tan θ_B, i.e. the projection of
+the joint (θ, E) distribution, not the quadrature sum of divergence and bandwidth (physics
+cross-review): with a Si 111 monochromator and a Si 400 sample the arrangement is dispersive and
+σ_η is large; a non-dispersive (+,−) arrangement with matched d-spacing cancels the bandwidth in η
+and leaves the first crystal's intrinsic width; an asymmetric (+,−) collimator with |b| ≪ 1 gives
+σ_η ≈ √|b| Darwin half-widths (b = 1/50 → 0.14) with routine optics, which reaches the single-ray
+condition only for strongly absorbing reflections (g ≳ 0.1). σ_η must be computed from the optics
+for the chosen beamline before the regime is assigned.
+
 Regime A is a routine measurement and gives the practical result for picosecond ultrasonics.
 Regime B is an inelastic-scattering-grade beam (meV monochromator, 1e9–1e10 ph/s) with a 0.4 µrad
 collimation or a detector that resolves the exit angle to that level; it is the one that measures
@@ -36,13 +45,18 @@ only σ ≤ 0.6 µrad / 7 meV at x = 1 and 0.4 µrad / 5 meV at x = 2 (8 keV; 0.
 for 17.48 keV), because the single-ray resonance sits π/x away from the nominal detuning and a beam of
 a few tenths of a half-width lands on it (the factor first rises 1.3–2×, then falls). So the GHz-train
 apparatus eases the energy condition slightly and the angular one not at all; it does not reach an
-ordinary beam. For the formation law itself (satellite centre at S ~ 1, P2) the divergence question is
+ordinary beam for the *single-ray* H. What an ordinary beam does see at GHz frequencies (x ≲ 10) is
+a frequency-dependent, non-monotonic beam-averaged factor H_conv(x; σ_η) = p(π/x)/p(0) × (single-ray
+shape), computable by the CF-B convolution (TT to 0.24 %, Entries 82–83) once σ_η is known from the
+optics; that factor is itself a falsifiable prediction and the observable P1 + P2 share in the GHz
+regime (pre-registration candidate, not yet run as such). For the formation law itself (satellite centre at S ~ 1, P2) the divergence question is
 the satellite's own rocking width and is not computed.
 
 ## 1. Beamline requirements
 
 - Time structure: an X-ray probe short against the phonon period (≤ 2 ps for 100 GHz; XFEL or
-  streak camera), delay range ≥ 30 ns in steps ≤ 2 ps near the packet and ≤ 50 ps later (the
+  streak camera; the 2–4 meV of regime B is transform-compatible with pulses ≥ 0.9 ps, and
+  synchrotron bunches of 50–100 ps cannot resolve 20 GHz in any regime), delay range ≥ 30 ns in steps ≤ 2 ps near the packet and ≤ 50 ps later (the
   Fourier weight at 20–150 GHz needs the fine steps only inside the ringing; a two-step scan).
 - Pump: a ps-ultrasonics transducer film giving a strain packet of peak strain ~1e-5 and carrier
   20–150 GHz (the Entry 66 packet: 87 GHz, 0.9 cycles); the linear regime ν ≲ 0.1 is then

@@ -5470,3 +5470,25 @@ question (the satellite's own rocking width, α|J_n| Darwin half-widths) and sta
 common factor; the Entry 66 packet's spectrum at 0.7–7 GHz cancels in the ratio; symmetric Bragg
 Si 400, while the poster's train is Si 440 Laue (not computed; the Laue satellite is a different
 observable).
+
+**Addendum to Entries 82–83 after the physics cross-review (PR #16, same day).** (a) Independent
+reproduction of Entry 82 agreed (0.0406 / 0.0124 / 0.561). (b) The phasor sum is exact for any
+transverse coherence (reflection diagonal in k_x, Parseval over exit angles), stronger than the
+"intensities add" argument used above; it fails only for a partly angle-resolving detector with a
+coherent beam, or a laterally non-uniform front. (c) **Correction:** the quadrature sum of angle and
+bandwidth ("1e-4 bandwidth = 35 µrad-equivalent") assumes them uncorrelated; after a crystal
+monochromator they are DuMond-correlated and only the projection onto η counts: dispersive
+(Si 111 DCM + Si 400 sample) is as written, a non-dispersive (+,−) matched arrangement cancels the
+bandwidth in η and leaves the first crystal's intrinsic width, and an asymmetric (+,−) collimator
+with |b| ≪ 1 gives σ_η ≈ √|b| half-widths with routine optics. σ_η must be computed from the optics.
+The single-ray numbers (0.03–0.4 µrad, 2–4 meV) stand as the requirement on σ_η. (d) The 2 meV
+requirement is transform-compatible with ≥ 0.9 ps pulses; synchrotron bunches of 50–100 ps cannot
+resolve 20 GHz regardless. (e) **Same phenomenon, two normalisations:** physics' exploratory
+CF-B value "0.756 at x = 2, σ = 0.3, g = 0.010" is H_conv(x = 2)/H_conv(flat) = p(π/x)/p(0) ≈
+exp[−(π/x)²/2σ_η²] = 0.71, and Entry 83 gives exactly that: 0.830 × 0.037 / 0.0406 = 0.756. Both
+say: an ordinary beam does not see the single-ray H, but in the GHz regime (x ≲ 10, f ≲ f_D/(2σ))
+it sees a frequency-dependent, non-monotonic beam-averaged factor that carries the beam's
+η-distribution at the extinction shift π/x; this factor is computable (CF-B convolution, TT to
+0.24 %) and falsifiable once σ_η is known from the optics. It is a pre-registration candidate
+(not run as such; the Entry 83 scan is its first map), and it means P1 + P2 still share an
+observable in the GHz regime even though the single-ray H needs an IXS-grade beam.
