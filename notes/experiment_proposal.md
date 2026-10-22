@@ -30,12 +30,14 @@ the flux assumed below; the 0.4 µrad angular condition is the harder one (XFEL 
 either a collimating optic or exit-angle resolution of 0.4 µrad (40 µm pixels at 100 m) [open].
 The combination "meV + ps" is uncommon; it is the main risk of regime B.
 
-A third option relaxes the condition: the ringing half-width in Darwin half-widths is
-g + 1/(2x), so for a **GHz train** (x ≈ 1–5, the poster's regime, Entry 20) it is 0.15–0.5
-half-widths, 1–4 µrad and 10–40 meV at 8 keV, an ordinary high-resolution beam. Entry 82 was run
-at x ≥ 38 only; this extension is a 15 s run (same script, lower f) and is not claimed here. 8 keV is chosen over 17.48 keV because the linewidth is 12× wider in
-angle and 2× in energy (g = 0.046 against 0.010), the steady regime starts at 30 ns instead of
-52 ns (1/κ = 4.8 ns), and the ±ω asymmetry is 3× larger.
+A third option was checked (Entry 83): at GHz-train frequencies (x = 1–5) the ringing half-width
+grows to g + 1/(2x) Darwin half-widths, but the 5 % tolerance on the single-ray factor still allows
+only σ ≤ 0.6 µrad / 7 meV at x = 1 and 0.4 µrad / 5 meV at x = 2 (8 keV; 0.14 µrad / 9 meV at x = 2
+for 17.48 keV), because the single-ray resonance sits π/x away from the nominal detuning and a beam of
+a few tenths of a half-width lands on it (the factor first rises 1.3–2×, then falls). So the GHz-train
+apparatus eases the energy condition slightly and the angular one not at all; it does not reach an
+ordinary beam. For the formation law itself (satellite centre at S ~ 1, P2) the divergence question is
+the satellite's own rocking width and is not computed.
 
 ## 1. Beamline requirements
 

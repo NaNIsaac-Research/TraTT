@@ -98,7 +98,7 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
 | 6 | χ_ih is a second tabulated crystal parameter: 0.9 % steady, 1.4 % at 52 ns, 3–4 % at 8 keV | confirmed; pre-registered rule fired | Entry 77 |
 | 7 | ±η side asymmetry, strain-spectrum-free, reads χ_ih/χ_i0 (1.9–6.2 %, sensitivity 0.02–0.07) | predicted and confirmed in the model (TT 0.06 %); unobserved | Entries 77, 78 |
 | 8 | Asymmetric Bragg = exact rescaling; one geometry factor g(√b + 1/√b)/2; T_90 shortens with Λ_asym | confirmed (TT 1e-16) | Entry 81 |
-| 8b | Beam divergence / bandwidth: for σ_η ≫ κ + π/x the crystal factor is flat, κ√(π/2)/σ_η, at every window; H(f; T_w) and the ±η asymmetry are single-ray (meV, sub-µrad) observables | confirmed (TT beam average vs closed form 0.02 %) | Entry 82 |
+| 8b | Beam divergence / bandwidth: for σ_η ≫ κ + π/x the crystal factor is flat, κ√(π/2)/σ_η, at every window (x ≳ 10); H(f; T_w) and the ±η asymmetry are single-ray (meV, sub-µrad) observables; at x = 1–5 the tolerance is 0.3–0.6 µrad / 4–7 meV (8 keV) and the beam-averaged factor is non-monotonic in σ | confirmed (TT beam average vs closed form 0.02–0.24 %) | Entries 82, 83 |
 | 9 | ν ≲ 0.1 ⇒ weight linear to 2 % (1 − K ≤ 1.8 ν²) | confirmed as a bound on the scanned domain (Bragg, x ∈ {2, 5}, one packet family, weight at the peak) | Entry 68 |
 | 10 | "One dimensionless criterion joins the regimes" | falsified (spread ×10–14 at fixed ν) | Entry 68 |
 | 11 | Formation law I_n = sin²/tanh²(πα\|J_n\|t̃), Bessel ladder, period-ratio calibration | confirmed; prior art in kind DeCamp 2001 (n = 0), Polikarpov 1987/88 (static) | Entries 1, 9, 13, 19, 24; tests |

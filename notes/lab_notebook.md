@@ -5416,3 +5416,57 @@ which |H_conv/H_single − 1| ≤ 5 % (linear interpolation between scanned σ),
   the corresponding meV. If this holds the relaxation is real but to ~µrad, not to "ordinary".
 - Convergence: δ-grid halving at one (E, x, σ, T_w) must change W_conv by < 0.2 %; TT vs closed
   form convolution must agree to 1 % (else the Entry 82 setup fails at low x and nothing is claimed).
+
+**Run.** `uv run python explore/nb/e83_lowx.py run fig` (17 s); data `e83_lowx.json`, log
+`e83_lowx.log`, figure `figures/paper/e83_lowx.png`. TT beam average vs closed-form convolution:
+worst 0.24 % (rule: 1 %); δ-grid halving changes W_conv by < 1e-7. Windows 52 and 300 ns give the
+same numbers at 8 keV and differ by ≤ 2 % at 17.48 keV; the 300 ns (steady) values are quoted.
+
+**Results.** H_conv/H_single at 300 ns (σ in Darwin half-widths):
+
+| E | x (f) | σ = 0.03 | 0.1 | 0.2 | 0.3 | 0.5 | 1 | 2 | σ_max (5 %) |
+|---|---|---|---|---|---|---|---|---|---|
+| 17.48 keV | 1 (0.73 GHz) | 1.14 | 1.45 | 2.01 | 2.00 | 1.56 | 0.85 | 0.23 | < 0.03 hw (< 0.1 µrad, < 6 meV) |
+| | 2 (1.46 GHz) | 1.01 | 1.21 | 1.08 | 0.83 | 0.55 | 0.29 | 0.13 | 0.043 hw = 0.14 µrad = 9 meV |
+| | 5 (3.65 GHz) | 1.12 | 0.97 | 0.57 | 0.39 | 0.24 | 0.13 | 0.07 | < 0.03 hw |
+| | 10 (7.3 GHz) | 1.14 | 0.56 | 0.30 | 0.21 | 0.13 | 0.06 | 0.03 | < 0.03 hw |
+| 8 keV | 1 (0.74 GHz) | 1.01 | 1.07 | 1.28 | 1.24 | 0.96 | 0.51 | 0.14 | 0.076 hw = 0.63 µrad = 7 meV |
+| | 2 (1.49 GHz) | 1.01 | 1.13 | 0.99 | 0.78 | 0.54 | 0.29 | 0.12 | 0.053 hw = 0.44 µrad = 5 meV |
+| | 5 (3.72 GHz) | 1.04 | 0.86 | 0.55 | 0.40 | 0.25 | 0.14 | 0.08 | 0.037 hw = 0.31 µrad = 3.6 meV |
+| | 10 (7.44 GHz) | 0.95 | 0.59 | 0.35 | 0.25 | 0.16 | 0.08 | 0.04 | 0.031 hw = 0.26 µrad = 2.9 meV |
+
+(hw = Darwin half-width: 3.18 µrad / 206 meV at 17.48 keV, 8.33 µrad / 96 meV at 8 keV. "< 0.03"
+means the smallest scanned σ already departs by more than 5 %; the scan does not resolve below it.)
+
+- **Verdict under the rule: the single-ray condition stands.** The relaxation at low x is real
+  but modest: at 8 keV the 5 % tolerance allows 0.6 µrad / 7 meV at x = 1 and 0.4 µrad / 5 meV at
+  x = 2, against 0.38 µrad / 4.4 meV at x ≥ 27 (Entry 82); at 17.48 keV it is ≤ 0.14 µrad / 9 meV.
+  None of this is "a few µrad"; in energy, 5–9 meV is a high-resolution monochromator, not an
+  ordinary one. The E scores of P2 and P1+P2 are therefore not raised on this account.
+- The pre-run expectation σ_max ≈ 0.25 (g + 1/(2x)) was too optimistic by about 2× (0.136 vs
+  0.076 at x = 1, 8 keV) and wrong in form at x ≲ 2: there the beam average first *raises* the
+  weight (up to 2.0× at 17.48 keV, 1.3× at 8 keV, for σ = 0.2–0.3 hw) before suppressing it,
+  because the single-ray resonance is centred at the extinction shift π/x away from the nominal
+  detuning (0.5 Darwin half-widths at x = 1): a beam of that width lands on the peak that the
+  nominal ray misses. The 5 % criterion is therefore violated by overshoot, not only by
+  dephasing, and the beam-averaged factor at x ~ 1–2 is a strong, non-monotonic function of σ.
+- At σ ≥ 1 hw the flat law of Entry 82 is approached only for x ≳ 10 (17.48 keV: H_conv = 0.0069
+  at x = 10 against κ√(π/2)/σ_η = 0.0063 at σ = 2 hw); at x = 1–5 the beam-averaged factor is
+  smaller still (0.0009–0.0073), so the "ordinary beam → kinematic law × flat factor" statement
+  holds for the ps-packet band and not for a GHz train, where the factor depends on x and σ
+  together.
+
+**What this changes.** (i) For the GHz-train (P2) apparatus the beam condition is 0.3–0.6 µrad
+and 4–7 meV at 8 keV, somewhat easier than for the ps band but still a high-resolution beam;
+`notes/experiment_proposal.md` §0 is corrected (the "ordinary high-resolution beam" sentence is
+withdrawn). (ii) DotFiles#56 (poster Q&A on the withdrawn Si 400 factor 2) gets the stronger
+reason: with an ordinary beam there is no crystal factor at all in the ps band, and at GHz the
+beam-averaged factor is not the single-ray one either. (iii) The satellite-centre observable of
+P2 (formation law at η = q, S ~ 1) was not computed here; its divergence sensitivity is a separate
+question (the satellite's own rocking width, α|J_n| Darwin half-widths) and stays open.
+
+**Class.** Confirmed (full TT beam average, two energies, four x, seven σ, two windows, no fit).
+**Scope.** As Entry 82; x = 1 sits at the Darwin edge where the kinematic normalisation is only a
+common factor; the Entry 66 packet's spectrum at 0.7–7 GHz cancels in the ratio; symmetric Bragg
+Si 400, while the poster's train is Si 440 Laue (not computed; the Laue satellite is a different
+observable).

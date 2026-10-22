@@ -31,6 +31,7 @@ Where each part stands:
 | ±η side asymmetry of H with χ_ih, strain-spectrum-free, reads χ_ih/χ_i0 | **confirmed in the model** (Entry 78, pre-registered): full TT vs closed form to 0.06 % at two energies, four windows; two packets agree to 0.1 %; size 1.9 % (17.48 keV, steady), 2.8 % (52 ns), 6.2 % (8 keV, 20 GHz); sensitivity dA/d(χ_ih/χ_i0) = 0.02–0.07; \|R0\| ratio 1.0000 in the phonon band (x ≥ 27), to be carried near the Darwin width | Entry 78 |
 | asymmetric Bragg geometry | **confirmed, no solver change** (Entry 81): exact rescaling of the symmetric solver (TT to 1e-16), one geometry factor g → g(√b + 1/√b)/2 with b = γ_0/\|γ_h\|, window numbers scale with Λ_asym (T_90 52 → 33 ns at b = 4, 16.5 ns at b = 10 for Si 400 / 17.48 keV) | Entry 81 |
 | beam divergence / bandwidth: the crystal factor is a single-ray property | **confirmed** (Entry 82): a beam spread in detuning σ ≥ 0.3 Darwin half-widths makes H_conv flat in f at every window, equal to κ√(π/2)/σ_η (TT beam average vs closed form 0.02 %); H(f), the window law, χ_ih and the ±η asymmetry need σ ≲ κ + π/x: 0.03–0.4 µrad and 2–4 meV at Si 400 | Entry 82 |
+| beam condition at GHz-train frequencies (x = 1–10) | **confirmed, single-ray condition stands** (Entry 83): the 5 % tolerance allows σ ≤ 0.6 µrad / 7 meV (x = 1) to 0.3 µrad / 3.6 meV (x = 5) at 8 keV, ≤ 0.14 µrad / 9 meV at 17.48 keV; at x ≲ 2 the beam average first raises the factor 1.3–2× (resonance at π/x off the nominal detuning), so the flat law of Entry 82 holds only for x ≳ 10 | Entry 83 |
 | closed form in the window length, H(f; T_w) | confirmed: the packet-kept first-order form (CF-B) matches TT to 0.3 % at every window 0.14–300 ns, two energies, three packet lengths; the packet-free short form (CF-A, Entry 71's hand estimate) is **rejected** below ~100 τ by the pre-registered 1 % rule | Entry 75 |
 | signal maximum ≠ Fisher-information maximum (directive B2) | **negative** for a ps packet at one angle: amplitude maxima coincide (3 GHz apart), crystal moves nothing | Entry 70 |
 | formation law I_n = sin²/tanh²(πα\|J_n\|t̃), no fit | confirmed | Entries 1, 9, 19, 24; tests |
@@ -151,7 +152,9 @@ alone on the strength of the Chalise correction; Entry 71 removed that strength.
 
 Risks, in order:
 - Entry 82: the long-window crystal factor needs σ ≲ 0.03–0.4 µrad and ≲ 2–4 meV; with an ordinary
-  beam the measurable crystal factor is flat. This is now the first risk.
+  beam the measurable crystal factor is flat. This is now the first risk. Entry 83: the GHz-train
+  band relaxes this only to 0.3–0.6 µrad / 4–7 meV at 8 keV, so the E scores of P2 and P1+P2 are
+  not raised; the P2 observable (satellite centre, S ~ 1) has its own, uncomputed, divergence question.
 - No long-window (tens of ns) time-resolved satellite measurement exists yet; the paper's
   experimental relevance is a proposal. Entries 73, 80: elastic side clean for all S ≤ 6; the
   transducer peak power (6–100 W/cm² at 1–2 GHz for S = 1–2, up to 900 W/cm² at S = 6) is unverified.
