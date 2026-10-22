@@ -119,8 +119,11 @@ observable (satellite centre intensity) whose divergence sensitivity is the sate
 rocking width w_n = 2πα|J_n(S)|: Entry 84 finds the centre law intact only for σ_η ≲ 0.3 w_n,
 0.1–0.3 µrad at Si 440 / 17.48 keV (0.6–1.4 µrad at Si 400 / 8 keV Bragg, the more tolerant
 geometry), so as a centre observable it needs the same sub-µrad beam as regime B; with an ordinary
-beam the measurable quantity is the integrated satellite population, whose formation law is not
-yet established. One case in numbers (Entry 85, Si 440 / 17.48 keV, L = 163 µm, t_tr = 28 ns): the
+beam the measurable quantity is the integrated satellite population: in Laue its shape is the
+flat-beam one from σ_η ≈ 3 w_n (1.3–3 µrad at Si 440 / 17.48 keV) with a detector accepting one
+satellite channel (9–18 µrad), its formation curve is the TT channel integral (13–25 % off the ∫J_0
+law, so not a closed form), and in Bragg it is not clean at any beam (Entry 86, post hoc; a corrected
+pre-registration is pending). One case in numbers (Entry 85, Si 440 / 17.48 keV, L = 163 µm, t_tr = 28 ns): the
 linear regime of the filled crystal needs S ≤ 0.02 (strain ≤ 7e-7, mW/cm²), the formation regime
 S = 0.5–2 (strain 1–7e-5, 1.6–100 W/cm², τ_1 = 8–19 ns); the Bragg window numbers of the same
 reflection are T_flat 7 / T_half 12 / T_90 17 ns, inside one transit; the beam condition is

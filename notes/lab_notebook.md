@@ -5677,3 +5677,70 @@ the first maximum (Laue; parabolic interpolation) or the half-rise time (Bragg, 
   expected outcome is "condition table, σ_η ≳ 3 w_n", i.e. the integrated observable **does** lift
   the sub-µrad condition, with the detector acceptance (one channel, ~12 µrad) as the new condition.
 - Convergence: δ-grid spacing halved at one case must change P/P_flat by < 0.2 %.
+
+**Run.** `uv run python explore/nb/e86_population_divergence.py run fig` (43 s); data
+`e86_population_divergence.json`, log `e86_population_divergence.log`, figure
+`figures/paper/e86_population_divergence.png`. 359–1652 rays per case; δ-grid halving changes
+P by 5e-5. Single carrier phase on the offset grid, as in Entries 1, 9, 84.
+
+**Results under the pre-registered metrics** (Δperiod = first-maximum time in Laue, half-rise time
+in Bragg, against the flat-beam channel integral P_flat; Δamp = P/P_flat at that time):
+
+| geometry | (S, α, n) | w_n (half-widths) | σ_η = 0.3 w_n: Δperiod / Δamp | 1 w_n | 3 w_n | 10 w_n | smallest σ_η meeting both |
+|---|---|---|---|---|---|---|---|
+| Laue | (0.5, 2, 1) | 0.24 | +7 % / +940 % | −1.1 % / +790 % | −0.9 % / +360 % | −0.4 % / +65 % | none ≤ 10 w_n |
+| Laue | (1.5, 2, 1) | 0.56 | +25 % / +580 % | +6 % / +380 % | −0.1 % / +113 % | 0.0 % / +12 % | none |
+| Laue | (2, 4, 2) | 0.35 | +39 % / +360 % | +20 % / +250 % | +0.4 % / +65 % | +0.1 % / +6 % | none |
+| Laue | (1.5, 4, 1) | 0.56 | +9 % / +290 % | −1.0 % / +160 % | −0.2 % / +28 % | 0.0 % / +2.4 % | 10 w_n |
+| Bragg | (0.5, 2, 1) | 0.24 | +88 % / +440 % | +69 % / +420 % | +34 % / +280 % | +16 % / +57 % | none |
+| Bragg | (1.5, 2, 1) | 0.56 | +65 % / +200 % | +43 % / +190 % | +10 % / +90 % | +1.4 % / +10 % | none |
+| Bragg | (2, 4, 2) | 0.35 | +43 % / +150 % | +37 % / +130 % | +5.5 % / +56 % | +0.8 % / +5.8 % | none |
+| Bragg | (1.5, 4, 1) | 0.56 | +82 % / +50 % | +69 % / +42 % | +9 % / +12 % | +0.9 % / +1.1 % | 10 w_n |
+
+- **Verdict under the rule: condition table; the integrated observable does not pass at
+  σ_η = 1, 3, 10 w_n.** Recorded as such, with the following caveat on the rule itself.
+- **The amplitude metric was mis-specified in the pre-registration.** P is normalised per unit of
+  beam inside the channel and P_flat per unit of channel width, so P/P_flat at a narrow beam is
+  the ratio of the satellite's peak to the channel mean (the +940 % at σ_η = 0.3 w_n is the
+  satellite peak being ten times the channel mean), i.e. it measures beam width over channel
+  width, not the physics. A rule about the shape should compare curves normalised at the same
+  time. This is a pre-registration flaw, stated, and the rule was not altered after the fact.
+- **Post hoc, labelled:** the shape-normalised amplitude A = [P(t_ref)/P(1)]/[P_flat(t_ref)/P_flat(1)] − 1
+  from the same traces, with the same 1 % / 5 % thresholds:
+
+| geometry | (S, α, n) | 0.3 w_n: Δperiod / A | 1 w_n | 3 w_n | 10 w_n | smallest σ_η meeting both |
+|---|---|---|---|---|---|---|
+| Laue | (0.5, 2, 1) | +7 % / −36 % | −1.1 % / −14 % | −0.9 % / +1.7 % | −0.4 % / +1.7 % | 3 w_n |
+| Laue | (1.5, 2, 1) | +25 % / +149 % | +6 % / +31 % | −0.1 % / +8 % | 0.0 % / +1.0 % | 10 w_n |
+| Laue | (2, 4, 2) | +39 % / −25 % | +20 % / −3 % | +0.4 % / −0.2 % | +0.1 % / −0.1 % | 3 w_n |
+| Laue | (1.5, 4, 1) | +9 % / +21 % | −1.0 % / +14 % | −0.2 % / +3.2 % | 0.0 % / +0.3 % | 3 w_n |
+| Bragg | (0.5, 2, 1) | +88 % / −57 % | +69 % / −50 % | +34 % / −25 % | +16 % / −8 % | none |
+| Bragg | (1.5, 2, 1) | +65 % / −52 % | +43 % / −42 % | +10 % / −15 % | +1.4 % / −2.3 % | none (10 w_n fails on period by 0.4 %) |
+| Bragg | (2, 4, 2) | +43 % / −49 % | +37 % / −39 % | +5.5 % / −12 % | +0.8 % / −1.4 % | 10 w_n |
+| Bragg | (1.5, 4, 1) | +82 % / −56 % | +69 % / −47 % | +9 % / −16 % | +0.9 % / −1.8 % | 10 w_n |
+
+  In Laue the integrated population's *shape* is the flat-beam one from σ_η ≈ 3 w_n (three of
+  four cases; 8 % at 3 w_n and 1 % at 10 w_n in the fourth): 3 w_n = 0.7–1.7 main Darwin
+  half-widths = **1.3–3 µrad at Si 440 / 17.48 keV**, a ten-fold relaxation of the centre law's
+  0.3 w_n and inside ordinary high-resolution beamline divergences, with the detector accepting
+  one channel (q = 5–10 half-widths, 9–18 µrad there). In Bragg the satellite's rocking curve has
+  1/δ² wings, the channel mean converges slowly, and even σ_η = 10 w_n (2.4–5.6 half-widths,
+  i.e. a beam comparable to the channel) leaves 1–16 % on the half-rise time: the Bragg population
+  is not a clean observable at any beam the channel can hold.
+- P_flat's own shape is not the textbook law: against ∫_0^{2πα_n t̃} J_0 (Laue) the maximum
+  deviation of the normalised curves is 13–25 %, against tanh² (Bragg) 25–38 %. The integrated
+  population has a formation curve of its own (the channel integral of TT, which these runs
+  tabulate) and no closed form here. Its signal is 5–29 % of the centre intensity per unit channel
+  (P_flat(1) = 0.053–0.29).
+
+**Answer to T2p.** Under the rule as written: no. In substance (post hoc, same traces): the
+Laue integrated population is beam-tolerant from σ_η ≈ 3 w_n (1.3–3 µrad at Si 440 / 17.48 keV)
+with a one-channel detector, which does lift the sub-µrad condition for the Laue train (P2); its
+formation curve must then be taken from TT, not from sin² or ∫J_0. Bragg does not. A corrected
+pre-registration (shape-normalised amplitude; Laue; σ_η = 3 w_n; the TT channel integral as the
+law) is the item to run if P2's experimental E is to be raised; the data here are its first map,
+not its test.
+
+**Scope.** Step front, α_ac = 20, single phase, t̃ ≤ 1, Gaussian beam centred on the channel,
+detector = one channel, t = 0 rocking curve subtracted ray by ray; lossless solvers; the ramp
+regime and the ±η structure of the satellite not covered.
