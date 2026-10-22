@@ -5201,3 +5201,39 @@ S ≤ 6 at 1–2 GHz; it remains unverified (DotFiles#57).
 **Scope.** Symmetry argument plus order estimates, not a nonlinear elastic computation; third-order
 constants of Si not looked up (γ ~ 10 assumed as an order); isotropic-solid literature statement to
 be re-read. The Zarembo & Krasil'nikov reference is from memory and goes on the T2d list.
+
+---
+
+## 2026-10-23 — Entry 81: asymmetric Bragg geometry is an exact rescaling of the symmetric solver; the geometry factor of H (T2g)
+
+**Why.** DESIGN.md item 2 and paper_candidates §4 list asymmetric geometry (γ_0 ≠ |γ_h|) as a
+solver extension to decide on before writing, because the χ_0 gauge of the Laue solver depends on
+symmetry. For Bragg the χ_0 term already enters R through η → η + iκ with
+κ = μL(1/γ_0 + 1/|γ_h|)/2 (docstring of `solve_bragg`), so the question is only what the two
+unequal coupling terms do. Derivation first, then a TT test of it. Script `explore/nb/e81_asym_map.py`.
+
+**Derivation.** Two-beam Bragg, depth z, D_0' = (1/γ_0)[a_0 D_0 + b e^{+iφ} D_h],
+D_h' = (1/γ_h)[(a_0 + iη') D_h + b e^{−iφ} D_0], γ_h < 0, a_0 = ikχ_0/2, b = ikCχ_h/2
+(centrosymmetric, one b). For R = D_h/D_0:
+
+    R' = −c_h e^{−iφ} − i η_c R − c_0 e^{+iφ} R²,   c_h = bL/|γ_h|,  c_0 = bL/γ_0,
+    i η_c = −a_0 L (1/γ_0 + 1/|γ_h|) − iη' L/|γ_h|.
+
+With R̃ = R √(c_0/c_h) = R √(|γ_h|/γ_0) this is the symmetric equation with one coupling
+c_eff = √(c_0 c_h) = bL/√(γ_0|γ_h|), i.e. α_asym = L|χ_rh|/(λ√(γ_0|γ_h|)) (the standard
+asymmetric extinction length), κ as above, and the same strain phase φ. So:
+- **no solver change is needed**: `solve_bragg(alpha_asym, eta, phi, kappa, kappa_h)` and
+  |R|² = |R̃|² γ_0/|γ_h| give the asymmetric case exactly (the γ_0/|γ_h| factor is the usual
+  asymmetry factor of the reflectivity);
+- H(x, g) keeps its form, with g → g_asym = g_sym (√b + 1/√b)/2, b = γ_0/|γ_h|, since
+  κ scales with (1/γ_0 + 1/|γ_h|)/2 and 2πα with 1/√(γ_0|γ_h|); x = f/f_D with f_D = v/Λ_asym;
+  the window condition of Entry 75 is in units of Λ_asym/v; χ_ih/χ_i0 is unchanged.
+
+**Pre-registered rule (written before the run).** Semi-infinite TT with the two couplings kept
+distinct (c_h ≠ c_0), Entry 66 packet at S/100, Si 400 / 17.48 keV constants, b = 4 (γ_0 = 2|γ_h|),
+η at ±20, ±100 GHz, against `e66.surface_R`-style symmetric integration at c_eff with R̃ rescaled:
+- if max |R_asym(t) − R̃(t) √(γ_0/|γ_h|)| over t ∈ [0, 14 ns] exceeds 1e-6 (both at the same
+  RK4 grid), **the mapping is wrong** and a solver extension is needed;
+- otherwise the mapping is exact and the geometry factor of H is g → g (√b + 1/√b)/2, reported
+  for Si 400 at b = 1, 2, 4, 10 from the closed form (H(20)/H(100) and the window numbers T_flat,
+  T_half, T_90 rescaled).
