@@ -72,10 +72,10 @@ Appendix B: pre-registered rules and their outcomes, one line each (Entries 68, 
 
 | figure | panels | source (entry; script; reproduce) | status |
 |---|---|---|---|
-| Fig. 1 estimator and one-curve collapse | (a) R(t) at one detuning for a packet with the Fourier component at ω = \|η\| marked; (b) W/W_kin against ω/ω_D for three packet spectra at κ/2πα = 0.12 | Entry 59; `explore/nb/e59_transfer.py fig` → `figures/chalise_transfer.png` (panel b exists; panel a to be drawn from the same run) | confirmed |
-| Fig. 2 where the plane-wave first order fails | \|F_pred\|/\|F_TT\| against ω/ω_D for S&W eq. 29, S&W normalised, Bloch-wave (Riccati) form; near-peak error | Entries 64, 69; `explore/nb/e64_sw_compare.py` → `e64_sw.json` (figure to be drawn from the json; no figure file yet) | confirmed in our variables; S&W PDF not seen (Entry 69, transcription of Entry 64) |
+| Fig. 1 estimator and one-curve collapse | (a) R(t) at one detuning for a packet with the Fourier component at ω = \|η\| marked; (b) W/W_kin against ω/ω_D for three packet spectra at κ/2πα = 0.12 | Entry 59; `explore/nb/paper_figs.py fig1` → `figures/paper/fig1_estimator.png` (a: e75 packet run, 0.2 s; b: e58 json + e59 closed form); captions in `figures/paper/CAPTIONS.md` | confirmed |
+| Fig. 2 where the plane-wave first order fails | \|F_pred\|/\|F_TT\| against ω/ω_D for S&W eq. 29, S&W normalised, Bloch-wave (Riccati) form; near-peak error | Entries 64, 69; `explore/nb/paper_figs.py fig2` → `figures/paper/fig2_planewave_vs_bloch.png` (from `e64_sw.json`) | confirmed in our variables; S&W PDF not seen (Entry 69, transcription of Entry 64) |
 | Fig. 3 the window and the crystal parameters | (a) H(f; T_w) against T_w with TT circles and T_flat/T_half/T_90; (b) H(20)/H(100) against T_w; (c) H(f) with and without χ_ih at both energies; (d) ±η asymmetry against f at four windows | (a, b) Entry 75; `explore/nb/e75_window_cf.py run posthoc fig` → `figures/paper/e75_window_H.png`. (c) Entry 77; `e77_chi_ih.py run ttp ttm conv60 fig` → `figures/paper/e77_chi_ih.png`. (d) Entry 78; `e78_side_asymmetry.py run fig` → `figures/paper/e78_side_asymmetry.png` | confirmed (a–c), model-confirmed prediction (d) |
-| Fig. 4 linearity bound and the dynamical satellite | (a) 1 − K against ν for the 24 series of Entry 68 with the tanh² and sin² laws; (b) the formation-law collapse I_n(t̃) = sin²(πα\|J_n\|t̃) | (a) Entry 68; `e68_nu_collapse.py run stats fit2 fig` → `figures/paper/e68_nu_collapse.png`. (b) Entries 1, 9; `poster/build.py` (poster `figures/poster/f1_collapse.png`, frozen; re-draw into `figures/paper/` from `explore/nb/poster_f1_points.npz`) | confirmed |
+| Fig. 4 linearity bound and the dynamical satellite | (a) 1 − K against ν for the 24 series of Entry 68 with the tanh² and sin² laws; (b) the formation-law collapse I_n(t̃) = sin²(πα\|J_n\|t̃) | (a) Entry 68; `e68_nu_collapse.py run stats fit2 fig` → `figures/paper/e68_nu_collapse.png`. (b) Entries 1, 9; `explore/nb/paper_figs.py fig4b` → `figures/paper/fig4b_formation_collapse.png` (from `explore/nb/poster_f1_points.npz`; poster frozen) | confirmed |
 
 Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degeneracy_S.png`,
 `e79_degeneracy_R.png` (degeneracy class and its R boundary); `figures/si400_harmonic.png`
@@ -143,7 +143,6 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
 ## 7. What is still missing before a first full draft
 
 - Isaac's decision P1 + P2 vs P1 alone (title, §4 and §5.2 depend on it).
-- Fig. 1a and Fig. 2 as files (data exist; no new computation needed to draw them).
-- Fig. 4b re-drawn from `poster_f1_points.npz` into `figures/paper/` (poster frozen).
+- (done, T2i) Fig. 1, Fig. 2, Fig. 4b are files in `figures/paper/` with captions in `CAPTIONS.md`.
 - The three unread 1990s/2001 papers for the novelty sentences of §3 and §6.
 - A transducer number for §5.2 (DotFiles#57).
