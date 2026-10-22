@@ -4300,3 +4300,67 @@ onto the dynamical satellite growth. The satellite's own amplitude ν is the rig
 and it orders the regimes — but the saturation function is not universal. The central claim is
 reworded accordingly: H is the correction, ν ≲ 0.1 is the guarantee, and the crossover is a region,
 not a line.
+
+---
+
+## 2026-10-22 — Entry 69: Sondhauss & Wark (2003) vs Entry 59, aligned term by term (re-review, no recomputation)
+
+**Why.** BACKLOG T1a asks for the Entry 64 comparison with normalisation, boundary conditions,
+absorption, observable and approximations made explicit, and for one paragraph on what Entry 59
+adds. Nothing is recomputed: the numbers are those of `explore/nb/e64_sw.log` (2026-10-14) and
+Entry 65. **PDF not re-checked tonight**: `SondhaussWark2003_ActaA59_7.pdf` is untracked and absent
+from this worktree and from the shared checkout, so the S&W column is Entry 64's transcription of
+their eq. 25–31 and p. 12. Entry 64 §5 already found that the two-field S&W form with the Bloch
+wave restored equals the Entry 59 Riccati form to 6e-16, so the only modelling difference between
+the two first-order theories is the depth ansatz; the rest of the table is bookkeeping that a
+reader must have to compare numbers.
+
+**1. Alignment table.**
+
+| item | Sondhauss & Wark 2003 (transcription, Entry 64) | Entry 59 / 64 (this work) | matched in e64 by |
+|---|---|---|---|
+| equation | time-dependent TT (their eq. 14/16), two-beam eq. 26 with explicit ∂/∂t terms | quasi-static two-beam TT, frozen φ per instant (DESIGN.md) | dropping their 2Ω/ω terms; justified by β = 2πfL/c ≤ 1.2e-2 (Entry 62). Their eq. 36 Doppler shift of the satellite is not represented |
+| geometry, polarisation | InSb 111 symmetric Bragg, 10 µm, one polarisation | symmetric Bragg, σ, dimensionless α, κ; slab with back face hidden by e^−κ (κ = 6) or semi-infinite (Entry 66) | same dimensionless equation; InSb numbers not reproduced |
+| drive | one plane-wave phonon, δχ_h cos(Ωt − q·r); δχ from the displacement to first order | φ = S cos(W(t − ζ)), single mode, phase only (no δχ_h change of magnitude) | identical at first order in u: δχ_h = iχ_h h·u |
+| perturbation order | first: δχ·δD dropped (eq. 25) | first: Riccati linearised about R0 | same |
+| depth ansatz of the perturbation | constant d_h^±, constant perfect-crystal (D_0^p, D_h^p) (eq. 28–29) | δ(ζ) = (A_s, B_s) e^{(λ − isW)ζ} with λ = cR0, i.e. the actual semi-infinite Bloch wave, and the surface boundary condition | the **only** physical difference; kinds SW / SWn / Bloch in `e64_sw_compare.py` |
+| normalisation of the satellite amplitude | δD_h itself (eq. 31) | δR = B − R0 A, normalised to the incident wave | kind SWn removes this difference; it changes little (Entry 64 table) |
+| boundary conditions | implicit (plane waves, no surface condition on δ) | D0(0) = 1, R(1) = 0 → Darwin–Prins root R0 for the unperturbed state; δ(1) = 0 | Bloch kind |
+| absorption | complex χ_0 inside the deviation parameter β_h (implicit); χ_h'' present in their χ_h | normal absorption κ only (η → η + iκ); χ_ih **not** included | κ = 6, α = 8 (g = 0.12); not matched to InSb |
+| deviation variable | β_h (eq. 27, 33) | η (Darwin half-width 2πα); x = η/2πα | linear map |
+| observable | rocking curve of \|D_h^p + δD_h\|² at an instant (Fig. 3–4); no Fourier analysis | F(η) = mean_t[(\|R\|² − ⟨\|R\|²⟩) e^{iWt}] = conj(R0) δR_− + R0 conj(δR_+); H = \|F\| / kinematic law | F built from each kind's δR_± |
+| stated validity | satellite ≤ 10 % of main peak; sidebands farther than ~1 rocking width from the main peak; crystal thick enough for no Laue fringes (p. 12) | ν = \|δR_lin\| ≲ 0.1 (Entry 68 bound; ≲ 0.2 for ≲ 4 %, Entry 65); any η including the plateau; slab fringes suppressed by κ | their 10 % rule ≈ ν² ≲ 0.1 × I_main, the same kind of condition |
+| verification | numerics for InSb, Fig. 3 (agreement), Fig. 4 (failure near the main peak) | full TT, nt × 2 and n_z × 2 convergence 1.4e-5 of max \|F\| | `e64_sw.log` |
+| intended use | least-squares fit of a sum of mode solutions to a rocking curve → mode occupations (one paragraph, no demonstration) | divide the measured Fourier weight by H(ω; g) → strain spectrum; linearity bound ν | — |
+
+**2. The matched numbers (from `e64_sw.log`, α = 8, κ = 6, S = 0.02), ratio |F_pred|/|F_TT| at the satellite η = ±W:**
+
+| W / Darwin half-width | 20 | 5 | 2 | 1 | 0.5 |
+|---|---|---|---|---|---|
+| SW (constant amplitudes, δD_h) | 1.022 | 1.220 | 1.687 | 3.014 | 8.45 |
+| SWn (constant amplitudes, normalised) | 1.021 | 1.207 | 1.567 | 1.673 | 12.96 |
+| Bloch = Entry 59 Riccati | 1.005 | 1.003 | 1.001 | 1.000 | 1.000 |
+| SW worst near the main peak, \|η\| < 1.5 w_D | 3.5 | 3.7 | 4.4 | 6.2 | 9.4 |
+
+The first-order theories agree with each other and with TT where S&W say theirs is safe (2 % at 20
+half-widths). Inside about five half-widths they part, and the difference is the depth ansatz
+alone: normalising (SWn) does not repair it.
+
+**3. What Entry 59 adds, in one paragraph.** The linearisation of the Takagi–Taupin equations
+about the perfect-crystal solution, the superposition of modes, and the idea of reading phonon
+content from the linear solution are Sondhauss & Wark's (2003) and are cited as such. Entry 59
+keeps the depth dependence of the perfect-crystal Bloch wave and the surface boundary condition in
+the perturbation, which S&W's constant-amplitude ansatz drops; that single change makes the
+first-order solution hold to 1 % at every detuning, including the Darwin plateau and the near-peak
+region where S&W's own Fig. 4 and our e64 table show factors of 3–13. On top of that, Entry 59
+changes the observable from a rocking curve at an instant to the time-Fourier component of the
+reflectivity, and writes its magnitude as the strain spectrum times a crystal transfer function
+H(ω/ω_D; κ/2πα) that depends on the crystal only: it collapses onto one curve in ω/ω_D for
+different packets, depends strongly on absorption, and is a factor 2 across 20–100 GHz for Si 400
+at 17.5 keV (Entry 65). Entry 68 adds the validity bound ν ≲ 0.1 for the estimator. None of this
+touches the S&W time-derivative terms (Doppler shift, polaritons), which are outside the
+quasi-static model.
+
+**4. Still unresolved.** Whether an earlier Bloch-wave first-order form exists in Chukhovskii &
+Förster 1995 or Wark & Lee 1999 (unread); anomalous absorption χ_ih; asymmetric geometry; the
+Doppler term of their eq. 36 at GHz (expected ~Ω/ω ~ 1e-8, negligible, not computed).
