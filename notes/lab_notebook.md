@@ -4678,3 +4678,32 @@ joined by one dimensionless criterion?**
 **What T1b leaves open.** B1's order-2 degeneracy breaking at larger S (Entry 72 iii); B2 for a
 long train at weak absorption (Entry 70 verdict); B3's windowed closed form (Entry 71 "Not done");
 B4's two unread Soviet papers.
+
+---
+
+## 2026-10-23 — Entry 75: the crystal factor as a closed form in the window length (T2a)
+
+**Why.** Entry 71 showed that H of Entry 65 is the infinite-window limit and gave a hand estimate
+for a 14 ns window (0.947 against TT 0.944). BACKLOG T2a: write that estimate as a closed form
+H(f; T_w), find the window where H is flat and the window where the Entry 65 factor 2 is back, and
+test the closed form against TT over the whole range. Script `explore/nb/e75_window_cf.py`.
+
+**Pre-registered rule (written before the run).** The closed form is the Entry 59/65 first-order
+form with each depth integral truncated at the window, i.e. 1/(Λ − isW) replaced by
+[1 − e^{(Λ − isW)T}]/(Λ − isW) (derivation in §1 below; it assumes a packet short against
+min(1/κ, x/π) and fully inside the window, the "CF-A" form; "CF-B" keeps the packet's Laplace
+transform and has no such assumption). Comparison: full semi-infinite TT (Entry 66 solver) at
+S/100 for the Entry 66 packet (87 GHz, 0.9 cycles), Si 400 at 17.48 keV and 8 keV, satellite
+frequencies 20–150 GHz, windows 0.14 ns to 300 ns. The weight is the Fourier component at |η| of
+|R(t)|² − |R0|² over [0, T_w] (static level subtracted, not the window mean, so that no leakage
+term enters either side; the difference from Entry 71's definition is reported, not used in the
+rule). Convergence checks: step 64 → 128 per cycle at one window, S/100 → S/1000 at one window;
+the analytic continuation of the unstrained Riccati past the packet is checked against the RK4
+integration at 14 ns (must reproduce Entry 71's 0.944 to 0.1 %).
+- If |W_TT / W_CF-A − 1| > 1 % at any (f, T_w) with the convergence checks passing, CF-A is
+  **rejected** as the closed form in T_w; CF-B is then tested with the same rule. If both fail,
+  "no closed form in T_w at first order" is recorded and the rule is not changed.
+- The flat window and the revival window are read from the closed form only after it passes:
+  T_flat = largest window with H(20)/H(100) ≥ 0.9, T_half where the ratio is halfway
+  (0.756 at 17.48 keV), T_90 where it is within 10 % of the steady 0.511. Each is confirmed by one
+  TT point.
