@@ -5012,3 +5012,29 @@ in S, X0h ratio 0.93 taken as the same at both energies (0.925 / 0.931). The Bor
 absorption depth is 1/(κ − κ_h) ≈ 14/κ ≈ 2.6 mm at 17.48 keV, so inside the Darwin width (x ≲ 1)
 the window condition of Entry 75 changes qualitatively; not computed, outside the phonon band.
 Laue χ_h'' remains excluded (DESIGN.md item 4).
+
+---
+
+## 2026-10-23 — Entry 78: the ±η side asymmetry of the crystal factor, tested with a packet in full TT (T2f)
+
+**Why.** Entry 77 §3 found, in the closed form, that with χ_ih the two detunings ±η of one phonon
+frequency get different crystal factors, and that their ratio A(f; T_w) = W(−η)/W(+η) cancels the
+strain spectrum, so it reads χ_ih/χ_i0 directly. That was a single-mode, steady statement from the
+closed form. Here it is tested with the Entry 66 packet in full TT at finite windows. BACKLOG T2f
+(added by tratt with this evidence). Script `explore/nb/e78_side_asymmetry.py`.
+
+**Pre-registered rule (written before the run).** Full semi-infinite TT (Entry 75 machinery, RK4
+through the packet, analytic continuation after it) with complex coupling c = iπ + κ_h/2
+(α = 1 in Λ units), Si 400 at 17.48 keV (g = 0.0100) and 8 keV (g = 0.0458), Entry 66 packet
+(87 GHz, 0.9 cycles) at S/100 (peak strain 1e-5), f = 20, 30, 40, 60, 87, 100, 150 GHz at both
+detunings η = ±W, windows 1.4, 14, 52, 300 ns. A_TT = W_TT(−η)/W_TT(+η); A_CF from CF-B of
+Entry 75 with the same complex c.
+1. κ_h = 0: A_TT = 1 within 0.5 % at every (f, T_w) (the form is even in η when c is imaginary;
+   the residual is the second-order term of Entry 75 §2). If not, the TT setup is suspect and
+   nothing below is claimed.
+2. κ_h = 0.93 κ: if |A_TT/A_CF − 1| > 0.5 % at any (f, T_w), **the prediction is rejected** as
+   stated (the closed form would be missing something the packet sees). Otherwise the asymmetry
+   is confirmed in the model, with its size as computed.
+3. Size, reported not judged: A − 1 in the 20–150 GHz band at each window, and dA/d(κ_h/κ) from
+   the closed form (the sensitivity with which the pair reads χ_ih/χ_i0).
+Convergence: S/100 → S/1000 at 14 ns (A must move by less than 0.2 %), step 64 → 128 per cycle.
