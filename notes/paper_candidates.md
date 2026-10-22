@@ -124,6 +124,15 @@ Risks, in order:
    (b) the formation law of the poster, I_n(t̃) = sin²(πα|J_n|t̃) collapse (`figures/poster/f1_collapse.png`
    re-drawn in `figures/paper/`), as the ν ~ 1 limit.
 
+## 3b. Directive questions, where each stands (T1b)
+
+| question | entry | result |
+|---|---|---|
+| B1 two fields, same steady state, different transient | 72 | confirmed, and bounded: order n reads the t_tr running mean of J_n(S A); zero-mean perturbations are degenerate at that order (TT 9e-7); order-2 breaking 1e-3 at S = 1.5, not claimed |
+| B2 signal maximum vs Fisher maximum | 70 | negative for a ps packet at one angle (3 GHz apart, crystal moves nothing); open for long trains |
+| B3 one dimensionless criterion | 68, 71 | falsified in strong form; ν ≲ 0.1 bound and the window condition survive |
+| B4 features when independent satellites fail | 45, 51, 52, 54 (no rerun) | Bessel-zero resurrection, confirmed in model, unobservable (4e-5), "possibly new" pending Entin / Iolin–Entin |
+
 ## 4. Open decisions for Isaac
 
 - Paper = P1 (transfer function) with P2 inside, or P2 (formation) as the first paper? P1 is

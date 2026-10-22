@@ -4630,3 +4630,51 @@ delivering ≥ 50 W/cm² peak at 1–2 GHz would make the limit column feasible.
 limit at 1 GHz and need a transducer number; the S ≤ 2 regime (where the first satellite forms with
 τ_1 = 17–30 ns) is where the proposal should be written. The ramp regime, not the step, is the
 observable one.
+
+---
+
+## 2026-10-23 — Entry 74: directive questions B3 and B4, classified against what exists (no new computation)
+
+**Why.** BACKLOG T1b asks for one entry per directive question with the result classed as
+confirmed / in prior art / unverified. B1 is Entry 72, B2 is Entry 70. B3 and B4 are answered by
+entries already in this notebook; per the handoff rule (do not re-open what is already tested, do
+not recompute), this entry only states the classification and the evidence. Nothing was run.
+
+**B3. Can the short-pulse linear transfer function and the long-train dynamical satellite growth be
+joined by one dimensionless criterion?**
+- Answer: **no in the strong form, yes as a bound.** Entry 68 (pre-registered, 24 series, 192 points):
+  at fixed first-order satellite amplitude ν the saturation of the Fourier weight spreads by ×14
+  (ν = 0.1) to ×3.7 (ν = 0.8) across packet length, absorption and satellite position; a two-term
+  law a S² + b ν² does not capture it either. What holds is 1 − K ≤ 1.8 ν² for ν ≤ 0.3 on the scanned
+  domain, so ν ≲ 0.1 is a sufficient linearity condition.
+- Entry 71 adds the other half of the junction: the crystal factor H of the linear regime needs the
+  window to exceed max(1/κ, x/π) Λ/v_s, which is tens of ns, i.e. the long-train regime. So the two
+  regimes meet in one experiment (GHz train, tens of ns), not in one number.
+- Class: the ν bound is **confirmed** (within the model, Bragg, one packet family); the universal
+  crossover is **falsified**; the window condition is **confirmed** (Entry 71, hand check 0.3 %).
+- Prior art: none found for the bound or the window condition; S&W 2003 give a 10 % satellite rule
+  of the same kind (Entry 64 §1).
+
+**B4. When the independent-satellite approximation fails, are there unexpected quantitative features?**
+- Answer: **yes, one, already found and bounded: Bessel-zero resurrection.** Entries 45, 51, 52, 54:
+  a satellite dark at a Bessel zero reappears through a third-order path with
+  g_eff = πα (R/2)² C_n(S), population P = sin²[πα (R/2)² C_n(S)] ∝ α⁶/α_ac⁴ (confirmed without a fit
+  to < 1 % for R ≤ 0.1, four decades; renormalised zero S* − j = (R/2)² C_n/J'_{−n} to < 0.3 % at
+  R ≤ 0.67), derived independently as an effective 2×2 Hamiltonian (Entry 52) and verified against the
+  exact Floquet solver (Entry 42).
+- Also bounded: the approximation holds (population error < 5 %) for R ≤ 0.34–0.57 depending on S
+  (Entry 54); the first corrections are inter-order coherence and forward-beam sidebands at O(R²)
+  (Entry 51); no order-space localisation (Entry 51 C); the R ~ 1 main-line dark window is the known
+  X-ray/neutron–acoustic resonance (Entin; Iolin–Entin; Raitman; Entry 50).
+- Observability (Entry 54): the resurrected order dominates the phase-averaged exit intensity only
+  within |α_ac − integer| ≲ 1.3e-3 and an angular half-width w/q ≲ 2e-4; its share of the
+  |η − q| < 0.45 q integral is 4.4e-5. **Theory, not an experiment proposal** (Entry 51 E).
+- Class: **confirmed within the model** (full TT + Floquet, no fit); **"possibly new" only** until
+  Entin (JETP Lett. 26, 392 (1977); JETP 77, 214 (1979)) and Iolin–Entin (JETP 85, 1692 (1983)) are
+  read in full (Entry 50, poster_outline "Before printing"). Not re-opened tonight.
+- For the paper: P4 in `notes/paper_candidates.md` (N 4, E 1, G 2): a future project, not the thesis
+  paper.
+
+**What T1b leaves open.** B1's order-2 degeneracy breaking at larger S (Entry 72 iii); B2 for a
+long train at weak absorption (Entry 70 verdict); B3's windowed closed form (Entry 71 "Not done");
+B4's two unread Soviet papers.
