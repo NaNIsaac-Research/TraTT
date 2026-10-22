@@ -5388,3 +5388,31 @@ Fourier-weight estimator was not found stated in the papers read (T2d unread lis
 **Scope.** Gaussian spread in detuning (angle and bandwidth combined into one σ), first order,
 Si 400 / 17.48 keV, f = 20–100 GHz, symmetric Bragg, σ polarisation. The energy-to-detuning
 conversion uses tan θ_B (symmetric Bragg). Not run at 8 keV (same formula, g = 0.046).
+
+---
+
+## 2026-10-23 — Entry 83: the beam condition at GHz-train frequencies, x ≈ 1–10 (T2m)
+
+**Why.** Entry 82 was run at x = f/f_D = 27–137 (the 20–100 GHz band), where the ringing
+half-width κ + π/x is 0.01–0.02 Darwin half-widths. For a GHz train x ≈ 1–5 and the extinction
+term π/x dominates: in Darwin half-widths the width is g + 1/(2x) = 0.15–0.5, so an ordinary
+high-resolution beam may already resolve it. BACKLOG T2m. Script `explore/nb/e83_lowx.py`
+(reuses the Entry 82 functions).
+
+**Pre-registered rule (BACKLOG T2m, written before the run).** Si 400 at 17.48 keV (g = 0.0100)
+and 8 keV (g = 0.0458), symmetric Bragg, Entry 66 packet at S/1000 (its spectrum at 0.5–8 GHz is
+finite and cancels in the ratio), x = 1, 2, 5, 10 (f = x f_D: 0.73–7.3 GHz at 17.48 keV, 0.52–5.2
+GHz at 8 keV), windows 52 and 300 ns, Gaussian beam spread σ = 0.03, 0.1, 0.2, 0.3, 0.5, 1, 2
+Darwin half-widths. For each (E, x, T_w) the table gives H_conv/H_single and the largest σ at
+which |H_conv/H_single − 1| ≤ 5 % (linear interpolation between scanned σ), in Darwin half-widths,
+µrad and meV.
+- If that σ_max at x = 1–5 exceeds ordinary beamline values (a few µrad in angle, a few meV to
+  tens of meV in energy with a high-resolution monochromator; ID28/HERIX-class), **"the GHz train
+  is measurable with an ordinary beam"** and the E scores of P2 and P1+P2 are re-evaluated;
+  otherwise "single-ray condition stands".
+- Expectation written beforehand: a Gaussian average of a Lorentzian of half-width w leaves the
+  centre value within 5 % for σ ≲ 0.25 w, so σ_max ≈ 0.25 (g + 1/(2x)) half-widths: 0.13 (x = 1),
+  0.07 (x = 2), 0.03 (x = 5) at 17.48 keV, i.e. 0.4, 0.2, 0.1 µrad; at 8 keV 1.2, 0.6, 0.4 µrad and
+  the corresponding meV. If this holds the relaxation is real but to ~µrad, not to "ordinary".
+- Convergence: δ-grid halving at one (E, x, σ, T_w) must change W_conv by < 0.2 %; TT vs closed
+  form convolution must agree to 1 % (else the Entry 82 setup fails at low x and nothing is claimed).
