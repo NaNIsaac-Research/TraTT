@@ -4893,3 +4893,46 @@ mechanism).
 sinusoidal zero-mean wobble of 5–10 % in J_n, orders 1 and 2, η exactly at nq. Bragg not run
 (Entry 30: tanh² reading is exact at resonance, so the same degeneracy is expected). Windows where
 the wobble is only partly inside [t − 1, t] are not degenerate and are not claimed to be.
+
+---
+
+## 2026-10-23 — Entry 77: anomalous absorption χ_ih in the Bragg solver, and its effect on H (T2c)
+
+**Why.** Entries 59, 65, 75 use normal absorption only (η → η + iκ). The closed form H(x, g) has
+one crystal parameter, g = κ/2πα = χ_i0/|χ_rh|. For Si 400, X0h (Entry 20, `e20_units_x0h.py`)
+gives χ_ih/χ_i0 = 0.925 at 8 keV and 0.931 at 17.48 keV, so the two Bloch modes have very different
+absorption (Borrmann) and the question is whether H needs χ_ih as a second parameter at
+κ/2πα ≈ 0.01. BACKLOG T2c. Script `explore/nb/e77_chi_ih.py`; src change in `tratt.core.solve_bragg`
+(new keyword `kappa_h`), tests in `tests/test_core.py`.
+
+**Model.** For a centrosymmetric crystal χ_h = χ_hbar = χ_rh + iχ_ih, so both couplings become
+one complex number: c = iπα → iπα + κ_h/2 with κ_h = 2πα χ_ih/|χ_rh| (same units as κ; κ_h/κ =
+χ_ih/χ_i0). The linearisation of Entries 59/75 goes through unchanged with complex c, so the
+"extended closed form" is the same formula evaluated with complex c (R0 from c R0² + iη_c R0 + c = 0,
+Λ = iη_c + 2cR0). Sign: with the plus sign the semi-infinite static reflectivity is higher at η < 0,
+which is the Borrmann (low-absorption) edge; in the usual convention η ∝ θ − θ_B that is the
+low-angle side, where the standing-wave antinodes sit between the planes. The physical statement
+is convention-free: the side with the higher static reflectivity is the low-absorption side, and
+H is reported on both sides.
+
+**Pre-registered rule (written before the run).**
+1. Src: `solve_bragg(..., kappa_h=0)` reproduces the present results bit for bit at kappa_h = 0
+   (existing tests unchanged, plus an explicit equality test). New tests: the thick absorbing slab
+   with kappa_h > 0 reaches the root |R| < 1 of c R² + i(η + iκ) R + c = 0 with complex c to 1e-5;
+   the static reflectivity at η = −πα exceeds that at +πα for kappa_h > 0 and the two are equal at
+   kappa_h = 0; |R|² ≤ 1 with modulation. The full test suite runs after the change ([HEAVY],
+   approved by boss, BelowNormal).
+2. TT check of the extended closed form: single mode at (g, x) = (0.0100, 3 / 10 / 30 / 100) with
+   κ_h = 0.93 κ, as in `e65_si400.py tt`, both signs of η. Must agree to 1 %, else the extension is
+   wrong and the src change is suspect (the rule is on the physics, not on this check).
+3. Physics: H(f) from the extended closed form with κ_h = 0.93 κ against κ_h = 0, Si 400 at
+   17.48 keV (g = 0.0100) and 8 keV (g = 0.0458), f = 5–300 GHz, both signs of η; steady and at the
+   windows 14 ns and 52 ns (CF-B of Entry 75 with complex c). **If max over 20–150 GHz of
+   |H(κ_h)/H(0) − 1| exceeds 1 % at g = 0.0100 (either sign), the closed form needs χ_ih as a second
+   parameter**; otherwise one parameter suffices for Si 400 and the anomalous term is a stated
+   ≤ 1 % correction. The band is the Chalise et al. band (Entry 57); the number is reported
+   outside it too.
+4. Expectation written down beforehand (kinematic estimate): −2cR0 ≈ iπ/x + κ_h/x, so the real part
+   of κ − 2cR0 changes by (κ_h/κ)/x, i.e. ~3 % at 20 GHz and ~0.7 % at 100 GHz at 17.48 keV, with
+   opposite signs on the two sides; the effect on H is that times κ²/(κ² + (π/x)²). This puts the
+   answer near the 1 % threshold; the rule is not adjusted for it.
