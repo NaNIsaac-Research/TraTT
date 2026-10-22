@@ -13,7 +13,8 @@ H(ω; κ/2πα) between the strain spectrum and the time-Fourier weight of the r
 inside the Darwin width where the Sondhauss–Wark (2003) plane-wave form fails (Entries 59, 64, 65).
 When the amplitude is not small the satellite forms dynamically with extinction length
 Λ_P/|J_n(S)|, which is the poster's formation law (Entries 1, 9). The first-order amplitude ν is a
-sufficient linearity criterion: ν ≲ 0.1 keeps the weight linear to 2 % (Entry 68).
+sufficient linearity criterion: ν ≲ 0.1 keeps the weight linear to 2 % (Entry 68) on the scanned
+domain (Bragg, x ∈ {2, 5} outside the Darwin width, one packet family, weight at the spectral peak).
 
 Where each part stands:
 
@@ -23,7 +24,7 @@ Where each part stands:
 | kinematic heterodyne weighting W ∝ \|r0\| \|ε̂\|/ω | probably known in kind | Shayduk 2013 names the oscillation (Entry 60); not seen written as a transfer function |
 | closed form H, Bloch-wave ansatz, valid inside the Darwin width | confirmed | TT to 1 % at κ/2πα = 0.12 incl. plateau; 0.5 % at 0.010 and 0.046 out to x = 100 (Entries 59, 64, 65) |
 | S&W eq. 29 fails within ~1 Darwin width (factor 3–8) | confirmed, in our variables | Entry 64 §5 |
-| H is a factor-2 bias for Si 400 at 17.5 keV over 20–100 GHz | confirmed **only for a window ≫ 20 ns (long train)**; wrong for the 140 ps Chalise packet, where H is flat to 4 % | Entries 65, 71 |
+| H is a factor-2 bias for Si 400 at 17.5 keV over 20–100 GHz | confirmed **only for a long window** (the strain must travel ≥ max(1/κ, x/π) Λ during the window, whether it is a train or a ps packet followed for ≥ 50 ns); wrong for the 140 ps Chalise window, where H is flat to 4 % | Entries 65, 71, 75 |
 | anomalous absorption χ_ih as a second crystal parameter | **rule fired** (Entry 77): with the X0h ratio χ_ih/χ_i0 = 0.93, H changes by 0.9 % (steady), 1.0 % (14 ns), 1.4 % (52 ns window) in the 20–150 GHz band at 17.48 keV and 3–4 % at 8 keV, opposite in sign on the two sides of the Bragg peak; the extended closed form (complex c) is TT-verified to 0.3 %; the ±η side asymmetry H(−η)/H(+η) = 1.02–1.09 is strain-spectrum-free and predicted, not verified | Entry 77 |
 | closed form in the window length, H(f; T_w) | confirmed: the packet-kept first-order form (CF-B) matches TT to 0.3 % at every window 0.14–300 ns, two energies, three packet lengths; the packet-free short form (CF-A, Entry 71's hand estimate) is **rejected** below ~100 τ by the pre-registered 1 % rule | Entry 75 |
 | signal maximum ≠ Fisher-information maximum (directive B2) | **negative** for a ps packet at one angle: amplitude maxima coincide (3 GHz apart), crystal moves nothing | Entry 70 |
@@ -42,8 +43,11 @@ So the claim is kept only in the form above (H is the correction, ν the guarant
 measurement window, and so the strained depth, to exceed both the absorption depth 1/κ and the
 extinction-phase depth x/π (tens of ns at Si 400): for the 140 ps packet of Chalise et al. the
 crystal factor is flat to 4 % and the Entry 65 "factor 2" does not apply. H is therefore a property
-of **long-train** measurements — the poster's own GHz bulk-wave geometry — which puts the transfer
-function and the formation law into the same experiment.
+of **long-window** measurements: the strain must travel ≥ max(1/κ, x/π) Λ during the window. A GHz
+train read over tens of ns satisfies it, and so does a picosecond packet followed over a delay scan
+of ≥ 50 ns (Entry 75: the 10 ps packet shows the full steady factor, H(20)/H(100) = 0.558 at
+52 ns). The window condition therefore does not by itself tie P1 to the poster's apparatus
+(physics cross-review, PR #16); sharing one apparatus remains an option, see below.
 
 Reproduce:
 
@@ -61,7 +65,8 @@ uv run python explore/nb/e77_chi_ih.py run ttp ttm conv60 fig    # chi_ih: secon
 pre-registered 1 % rule fired at the 52 ns window (1.4 %), so H carries two tabulated crystal
 parameters, g and χ_ih/χ_i0, no fit. New in kind: the two detuning sides of one phonon frequency
 get different H (1.6–1.9 % at 17.48 keV, 3–9 % at 8 keV), a ratio in which the strain spectrum
-cancels; it is the model's own test of the second parameter, not yet pre-registered as a claim.
+cancels; the measured weight ratio also carries |R0(−η)|/|R0(+η)|, so the pair needs the static
+rocking curve as a second measurement (physics cross-review). Pre-registered as Entry 78 (T2f).
 
 **Third step, Day 2 (Entry 75).** H(f; T_w) is now one closed form from the picosecond packet to the
 steady train: at Si 400 / 17.48 keV the crystal factor is flat to 1 % up to 5 ns, departs by 10 % at
@@ -96,37 +101,49 @@ G = chance of completion before graduation (2027 spring).
 | P4 | Overlap regime: Bessel-zero resurrection with a computable third-order coupling and shifted zero (Entries 45, 51, 52, 54) | 4 | 1 | 3 | 2 | Possibly new, but observability is 4e-5 of the window integral (Entry 54) and Entin / Iolin–Entin are unread; theory only |
 | P5 | Second-order strain terms in the Chalise spectrum (Entry 66) | 2 | 3 | 5 | 5 | Known in kind (Bessel expansion); its value is the size at their strain and the fluence-series criterion; a section of P1 |
 
-**What carries the paper now (after Entry 71).** Not the Chalise correction. It is the pair
-"closed-form H valid inside the Darwin width + its window condition" together with the formation law,
-and both need the same measurement: a GHz bulk acoustic train read over a window longer than
-max(1/κ, x/π) Λ/v_s. For Si 400 at 17.48 keV that is ≥ 22 ns (train ≥ 185 µm long); for the
-poster's Si 440 Laue geometry t_tr is already 28–51 ns (Entry 20), so the same transducer drive
-serves both. Entry 75 gives the window numbers for Si 400 / 17.48 keV, 20 GHz against 100 GHz:
+**What carries the paper now (after Entries 71, 75).** Not the Chalise correction. It is the pair
+"closed-form H valid inside the Darwin width + its window condition" together with the formation law.
+H needs a long window: the strain travels ≥ max(1/κ, x/π) Λ during it, which for Si 400 at 17.48 keV
+is ≥ 22 ns (strain travels ≥ 185 µm during the window). Two measurements satisfy it: (i) a
+picosecond-ultrasonics packet with a delay scan of ≥ 50 ns, i.e. P1 has an experiment of its own
+that needs no GHz train; (ii) a GHz bulk train read over tens of ns, the poster's Si 440 Laue
+geometry (t_tr 28–51 ns, Entry 20), where the formation law of P2 appears in the same data. The
+"one apparatus" of the recommendation is option (ii), a choice, not a consequence of the window
+condition (physics cross-review). Entry 75 gives the window numbers for Si 400 / 17.48 keV, 20 GHz against 100 GHz:
 the crystal factor is flat (within 10 %) up to **T_flat = 19.6 ns**, halfway to the steady Entry 65
 value at **T_half = 32.8 ns**, and within 10 % of it from **T_90 = 52.2 ns** on (TT-confirmed to
 0.002). A measurement with a 20–50 ns window sits on the steep part, where H depends on the window
 length itself; the experiment should therefore read either ≤ 5 ns (H flat to 1 %, kinematic
 estimator) or ≥ 52 ns (steady H), and in between must know its window to 10 %. Without such a measurement the paper is theory with a proposal. T1c (Entry 73): on
-the elastic and TT side S ≤ 2 at 1–2 GHz is feasible (strain ≤ 6.6e-5, second harmonic ≤ 10 %),
-S = 3–6 is at the limit (harmonics 10–30 % at 2 GHz); the drive is 6–100 W/cm² peak acoustic
-intensity for S = 1–2, pulsed, and no verified GHz bulk-transducer number is in hand. A real
+the elastic and TT side S ≤ 6 at 1–2 GHz is clean (strain ≤ 2e-4; the second-harmonic column of
+Entry 73 was withdrawn in Entry 80: a pure shear wave along ⟨100⟩ has no collinear second harmonic,
+and the non-phase-matched longitudinal 2ω component is ≤ 1e-3 and invisible to the in-plane
+reflection); the drive is 6–100 W/cm² peak acoustic intensity for S = 1–2 and 230–900 W/cm² for
+S = 3–6, pulsed, and no verified GHz bulk-transducer number is in hand. A real
 transducer rings up over 0.2–4 t_tr, so the observable regime is the ramp map (Entry 67), not the
 step collapse.
 
 **Recommendation.** One paper, P1 + P2, around one experiment: a GHz bulk shear wave entering a
 Si crystal, read over tens of ns. Its linear regime (ν ≲ 0.1) is the H-corrected spectrometer, its
-dynamical regime is the formation law, and the window condition of Entry 71 is what makes both
-appear in the same measurement. P5 is a subsection on picosecond packets (where only K matters).
+dynamical regime is the formation law, and a long window lets both appear in the same measurement.
+The alternative, P1 alone on a ps packet with a ≥ 50 ns delay scan (an existing kind of measurement,
+Reis 2001 and the Chalise geometry), is open and closer to current practice; it leaves P2 as the
+poster's own paper. P5 is a subsection on picosecond packets (where only K matters).
 P3 stays inside P2. P4 is a future project (Entry 51 F). Before tonight the recommendation was P1
 alone on the strength of the Chalise correction; Entry 71 removed that strength.
 
 Risks, in order:
 - No long-window (tens of ns) time-resolved satellite measurement exists yet; the paper's
-  experimental relevance is a proposal. Entry 73: elastic side fine for S ≤ 2 (limit at 3–6); the
-  transducer peak power (6–100 W/cm² at 1–2 GHz for S = 1–2) is unverified.
+  experimental relevance is a proposal. Entries 73, 80: elastic side clean for all S ≤ 6; the
+  transducer peak power (6–100 W/cm² at 1–2 GHz for S = 1–2, up to 900 W/cm² at S = 6) is unverified.
 - A referee calls the Bloch-wave correction of S&W routine. Answer: the paper rests on the window
   condition, the bound and the formation law, not on the linearisation.
 - An earlier first-order Bloch-wave form exists (Chukhovskii & Förster, Wark & Lee). Not read.
+- Papers a referee will name (physics cross-review, bibliography unchecked, on the T2d list): for
+  P1 Reis et al. PRL 86, 3072 (2001), Trigo et al. Nat. Phys. 9, 790 (2013), Schick et al.
+  udkm1Dsim CPC 185, 651 (2014); for P2 Bucksbaum & Merlin SSC (1999), Zolotoyabko and Iolin on
+  acoustically modulated crystals, Grigoriev et al. APL (2006). The novelty sentences are to be
+  written against these.
 - Chalise's energy and normalisation are unknown; the comparison stays "same sign, same order".
 - Model limits: symmetric, σ, normal + anomalous absorption in Bragg (Entry 77; Laue still lossless), plane wave, no instrument resolution.
 

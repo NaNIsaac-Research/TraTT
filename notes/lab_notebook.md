@@ -4567,12 +4567,12 @@ surface normal polarised along h (Entry 6), L = 3 Λ_P.
 density w = ½ c44 ε²; intensity I = v_T w; second-harmonic strain after L, ε2/ε = (β/2) k ε L;
 R = Λ_ac/Λ_P (independent-satellite rule R ≤ 0.1, Entries 19, 54); β_qs = 2πfL/c (Entry 62).
 
-**1. Displacement vs strain.** u0 does not depend on frequency: u0 = 7.6 pm × S for Si 440 (d = 96 pm),
+**1. Displacement vs strain.** [Corrected in Entry 80: u0 = 15.3 pm × S; the 7.6 is the S = 0.5 row.] u0 does not depend on frequency: u0 = 7.6 pm × S for Si 440 (d = 96 pm),
 so S = 6 is u0 = 92 pm = 0.95 d — the atoms move by almost one lattice spacing of the reflection. The
 strain is what elasticity sees, and it is small: ε = 1.6e-5 × S at 1 GHz, 3.3e-5 × S at 2 GHz (Si 440).
 A large S is a large absolute displacement at a small strain, because Λ_ac/d ≈ 6×10⁴.
 
-**2. Table, Si 440 (same for 17.48 and 30 keV except R, β_qs and ε2/ε, which scale with L).**
+**2. Table, Si 440 (same for 17.48 and 30 keV except R, β_qs and ε2/ε, which scale with L).** [The ε2/ε columns and the harmonic parts of the verdict are withdrawn for this shear geometry in Entry 80.]
 
 | f GHz | S | u0 pm | u0/d | ε | σ MPa | w J/m³ | I W/cm² | ε2/ε (17.48 keV, L = 163 µm) | ε2/ε (30 keV, L = 296 µm) |
 |---|---|---|---|---|---|---|---|---|---|
@@ -5041,6 +5041,12 @@ Convergence: S/100 → S/1000 at 14 ns (A must move by less than 0.2 %), step 64
 Amendment before the run (boss, BACKLOG T2f wording): the cancellation of the strain spectrum in A is
 checked with two packet spectra, 0.9 and 10 cycles, which must give the same A to 0.5 % at κ_h = 0.93 κ.
 Run order: Entry 79 (T2e) was run before this entry, on boss's instruction.
+Amendment 2 before the run (physics cross-review, PR #16): the measured weight ratio W(−η)/W(+η)
+also carries |R0(−η)|/|R0(+η)|, which is not 1 with χ_ih. A is therefore defined on W/|R0| (that is
+H(−η)/H(+η), what the closed form predicts), and the raw weight ratio W(−η)/W(+η) is reported next
+to it with the static |R0| ratio, so that the proposal states that the pair needs the static rocking
+curve as a second measurement, or an estimator built on W/|R0|.
+
 
 ---
 
@@ -5061,3 +5067,89 @@ R = α/α_ac = 0.0125, 0.05, 0.1, 0.2, 0.3; constructions (a) S = 3 (J_1 rising)
 - **R-independent** if no R ≤ 0.3 exceeds it.
 - Reported, not judged: the power law of the residual against R over the five points, and whether
   the residual stays below the law's own error (Entry 76 found 20–50× below at R = 0.0125).
+
+**Results** (`uv run python explore/nb/e79_degeneracy_R.py run fig`, 33 s; data
+`e79_degeneracy_R.json`, log `e79_degeneracy_R.log`, figure `figures/paper/e79_degeneracy_R.png`).
+Degenerate-order TT difference in the window (same Θ_1), threshold 5e-4 (the measured convergence
+error never exceeded 3e-5):
+
+| R (α) | (a) S = 3: ΔI_1 | law error | (a2) S = 6: ΔI_1 | law error | other order ΔI_2, TT vs law |
+|---|---|---|---|---|---|
+| 0.0125 (0.125) | 5.4e-6 | 7.8e-5 | 4.8e-6 | 9.0e-5 | agree to 4e-6 |
+| 0.05 (0.5) | 6.1e-5 | 6.1e-4 | 7.7e-5 | 1.1e-3 | 7e-5 |
+| 0.1 (1) | 2.4e-4 | 2.3e-3 | 2.9e-4 | 2.1e-3 | 3e-4 |
+| 0.2 (2) | **3.3e-3** | 3.2e-2 | **1.5e-3** | 1.7e-2 | 1e-3 / 2e-3 |
+| 0.3 (3) | 1.8e-2 | 1.1e-1 | 4.2e-3 | 8.0e-2 | 5e-3 / 1e-2 |
+
+- **Verdict under the rule: an R-boundary exists, at R = 0.2** for both constructions (R = 0.1
+  holds, 0.2 breaks; the boundary lies between). The law's own error at R = 0.2 is 1.7–3.2e-2,
+  ten times the degeneracy residual.
+- Power law of the residual: R^2.5 (a) and R^2.1 (a2) over the five points. At every R the
+  residual stays below the law's absolute error by a factor 7–25: the running-mean reading remains
+  more exact than the law that predicts it, all the way to R = 0.3 where the law is off by 10 %.
+- Not a function of R alone: at R = 0.0125 the residual is 5.4e-6 here (α = 0.125, α_ac = 10) and
+  1.3e-6 in Entry 76 (α = 0.5, α_ac = 40, same S = 3 construction). The scan fixes α_ac; a scan at
+  fixed α would separate the two dependences (not run).
+
+**Answer to T2e.** The variable that erodes the class is the coupling ratio, as the Entry 76
+exploratory row suggested; the class is exact to 5e-4 for R ≤ 0.1, which is the same bound as the
+independent-satellite rule of Entry 19, and fails by 3e-3 at R = 0.2 while the law is already off
+by 3 %. For the paper: "order n reads the running mean of J_n(S A)" is stated with R ≤ 0.1, the
+regime of every poster case. Class: **confirmed with a boundary** (within the model, Laue, two
+constructions, orders 1–2).
+
+**Scope.** Laue, no absorption, α_ac = 10, α = 0.125–3 (Pendellösung crossings at α ≥ 1 do not
+change the picture), S = 3 and 6, one wobble shape.
+
+---
+
+## 2026-10-23 — Entry 80: corrections to Entry 73 after the physics cross-review (u0 text; harmonic column withdrawn for the shear geometry)
+
+**Why.** Physics cross-review of PR #16 (cb86016) raised two points on Entry 73: (a) §1 says
+u0 = 7.6 pm × S; (b) the second-harmonic column uses the cumulative growth law of a longitudinal
+wave, while the geometry is a pure shear wave along ⟨100⟩. Both recomputed here; nothing run but
+constants (`uv run python -c`, numbers below).
+
+**(a) u0.** u0 = S d/2π with d(440) = 96.01 pm gives **15.28 pm × S**. The table of Entry 73 §2
+already has 15.3 (S = 1) and 91.7 (S = 6); only the sentence in §1 was wrong (it quoted the S = 0.5
+row). Verdicts unchanged, since they rest on the strain.
+
+**(b) Harmonics of a pure shear wave along a 4-fold axis.** Accepted, with the following reasons.
+- Symmetry: propagation along x = [100], polarisation u_y (h = 440 in plane). A rotation by π
+  about x is a symmetry of the cubic crystal and maps u_y → −u_y, so the elastic energy is even in
+  the shear strain ε_xy and contains no term cubic in it: there is no collinear, cumulative second
+  harmonic of the shear wave itself. This is the standard result for shear waves in isotropic solids
+  (Zarembo & Krasil'nikov, Sov. Phys. Usp. 13, 778 (1971): shear waves generate no second
+  harmonic, the first self-distortion is the third harmonic; to be re-read before citing) and the
+  argument above extends it to the ⟨100⟩ axis of a cubic crystal.
+- The quadratic term ε_xy² ε_xx drives a longitudinal component at 2ω. It is not phase-matched:
+  Δk = 2ω(1/v_T − 1/v_L) gives a coherence length π/Δk = 4.8 µm at 1 GHz and 2.4 µm at 2 GHz,
+  against L = 163–296 µm, so that component is bounded by (β/4) k ε L_coh ≈ 1e-4 (S = 1) to 1.3e-3
+  (S = 6, 2 GHz) of the shear strain. It is also longitudinal, u ∥ x, so h·u = 0 for the in-plane
+  440 reflection: it does not enter the X-ray phase at all.
+- The cubic self-distortion is of order γ (kL) ε²: (kL) ε² = 4.7e-8 (S = 1, 1 GHz) to 2.5e-5
+  (S = 6, 2 GHz, 30 keV), so even with a third-order constant of order 10 the third harmonic is
+  ≤ 3e-4 of the fundamental.
+- The convention point: for a longitudinal wave the strain second harmonic from
+  u2 = β k² u1² x/8 is ε2/ε1 = (β/4) k ε1 x, not (β/2); the (β/2) form is the fluid-acoustics one
+  (p2/p1 = β ε k x/2 with ε the acoustic Mach number). Entry 73's column was therefore 2× too large
+  even for the longitudinal case under the solid-state β. Moot here.
+
+**Consequence: the ε2/ε column of Entry 73 §2 is withdrawn for the shear geometry**, and the
+verdict table becomes
+
+| S | 1 GHz | 2 GHz |
+|---|---|---|
+| 0.5–2 | **feasible**: ε ≤ 3.3e-5, I ≤ 25 W/cm² (pulsed) | **feasible**: ε ≤ 6.6e-5, I ≤ 100 W/cm² |
+| 3–4 | **limit by drive power only**: I = 56–100 W/cm² | **limit by drive power only**: I = 230–400 W/cm² |
+| 6 | **limit by drive power only**: I = 230 W/cm² | **limit by drive power only**: I = 900 W/cm²; the wave itself stays sinusoidal to ≤ 1e-3 |
+
+Entry 73 §3's "above ~10 % the Entry 35 harmonic non-ideality applies" no longer has a case in this
+geometry; Entry 35 stays relevant for longitudinal geometries (Si 400 Bragg with a longitudinal
+wave, the Chalise geometry), where the (β/4) form applies. Linear elasticity, attenuation, R and
+β_qs statements of Entry 73 §4 stand. Drive power is now the only limit on the elastic side for all
+S ≤ 6 at 1–2 GHz; it remains unverified (DotFiles#57).
+
+**Scope.** Symmetry argument plus order estimates, not a nonlinear elastic computation; third-order
+constants of Si not looked up (γ ~ 10 assumed as an order); isotropic-solid literature statement to
+be re-read. The Zarembo & Krasil'nikov reference is from memory and goes on the T2d list.
