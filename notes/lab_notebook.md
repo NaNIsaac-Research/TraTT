@@ -5323,3 +5323,68 @@ and Fourier frequency ω = |η|.
 - Reported either way: H_conv(f; T_w, σ)/H_conv(100 GHz) against T_w for each σ, with T_flat and
   T_90 where they still exist, and H_conv/H_single at 300 ns against the expectation κ√(π/2)/σ.
 - Convergence: δ-grid spacing halved at one (f, σ, T_w) must change W_conv by < 0.2 %.
+
+**Run.** `uv run python explore/nb/e82_divergence.py run fig` (13 s); data `e82_divergence.json`, log
+`e82_divergence.log`, figure `figures/paper/e82_divergence.png`. The first run used a δ grid with
+du = 0.1 and failed the pre-registered 0.2 % grid-convergence check by 2 %; the grid was refined to
+du = 0.025 (527–711 rays per σ), where halving again changes W_conv by 6e-7 relative. Rule unchanged.
+
+**Results.** H_conv = beam-averaged Fourier weight at ω = |η| over the kinematic law of the nominal
+ray (so σ = 0 is the Entry 75 H); Si 400, 17.48 keV, S/1000.
+
+| σ (Darwin half-widths) | T_w | H_conv at 20 / 40 / 100 GHz | H(20)/H(100) | TT / closed form |
+|---|---|---|---|---|
+| 0 | 1.4 / 14 / 52 / 300 ns | 0.062 / 0.448 / 0.497 / 0.480 (20 GHz) | 1.001 / 0.946 / 0.561 / 0.511 | 0.9998–1.0001 |
+| 0.3 | 1.4 / 14 / 52 / 300 ns | 0.0386 / 0.0406 / 0.0406 / 0.0406 (all f equal to 0.3 %) | 0.999 / 0.998 / 0.998 / 0.998 | 0.9998–1.0001 |
+| 1 | all | 0.0124 (all f, all T_w) | 1.000–1.004 | 0.9998–1.0001 |
+| 3 | all | 0.0042 (all f, all T_w) | 1.007–1.013 | 0.9998–1.0001 |
+
+- **Rule: closed form retained.** Worst |W_TT,conv/W_CF,conv − 1| = 0.021 % over all (f, σ, T_w):
+  the convolution of CF-B over the beam is the closed form with divergence; no extra term.
+- **The expectation (i) holds.** For σ ≥ 0.3 Darwin half-widths H_conv is flat in f to 0.3 %
+  (σ = 0.3) and 1.3 % (σ = 3) at every window, and its value is κ√(π/2)/σ_η: 0.0418 / 0.0125 /
+  0.0042 expected against 0.0407 / 0.0124 / 0.0042 found (3 % low at σ = 0.3, where σ_η = 1.9 is
+  only 14× the Lorentzian half-width κ + π/x = 0.13 at 20 GHz).
+- **Expectation (ii) holds.** The window law disappears: H_conv is the same at 1.4 ns and at
+  300 ns (0.0386 vs 0.0406 at σ = 0.3, the 5 % difference being the 1/σ_η = 0.53 Λ/v = 0.7 ns
+  coherence time against the 1.4 ns window). The effective window is min(T_w, 1/σ_η, 1/κ); for
+  σ_η ≫ κ it is 1/σ_η, independent of f, which is why the crystal factor's shape is gone.
+- **Scale (iii).** κ in Darwin half-widths is g: at 17.48 keV the ringing half-width is 0.032 µrad
+  (Darwin half-width 3.18 µrad) or 2.1 meV; at 8 keV 0.38 µrad (of 8.33 µrad) or 4.4 meV. T_flat
+  and T_90 exist only for σ ≲ 0.01–0.05 Darwin half-widths; at σ ≥ 0.3 the ratio never departs
+  from 1 by 10 % and the boundaries do not exist.
+
+**What this means (the honest consequence for the paper).**
+1. The steady crystal factor of Entry 65, the window law and design numbers of Entry 75, the χ_ih
+   correction of Entry 77 and the ±η asymmetry of Entry 78 are properties of a *single ray*: they
+   are observable only with an incident beam whose spread in detuning is below the ringing width
+   κ + π/x, i.e. collimated to ≲ 0.03–0.4 µrad **and** monochromatic to ≲ 2–4 meV at Si 400, or
+   with an angle-resolving detector of that resolution (which removes the angular part only; the
+   energy part needs the monochromator). Ordinary beams (µrad, 1e-4 bandwidth = 35 µrad-equivalent
+   at a Si 111 monochromator) are 100–1000× too broad.
+2. For any such ordinary beam the measured Fourier weight is the **kinematic law times a flat
+   factor** κ√(π/2)/σ_η: the ringing of different rays dephases after 1/σ_η (0.7 ns at
+   σ = 0.3 half-widths, 0.07 ns at 3), so the estimator "divide by |R0|/ω" is correct as it stands,
+   with no crystal factor, as soon as the window exceeds the coherence time. This is the practical
+   content for the ps-ultrasonics community: Chalise et al.'s flat crystal factor (Entry 71) is
+   not only because their window is short but because any real beam makes it flat.
+3. The flat factor κ√(π/2)/σ_η is itself a measurable: it reads the beam's spread in detuning
+   (angle plus bandwidth) in units of the absorption, i.e. the coherence time of the ringing.
+   Not pre-registered; stated, not claimed.
+4. P1's experimental weight falls: the long-window measurement is an inelastic-scattering-grade
+   (meV) experiment, not a routine delay scan. The ±η asymmetry (Entry 78) is odd in δ and averages
+   to zero over a symmetric beam, so it also needs the single-ray resolution. The formation law
+   (P2) is a different observable (satellite centre intensity at η = q with S ~ 1) and is not
+   addressed here; its divergence sensitivity is the satellite's own rocking width (α|J_n| Darwin
+   half-widths), a separate question.
+5. Entries 65, 71, 75, 77, 78, 81 stand as single-ray results; what changes is their experimental
+   reach, which `notes/paper_candidates.md` and `notes/experiment_proposal.md` now state.
+
+**Class.** Confirmed (full TT beam average vs closed form 0.02 %; the flat limit from the first-
+order lineshape). Prior art: that a crystal's impulse response rings at the detuning and dephases
+over the beam's angular acceptance is textbook dynamical diffraction; its consequence for the
+Fourier-weight estimator was not found stated in the papers read (T2d unread list applies).
+
+**Scope.** Gaussian spread in detuning (angle and bandwidth combined into one σ), first order,
+Si 400 / 17.48 keV, f = 20–100 GHz, symmetric Bragg, σ polarisation. The energy-to-detuning
+conversion uses tan θ_B (symmetric Bragg). Not run at 8 keV (same formula, g = 0.046).

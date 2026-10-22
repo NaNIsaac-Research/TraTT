@@ -28,6 +28,7 @@ Where each part stands:
 | anomalous absorption χ_ih as a second crystal parameter | **rule fired** (Entry 77): with the X0h ratio χ_ih/χ_i0 = 0.93, H changes by 0.9 % (steady), 1.0 % (14 ns), 1.4 % (52 ns window) in the 20–150 GHz band at 17.48 keV and 3–4 % at 8 keV, opposite in sign on the two sides of the Bragg peak; the extended closed form (complex c) is TT-verified to 0.3 %; the ±η side asymmetry H(−η)/H(+η) = 1.02–1.09 is strain-spectrum-free and predicted, not verified | Entry 77 |
 | ±η side asymmetry of H with χ_ih, strain-spectrum-free, reads χ_ih/χ_i0 | **confirmed in the model** (Entry 78, pre-registered): full TT vs closed form to 0.06 % at two energies, four windows; two packets agree to 0.1 %; size 1.9 % (17.48 keV, steady), 2.8 % (52 ns), 6.2 % (8 keV, 20 GHz); sensitivity dA/d(χ_ih/χ_i0) = 0.02–0.07; \|R0\| ratio 1.0000 in the phonon band (x ≥ 27), to be carried near the Darwin width | Entry 78 |
 | asymmetric Bragg geometry | **confirmed, no solver change** (Entry 81): exact rescaling of the symmetric solver (TT to 1e-16), one geometry factor g → g(√b + 1/√b)/2 with b = γ_0/\|γ_h\|, window numbers scale with Λ_asym (T_90 52 → 33 ns at b = 4, 16.5 ns at b = 10 for Si 400 / 17.48 keV) | Entry 81 |
+| beam divergence / bandwidth: the crystal factor is a single-ray property | **confirmed** (Entry 82): a beam spread in detuning σ ≥ 0.3 Darwin half-widths makes H_conv flat in f at every window, equal to κ√(π/2)/σ_η (TT beam average vs closed form 0.02 %); H(f), the window law, χ_ih and the ±η asymmetry need σ ≲ κ + π/x: 0.03–0.4 µrad and 2–4 meV at Si 400 | Entry 82 |
 | closed form in the window length, H(f; T_w) | confirmed: the packet-kept first-order form (CF-B) matches TT to 0.3 % at every window 0.14–300 ns, two energies, three packet lengths; the packet-free short form (CF-A, Entry 71's hand estimate) is **rejected** below ~100 τ by the pre-registered 1 % rule | Entry 75 |
 | signal maximum ≠ Fisher-information maximum (directive B2) | **negative** for a ps packet at one angle: amplitude maxima coincide (3 GHz apart), crystal moves nothing | Entry 70 |
 | formation law I_n = sin²/tanh²(πα\|J_n\|t̃), no fit | confirmed | Entries 1, 9, 19, 24; tests |
@@ -100,14 +101,19 @@ G = chance of completion before graduation (2027 spring).
 
 | # | candidate | N | E | D | G | one-line reason |
 |---|---|---|---|---|---|---|
-| P1 | Transfer function H(f; T_w; g, χ_ih/χ_i0) + window condition + linearity bound for reading phonon spectra from time-resolved Bragg reflectivity (Entries 59, 64–66, 68, 71, 75, 77) | 3 | 3 | 4 | 5 | Closed form done and TT-verified; after Entry 71 it corrects long-train (GHz, tens of ns) measurements, not the 140 ps Chalise packet, so its experimental weight rests on the same apparatus as P2; novelty bounded by S&W 2003 and two unread 1990s papers |
+| P1 | Transfer function H(f; T_w; g, χ_ih/χ_i0) + window condition + linearity bound for reading phonon spectra from time-resolved Bragg reflectivity (Entries 59, 64–66, 68, 71, 75, 77, 82) | 3 | 2 | 4 | 5 | Closed form done and TT-verified; after Entry 82 the f-dependence of H is a single-ray property seen only with meV / sub-µrad resolution, while any ordinary beam measures the kinematic law times a flat κ√(π/2)/σ_η (E lowered 3 → 2); the practical message for ps ultrasonics is "no crystal factor, divide by |R0|/ω"; novelty bounded by S&W 2003 and two unread 1990s papers |
 | P2 | Temporal Pendellösung of satellites behind a travelling front: formation law, Bessel ladder, period-ratio calibration of S (Entries 1, 9, 13, 19, 24) | 3 | 3 | 5 | 4 | Clean, no-fit, both geometries, tests; prior art DeCamp 2001 (n = 0 pulse) + Polikarpov 1987/88 (static extinction length) makes it "extension to every order"; needs a bulk GHz shear-wave experiment that does not yet exist; the elastic side is clean for all S ≤ 6 at 1–2 GHz (Entry 80), so the only open feasibility item is the transducer peak power, which keeps E at 3 until a number is in hand |
 | P3 | Path memory: Θ_n law, transient-only satellite, overshoot map (Entries 28, 30, 34, 67) | 2 | 3 | 5 | 4 | Robust in the model, but at α = 0.5 it is kinematic diffraction from a graded grating and the slow-ramp limit is the Bessel ladder (Entry 34); best as a section of P2, not a paper |
 | P4 | Overlap regime: Bessel-zero resurrection with a computable third-order coupling and shifted zero (Entries 45, 51, 52, 54) | 4 | 1 | 3 | 2 | Possibly new, but observability is 4e-5 of the window integral (Entry 54) and Entin / Iolin–Entin are unread; theory only |
 | P5 | Second-order strain terms in the Chalise spectrum (Entry 66) | 2 | 3 | 5 | 5 | Known in kind (Bessel expansion); its value is the size at their strain and the fluence-series criterion; a section of P1 |
 
-**What carries the paper now (after Entries 71, 75).** Not the Chalise correction. It is the pair
-"closed-form H valid inside the Darwin width + its window condition" together with the formation law.
+**What carries the paper now (after Entries 71, 75, 82).** Not the Chalise correction. It is the pair
+"closed-form H valid inside the Darwin width + its window condition" together with the formation law,
+**with the Entry 82 caveat**: the shape of H and its window law belong to a single ray; a beam whose
+spread in detuning exceeds the ringing width κ + π/x (0.03 µrad / 2 meV at 17.48 keV, 0.4 µrad / 4 meV
+at 8 keV) measures a flat crystal factor κ√(π/2)/σ_η at every window, i.e. the kinematic law. The
+long-window H is therefore an inelastic-scattering-grade measurement, and the ps-ultrasonics message
+is the simpler one (no crystal factor for an ordinary beam).
 H needs a long window: the strain travels ≥ max(1/κ, x/π) Λ during it, which for Si 400 at 17.48 keV
 is ≥ 22 ns (strain travels ≥ 185 µm during the window). Two measurements satisfy it: (i) a
 picosecond-ultrasonics packet with a delay scan of ≥ 50 ns, i.e. P1 has an experiment of its own
@@ -128,7 +134,11 @@ S = 3–6, pulsed, and no verified GHz bulk-transducer number is in hand. A real
 transducer rings up over 0.2–4 t_tr, so the observable regime is the ramp map (Entry 67), not the
 step collapse.
 
-**Recommendation.** One paper, P1 + P2, around one experiment: a GHz bulk shear wave entering a
+**Recommendation (revised after Entry 82).** The theory paper P1 + P2 stands, but its experimental
+section must lead with the beam condition: for σ ≫ κ the estimator needs no crystal factor and the
+window law is unobservable; the single-ray H, χ_ih and the ±η asymmetry are proposed as a meV /
+sub-µrad measurement (or an angle-resolving detector plus a meV monochromator). Previous text, kept
+for the single-ray case: one paper, P1 + P2, around one experiment: a GHz bulk shear wave entering a
 Si crystal, read over tens of ns. Its linear regime (ν ≲ 0.1) is the H-corrected spectrometer, its
 dynamical regime is the formation law, and a long window lets both appear in the same measurement.
 The alternative, P1 alone on a ps packet with a ≥ 50 ns delay scan (an existing kind of measurement,
@@ -138,6 +148,8 @@ P3 stays inside P2. P4 is a future project (Entry 51 F). Before tonight the reco
 alone on the strength of the Chalise correction; Entry 71 removed that strength.
 
 Risks, in order:
+- Entry 82: the long-window crystal factor needs σ ≲ 0.03–0.4 µrad and ≲ 2–4 meV; with an ordinary
+  beam the measurable crystal factor is flat. This is now the first risk.
 - No long-window (tens of ns) time-resolved satellite measurement exists yet; the paper's
   experimental relevance is a proposal. Entries 73, 80: elastic side clean for all S ≤ 6; the
   transducer peak power (6–100 W/cm² at 1–2 GHz for S = 1–2, up to 900 W/cm² at S = 6) is unverified.

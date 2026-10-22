@@ -46,7 +46,10 @@ scan.)
    integration by parts, CF-B); 3.2 where the plane-wave form fails (Entry 64 vs Sondhauss–Wark);
    3.3 the window condition and the three design numbers T_flat, T_half, T_90 (Entry 75); 3.4 the
    crystal parameters g and χ_ih/χ_i0 (Entries 65, 77); 3.5 the ±η side asymmetry (Entries 77,
-   78); 3.6 the linearity bound ν ≲ 0.1 on its domain (Entry 68).
+   78); 3.6 the linearity bound ν ≲ 0.1 on its domain (Entry 68); 3.7 **the beam condition**: the crystal
+   factor is a single-ray property; a beam spread σ_η ≫ κ + π/x dephases the ringing after 1/σ_η and
+   leaves the kinematic law times a flat κ√(π/2)/σ_η at every window (Entry 82, TT beam average vs
+   closed form 0.02 %), so H(f; T_w), χ_ih and the ±η asymmetry need ≲ 0.03–0.4 µrad and ≲ 2–4 meV.
 4. Beyond first order: formation law I_n = sin²/tanh²(πα|J_n|t̃) (Entries 1, 9, 19, 24), the
    running-mean reading Θ_n and its degeneracy class with the R ≤ 0.1 boundary (Entries 28–34,
    72, 76, 79), the ramp regime and overshoot map (Entry 67). [P2; a section of P1 if P1 alone.]
@@ -58,7 +61,9 @@ scan.)
    33 ns, b = 10 to 16.5 ns, at the cost of the γ_0/|γ_h| intensity factor and a 2.7° exit
    (Entry 81); 5.4 reading χ_ih/χ_i0 from a ±ω satellite pair, sensitivity 0.02 (17.5 keV) to
    0.07 (8 keV) per unit, |R0| ratio 1.0000 in the phonon band (Entry 78); 5.5 what to measure
-   and to what precision (window known to 10 % on the steep part, Entry 75).
+   and to what precision (window known to 10 % on the steep part, Entry 75); 5.6 **beam resolution**:
+   without meV / sub-µrad resolution the measurement is the flat-factor regime of Entry 82 and the
+   estimator needs no crystal factor; with it, 5.1–5.4 apply. State which regime the proposal is in.
 6. Discussion: relation to Sondhauss–Wark 2003 (Entries 64, 69), to Chalise et al. (Entries 57,
    66, 71: their 140 ps window sees no crystal factor; the second-order term K = 0.65–0.88
    remains), what is not new (Bessel ladder, Pendellösung), what is (window condition, two-
@@ -93,6 +98,7 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
 | 6 | χ_ih is a second tabulated crystal parameter: 0.9 % steady, 1.4 % at 52 ns, 3–4 % at 8 keV | confirmed; pre-registered rule fired | Entry 77 |
 | 7 | ±η side asymmetry, strain-spectrum-free, reads χ_ih/χ_i0 (1.9–6.2 %, sensitivity 0.02–0.07) | predicted and confirmed in the model (TT 0.06 %); unobserved | Entries 77, 78 |
 | 8 | Asymmetric Bragg = exact rescaling; one geometry factor g(√b + 1/√b)/2; T_90 shortens with Λ_asym | confirmed (TT 1e-16) | Entry 81 |
+| 8b | Beam divergence / bandwidth: for σ_η ≫ κ + π/x the crystal factor is flat, κ√(π/2)/σ_η, at every window; H(f; T_w) and the ±η asymmetry are single-ray (meV, sub-µrad) observables | confirmed (TT beam average vs closed form 0.02 %) | Entry 82 |
 | 9 | ν ≲ 0.1 ⇒ weight linear to 2 % (1 − K ≤ 1.8 ν²) | confirmed as a bound on the scanned domain (Bragg, x ∈ {2, 5}, one packet family, weight at the peak) | Entry 68 |
 | 10 | "One dimensionless criterion joins the regimes" | falsified (spread ×10–14 at fixed ν) | Entry 68 |
 | 11 | Formation law I_n = sin²/tanh²(πα\|J_n\|t̃), Bessel ladder, period-ratio calibration | confirmed; prior art in kind DeCamp 2001 (n = 0), Polikarpov 1987/88 (static) | Entries 1, 9, 13, 19, 24; tests |
@@ -114,6 +120,8 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
   deep, so the crystal must be that thick.
 - Inside the Darwin width (x ≲ a few) the |R0| asymmetry (10 %) must be carried in the ±η ratio;
   all phonon-band numbers are at x ≥ 27.
+- All single-ray results (H(f; T_w), χ_ih, ±η asymmetry, design numbers) hold for a beam spread in
+  detuning below κ + π/x; for an ordinary beam the crystal factor is flat (Entry 82).
 - The Chalise comparison is "same sign, same order": their energy, window and normalisation are
   not published in the form needed.
 - Experimental: no long-window satellite measurement exists; transducer peak power unverified;

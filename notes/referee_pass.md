@@ -68,9 +68,14 @@ divergence integrates over the Darwin width.
   the part of the model a referee distrusts most.
 
 **What is missing, smallest first.**
-1. A one-line convolution of H(f) with a Gaussian in η of width 1, 3, 10 Darwin half-widths
-   (closed form only, seconds) to put a number on "a few per cent" above. Not run; it is the
-   cheapest missing item in this document.
+1. (done, Entry 82, T2k) The convolution was run, in full TT and closed form, and the referee is
+   right in a stronger way than "a few per cent": the ringing linewidth is κ + π/x, 0.01–0.05 Darwin
+   half-widths, so any beam spread of 0.3 half-widths or more dephases the ringing after 1/σ_η and
+   makes the crystal factor flat, κ√(π/2)/σ_η, at every window. The answer in the paper: (a) for an
+   ordinary beam the estimator needs no crystal factor, which is the practical result; (b) H(f; T_w),
+   χ_ih and the ±η asymmetry are single-ray observables proposed for a meV / sub-µrad measurement.
+   The "slowly varying in the band" argument above is withdrawn: it assumed the ray's own H, not the
+   beam-averaged ringing.
 2. Debye–Waller change under drive: a coherent wave does not add a thermal factor; its effect on
    the main reflection is the J_0(S) of the Bessel ladder, which the model contains exactly (the
    formation law is the large-displacement regime, u0 = 15 pm × S). The thermal Debye–Waller
@@ -131,5 +136,5 @@ divergence integrates over the Darwin width.
 | objection | strongest answer in hand | smallest missing item |
 |---|---|---|
 | prior art | Entries 64, 69 (S&W fails at x ≲ 5), 75 (window law is not trivial), 77–78 (new parameter and observable) | read C&F 1995, W&L 1999 (T2d); one udkm1Dsim cross-check |
-| model limits | H slowly varying in the band; asymmetry odd in η survives averaging; ratios cancel the packet | convolve H with 1–10 half-width Gaussians (closed form, seconds) |
+| model limits | Entry 82: ordinary beam → flat crystal factor (no correction needed); single-ray H, χ_ih, ±η asymmetry need meV / sub-µrad resolution and are proposed as such | an 8 keV run of Entry 82 (same formula, g = 0.046); the satellite's own divergence sensitivity for P2 |
 | feasibility | Entries 73/80 (elastic clean), 75 (ps route), 81 (asymmetric cut), 78 (ratio at one delay) | transducer number (DotFiles#57); photon-count line; propose Si 400 at 8 keV first |
