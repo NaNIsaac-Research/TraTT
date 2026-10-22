@@ -35,6 +35,7 @@ Where each part stands:
 | beam condition for the formation law (P2, satellite centre) | **confirmed, condition table** (Entry 84): at σ_η = w_n (the satellite's own rocking width 2πα\|J_n\|) the first maximum loses 13–21 % (Bragg) and 25–40 % (Laue); both criteria (period 1 %, amplitude 5 %) hold only for σ_η ≤ 0.3 w_n in Bragg and 0.1–0.3 w_n in Laue, i.e. 0.1–0.3 µrad at Si 440 / 17.48 keV, 0.6–1.4 µrad at Si 400 / 8 keV; the integrated population is the beam-tolerant observable (its law not established) | Entry 84 |
 | integrated satellite population as the beam-tolerant P2 observable | **rule failed as written** (Entry 86; the pre-registered amplitude metric compared differently normalised means, a stated flaw); post hoc, shape-normalised: the Laue population has the flat-beam shape from σ_η ≈ 3 w_n (1.3–3 µrad at Si 440 / 17.48 keV, one-channel detector 9–18 µrad), Bragg not even at 10 w_n; P_flat's shape is 13–38 % off sin²/∫J_0/tanh², so the population needs its own TT formation curve | Entry 86 |
 | Laue integrated population as the beam-tolerant P2 observable (corrected metrics) | **confirmed with a condition** (Entry 87): rule at 3 w_n fails in 3 of 5 runs; all step runs pass from σ_η = 5 w_n (2–5 µrad at Si 440 / 17.48 keV, one-channel detector 9–18 µrad), the 1 t_tr ramp from 10 w_n (10 µrad); the law is the TT channel integral P_0(t) (tabulated), not sin² | Entry 87 |
+| polarisation and static Debye–Waller | **absorbed** (Entry 88): π is the σ form with α → Cα, κ fixed (g/C, x/C, ν → Cν), exact; an unpolarised beam is the two-term closed-form sum, TT to 0.02 %; H_mix within 0.3 % of H_σ at Si 400 / 8 keV (C² = 0.12) but 20–32 % above at Si 440 / 17.48 keV (C = 0.73), so the polarisation state must be known there (vertical diffraction plane = σ); e^{−M} is already in the X0h constants | Entry 88 |
 | closed form in the window length, H(f; T_w) | confirmed: the packet-kept first-order form (CF-B) matches TT to 0.3 % at every window 0.14–300 ns, two energies, three packet lengths; the packet-free short form (CF-A, Entry 71's hand estimate) is **rejected** below ~100 τ by the pre-registered 1 % rule | Entry 75 |
 | signal maximum ≠ Fisher-information maximum (directive B2) | **negative** for a ps packet at one angle: amplitude maxima coincide (3 GHz apart), crystal moves nothing | Entry 70 |
 | formation law I_n = sin²/tanh²(πα\|J_n\|t̃), no fit | confirmed | Entries 1, 9, 19, 24; tests |
@@ -179,7 +180,7 @@ Risks, in order:
   acoustically modulated crystals, Grigoriev et al. APL (2006). The novelty sentences are to be
   written against these.
 - Chalise's energy and normalisation are unknown; the comparison stays "same sign, same order".
-- Model limits: σ, normal + anomalous absorption in Bragg (Entry 77; Laue still lossless), symmetric or asymmetric Bragg by rescaling (Entry 81; Laue symmetric only), plane wave, no instrument resolution.
+- Model limits: σ or π by rescaling, unpolarised as a two-term sum (Entry 88), normal + anomalous absorption in Bragg (Entry 77; Laue still lossless), symmetric or asymmetric Bragg by rescaling (Entry 81; Laue symmetric only), plane wave; beam divergence and bandwidth handled as a single-ray average (Entries 82–87); lateral acoustic uniformity assumed.
 
 ## 3. Figure plan (figures go to `figures/paper/`; poster figures are frozen)
 

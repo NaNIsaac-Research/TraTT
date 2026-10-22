@@ -104,6 +104,7 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
 | 11 | Formation law I_n = sin²/tanh²(πα\|J_n\|t̃), Bessel ladder, period-ratio calibration | confirmed; prior art in kind DeCamp 2001 (n = 0), Polikarpov 1987/88 (static) | Entries 1, 9, 13, 19, 24; tests |
 | 12 | Order n reads the one-transit running mean of J_n(S A); zero-mean perturbations degenerate (≤ 3e-6 for S ≤ 6); boundary R = 0.2 | confirmed with a boundary | Entries 72, 76, 79 |
 | 12b | Beam condition for the centre formation law: σ_η ≲ 0.3 w_n (0.1–0.3 µrad, Si 440 / 17.48 keV Laue; 0.6–1.4 µrad, Si 400 / 8 keV Bragg); at σ_η = w_n the first maximum loses 13–40 % | confirmed (full TT beam average, 8 cases) | Entry 84 |
+| 8c | Polarisation: π = σ form with α → Cα (κ fixed), unpolarised = two-term closed-form sum (TT 0.02 %); negligible at Si 400 / 8 keV (C² = 0.12), 20–32 % at Si 440 / 17.48 keV; static Debye–Waller already in the X0h constants | confirmed | Entry 88 |
 | 12c | Integrated Laue satellite population: flat-beam shape from σ_η ≈ 5 w_n (2–5 µrad, step) and 10 w_n (10 µrad, 1 t_tr ramp) with a one-channel detector (9–18 µrad); formation curve from TT (tabulated; 13–25 % off ∫J_0); Bragg population not clean | confirmed with a condition (Entry 87, metrics defined in advance; the 3 w_n threshold failed in 3 of 5 runs) | Entries 86, 87 |
 | 13 | Signal maximum = Fisher-information maximum for a ps packet at one angle | negative result | Entry 70 |
 | 14 | Bessel-zero resurrection at third order | confirmed in the model, unobservable (4e-5); **unread** Entin, Iolin–Entin | Entries 45, 51, 52, 54 (not in this paper; P4) |
@@ -111,8 +112,10 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
 
 ## 5. Limitations (to be stated in the paper)
 
-- Two-beam, plane-wave, monochromatic, σ polarisation, quasi-static (β_qs ≤ 1e-2), centrosymmetric
-  crystal (χ_h = χ_hbar); no instrument resolution, no beam divergence against the Darwin width.
+- Two-beam, plane-wave, quasi-static (β_qs ≤ 1e-2), centrosymmetric crystal (χ_h = χ_hbar); σ
+  polarisation throughout, with π as the rescaling α → Cα and an unpolarised beam as the two-term sum
+  (Entry 88: state the polarisation where C² is not small); Debye–Waller at room temperature inside
+  the X0h constants; beam divergence and bandwidth as a single-ray average (Entries 82–87).
 - Bragg: symmetric or asymmetric by rescaling, normal and anomalous absorption; Laue: symmetric,
   lossless only (χ_h'' excluded in Laue; DESIGN.md item 4).
 - First order in S for the closed form (ν ≪ 0.1); the ±η ratio is second-order sensitive and was

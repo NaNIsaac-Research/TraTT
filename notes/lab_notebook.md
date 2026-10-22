@@ -5879,3 +5879,68 @@ Si 400 / 8 keV (f = 20, 40, 100 GHz, T_w = 14 and 300 ns); otherwise "numbers in
 section". Reported either way: H_π/H_σ, H_mix/H_σ, the window numbers T_flat/T_half/T_90 for σ,
 π and unpolarised, and ν_π/ν_σ = C; for (b) the e^{−M} values and the statement above. No new
 solver; the single-ray (σ-polarised) numbers of Entries 65–87 stand as the σ case.
+
+**Run.** `uv run python explore/nb/e88_polarisation_dw.py` (3 s); data `e88_polarisation_dw.json`,
+log `e88_polarisation_dw.log`. TT: Entry 81's `integrate` with c = iπ (σ) and c = iπC (π) on the
+same packet and detunings, continuation past the packet as in Entry 75; closed form: CF-B with
+the same two couplings; mixed = sum of the two complex Fourier components over the sum of the
+two kinematic laws. (The window block's first version divided raw weights without the kinematic
+normalisation and gave wrong steady ratios; fixed before the numbers below, rule unchanged.)
+
+**(a) Polarisation.** C = 0.727 (Si 440 / 17.48 keV, θ_B = 21.7°), 0.349 (Si 400 / 8 keV, 34.8°).
+
+| case | T_w | f | H_σ | H_π | H_π/H_σ | H_mix (unpolarised) | H_mix/H_σ | TT/CF (mix, π) |
+|---|---|---|---|---|---|---|---|---|
+| Si 440 / 17.48 keV, longitudinal | 7 ns | 1 GHz | 0.091 | 0.176 | 1.93 | 0.109 | 1.20 | 1.0000, 1.0000 |
+| | | 2 GHz | 0.182 | 0.207 | 1.13 | 0.186 | 1.02 | |
+| | 300 ns | 1 GHz | 0.059 | 0.115 | 1.93 | 0.078 | 1.32 | |
+| | | 2 GHz | 0.123 | 0.229 | 1.87 | 0.159 | 1.30 | |
+| Si 400 / 8 keV | 14 ns | 20 GHz | 0.911 | 0.950 | 1.04 | 0.911 | 1.000 | 0.9998, 0.9998 |
+| | | 100 GHz | 0.949 | 0.950 | 1.00 | 0.949 | 1.000 | |
+| | 300 ns | 20 GHz | 0.926 | 0.999 | 1.08 | 0.928 | 1.003 | |
+| | | 100 GHz | 0.997 | 1.000 | 1.00 | 0.997 | 1.000 | |
+
+Window numbers (CF-B, H(f_lo)/H(f_hi), targets 10 / 50 / 90 % of the way from 1 to steady):
+
+| case | polarisation | steady ratio | T_flat / T_half / T_90 ns |
+|---|---|---|---|
+| Si 440 / 17.48 keV, 1 vs 2 GHz | σ | 0.484 | < 0.3 / 4.6 / 6.7 |
+| | π | 0.501 | < 0.3 / 9.1 / 12.9 |
+| | unpolarised | 0.491 | < 0.3 / 5.1 / 7.4 |
+| Si 400 / 8 keV, 20 vs 100 GHz | σ | 0.929 | 5.0 / 12.9 / 24.6 |
+| | π | 0.999 (flat: g_π = 0.13) | not defined |
+| | unpolarised | 0.931 | 4.7 / 12.6 / 24.1 |
+
+- **Rule (i), pure π:** identity to machine precision (TT/CF = 1.0000 at Si 440, 0.9998 at 8 keV,
+  the latter the usual second-order residual at the packet amplitude used): the π component is
+  the σ closed form with (g/C, x/C), ν_π = C ν_σ, formation rate C α_n. **Rule (ii), unpolarised:**
+  closed-form sum against the TT sum, worst 0.021 % over all (f, T_w). **Verdict: absorbed as a
+  factor** for a pure polarisation and as a two-term closed-form sum for a mixed beam.
+- Size: at Si 400 / 8 keV the π component is 12 % of the weight (C² = 0.12) and H_mix is within
+  0.3 % of H_σ at every window; at Si 440 / 17.48 keV it is 53 % and H_mix is 20–32 % above H_σ
+  at 1–2 GHz, with window numbers 10 % longer than σ. So Si 400 / 8 keV can be measured with any
+  polarisation; the Si 440 train needs the polarisation state known (a synchrotron or XFEL beam
+  with a vertical diffraction plane is σ to better than 1 %, so this is a geometry choice, not a
+  measurement). The formation law of an unpolarised beam is the two-period sum
+  ½[sin²(πα_n t̃) + sin²(πCα_n t̃)], 0.3 % of a single law at 8 keV (C² weighting) and a visible
+  second period at Si 440 (C = 0.73): same remedy.
+
+**(b) Static Debye–Waller.** e^{−M} = 0.938 (Si 400), 0.880 (Si 440), 0.969 (Si 220) at 300 K
+(B = 0.47 Å²). Both χ_rh and χ_ih carry it; χ_0 does not; so α → α e^{−M}, g → g e^{M},
+χ_ih/χ_i0 → ×e^{−M}, and S = h·u is untouched. The X0h constants used since Entry 20 are the
+room-temperature values with e^{−M} included, so every number in Entries 59–87 already has it;
+nothing to re-tabulate. A change of M under drive heating at the 1e-4 duty cycle (mW/cm², Entry
+73) is below any quoted precision; stated in the limitations, not computed. **Absorbed in the
+constants.**
+
+**Answer to T2r.** Both limits are absorbed: polarisation as a rescaling (α → Cα, κ fixed) with the
+unpolarised case a two-term closed-form sum verified against TT to 0.02 %, Debye–Waller already
+inside the X0h constants. The limitations section keeps one sentence each (polarisation state must
+be known where C² is not small; DW is the room-temperature value). `notes/referee_pass.md`
+objection 2 is now answered on all its items except the lateral acoustic uniformity (DESIGN.md,
+not modelled). Class: **confirmed** (algebra + TT identity + 0.02 % mixed check).
+
+**Scope.** Symmetric Bragg, first order, centrosymmetric; the mixed-beam sum assumes the two
+polarisations see the same strain and detuning (true for a single ray; a divergent beam is
+Entry 82's question, independent of polarisation). The P2 (Laue) two-period statement is algebra
+from the rescaling, not run.

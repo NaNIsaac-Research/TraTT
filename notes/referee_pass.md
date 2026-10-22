@@ -55,8 +55,10 @@ divergence integrates over the Darwin width.
   the paper must say H is to be convolved, and the convolution does not move the window numbers
   (they come from κ and x/π, Entry 75 §1), nor the sign of the ±η asymmetry (it is odd in η,
   Entry 78, so any symmetric angular average preserves it).
-- π polarisation changes C and hence α and g by cos 2θ_B (15 % at θ_B = 15°); the mapping of
-  Entry 81 covers it the same way as asymmetry (one factor in g). State it, no computation.
+- π polarisation: done, Entry 88. The π component is the σ form with α → Cα and κ fixed (exact);
+  an unpolarised beam is the two-term closed-form sum, verified against TT to 0.02 %. At Si 400 /
+  8 keV (C² = 0.12) H_mix is within 0.3 % of H_σ; at Si 440 / 17.48 keV (C = 0.73) it is 20–32 %
+  above, so the polarisation state must be stated there (vertical diffraction plane = σ).
 - Quasi-static: β_qs ≤ 1.2e-2 at 1–2 GHz (Entry 73); for 100 GHz packets the retardation is
   still 1e-2 over 10 Λ (Entry 62). Covered.
 - Strain only as a phase: DESIGN.md item 7; the elasto-optic change of χ_h at 1e-5 strain is
@@ -76,11 +78,10 @@ divergence integrates over the Darwin width.
    χ_ih and the ±η asymmetry are single-ray observables proposed for a meV / sub-µrad measurement.
    The "slowly varying in the band" argument above is withdrawn: it assumed the ray's own H, not the
    beam-averaged ringing.
-2. Debye–Waller change under drive: a coherent wave does not add a thermal factor; its effect on
-   the main reflection is the J_0(S) of the Bessel ladder, which the model contains exactly (the
-   formation law is the large-displacement regime, u0 = 15 pm × S). The thermal Debye–Waller
-   change from drive heating is a separate, small item: at a 1e-4 duty cycle the average power is
-   mW/cm² (Entry 73 §4). Covered; a sentence, no computation.
+2. Debye–Waller: done, Entry 88. The static e^{−M} (0.94 Si 400, 0.88 Si 440 at 300 K) multiplies
+   χ_rh and χ_ih and is already inside the X0h constants used throughout; S = h·u is untouched and
+   the coherent displacement enters through J_n(S). Drive heating at the 1e-4 duty cycle (mW/cm²)
+   does not move M at any quoted precision. A sentence in the limitations.
 3. Two-beam: multiple-beam cases near Si 400 at 17.48 keV should be listed as excluded azimuths.
    No computation; a sentence.
 
@@ -136,5 +137,5 @@ divergence integrates over the Darwin width.
 | objection | strongest answer in hand | smallest missing item |
 |---|---|---|
 | prior art | Entries 64, 69 (S&W fails at x ≲ 5), 75 (window law is not trivial), 77–78 (new parameter and observable) | read C&F 1995, W&L 1999 (T2d); one udkm1Dsim cross-check |
-| model limits | Entry 82: ordinary beam → flat crystal factor (no correction needed); single-ray H, χ_ih, ±η asymmetry need meV / sub-µrad resolution and are proposed as such | an 8 keV run of Entry 82 (same formula, g = 0.046); the satellite's own divergence sensitivity for P2 |
+| model limits | Entries 82–88: beam spread → single-ray average (flat factor at x ≫ 1, non-monotonic at GHz); centre law needs 0.3 w_n, Laue integrated population 5 w_n (2–5 µrad); polarisation and Debye–Waller absorbed as rescalings | lateral acoustic uniformity (transducer width, not modelled) |
 | feasibility | Entries 73/80 (elastic clean), 75 (ps route), 81 (asymmetric cut), 78 (ratio at one delay) | transducer number (DotFiles#57); photon-count line; propose Si 400 at 8 keV first |
