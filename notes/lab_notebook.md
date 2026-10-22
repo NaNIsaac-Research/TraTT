@@ -4807,3 +4807,35 @@ front 10–220 Λ (0.1–2.5 mm) deep, so a real crystal must be that thick and 
 assumption (v_L/c ≪ 1) still holds; the plane-wave assumption is untouched by the depth. Anomalous
 absorption (T2c) and asymmetry not included. Class: **confirmed** (CF-B) and **falsified** (CF-A as
 a universal form); prior art for the windowed first-order form not searched (T2d).
+
+---
+
+## 2026-10-23 — Entry 76: does the running-mean degeneracy class survive larger S? (T2b, Entry 72 iii)
+
+**Why.** Entry 72 established at S = 1.5 that order n of the transient reads only the t_tr running
+mean of J_n(S A), so two histories with the same running mean are degenerate at that order (TT
+difference 9e-7). Entry 72 (iii) left open whether the class breaks when S grows, where the
+independent-satellite coupling is stronger and the ramp crosses Bessel extrema. BACKLOG T2b.
+Script `explore/nb/e76_degeneracy_S.py`.
+
+**Pre-registered rule (written before the run).** Laue, α = 0.5, α_ac = 40 (R = 0.0125, the
+Entry 67 and 72 conditions), no absorption, 16 carrier phases at fixed envelope time, η = +q and +2q
+in one call, 151 times on [0, 1.5] t_tr, `required_nz(α, α_ac, S, 2q)`. Scan S = 1.5, 2, 3, 4, 5, 6.
+For each S two constructions, both from the linear ramp A_1 = clip(s, 0, 1):
+- (a) degenerate at order 1: J_1(S A_2) = J_1(S A_1) + δ, δ = ε sin(2π(s − a)/(b − a)) on [a, b],
+  zero outside, ε = 0.1, with [a, b] chosen inside one monotone branch of J_1(S s) with margin so
+  that the inversion exists and is continuous (Newton from x0 = S A_1(s)); for S ≥ 4 a second pair
+  is built on the descending branch (S s between 1.84 and 5.33), where the strain is large.
+- (b) degenerate at order 2: the same with J_2 on its rising branch (S s ≤ 3.05).
+The window where the whole wobble sits inside [t − 1, t] is t ∈ [b, a + 1]; there Θ_n of the
+degenerate order is identical by construction (checked numerically, law difference < 1e-8).
+- **Broken at order n, at this S** if max over the window of |I_n^TT(history 2) − I_n^TT(history 1)|
+  exceeds 5e-4, i.e. ten times the Entry 72 convergence error 5e-5. The convergence error is
+  re-measured at every S (16 → 32 phases and n_z × 2 at three times); if it exceeds 5e-5 at some S,
+  the threshold there is ten times the measured value and this is stated.
+- **Class holds** if no S ≤ 6 and no construction exceeds the threshold.
+- Side checks, not part of the verdict: the non-degenerate order's TT difference agrees with the
+  law's to 1e-3 (Entry 72 ii), and |I_TT − I_law| per S is recorded as the law's own error.
+- One exploratory row after the scan, labelled as such: the (a) construction at S = 3 with a larger
+  coupling ratio R = 0.1 (α = 1, α_ac = 10), to see whether R rather than S is what breaks the class.
+  It is not covered by the rule above.
