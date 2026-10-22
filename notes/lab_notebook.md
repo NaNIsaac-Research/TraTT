@@ -4364,3 +4364,127 @@ quasi-static model.
 **4. Still unresolved.** Whether an earlier Bloch-wave first-order form exists in Chukhovskii &
 Förster 1995 or Wark & Lee 1999 (unread); anomalous absorption χ_ih; asymmetric geometry; the
 Doppler term of their eq. 36 at GHz (expected ~Ω/ω ~ 1e-8, negligible, not computed).
+
+---
+
+## 2026-10-22 — Entry 70: signal maximum vs Fisher-information maximum, one case (directive B2)
+
+**Why.** Isaac's question B2: is the detuning where the signal is largest the detuning where the
+information about the acoustic parameters is largest? One case, as boss asked: the Entry 66 packet
+(87 GHz, decay 0.9 cycles, peak strain 1e-3, S = 0.71) at Si 400, 17.48 keV (g = 0.0100), with 8 keV
+(g = 0.0458) as the crystal-factor control. Script `explore/nb/e70_fisher.py` (`run`, `diag`, `fig`);
+data `e70_fisher.json`, `e70_fisher_f30.json`; logs `e70_fisher.log`, `e70_fisher_f30.log`; figures
+`figures/paper/e70_fisher.png`, `e70_fisher_f30.png`. Reproduce:
+`uv run python explore/nb/e70_fisher.py run fig` (24 s) and `E70_FMIN=30 uv run python explore/nb/e70_fisher.py run fig`.
+
+**Measurement model.** R(t) = |R|² at one detuning η (one angle), sampled uniformly over a window
+T (140 ps as in their Fig. 2a; 1400 ps check), additive Gaussian noise of constant σ. Signal:
+W(η) = Fourier weight at ω = |η| (Entries 58–66). Information: per-detuning Fisher matrix
+I_ij(η) = σ⁻² Σ_t ∂R/∂θ_i ∂R/∂θ_j for θ = (S, f0, τ_d), central differences (1 %; 0.5 % changes
+I_ii by ≤ 4.6e-3). Reported: argmax of I_ii and of the marginal precision 1/[I⁻¹]_ii.
+
+**Pre-registered rule (in the script docstring before the run).** For S, "different" only if
+|f_I(S) − f_W| exceeds both one Darwin half-width (0.73 GHz) and 10 % of f0 (8.7 GHz). For f0 and
+τ_d a flank maximum is expected from Fourier theory and is not a finding; a crystal effect is
+claimed only if the 17.48 keV maximum differs from the 8 keV one by more than 10 % of f0.
+
+**Result on the pre-registered grid (10–260 GHz).** W and I_SS both peak at the grid edge, 10 GHz,
+at both energies and both windows. `diag`: the linear run (S/100, scaled) gives the same edge
+maximum (W(10)/W(87) = 3.05 vs 2.92), so this is not the second-order S² term; it is the
+first-order low-frequency rise of W ∝ |r0||φ̂| ∝ |ε̂|/ω² (Entry 59 §1, strain step at the front)
+read through a window holding 1.4 cycles at 10 GHz. **Post-hoc change, labelled as such:** the grid
+is cut at 30 GHz (≥ 4.2 cycles in 140 ps). Everything below is from that rerun.
+
+| | 17.48 keV, 140 ps | 17.48 keV, 1400 ps | 8 keV, 140 ps | 8 keV, 1400 ps |
+|---|---|---|---|---|
+| f_W (signal max) | 84 | 84 | 84 | 84 |
+| f_I(S), argmax I_SS | 87 | 87 | 87 | 87 |
+| f_I(f0) | 79 | 80 | 79 | 80 |
+| f_I(τ_d) | 87 | 87 | 87 | 87 |
+| marginal precision S / f0 / τ_d | 30 / 87 / 85 | 30 / 88 / 49 | 30 / 87 / 85 | 30 / 88 / 49 |
+
+**Reading.**
+- Amplitude: f_I(S) − f_W = 3 GHz, below the 8.7 GHz threshold. **They coincide.** B2 is answered
+  "no" for the amplitude in this case, as the trivial expectation said (R is linear in S).
+- Frequency: the information sits on the low flank (79–80 GHz against a peak at 84), which is
+  Fourier theory (the f0 derivative of a peaked spectrum is largest on the flanks); the marginal
+  precision, which has to separate f0 from S and τ_d, moves back to the peak (87–88). Not a finding.
+- Crystal: the 8 keV and 17.48 keV columns are identical to the GHz. **No crystal effect** on any
+  maximum, far below the 10 % criterion. Entry 71 explains why: in 140 ps to 1.4 ns the packet is
+  0.1 to 1 Λ deep and neither absorption nor the extinction phase has acted.
+- The marginal-precision maxima at the grid edge (S at 30 GHz, τ_d at 49 GHz for 1400 ps) are
+  where the three derivatives are least collinear, not a signal feature; not interpreted.
+- The kinematic H = 1 reference (|r0| |φ̂| and its derivatives) also peaks at the grid edge after the
+  φ̂ correction, so it does not discriminate here; it is kept in the JSON, not used.
+
+**Verdict.** For a picosecond packet read at one angle, the signal maximum and the Fisher maximum
+for the amplitude coincide, the frequency information is on the flank as in any spectrum, and the
+crystal moves nothing. **B2 yields no paper figure from this case.** The place where B2 could still
+bite is a long train at a weakly absorbing reflection (window ≫ 1/κ), where H(ω) is not flat
+(Entry 71); not computed.
+
+**Scope.** Gaussian noise, constant σ, one angle at a time (no angle-resolved joint FIM), one packet
+shape, S = 0.71 (second-order wings present, Entry 66), semi-infinite symmetric Bragg, σ, normal
+absorption only.
+
+---
+
+## 2026-10-22 — Entry 71: the crystal factor H needs a long window; Entry 65 §2 corrected for the Chalise case
+
+**Why.** Entry 70 found the 8 keV and 17.48 keV responses of a 140 ps packet measurement identical,
+although Entry 65 gives H(20 GHz)/H(100 GHz) = 0.51 at 17.48 keV and 0.93 at 8 keV. Entry 65 computed
+H for a steady single mode filling the crystal; Entry 65 §2 and Entry 66 §3 then applied that number
+to Chalise et al.'s 140 ps measurement. Test whether that step was allowed. Script
+`explore/nb/e71_window_H.py`, data `e71_window_H.json`, log `e71_window_H.log`. Reproduce:
+`uv run python explore/nb/e71_window_H.py` (11 s).
+
+**Setup.** Full semi-infinite TT (Entry 66 solver), the Entry 66 packet at S/100 (linear), windows
+140 ps, 1.4 ns, 14 ns; H_meas(f) = W(f) / (|r0(f)| |φ̂(f)|) with φ̂ = ε̂/ω (Entry 59 §1), normalised
+at 100 GHz; compared with the steady closed form H(f)/H(100) of Entry 65.
+**Pre-registered rule:** Entry 65's number for their case stands only if H_meas(20)/H_meas(100) at
+140 ps is within 20 % of 0.51 (17.48 keV); if it is near 1, Entry 65 §2 is wrong for short windows.
+(The first run of the script normalised by |ε̂| instead of |φ̂|; the printed ratios were the correct
+ones times 100 GHz/f. Fixed before the numbers below; the rule was not changed.)
+
+**Result**, H_meas(f)/H_meas(100 GHz):
+
+| f GHz | 20 | 30 | 40 | 60 | 87 | 150 |
+|---|---|---|---|---|---|---|
+| steady H, 17.48 keV (Entry 65) | 0.511 | 0.676 | 0.786 | 0.909 | 0.982 | 1.034 |
+| 140 ps window, 17.48 keV | 1.015 | 1.043 | 1.039 | 1.009 | 0.957 | 1.039 |
+| 1.4 ns | 0.999 | 0.999 | 1.000 | 0.999 | 0.996 | 1.006 |
+| 14 ns | 0.944 | 0.975 | 0.986 | 0.994 | 0.998 | 1.004 |
+| steady H, 8 keV | 0.929 | 0.968 | 0.983 | 0.994 | 0.999 | 1.002 |
+| 8 keV at 20 GHz, 140 ps / 1.4 ns / 14 ns | 1.014 / 0.998 / 0.958 | | | | | |
+
+**The rule fires: Entry 65 §2 is wrong for a 140 ps measurement.** The crystal factor is flat to
+±4 % (140 ps, leakage) and to 0.1 % (1.4 ns) at both energies. The steady suppression begins to
+appear only at 14 ns (0.944 against 0.511 steady).
+
+**Why, in one line.** The steady H = κ/|κ − 2cR0| with |2cR0| ≈ π/x (per Λ, x = f/f_D) is the
+modulus of the infinite depth integral of e^{−(κ + iπ/x)ζ}. Over a finite depth T (the window in
+units of Λ/v_L = 1.368 ns) the integral is (1 − e^{−(κ+iπ/x)T})/(κ + iπ/x), which tends to T for
+small T: no suppression. Hand check at T = 10.3 (14 ns): the ratio of this expression at 20 GHz to
+that at 100 GHz is 0.947, against 0.944 from TT. So H needs the window, and hence the strained
+depth, to exceed both 1/κ (16 Λ = 185 µm = 22 ns at 17.48 keV) and x/π (8.7 Λ at 20 GHz). A
+picosecond packet 0.1 Λ deep sees none of it.
+
+**Consequences.**
+- Entry 65 §2 ("a peak-normalised Fourier-weight spectrum taken at 17 keV under-reads 20 GHz by a
+  factor 2") holds for a **steady or long acoustic train** read over tens of ns, the poster's own
+  GHz-transducer geometry, and **not** for the Chalise et al. 140 ps packet. Entry 66 §3's "two
+  factors multiply, 0.33–0.45" is withdrawn: only the second-order factor K = 0.65–0.88 applies
+  to their window, which leaves most of their ~4× low-frequency deficit unexplained by this model
+  (instrument, their windowing and normalisation are the remaining candidates, Entry 57).
+- `notes/qa_prep.md` §6b and the poster Outlook sentence quoting the Si 400 numbers are right only
+  with the window condition attached. The poster is frozen; the correction goes to
+  `notes/paper_candidates.md` and the paper.
+- Entry 59's closed form itself is not wrong: it is the infinite-window limit, and its TT checks
+  (κ = 6, T ≥ 0.6 L ≫ 1/κ) satisfied the condition. The window condition was never stated; it is now.
+- For the paper this moves H from "correction for picosecond-ultrasonics spectra" to "property of
+  long-train (GHz) measurements", i.e. into the same experiment as the formation law. The two
+  halves of P1/P2 now share one window condition and one apparatus.
+
+**Not done.** A windowed closed form (the finite-T integral above, with G(W) for the packet);
+the intermediate regime T ~ 1/κ; windows beyond 14 ns (the packet is then 10 Λ deep and the
+quasi-static and plane-wave assumptions should be rechecked).

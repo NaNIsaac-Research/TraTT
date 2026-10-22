@@ -23,11 +23,12 @@ Where each part stands:
 | kinematic heterodyne weighting W ∝ \|r0\| \|ε̂\|/ω | probably known in kind | Shayduk 2013 names the oscillation (Entry 60); not seen written as a transfer function |
 | closed form H, Bloch-wave ansatz, valid inside the Darwin width | confirmed | TT to 1 % at κ/2πα = 0.12 incl. plateau; 0.5 % at 0.010 and 0.046 out to x = 100 (Entries 59, 64, 65) |
 | S&W eq. 29 fails within ~1 Darwin width (factor 3–8) | confirmed, in our variables | Entry 64 §5 |
-| H is a factor-2 bias for Si 400 at 17.5 keV over 20–100 GHz | confirmed (closed form + TT) | Entry 65 |
+| H is a factor-2 bias for Si 400 at 17.5 keV over 20–100 GHz | confirmed **only for a window ≫ 20 ns (long train)**; wrong for the 140 ps Chalise packet, where H is flat to 4 % | Entries 65, 71 |
+| signal maximum ≠ Fisher-information maximum (directive B2) | **negative** for a ps packet at one angle: amplitude maxima coincide (3 GHz apart), crystal moves nothing | Entry 70 |
 | formation law I_n = sin²/tanh²(πα\|J_n\|t̃), no fit | confirmed | Entries 1, 9, 19, 24; tests |
 | one dimensionless number joins the two regimes (directive B3) | **falsified in strong form** | Entry 68: spread 10–14× at fixed ν |
 | ν ≲ 0.1 ⇒ linear to 2 % | confirmed as a bound on the scanned domain | Entry 68 §4 |
-| Chalise et al. Fig. 2 tails = second-order strain terms | consistent in location and size, not a match | Entry 66 |
+| Chalise et al. Fig. 2 tails = second-order strain terms | consistent in location; the low-frequency deficit is only partly explained (K = 0.65–0.88 vs their ~4×) once H is removed for their window | Entries 66, 71 |
 
 **Falsification experiment run tonight** (`explore/nb/e68_nu_collapse.py`, Entry 68). Rule fixed
 before the run: if 1 − K at equal ν spreads by more than ×2 across packet length, absorption and
@@ -35,12 +36,21 @@ satellite position, the "one criterion" form is false. Result: ×14 at ν = 0.1,
 So the claim is kept only in the form above (H is the correction, ν the guarantee); the sentence
 "a single dimensionless parameter governs the crossover" must not appear in the paper.
 
+**Second correction, same night (Entry 71).** H is the infinite-window limit. It needs the
+measurement window, and so the strained depth, to exceed both the absorption depth 1/κ and the
+extinction-phase depth x/π (tens of ns at Si 400): for the 140 ps packet of Chalise et al. the
+crystal factor is flat to 4 % and the Entry 65 "factor 2" does not apply. H is therefore a property
+of **long-train** measurements — the poster's own GHz bulk-wave geometry — which puts the transfer
+function and the formation law into the same experiment.
+
 Reproduce:
 
 ```
 uv run python explore/nb/e64_sw_compare.py            # S&W vs Bloch-wave first order vs TT (9 s)
 uv run python explore/nb/e65_si400.py                  # H for Si 400 at 8 and 17.48 keV
 uv run python explore/nb/e68_nu_collapse.py run stats fit2 fig   # tonight's falsification (28 s)
+uv run python explore/nb/e70_fisher.py run fig                   # B2, one case (24 s)
+uv run python explore/nb/e71_window_H.py                         # window condition for H (11 s)
 ```
 
 **Next falsification experiments, smallest first.**
@@ -61,19 +71,24 @@ G = chance of completion before graduation (2027 spring).
 
 | # | candidate | N | E | D | G | one-line reason |
 |---|---|---|---|---|---|---|
-| P1 | Transfer function + linearity bound for reading phonon spectra from time-resolved Bragg reflectivity (Entries 59, 64–66, 68) | 3 | 4 | 4 | 5 | Correction the 2026 Chalise measurement needs and the 2023 Bargheer review does not use; closed form done, TT-verified; novelty bounded by S&W 2003 and by two unread 1990s papers |
+| P1 | Transfer function + window condition + linearity bound for reading phonon spectra from time-resolved Bragg reflectivity (Entries 59, 64–66, 68, 71) | 3 | 3 | 4 | 5 | Closed form done and TT-verified; after Entry 71 it corrects long-train (GHz, tens of ns) measurements, not the 140 ps Chalise packet, so its experimental weight rests on the same apparatus as P2; novelty bounded by S&W 2003 and two unread 1990s papers |
 | P2 | Temporal Pendellösung of satellites behind a travelling front: formation law, Bessel ladder, period-ratio calibration of S (Entries 1, 9, 13, 19, 24) | 3 | 3 | 5 | 4 | Clean, no-fit, both geometries, tests; prior art DeCamp 2001 (n = 0 pulse) + Polikarpov 1987/88 (static extinction length) makes it "extension to every order"; needs a bulk GHz shear-wave experiment that does not yet exist |
 | P3 | Path memory: Θ_n law, transient-only satellite, overshoot map (Entries 28, 30, 34, 67) | 2 | 3 | 5 | 4 | Robust in the model, but at α = 0.5 it is kinematic diffraction from a graded grating and the slow-ramp limit is the Bessel ladder (Entry 34); best as a section of P2, not a paper |
 | P4 | Overlap regime: Bessel-zero resurrection with a computable third-order coupling and shifted zero (Entries 45, 51, 52, 54) | 4 | 1 | 3 | 2 | Possibly new, but observability is 4e-5 of the window integral (Entry 54) and Entin / Iolin–Entin are unread; theory only |
 | P5 | Second-order strain terms in the Chalise spectrum (Entry 66) | 2 | 3 | 5 | 5 | Known in kind (Bessel expansion); its value is the size at their strain and the fluence-series criterion; a section of P1 |
 
-**Recommendation.** P1 as the paper, with P2 as its "beyond linearity" section (the satellite's own
-extinction length is what sets ν, Entry 65 §4) and P5 as a subsection. P2 alone is a second, shorter
-paper only if an experiment is planned. P3 stays in P2. P4 is a future project (Entry 51 F).
+**Recommendation.** One paper, P1 + P2, around one experiment: a GHz bulk shear wave entering a
+Si crystal, read over tens of ns. Its linear regime (ν ≲ 0.1) is the H-corrected spectrometer, its
+dynamical regime is the formation law, and the window condition of Entry 71 is what makes both
+appear in the same measurement. P5 is a subsection on picosecond packets (where only K matters).
+P3 stays inside P2. P4 is a future project (Entry 51 F). Before tonight the recommendation was P1
+alone on the strength of the Chalise correction; Entry 71 removed that strength.
 
 Risks, in order:
-- A referee calls the Bloch-wave correction of S&W routine. Answer: the paper rests on the measurement
-  correction (factor 2 at Si 400 / 17.5 keV) and the bound, not on the linearisation.
+- No long-window (tens of ns) time-resolved satellite measurement exists yet; the paper's
+  experimental relevance is a proposal (T1c decides whether S = 0.5–6 at 1–2 GHz is reachable).
+- A referee calls the Bloch-wave correction of S&W routine. Answer: the paper rests on the window
+  condition, the bound and the formation law, not on the linearisation.
 - An earlier first-order Bloch-wave form exists (Chukhovskii & Förster, Wark & Lee). Not read.
 - Chalise's energy and normalisation are unknown; the comparison stays "same sign, same order".
 - Model limits: symmetric, σ, normal absorption only, plane wave, no instrument resolution.
@@ -87,9 +102,10 @@ Risks, in order:
    ω/ω_D for S&W eq. 29, S&W normalised, and the Bloch-wave (Riccati) form; the near-main-peak
    error alongside (`e64_sw.json`). Message: the Bloch-wave depth dependence is what keeps first
    order valid inside the Darwin width.
-3. **Fig. 3 — a real crystal.** H(f) for Si 400 at 8 and 17.48 keV over 1–400 GHz with the Chalise
-   band shaded (`figures/si400_transfer.png`), and the strain non-linearity K(f) for their packet
-   (`figures/si400_harmonic.png`, one panel).
+3. **Fig. 3 — a real crystal, and the window condition.** H(f) for Si 400 at 8 and 17.48 keV
+   (`figures/si400_transfer.png`) next to H_meas(f) for windows 140 ps, 1.4 ns, 14 ns (Entry 71
+   table): the suppression exists only when the window exceeds 1/κ and x/π. One panel with K(f) for
+   a picosecond packet (`figures/si400_harmonic.png`), where only the second-order term is left.
 4. **Fig. 4 — the linearity bound and the dynamical satellite.** (a) 1 − K against ν for the 24
    series of Entry 68 with the tanh² and sin² laws (`figures/paper/e68_nu_collapse.png`, left panel);
    (b) the formation law of the poster, I_n(t̃) = sin²(πα|J_n|t̃) collapse (`figures/poster/f1_collapse.png`
@@ -101,3 +117,6 @@ Risks, in order:
   closer to finished and tied to a current measurement; P2 is the poster's identity.
 - Whether to add χ_ih and asymmetric geometry to `solve_bragg` (Tier physics) before writing.
 - Library access for Chukhovskii & Förster 1995 and Wark & Lee 1999.
+- Whether to tell Chalise et al. that, in this model, their low-frequency deficit is not the crystal
+  factor (Entry 71) and only partly the second-order term (Entry 66); and whether to correct
+  `notes/qa_prep.md` §6b (the poster itself is frozen).
