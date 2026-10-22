@@ -92,7 +92,12 @@ G = chance of completion before graduation (2027 spring).
 and both need the same measurement: a GHz bulk acoustic train read over a window longer than
 max(1/κ, x/π) Λ/v_s. For Si 400 at 17.48 keV that is ≥ 22 ns (train ≥ 185 µm long); for the
 poster's Si 440 Laue geometry t_tr is already 28–51 ns (Entry 20), so the same transducer drive
-serves both. Without such a measurement the paper is theory with a proposal. T1c (Entry 73): on
+serves both. Entry 75 gives the window numbers for Si 400 / 17.48 keV, 20 GHz against 100 GHz:
+the crystal factor is flat (within 10 %) up to **T_flat = 19.6 ns**, halfway to the steady Entry 65
+value at **T_half = 32.8 ns**, and within 10 % of it from **T_90 = 52.2 ns** on (TT-confirmed to
+0.002). A measurement with a 20–50 ns window sits on the steep part, where H depends on the window
+length itself; the experiment should therefore read either ≤ 5 ns (H flat to 1 %, kinematic
+estimator) or ≥ 52 ns (steady H), and in between must know its window to 10 %. Without such a measurement the paper is theory with a proposal. T1c (Entry 73): on
 the elastic and TT side S ≤ 2 at 1–2 GHz is feasible (strain ≤ 6.6e-5, second harmonic ≤ 10 %),
 S = 3–6 is at the limit (harmonics 10–30 % at 2 GHz); the drive is 6–100 W/cm² peak acoustic
 intensity for S = 1–2, pulsed, and no verified GHz bulk-transducer number is in hand. A real
