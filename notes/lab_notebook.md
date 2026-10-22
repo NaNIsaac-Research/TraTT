@@ -5287,3 +5287,39 @@ term does not cancel there) and is not touched.
 **Scope.** σ polarisation, centrosymmetric, bulk wave along the surface normal (φ = φ(z, t)
 unchanged by the cut), semi-infinite; grazing-exit geometries (b ≳ 10) bring in the specular
 refraction and beam-footprint effects the plane-wave model does not have.
+
+---
+
+## 2026-10-23 — Entry 82: beam divergence and the crystal factor: angular convolution of H (T2k)
+
+**Why.** `notes/referee_pass.md` objection 2 names the cheapest missing computation: what a
+divergent (or polychromatic) beam does to H(f; T_w). BACKLOG T2k. Script `explore/nb/e82_divergence.py`.
+
+**Physics written down before the run.** A ray at detuning η' = η + δ rings, after the packet, at
+its own frequency Im Λ(η') ≈ η' with damping Re Λ ≈ −κ (Fig. 1a, Entry 75 §1). The Fourier
+weight at the nominal ω = |η| therefore collects, from a beam of angular distribution p(δ), only
+the rays within the ringing linewidth: the resonant denominator Λ(η') − iW = i(δ − π/x) − κ + …
+is a complex Lorentzian in δ of half-width κ, centred at the extinction shift π/x. The beam-averaged
+weight is the coherent sum W_conv(ω) = |∫ p(δ) Ĩ(η + δ; ω, T_w) dδ| (the rays' intensities add; the
+oscillating parts add as phasors). Expectations, to be confirmed or refuted by TT:
+(i) for σ ≫ κ + π/x the integral gives π p(π/x) × (the single-ray value × |κ − 2cR0|), so
+H_conv(f) → κ √(π/2)/σ, **flat in f** and reduced by κ/σ; the steady crystal factor of Entry 65
+and the window law of Entry 75 are then unobservable; (ii) with a finite window the ray response
+has width ~1/T_w instead of κ, so the window law survives only while 1/T_w ≳ σ, i.e. T_w ≲ 1/σ
+(0.7 ns at σ = 0.3 Darwin half-widths): the effective window is min(T_w, 1/σ, 1/κ); (iii) in
+angle, κ is 0.01 (17.48 keV) and 0.046 (8 keV) Darwin half-widths: 0.03 µrad and 0.4 µrad; in
+energy, 2 and 4 meV. If (i) holds, the long-window H needs a beam collimated and monochromatised
+to that level, or an angle-resolving detector, and the ps-packet proposal must say so.
+
+**Pre-registered rule (BACKLOG T2k, written before the run).** Full semi-infinite TT (Entry 75
+machinery), Entry 66 packet at S/1000, Si 400 / 17.48 keV, f = 20, 40, 100 GHz, windows 1.4,
+14, 52, 300 ns, Gaussian angular distribution of width σ = 0.3, 1, 3 Darwin half-widths (σ_η =
+2πσ in η units), on a non-uniform δ grid that resolves κ (spacing ≤ κ/3 near the centre) and
+reaches ±6σ. TT angle average: W_TT,conv(ω) = |Σ_k p_k Ĩ_TT(η + δ_k; ω)|, each ray a full TT run
+(vectorised over η). Closed form: the same sum with CF-B of Entry 75 evaluated at detuning η + δ_k
+and Fourier frequency ω = |η|.
+- If |W_TT,conv / W_CF,conv − 1| > 1 % at any (f, σ, T_w), "a divergence term is needed";
+  otherwise "closed form retained" (the convolution of CF-B is the closed form with divergence).
+- Reported either way: H_conv(f; T_w, σ)/H_conv(100 GHz) against T_w for each σ, with T_flat and
+  T_90 where they still exist, and H_conv/H_single at 300 ns against the expectation κ√(π/2)/σ.
+- Convergence: δ-grid spacing halved at one (f, σ, T_w) must change W_conv by < 0.2 %.
