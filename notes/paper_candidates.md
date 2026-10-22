@@ -66,6 +66,7 @@ uv run python explore/nb/e70_fisher.py run fig                   # B2, one case 
 uv run python explore/nb/e71_window_H.py                         # window condition for H (11 s)
 uv run python explore/nb/e75_window_cf.py run posthoc fig        # H(f; T_w) closed form vs TT, boundaries (110 s)
 uv run python explore/nb/e77_chi_ih.py run ttp ttm conv60 fig    # chi_ih: second parameter, side asymmetry (170 s)
+uv run python explore/nb/e85_si440_case.py                       # Si 440 / 17.48 keV GHz-train case table (1 s)
 ```
 
 **Fourth step, Day 2 (Entry 77).** The Bragg solver now takes χ_ih (`kappa_h`, f175d12). The

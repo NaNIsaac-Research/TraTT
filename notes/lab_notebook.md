@@ -5583,3 +5583,59 @@ satellites.
 **Scope.** Step front, α_ac = 20, single carrier phase on the offset grid, Gaussian σ_η, t̃ ≤ 1,
 Laue lossless and Bragg lossless (no κ), first maximum only; the integrated population and the
 ramp regime (Entry 67) not covered.
+
+---
+
+## 2026-10-23 — Entry 85: one GHz-train case in one table, Si 440 at 17.48 keV, 1–2 GHz (T2o)
+
+**Why.** BACKLOG T2o: move the poster's conditions (Entry 62: symmetric Laue, L = 3Λ_P, bulk shear
+wave) to Si 440 / 17.48 keV / 1–2 GHz and put S, ν, the window numbers and the beam conditions in
+one table from the existing formulas and constants. No new physics, nothing pre-registered.
+Script `explore/nb/e85_si440_case.py` (1 s), data `e85_si440_case.json`, log `e85_si440_case.log`.
+Constants: X0h (Entry 20): Λ_P = 54.34 µm, θ_B = 21.68°, |χ_rh| = 1.213e-6, χ_i0 = 1.606e-8
+(g = 0.0132), d = 96.0 pm; v_T = 5846 m/s, c44 = 79.6 GPa (Entry 73). L = 163 µm, t_tr = 27.9 ns;
+Darwin half-width 1.77 µrad = 78 meV; symmetric-Bragg extinction length of the same reflection
+21.6 µm, f_D(Bragg, shear) = 0.271 GHz, so 1–2 GHz is x = 3.7–7.4.
+
+**Table (1 GHz; 2 GHz differs only where marked).** u0 = S d/2π, ε = S d/Λ_ac (Entry 73),
+I = v_T c44 ε²/2 (time-averaged, travelling wave), α_ac = L/Λ_ac, R = Λ_ac/Λ_P, ν = πα|J_1(S)|
+(first-order satellite amplitude of the filled Laue crystal, Entry 65's form with ℓ = L), τ_1 =
+t_tr/(2α|J_1(S)|) (first maximum of the formation law), β_qs = 2πfL/c (Entry 62); beam columns:
+the centre-law condition 0.3 w_1 = 0.3|J_1(S)| Darwin half-widths (Entry 84) and the single-ray
+ringing width g + 1/(2x) half-widths (Entries 82–83).
+
+| S | u0 pm | ε (1 / 2 GHz) | I W/cm² (1 / 2 GHz) | ν | τ_1 / t_tr | τ_1 ns | beam, centre law µrad | beam, ringing µrad (1 / 2 GHz) |
+|---|---|---|---|---|---|---|---|---|
+| 0.01 | 0.15 | 1.6e-7 / 3.3e-7 | 0.002 / 0.006 | 0.047 | 33 | 930 | 0.004 | 0.26 / 0.14 |
+| 0.02 | 0.31 | 3.3e-7 / 6.6e-7 | 0.003 / 0.01 | 0.094 | 17 | 465 | 0.01 | |
+| 0.1 | 1.5 | 1.6e-6 / 3.3e-6 | 0.06 / 0.25 | 0.47 | 3.3 | 93 | 0.03 | |
+| 0.3 | 4.6 | 4.9e-6 / 9.9e-6 | 0.56 / 2.3 | 1.40 | 1.12 | 31 | 0.08 | |
+| 0.5 | 7.6 | 8.2e-6 / 1.6e-5 | 1.6 / 6.3 | 2.28 | 0.69 | 19 | 0.13 | |
+| 1 | 15.3 | 1.6e-5 / 3.3e-5 | 6.3 / 25 | 4.15 | 0.38 | 10.6 | 0.23 | |
+| 1.5 | 22.9 | 2.5e-5 / 4.9e-5 | 14 / 56 | 5.26 | 0.30 | 8.3 | 0.30 | |
+| 2 | 30.6 | 3.3e-5 / 6.6e-5 | 25 / 100 | 5.44 | 0.29 | 8.1 | 0.31 | |
+
+α_ac = 27.9 / 41.8 / 55.8 and R = 0.108 / 0.072 / 0.054 at 1 / 1.5 / 2 GHz; β_qs = 3.4e-3 to
+6.8e-3 (Entry 62). Window law for the same reflection in symmetric Bragg with the shear wave
+(CF-B, Entry 75, ratio H(1 GHz)/H(2 GHz), steady 0.500 with H = 0.096 / 0.191): T_flat 7 ns,
+T_half 12 ns, T_90 17 ns; 1/κ = 260 µm = 44 ns.
+
+**Reading.**
+- The two regimes of the P1 + P2 experiment sit at very different S: the linear regime (ν ≤ 0.1,
+  Entry 68) of a *filled* Laue crystal at α = 3 needs S ≤ 0.02, i.e. strain ≤ 7e-7 and
+  3–10 mW/cm², with a formation time of 0.5–1 µs that the transit cuts off (the satellite never
+  forms; it stays kinematic, which is the point); the poster's formation regime is S = 0.5–2,
+  strain 1–7e-5, 1.6–100 W/cm², τ_1 = 8–19 ns inside t_tr = 28 ns. Both are reachable with the
+  same drive at two amplitudes, which is the "one apparatus" of the recommendation.
+- The window numbers of the Bragg counterpart (7–17 ns) are inside one transit, so a long-train
+  measurement at Si 440 reaches the steady crystal factor within t_tr; but the beam condition
+  for that single-ray factor is 0.14–0.26 µrad (ringing width), ≈ 0.1 µrad at the 5 % tolerance by
+  the Entry 83 scaling, and for the centre formation law 0.08–0.31 µrad (0.3 w_1): the GHz
+  train at Si 440 is a sub-µrad measurement on both counts, as Entries 83–84 found for Si 400.
+- The ordinary-beam observables for this case are therefore the beam-averaged factor of Entries
+  82–83 (x = 3.7–7.4, non-monotonic in σ_η; computable once σ_η is known) and the integrated
+  satellite population (T2p).
+
+**Scope.** Table only; no run beyond the 1 s closed-form window numbers; Laue absorption is not in
+the solver (the Laue contrast 1/cosh(2πα''J_1) of Entry 20 is 0.99 here); transducer output
+unverified (DotFiles#57).
