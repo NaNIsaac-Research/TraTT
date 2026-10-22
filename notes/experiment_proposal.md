@@ -126,8 +126,9 @@ law, so not a closed form), and in Bragg it is not clean at any beam (Entry 86, 
 pre-registration is pending). One case in numbers (Entry 85, Si 440 / 17.48 keV, L = 163 µm, t_tr = 28 ns): the
 linear regime of the filled crystal needs S ≤ 0.02 (strain ≤ 7e-7, mW/cm²), the formation regime
 S = 0.5–2 (strain 1–7e-5, 1.6–100 W/cm², τ_1 = 8–19 ns); the Bragg window numbers of the same
-reflection are T_flat 7 / T_half 12 / T_90 17 ns, inside one transit; the beam condition is
-0.1–0.3 µrad for both the single-ray factor and the centre law. It is the second experiment, not
+reflection (longitudinal [110] wave, since a shear wave along the normal does not couple in
+symmetric Bragg; Entry 85 addendum) are T_flat 2 / T_half 5 / T_90 7 ns, inside one transit; the
+beam condition is 0.1–0.4 µrad for both the single-ray factor and the centre law. It is the second experiment, not
 the first.
 
 ## 5. Decision for Isaac

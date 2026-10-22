@@ -5616,9 +5616,12 @@ ringing width g + 1/(2x) half-widths (Entries 82–83).
 | 2 | 30.6 | 3.3e-5 / 6.6e-5 | 25 / 100 | 5.44 | 0.29 | 8.1 | 0.31 | |
 
 α_ac = 27.9 / 41.8 / 55.8 and R = 0.108 / 0.072 / 0.054 at 1 / 1.5 / 2 GHz; β_qs = 3.4e-3 to
-6.8e-3 (Entry 62). Window law for the same reflection in symmetric Bragg with the shear wave
-(CF-B, Entry 75, ratio H(1 GHz)/H(2 GHz), steady 0.500 with H = 0.096 / 0.191): T_flat 7 ns,
-T_half 12 ns, T_90 17 ns; 1/κ = 260 µm = 44 ns.
+6.8e-3 (Entry 62). Window law for the same reflection in symmetric Bragg [corrected, see the
+addendum: the shear wave along the normal has h·u = 0 in that geometry, so the Bragg counterpart
+uses a longitudinal [110] wave, v_L = 9136 m/s, x = 2.36 / 4.73 at 1 / 2 GHz] (CF-B, Entry 75,
+ratio H(1 GHz)/H(2 GHz), steady 0.484 with H = 0.059 / 0.123): T_flat 2 ns, T_half 5 ns,
+T_90 7 ns; 1/κ = 260 µm = 28 ns at v_L. (First version, withdrawn: shear v_T, x = 3.7 / 7.4,
+T_flat 7 / T_half 12 / T_90 17 ns.)
 
 **Reading.**
 - The two regimes of the P1 + P2 experiment sit at very different S: the linear regime (ν ≤ 0.1,
@@ -5627,11 +5630,12 @@ T_half 12 ns, T_90 17 ns; 1/κ = 260 µm = 44 ns.
   forms; it stays kinematic, which is the point); the poster's formation regime is S = 0.5–2,
   strain 1–7e-5, 1.6–100 W/cm², τ_1 = 8–19 ns inside t_tr = 28 ns. Both are reachable with the
   same drive at two amplitudes, which is the "one apparatus" of the recommendation.
-- The window numbers of the Bragg counterpart (7–17 ns) are inside one transit, so a long-train
-  measurement at Si 440 reaches the steady crystal factor within t_tr; but the beam condition
-  for that single-ray factor is 0.14–0.26 µrad (ringing width), ≈ 0.1 µrad at the 5 % tolerance by
-  the Entry 83 scaling, and for the centre formation law 0.08–0.31 µrad (0.3 w_1): the GHz
-  train at Si 440 is a sub-µrad measurement on both counts, as Entries 83–84 found for Si 400.
+- The window numbers of the Bragg counterpart (longitudinal wave: 2–7 ns) are well inside one
+  transit, so a long-train measurement at Si 440 reaches the steady crystal factor within t_tr;
+  but the beam condition for that single-ray factor is 0.21–0.39 µrad (ringing width
+  g + 1/(2x) at x = 2.4–4.7), ≈ 0.1–0.2 µrad at the 5 % tolerance by the Entry 83 scaling, and
+  for the centre formation law 0.08–0.31 µrad (0.3 w_1): the GHz train at Si 440 is a sub-µrad
+  measurement on both counts, as Entries 83–84 found for Si 400.
 - The ordinary-beam observables for this case are therefore the beam-averaged factor of Entries
   82–83 (x = 3.7–7.4, non-monotonic in σ_η; computable once σ_η is known) and the integrated
   satellite population (T2p).
@@ -5777,3 +5781,17 @@ the detector accepts C_n and nothing else (q = 5–10 main Darwin half-widths fo
   3 w_n; (1.5, 2, 1) had A = +8 % there and may fail, passing near 5 w_n; the ramp is untested.
   So the likely outcome is "condition table with σ_η ≈ 3–5 w_n", not a clean pass.
 - Convergence: δ spacing w_n/40 → w_n/80 at one case must change Ŝ_σ by < 0.2 %.
+
+**Addendum to Entry 85 (physics cross-review, same day): the Bragg counterpart cannot use the
+shear wave.** In symmetric Bragg 440 the reflection vector h is along the surface normal, and a
+bulk wave travelling along the normal with transverse polarisation has u ⊥ h, so h·u = 0 and the
+wave does not couple at all (the Laue poster geometry has h in-plane with u ∥ h, which is why it
+couples). The Bragg window block was recomputed with a longitudinal [110] wave,
+v_L = √((c11 + c12 + 2c44)/2ρ) = 9136 m/s (c11 = 165.7, c12 = 63.9, c44 = 79.6 GPa): f_D(Bragg)
+= 0.423 GHz, x = 2.36 / 4.73 at 1 / 2 GHz, steady H = 0.059 / 0.123 (ratio 0.484), T_flat 2,
+T_half 5, T_90 7 ns, 1/κ = 260 µm = 28 ns; the ringing-width column becomes 0.39 / 0.21 µrad
+(1 / 2 GHz). Agreed with the reviewer; `e85_si440_case.py` and its log/json updated
+(the Laue table is unchanged, since there the shear wave is the coupling one); the first
+version's numbers are kept above, marked withdrawn. The elastic numbers for a longitudinal
+[110] wave (ε = S d/Λ_ac with Λ_ac = v_L/f: 0.64× the shear strain at the same S and f; intensity
+with ρv_L² in place of c44) are not re-tabulated here.
