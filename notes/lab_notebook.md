@@ -5525,3 +5525,61 @@ first maximum of I_n(t̃) (parabolic interpolation): its time (the "period") and
   population, P_n(t̃) ∝ ∫_0^{2πα_n t̃} J_0(x) dx in Laue (the classic integrated Laue intensity of a
   slab of coupling α_n t̃), which is a divergence-free observable with its own formation law; its
   TT beam average at σ_η = 3 w_n is compared with that integral.
+
+**Run.** `uv run python explore/nb/e84_satellite_divergence.py run fig` (131 s, one run; eight
+case–geometry pairs × five σ); data `e84_satellite_divergence.json`, log
+`e84_satellite_divergence.log`, figure `figures/paper/e84_satellite_divergence.png`. Single-phase
+samples on the poster's offset grid (no carrier-phase average), as in Fig. 4b.
+
+**Results.** First maximum of the beam-averaged centre intensity against the single ray:
+Δperiod = time shift, Δamp = height change. w_n = 2πα|J_n(S)|; |J_n(S)| is w_n in main Darwin
+half-widths; the last two columns give w_n in angle.
+
+| geometry | (S, α, n) | σ_η = 0.1 w_n: Δperiod / Δamp | 0.3 w_n | 1 w_n | 3 w_n | largest σ_η meeting both (scan) | w_n, Si 440 / 17.48 keV | w_n, Si 400 / 8 keV |
+|---|---|---|---|---|---|---|---|---|
+| Laue | (0.5, 2, 1) | +0.1 % / −0.3 % | +0.7 % / −2.6 % | −7 % / −25 % | −7 % / −62 % | 0.3 w_n | 0.43 µrad | 2.0 µrad |
+| Laue | (1.5, 2, 1) | +0.8 % / −0.6 % | +1.1 % / −6.7 % | −14 % / −40 % | −19 % / −73 % | 0.1 w_n | 0.99 µrad | 4.7 µrad |
+| Laue | (2, 4, 2) | −1.1 % / −1.3 % | −5.9 % / −7.7 % | −19 % / −38 % | −32 % / −72 % | < 0.1 w_n | 0.62 µrad | 2.9 µrad |
+| Laue | (1.5, 4, 1) | +11 % / −0.8 % | −2.9 % / −7.8 % | −12 % / −39 % | −11 % / −71 % | < 0.1 w_n (metric, see below) | 0.99 µrad | 4.7 µrad |
+| Bragg | (0.5, 2, 1) | 0.0 % / −0.2 % | −0.2 % / −1.4 % | −1.1 % / −13 % | −1.3 % / −52 % | 0.3 w_n | 0.43 µrad | 2.0 µrad |
+| Bragg | (1.5, 2, 1) | −0.1 % / −0.1 % | −0.9 % / −1.0 % | −1.0 % / −20 % | −1.0 % / −62 % | 0.3 w_n | 0.99 µrad | 4.7 µrad |
+| Bragg | (2, 4, 2) | 0.0 % / −0.1 % | −0.2 % / −0.7 % | −0.2 % / −21 % | +0.7 % / −63 % | 0.3 w_n | 0.62 µrad | 2.9 µrad |
+| Bragg | (1.5, 4, 1) | 0.0 % / 0.0 % | −0.2 % / −0.1 % | −2.4 % / −21 % | −9 % / −60 % | 0.3 w_n | 0.99 µrad | 4.7 µrad |
+
+- **Verdict under the rule: the condition table applies.** At σ_η = 1 w_n the amplitude falls by
+  13–21 % (Bragg) and 25–40 % (Laue) in every case, far outside 5 %. The largest scanned σ_η that
+  meets both criteria is 0.3 w_n in Bragg (amplitude −0.1 to −1.4 %, period ≤ 0.9 %) and
+  0.1–0.3 w_n in Laue (amplitude −0.3 to −1.3 % at 0.1 w_n, −2.6 to −7.8 % at 0.3 w_n). In
+  angle that is **0.1–0.3 µrad at Si 440 / 17.48 keV (the poster's Laue case) and 0.6–1.4 µrad at
+  Si 400 / 8 keV Bragg**: the same sub-µrad class as the single-ray crystal factor of Entries 82–83,
+  as the pre-run expectation said (0.2–0.3 w_n).
+- The "period" metric (time of the first maximum, parabolic interpolation on a 1/60 grid) is noisy
+  where the maximum is broad: the +11 % at σ_η = 0.1 w_n for Laue (1.5, 4, 1) is a detection
+  artefact (amplitude −0.8 % there). A post-hoc metric computed from the saved traces, the
+  half-rise time t_1/2, gives ≤ 0.5 % at 0.1–0.3 w_n in Laue (−2.9 % for (1.5, 4, 1) at 0.3),
+  +1.6–4.6 % in Bragg at 0.3 w_n (the tanh² rise steepens off-centre), −3 to −29 % at 1 w_n, and
+  does not change the verdict. Labelled post hoc; the rule's metric stands in the table.
+- Bragg is the more tolerant geometry: the tanh² saturation makes the plateau height insensitive
+  to the beam (−1 % at 0.3 w_n) while Laue's sin² maximum is a narrow feature in η.
+- Check (closed form): the beam average of the independent-satellite slab form differs from the
+  TT beam average by 3–15 % in absolute intensity already at σ_η = 0, i.e. the single-phase
+  samples carry the fringe contamination the poster avoided by its grid offset (Entry 2); the
+  2 % tolerance fails and, as pre-registered, the closed form is not used for the verdict (TT only).
+- Reported: at σ_η = 3 w_n the Laue beam average is 12–15 % away from the ∫_0^{2πα_n t̃} J_0 law
+  (shape, after scaling); the integrated-population observable is divergence-tolerant but its
+  formation law is not that integral at this σ (the Gaussian is not flat over the satellite);
+  not pursued.
+
+**Answer to T2n.** The poster's centre-intensity formation law needs σ_η ≲ 0.3 w_n, i.e.
+0.1–0.3 µrad in the poster's Si 440 / 17.48 keV Laue geometry (0.6–1.4 µrad at Si 400 / 8 keV
+Bragg), so **P2 is not measurable with an ordinary beam as a centre observable** either; its
+beam-tolerant form is the integrated satellite population, whose formation law is a separate,
+uncomputed item. The E scores of P2 and P1 + P2 stay at 3 with this condition added; the shared
+GHz observable of Entries 82–83 (the beam-averaged factor) remains the ordinary-beam route.
+Class: **confirmed** (full TT beam average, eight case–geometry pairs, no fit). Prior art: the
+sensitivity of a Pendellösung-type oscillation to beam divergence is textbook; not searched for
+satellites.
+
+**Scope.** Step front, α_ac = 20, single carrier phase on the offset grid, Gaussian σ_η, t̃ ≤ 1,
+Laue lossless and Bragg lossless (no κ), first maximum only; the integrated population and the
+ramp regime (Entry 67) not covered.

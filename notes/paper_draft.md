@@ -103,6 +103,7 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
 | 10 | "One dimensionless criterion joins the regimes" | falsified (spread ×10–14 at fixed ν) | Entry 68 |
 | 11 | Formation law I_n = sin²/tanh²(πα\|J_n\|t̃), Bessel ladder, period-ratio calibration | confirmed; prior art in kind DeCamp 2001 (n = 0), Polikarpov 1987/88 (static) | Entries 1, 9, 13, 19, 24; tests |
 | 12 | Order n reads the one-transit running mean of J_n(S A); zero-mean perturbations degenerate (≤ 3e-6 for S ≤ 6); boundary R = 0.2 | confirmed with a boundary | Entries 72, 76, 79 |
+| 12b | Beam condition for the centre formation law: σ_η ≲ 0.3 w_n (0.1–0.3 µrad, Si 440 / 17.48 keV Laue; 0.6–1.4 µrad, Si 400 / 8 keV Bragg); at σ_η = w_n the first maximum loses 13–40 % | confirmed (full TT beam average, 8 cases) | Entry 84 |
 | 13 | Signal maximum = Fisher-information maximum for a ps packet at one angle | negative result | Entry 70 |
 | 14 | Bessel-zero resurrection at third order | confirmed in the model, unobservable (4e-5); **unread** Entin, Iolin–Entin | Entries 45, 51, 52, 54 (not in this paper; P4) |
 | 15 | Realisability: S ≤ 6 at 1–2 GHz clean on the elastic side; drive power 6–900 W/cm² peak | constants only; harmonic column withdrawn (shear symmetry); transducer number unverified | Entries 73, 80 |
@@ -122,6 +123,8 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
   all phonon-band numbers are at x ≥ 27.
 - All single-ray results (H(f; T_w), χ_ih, ±η asymmetry, design numbers) hold for a beam spread in
   detuning below κ + π/x; for an ordinary beam the crystal factor is flat (Entry 82).
+- The centre formation law (Fig. 4b) holds for σ_η ≲ 0.3 w_n (Entry 84); an ordinary beam measures
+  the integrated satellite population instead, whose law is not given here.
 - The Chalise comparison is "same sign, same order": their energy, window and normalisation are
   not published in the form needed.
 - Experimental: no long-window satellite measurement exists; transducer peak power unverified;

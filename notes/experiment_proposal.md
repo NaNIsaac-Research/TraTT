@@ -116,7 +116,11 @@ S ≤ 2 needs 6–100 W/cm² peak acoustic intensity at 1–2 GHz, pulsed at 1e-
 elastic side is clean for all S ≤ 6 (no shear second harmonic); the only unverified number is the
 transducer's peak output (DotFiles#57). It measures the formation law (P2) at S ~ 1–6, a different
 observable (satellite centre intensity) whose divergence sensitivity is the satellite's own
-rocking width, not yet computed. It is the second experiment, not the first.
+rocking width w_n = 2πα|J_n(S)|: Entry 84 finds the centre law intact only for σ_η ≲ 0.3 w_n,
+0.1–0.3 µrad at Si 440 / 17.48 keV (0.6–1.4 µrad at Si 400 / 8 keV Bragg, the more tolerant
+geometry), so as a centre observable it needs the same sub-µrad beam as regime B; with an ordinary
+beam the measurable quantity is the integrated satellite population, whose formation law is not
+yet established. It is the second experiment, not the first.
 
 ## 5. Decision for Isaac
 
