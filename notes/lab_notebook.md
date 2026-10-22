@@ -4212,3 +4212,91 @@ order, and linear envelope. It does not map thickness-dependent Pendellösung
 overshoot, arbitrary envelope shapes, absorption, or an experimental detection limit.
 The mechanism is the one already documented in Entry 15; the new result is its
 parameter map and explicit checks, not a claim of a newly discovered mechanism.
+
+---
+
+## 2026-10-22 — Entry 68: is the linearity limit of the Fourier-weight estimator set by one number? (falsification run for the paper's central claim)
+
+**Why.** `notes/paper_candidates.md` proposes as the paper's central claim that a satellite is a
+dynamical reflection with its own amplitude, and that this amplitude decides whether time-resolved
+Bragg reflectivity is a linear spectrometer of the strain (Entry 59/65 transfer function H) or a
+dynamically forming satellite (Entry 1/9 law). Isaac's question B3 asks whether the short-packet
+linear regime and the long-train dynamical regime are joined by **one** dimensionless criterion.
+Entry 65 proposed ν = πα|J_1(S)| ℓ/Λ on four points. Before building on it, try to break it.
+
+**Hypothesis under test (strong form).** With ν defined as the first-order satellite amplitude at
+the surface, ν = max_t |R_lin(t) − r0| (computed from a linear run and scaled by S/S_lin), the
+saturation of the Fourier weight at the spectral peak, 1 − K with
+K = (W(S)/S)/(W(S_lin)/S_lin), is a function of ν alone — the same for any packet length,
+absorption and satellite position.
+
+**Falsification rule, fixed before the run.** If at equal ν the value of 1 − K spreads by more than
+a factor 2 across (g, x, ncyc), the strong form is false.
+
+**Setup.** `explore/nb/e68_nu_collapse.py` (`run`, `stats`, `fit2`, `conv`, `window`, `fig`);
+data `e68_nu_collapse.json`; logs `e68_nu_collapse.log`, `e68_stats.log`; figure
+`figures/paper/e68_nu_collapse.png`. Reproduce: `uv run python explore/nb/e68_nu_collapse.py run stats fit2 fig`
+(28 s for `run`).
+- Semi-infinite symmetric Bragg, σ, normal absorption only, retarded-time ODE of Entry 66 (one
+  integration gives R(t)); length unit Λ (α = 1), κ = 2πg.
+- Packet φ = S g(s), g = e^{−s/τ_d} sin(q0 s), τ_d = ncyc/x, q0 = 2πx (satellite at x Darwin
+  half-widths). Strain starts with a step at the front, as in Entries 58–66.
+- Grid: g ∈ {0.01, 0.046, 0.12} (Si 400 at 17.5 keV, 8 keV, and Entry 59), x ∈ {2, 5},
+  ncyc ∈ {1, 3, 10, 30}, S ∈ {0.03, 0.06, 0.1, 0.15, 0.2, 0.3, 0.5, 1}, S_lin = 1e-3. 24 series,
+  192 nonlinear points. Weight read at η = q0 (also 0.8 q0 and 1.25 q0, stored, not analysed).
+- Window T = 5τ_d + 4/Re(Λ − iW) + 1. RK4 at 64 steps per cycle of (η + S q0).
+
+**Results.**
+
+1. Spread of 1 − K at fixed ν (log-log interpolation within each series, all 24 series):
+
+| ν | min | max | max/min | least / most saturating series |
+|---|---|---|---|---|
+| 0.1 | 0.0012 | 0.0175 | 14.1 | g=0.046, x=2, 30 cyc / g=0.01, x=2, 1 cyc |
+| 0.2 | 0.0050 | 0.0611 | 12.1 | same / g=0.01, x=5, 1 cyc |
+| 0.3 | 0.0116 | 0.1116 | 9.6 | same / g=0.01, x=2, 1 cyc |
+| 0.5 | 0.0370 | 0.2496 | 6.8 | same / g=0.01, x=5, 3 cyc |
+| 0.8 | 0.1151 | 0.4227 | 3.7 | same / g=0.01, x=5, 10 cyc |
+
+**The strong form is false.** At equal ν the saturation varies by an order of magnitude. Short
+packets (which need a large S to reach a given ν) saturate most; the longest packets least.
+
+2. It is not the local Bessel factor. Dividing K by 2J_1(S)/S widens the spread (26× at ν = 0.1),
+so the extra saturation of short packets is not J_1 saturation of the drive.
+
+3. Not a two-term law either. Fitting 1 − K = a S² + b ν² over the 144 points with S ≤ 0.3 gives
+a = 0.113, b = 0.49 with pred/actual 5–95 % = [0.35, 4.0]; forcing b = 2/3 (the Bragg tanh² law)
+drives a negative. A ν-only fit (b = 0.52) has 5–95 % = [0.19, 2.5]. The saturation depends on the
+packet's shape relative to the extinction structure, not only on its peak amplitude and on S.
+
+4. What survives, as a bound. Over the scanned domain, 1 − K ≤ 0.0175 at ν = 0.1, ≤ 0.061 at
+ν = 0.2, ≤ 0.11 at ν = 0.3, i.e. **1 − K ≤ 1.8 ν² for ν ≤ 0.3** in every series. So "ν ≲ 0.1
+guarantees linearity to 2 %" holds as a sufficient condition; ν is a usable safety number, not a
+crossover law. In the figure the Bragg law 1 − tanh²ν/ν² runs through the middle of the cloud
+within about a factor 3 for ν ≥ 0.1; the Laue sin² law is its lower edge.
+
+5. Same ν, different route (g = 0.01, x = 5, S ≤ 0.3): at ν ≈ 0.3 the 1-cycle series is off the
+grid (its S ≤ 0.3 points reach only ν = 0.09), the 10-cycle series gives 0.073, the 30-cycle series
+0.053. The route matters.
+
+**Checks.**
+- Step convergence: 64 vs 128 steps per cycle at g = 0.01, x = 2, 30 cycles, S = 0.1 and 0.3: K
+  differs by < 3e-7.
+- Window: doubling T at g = 0.01, x = 5 changes K by ≤ 4e-4 (1 cycle) and ≤ 1e-4 (30 cycles).
+- The retarded-time solver was checked against `solve_bragg` in Entry 66 (agreement to the slab's
+  back-face term, 3e-4).
+- The ν definition and the factor-2 rule were written in the script docstring before the run.
+
+**Scope.** Bragg, semi-infinite, symmetric, σ, normal absorption only (no χ_ih), one packet family
+(exponential decay, step strain front), S ≤ 1, satellite at 2 and 5 Darwin half-widths only (the
+inside-Darwin regime x < 1 is not scanned), weight at the spectral peak only, ν taken as the
+peak-in-time first-order amplitude. Not tried, deliberately (no second definition after the fact):
+a time-averaged ν, other packet shapes, Laue geometry.
+
+**Consequence for the paper (see `notes/paper_candidates.md`).** Question B3 gets a negative answer
+in its strong form: there is no single dimensionless number that maps the linear transfer function
+onto the dynamical satellite growth. The satellite's own amplitude ν is the right *quantity*
+(it is exactly the formation law's phase πα|J_n|t̃ in Laue), it gives a sufficient linearity bound,
+and it orders the regimes — but the saturation function is not universal. The central claim is
+reworded accordingly: H is the correction, ν ≲ 0.1 is the guarantee, and the crossover is a region,
+not a line.
