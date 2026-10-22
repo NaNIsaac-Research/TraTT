@@ -5744,3 +5744,36 @@ not its test.
 **Scope.** Step front, α_ac = 20, single phase, t̃ ≤ 1, Gaussian beam centred on the channel,
 detector = one channel, t = 0 rocking curve subtracted ray by ray; lossless solvers; the ramp
 regime and the ±η structure of the satellite not covered.
+
+---
+
+## 2026-10-23 — Entry 87: the Laue integrated population at σ_η = 3 w_n, corrected pre-registration (T2q)
+
+**Why.** Entry 86's amplitude metric divided a beam-weighted mean by a channel mean, so it measured
+the beam width, not the shape. BACKLOG T2q: the same question with the metrics written as formulas
+first, normalisation denominators explicit. Script `explore/nb/e87_population_laue.py`.
+
+**Definitions (fixed before the run).** Laue, α_ac = 20, q = 2πα_ac. Channel C_n = {η : |η − nq| ≤ q/2};
+the detector accepts C_n and nothing else (q = 5–10 main Darwin half-widths for α = 4, 2, i.e.
+9–18 µrad at Si 440 / 17.48 keV). Ray intensity change ΔI(η, t) = I(η, t) − I(η, 0⁺) (full TT
+`rocking_cube`, the pre-pump rocking curve subtracted ray by ray). Beam p_σ(δ) ∝ exp(−δ²/2σ_η²),
+δ = η − nq, σ_η = 3 w_n with w_n = 2πα|J_n(S)|.
+
+    P_σ(t)  = ∫_{C_n} p_σ(δ) ΔI(nq + δ, t) dδ  /  ∫_{C_n} p_σ(δ) dδ          (beam-weighted population)
+    P_0(t)  = (1/q) ∫_{C_n} ΔI(nq + δ, t) dδ                                    (flat-beam channel integral, the law)
+    Ŝ_σ(t)  = P_σ(t) / P_σ(t_end),   Ŝ_0(t) = P_0(t) / P_0(t_end)                (shapes; denominator = value at the end of the trace, t_end = 1 t_tr for the step cases, 2 t_tr for the ramp)
+    t*      = time of the first maximum of Ŝ (parabolic interpolation on the 1/60 grid)
+    Δperiod = t*_σ / t*_0 − 1
+    A       = Ŝ_σ(t*_0) / Ŝ_0(t*_0) − 1                                          (shape amplitude at the reference time)
+
+**Pre-registered rule (BACKLOG T2q).** Four step cases (0.5, 2, 1), (1.5, 2, 1), (2, 4, 2),
+(1.5, 4, 1) with t̃ ∈ [0, 1], plus one ramp case (1.5, 2, 1) with rise = 1 t_tr and t̃ ∈ [0, 2].
+- **"The P2 integrated observable is measurable in the high-resolution beamline range
+  (σ_η = 3 w_n = 1.3–3 µrad at Si 440 / 17.48 keV, one-channel detector 9–18 µrad)"** if
+  |Δperiod| ≤ 1 % and |A| ≤ 5 % in all five runs; otherwise the condition table (σ_η = 3, 5, 10 w_n
+  scanned for it, the smallest passing value per case).
+- The law for the paper is the table P_0(t) itself (saved in the json), not sin² or ∫J_0.
+- Expectation written beforehand, from Entry 86's post-hoc numbers: three step cases pass at
+  3 w_n; (1.5, 2, 1) had A = +8 % there and may fail, passing near 5 w_n; the ramp is untested.
+  So the likely outcome is "condition table with σ_η ≈ 3–5 w_n", not a clean pass.
+- Convergence: δ spacing w_n/40 → w_n/80 at one case must change Ŝ_σ by < 0.2 %.
