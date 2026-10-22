@@ -5038,3 +5038,26 @@ Entry 75 with the same complex c.
 3. Size, reported not judged: A − 1 in the 20–150 GHz band at each window, and dA/d(κ_h/κ) from
    the closed form (the sensitivity with which the pair reads χ_ih/χ_i0).
 Convergence: S/100 → S/1000 at 14 ns (A must move by less than 0.2 %), step 64 → 128 per cycle.
+Amendment before the run (boss, BACKLOG T2f wording): the cancellation of the strain spectrum in A is
+checked with two packet spectra, 0.9 and 10 cycles, which must give the same A to 0.5 % at κ_h = 0.93 κ.
+Run order: Entry 79 (T2e) was run before this entry, on boss's instruction.
+
+---
+
+## 2026-10-23 — Entry 79: is the coupling ratio R what breaks the running-mean degeneracy class? (T2e)
+
+**Why.** Entry 76 held the class to S = 6 at R = 0.0125 and found, in one exploratory row at
+R = 0.1, a residual 170 times larger. BACKLOG T2e (boss): raise R and find where the class breaks.
+Script `explore/nb/e79_degeneracy_R.py` (reuses `e76_degeneracy_S.one_case`).
+
+**Pre-registered rule (written before the run).** Laue, no absorption, α_ac = 10 fixed (ten acoustic
+periods in the slab, satellites resolved at every α used), α = 0.125, 0.5, 1, 2, 3, i.e.
+R = α/α_ac = 0.0125, 0.05, 0.1, 0.2, 0.3; constructions (a) S = 3 (J_1 rising) and (a2) S = 6
+(J_1 descending) of Entry 76, 16 phases, η = q and 2q, 151 times, convergence re-measured per case
+(16 → 32 phases, n_z × 2).
+- **R-boundary exists** if, at some R ≤ 0.3, the degenerate-order TT difference in the window
+  exceeds 5e-4 (or ten times the measured convergence error if that is larger); the smallest such
+  R is the boundary and the law's own error |I_TT − I_law| at that R is reported next to it.
+- **R-independent** if no R ≤ 0.3 exceeds it.
+- Reported, not judged: the power law of the residual against R over the five points, and whether
+  the residual stays below the law's own error (Entry 76 found 20–50× below at R = 0.0125).
