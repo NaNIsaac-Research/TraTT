@@ -24,6 +24,7 @@ Where each part stands:
 | closed form H, Bloch-wave ansatz, valid inside the Darwin width | confirmed | TT to 1 % at κ/2πα = 0.12 incl. plateau; 0.5 % at 0.010 and 0.046 out to x = 100 (Entries 59, 64, 65) |
 | S&W eq. 29 fails within ~1 Darwin width (factor 3–8) | confirmed, in our variables | Entry 64 §5 |
 | H is a factor-2 bias for Si 400 at 17.5 keV over 20–100 GHz | confirmed **only for a window ≫ 20 ns (long train)**; wrong for the 140 ps Chalise packet, where H is flat to 4 % | Entries 65, 71 |
+| anomalous absorption χ_ih as a second crystal parameter | **rule fired** (Entry 77): with the X0h ratio χ_ih/χ_i0 = 0.93, H changes by 0.9 % (steady), 1.0 % (14 ns), 1.4 % (52 ns window) in the 20–150 GHz band at 17.48 keV and 3–4 % at 8 keV, opposite in sign on the two sides of the Bragg peak; the extended closed form (complex c) is TT-verified to 0.3 %; the ±η side asymmetry H(−η)/H(+η) = 1.02–1.09 is strain-spectrum-free and predicted, not verified | Entry 77 |
 | closed form in the window length, H(f; T_w) | confirmed: the packet-kept first-order form (CF-B) matches TT to 0.3 % at every window 0.14–300 ns, two energies, three packet lengths; the packet-free short form (CF-A, Entry 71's hand estimate) is **rejected** below ~100 τ by the pre-registered 1 % rule | Entry 75 |
 | signal maximum ≠ Fisher-information maximum (directive B2) | **negative** for a ps packet at one angle: amplitude maxima coincide (3 GHz apart), crystal moves nothing | Entry 70 |
 | formation law I_n = sin²/tanh²(πα\|J_n\|t̃), no fit | confirmed | Entries 1, 9, 19, 24; tests |
@@ -53,7 +54,14 @@ uv run python explore/nb/e68_nu_collapse.py run stats fit2 fig   # tonight's fal
 uv run python explore/nb/e70_fisher.py run fig                   # B2, one case (24 s)
 uv run python explore/nb/e71_window_H.py                         # window condition for H (11 s)
 uv run python explore/nb/e75_window_cf.py run posthoc fig        # H(f; T_w) closed form vs TT, boundaries (110 s)
+uv run python explore/nb/e77_chi_ih.py run ttp ttm conv60 fig    # chi_ih: second parameter, side asymmetry (170 s)
 ```
+
+**Fourth step, Day 2 (Entry 77).** The Bragg solver now takes χ_ih (`kappa_h`, f175d12). The
+pre-registered 1 % rule fired at the 52 ns window (1.4 %), so H carries two tabulated crystal
+parameters, g and χ_ih/χ_i0, no fit. New in kind: the two detuning sides of one phonon frequency
+get different H (1.6–1.9 % at 17.48 keV, 3–9 % at 8 keV), a ratio in which the strain spectrum
+cancels; it is the model's own test of the second parameter, not yet pre-registered as a claim.
 
 **Third step, Day 2 (Entry 75).** H(f; T_w) is now one closed form from the picosecond packet to the
 steady train: at Si 400 / 17.48 keV the crystal factor is flat to 1 % up to 5 ns, departs by 10 % at
@@ -62,9 +70,10 @@ ripples around the steady value with period 2x Λ/v_L. The packet-free short for
 140 ps (packet group delay and the −η image term) and was rejected under the rule; the packet-kept
 form is what goes into the paper.
 
-**Next falsification experiments, smallest first.** (T2a, the windowed closed form, is done: Entry 75.)
-1. Anomalous absorption χ_ih in Bragg (not in `solve_bragg`). If it changes H by more than the
-   claimed 1 % at κ/2πα ≈ 0.01, the closed form needs a second parameter. Tier: physics (src). (T2c)
+**Next falsification experiments, smallest first.** (T2a done: Entry 75. T2b done: Entry 76. T2c done: Entry 77.)
+1. Anomalous absorption χ_ih in Bragg: done (Entry 77, `solve_bragg(kappa_h=)`); rule fired at the
+   52 ns window (1.4 %), second parameter kept. Next smallest: pre-register the ±η side asymmetry
+   as a claim and test it in full TT with a packet (not a single mode) at both energies. (T2c)
 2. Asymmetric geometry (γ_0 ≠ γ_h): the χ_0 gauge of DESIGN.md fails; H may acquire a geometry
    factor. Needs a solver change.
 3. A smooth strain front instead of the step front of the Entry 58 packet: changes the high-frequency
@@ -81,7 +90,7 @@ G = chance of completion before graduation (2027 spring).
 
 | # | candidate | N | E | D | G | one-line reason |
 |---|---|---|---|---|---|---|
-| P1 | Transfer function H(f; T_w) + window condition + linearity bound for reading phonon spectra from time-resolved Bragg reflectivity (Entries 59, 64–66, 68, 71, 75) | 3 | 3 | 4 | 5 | Closed form done and TT-verified; after Entry 71 it corrects long-train (GHz, tens of ns) measurements, not the 140 ps Chalise packet, so its experimental weight rests on the same apparatus as P2; novelty bounded by S&W 2003 and two unread 1990s papers |
+| P1 | Transfer function H(f; T_w; g, χ_ih/χ_i0) + window condition + linearity bound for reading phonon spectra from time-resolved Bragg reflectivity (Entries 59, 64–66, 68, 71, 75, 77) | 3 | 3 | 4 | 5 | Closed form done and TT-verified; after Entry 71 it corrects long-train (GHz, tens of ns) measurements, not the 140 ps Chalise packet, so its experimental weight rests on the same apparatus as P2; novelty bounded by S&W 2003 and two unread 1990s papers |
 | P2 | Temporal Pendellösung of satellites behind a travelling front: formation law, Bessel ladder, period-ratio calibration of S (Entries 1, 9, 13, 19, 24) | 3 | 3 | 5 | 4 | Clean, no-fit, both geometries, tests; prior art DeCamp 2001 (n = 0 pulse) + Polikarpov 1987/88 (static extinction length) makes it "extension to every order"; needs a bulk GHz shear-wave experiment that does not yet exist |
 | P3 | Path memory: Θ_n law, transient-only satellite, overshoot map (Entries 28, 30, 34, 67) | 2 | 3 | 5 | 4 | Robust in the model, but at α = 0.5 it is kinematic diffraction from a graded grating and the slow-ramp limit is the Bessel ladder (Entry 34); best as a section of P2, not a paper |
 | P4 | Overlap regime: Bessel-zero resurrection with a computable third-order coupling and shifted zero (Entries 45, 51, 52, 54) | 4 | 1 | 3 | 2 | Possibly new, but observability is 4e-5 of the window integral (Entry 54) and Entin / Iolin–Entin are unread; theory only |
@@ -119,7 +128,7 @@ Risks, in order:
   condition, the bound and the formation law, not on the linearisation.
 - An earlier first-order Bloch-wave form exists (Chukhovskii & Förster, Wark & Lee). Not read.
 - Chalise's energy and normalisation are unknown; the comparison stays "same sign, same order".
-- Model limits: symmetric, σ, normal absorption only, plane wave, no instrument resolution.
+- Model limits: symmetric, σ, normal + anomalous absorption in Bragg (Entry 77; Laue still lossless), plane wave, no instrument resolution.
 
 ## 3. Figure plan (figures go to `figures/paper/`; poster figures are frozen)
 
@@ -153,7 +162,7 @@ Risks, in order:
 
 - Paper = P1 (transfer function) with P2 inside, or P2 (formation) as the first paper? P1 is
   closer to finished and tied to a current measurement; P2 is the poster's identity.
-- Whether to add χ_ih and asymmetric geometry to `solve_bragg` (Tier physics) before writing.
+- χ_ih is in `solve_bragg` (Entry 77, PR #16). Whether to add asymmetric geometry (Tier physics) before writing.
 - Library access for Chukhovskii & Förster 1995 and Wark & Lee 1999.
 - Whether to tell Chalise et al. that, in this model, their low-frequency deficit is not the crystal
   factor (Entry 71) and only partly the second-order term (Entry 66); and whether to correct

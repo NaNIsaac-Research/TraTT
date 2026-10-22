@@ -4936,3 +4936,79 @@ H is reported on both sides.
    of κ − 2cR0 changes by (κ_h/κ)/x, i.e. ~3 % at 20 GHz and ~0.7 % at 100 GHz at 17.48 keV, with
    opposite signs on the two sides; the effect on H is that times κ²/(κ² + (π/x)²). This puts the
    answer near the 1 % threshold; the rule is not adjusted for it.
+
+**Src change (f175d12).** `solve_bragg(..., kappa, kappa_h=0.0)`: `c = i pi alpha + kappa_h / 2` for
+both couplings; `kappa_h < 0` rejected. Tests added to `tests/test_core.py`: bit-identical at
+`kappa_h = 0` (`np.array_equal`), complex Darwin–Prins root to 1e-5 (κ_h = κ/2 so that the
+low-absorption mode still hides the back face: at κ_h → κ that mode absorbs at κ − κ_h and a
+thickness of 1/κ is no longer thick, which is the Borrmann effect itself, seen first as a failing
+test at κ_h = 11, κ = 12), higher static reflectivity at η = −πα than at +πα for κ_h > 0 and equal
+at κ_h = 0, and the negative-value check. Full suite after the change: 58 passed in 41 s
+(BelowNormal, approved HEAVY). README and DESIGN.md item 4 updated (Laue still has no χ_h'').
+
+**Reproduce.** `uv run python explore/nb/e77_chi_ih.py run ttp ttm conv60 fig` (run 2 s; ttp
+45 s; ttm 50 s; conv60 72 s); data `e77_chi_ih.json`, log `e77_chi_ih.log`, figure
+`figures/paper/e77_chi_ih.png`.
+
+**1. TT check of the extended closed form (rule item 2).** Single mode, g = 0.0100 (α = 95.4,
+κ = 6), κ_h = 0.93 κ, S = 0.002 and 48 RK4 steps per cycle (Entry 65 §3; the first run of this
+script copied the unconverged 24-step, S = 0.02 settings of `e65 tt` and gave 0.92 and 0.68 at
+x = 30 and 100, which Entry 65 §3 already says not to quote; corrected before the numbers below,
+rule unchanged).
+
+| x | η > 0: TT / closed form | κ_h effect, TT / closed form | η < 0: TT / closed form | κ_h effect, TT / closed form |
+|---|---|---|---|---|
+| 3 | 1.0000 | 0.9991 / 0.9989 | 0.9982 | 0.9996 / 1.0011 |
+| 10 | 1.0007 | 0.9957 / 0.9964 | 1.0028 | 1.0049 / 1.0036 |
+| 30 | 1.0001 | 0.9913 / 0.9919 | 1.0015 | 1.0091 / 1.0083 |
+| 60 | 0.9896 (48/cycle), **0.9968 (96/cycle)** | 0.9913 / 0.9910 | 0.9890 (48/cycle) | 1.0090 / 1.0093 |
+
+The extended closed form holds to 0.3 % once converged (x = 60: 0.9893 → 0.9966 without κ_h and
+0.9896 → 0.9968 with it, 48 → 96 steps per cycle, so the 1 % at 48 steps is the h⁴ phase error of
+Entry 65 §3(a), not the extension); the κ_h-specific change of the weight agrees between TT and the
+closed form to 0.03–0.15 % (η > 0) and 0.08–0.15 % (η < 0). Item 2 passes.
+
+**2. The rule (item 3): H(κ_h)/H(0) − 1 in per cent, Si 400, κ_h/κ = 0.93.**
+
+| f GHz | 5 | 10 | 20 | 30 | 40 | 60 | 87 | 100 | 150 | 200 | 300 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 17.48 keV, η > 0, steady | −0.25 | −0.47 | −0.78 | −0.90 | −0.91 | −0.81 | −0.65 | −0.59 | −0.42 | −0.32 | −0.22 |
+| 17.48 keV, η < 0, steady | +0.25 | +0.47 | +0.79 | +0.92 | +0.94 | +0.84 | +0.67 | +0.61 | +0.43 | +0.33 | +0.23 |
+| 17.48 keV, η > 0, 14 ns | −1.93 | −1.84 | −0.96 | −0.64 | −0.48 | −0.32 | −0.22 | −0.19 | −0.13 | −0.09 | −0.06 |
+| 17.48 keV, η > 0, 52 ns | +0.20 | −1.49 | −1.06 | **−1.33** | −1.13 | −0.81 | −0.57 | −0.50 | −0.34 | −0.25 | −0.17 |
+| 17.48 keV, η < 0, 52 ns | −0.25 | +1.68 | +1.11 | **+1.39** | +1.17 | +0.83 | +0.59 | +0.51 | +0.35 | +0.26 | +0.18 |
+| 8 keV, η > 0, steady | −3.62 | −3.90 | −2.78 | −2.01 | −1.54 | −1.03 | −0.69 | −0.59 | −0.37 | −0.25 | −0.14 |
+| 8 keV, η < 0, steady | +3.97 | +4.46 | +3.17 | +2.30 | +1.79 | +1.24 | +0.89 | +0.79 | +0.55 | +0.44 | +0.32 |
+
+Maximum over the 20–150 GHz band at g = 0.0100: steady 0.91 % (η > 0) and 0.94 % (η < 0);
+14 ns window 0.96 % and 0.98 %; 52 ns window 1.33 % and 1.39 %. **The rule fires, by the 52 ns
+window: the closed form needs χ_ih as a second parameter** (at the steady limit and at 14 ns it
+would have passed by 0.02–0.09 %, i.e. the answer sits on the threshold, as the pre-registered
+estimate of item 4 said it would). At 8 keV (g = 0.046) the correction is 2.8–3.2 % in the band
+and up to 4.5 % at 5–10 GHz. The pre-registered estimate (κ_h/κ)/x × κ²/(κ² + (π/x)²) gives
+0.9 % at 20 GHz and 0.6 % at 100 GHz at 17.48 keV, against 0.8 % and 0.6 % computed: the mechanism
+is the one written down, a 1/x correction to the effective absorption with opposite signs on the
+two sides of the Bragg peak.
+
+**3. What is new in kind: a side asymmetry.** With χ_ih the crystal factor differs between the
+two detunings of the same phonon frequency, H(−η)/H(+η) = 1.016–1.019 across 20–60 GHz at
+17.48 keV and 1.03–1.06 at 8 keV (up to 1.087 at 10 GHz), the Borrmann edge being the stronger one.
+A satellite pair measured at ±ω therefore has a ratio that does not depend on the strain spectrum
+at all (|G(ω)| cancels) and reads χ_ih/χ_i0 and x directly; without χ_ih the pair is symmetric at
+every window (CF-B is even in η when c is imaginary). Not pre-registered, so a statement of what
+the model predicts, not a claim; it is the natural check for the second parameter in an experiment.
+
+**Consequences.** (i) The paper's H carries two crystal parameters, g = χ_i0/|χ_rh| and
+χ_ih/χ_i0, both tabulated (X0h), so no fitting is added; the second is a ≤ 1 % steady correction
+at Si 400 / 17.48 keV, 1.4 % at the 52 ns window, 3–4 % at 8 keV. (ii) Entries 59, 65, 71, 75 keep
+their numbers to within those percentages. (iii) The sign convention of `kappa_h` is fixed by the
+physics (higher static reflectivity on the low-absorption edge, η < 0 in the code); the detuning
+side in an experiment is identified by the same static asymmetry. Class: **confirmed** (the
+extension, TT to 0.3 %), **rule fired** (second parameter needed at the 1 % level), side asymmetry
+**predicted, unverified**.
+
+**Scope.** Centrosymmetric crystal (χ_h = χ_hbar), symmetric Bragg, σ, semi-infinite, first order
+in S, X0h ratio 0.93 taken as the same at both energies (0.925 / 0.931). The Borrmann mode's
+absorption depth is 1/(κ − κ_h) ≈ 14/κ ≈ 2.6 mm at 17.48 keV, so inside the Darwin width (x ≲ 1)
+the window condition of Entry 75 changes qualitatively; not computed, outside the phonon band.
+Laue χ_h'' remains excluded (DESIGN.md item 4).
