@@ -4707,3 +4707,103 @@ integration at 14 ns (must reproduce Entry 71's 0.944 to 0.1 %).
   T_flat = largest window with H(20)/H(100) ≥ 0.9, T_half where the ratio is halfway
   (0.756 at 17.48 keV), T_90 where it is within 10 % of the steady 0.511. Each is confirmed by one
   TT point.
+
+**Setup (as run).** Si 400 symmetric Bragg, 17.48 keV (κ = 0.0629 per Λ, Λ = 11.54 µm, Λ/v_L =
+1.369 ns) and 8 keV; Entry 66 packet g = e^{−s/τ} sin(q0 s), f0 = 87 GHz, 0.9 cycles (τ = 10 ps),
+plus 10 and 100 cycles (τ = 115 ps, 1.15 ns) for the scope of the packet-free form; peak strain
+1e-5 (S/100 of Entry 66) and 1e-6 for the convergence check; f = 20–150 GHz; 13 windows 0.14–300 ns.
+TT: the Entry 66 semi-infinite Riccati in s = t − ζ, RK4 (64 steps per cycle of the highest
+frequency) through the packet to s_p = 30 τ; beyond s_p the crystal is unstrained and the Riccati has
+constant coefficients, so u = (R − r1)/(R − r2) = u_p e^{Λ(s − s_p)} exactly, |R|² − |R0|² is a sum
+of exponentials and its Fourier integral over [s_p, T_w] is analytic: every window costs nothing
+beyond one RK4 through the packet (0.2 s; 17 s for the 100-cycle packet). Reproduce:
+`uv run python explore/nb/e75_window_cf.py run posthoc fig` (110 s), data `e75_window_cf.json`,
+log `e75_window_cf.log`, figure `figures/paper/e75_window_H.png`.
+
+**1. The closed form.** With δ(t) = −ic(1 − R0²) S ∫₀ᵗ e^{Λ(t−s)} g(s) ds (Entry 59 linearisation,
+Λ = i(η + iκ) + 2cR0), one integration by parts gives, for the window [0, T_w],
+
+    F_T(W) = ∫₀ᵀ δ e^{iWt} dt = ic(1 − R0²) S [G_T(W) − e^{(Λ+iW)T} L_T(Λ)] / (Λ + iW),
+    G_T(W) = ∫₀ᵀ g e^{iWs} ds,   L_T(Λ) = ∫₀ᵀ g e^{−Λs} ds,
+    Ĩ(η)  = conj(R0) F_T(η) + R0 conj(F_T(−η))     (Fourier component of |R|² − |R0|² at η).
+
+CF-B keeps G_T and L_T (analytic for the damped sinusoid). CF-A, the packet-free crystal factor, sets
+L_T = G(−η), G_T = G (packet short against the window and against 1/|Λ − iη|), which is the Entry 65
+cos-mode form with every kernel 1/(Λ − isW) replaced by [1 − e^{(Λ − isW)T}]/(Λ − isW); its
+resonant term alone is Entry 71's hand estimate, H(f; T_w) ≈ H_∞(f) |1 − e^{−(κ + iπ/x) T_w}|.
+H is the weight divided by |G_T(η)| |R0| πS/κ (kinematic law), so TT, CF-A and CF-B are compared as
+absolute numbers, not normalised at 100 GHz.
+
+**2. Checks.** Analytic continuation vs plain RK4 to 14 ns: ratio 1.00000–1.00049. Mean-subtracted
+weight at 14 ns normalised at 100 GHz: 20 GHz 0.944, i.e. Entry 71's TT number reproduced. Step
+64 → 128 per cycle: ≤ 2e-5. S/100 → S/1000: H changes by −0.19 % (20 GHz) to +0.27 % (150 GHz),
+so TT at S/100 carries a 0.2–0.3 % second-order residual; the 0.78–0.80 % of CF-B for the 10- and
+100-cycle packets falls to 0.08 % and 0.21 % at S/1000 (post-hoc run), so it is the same residual.
+
+**3. Result: the rule fires on CF-A, CF-B passes.** Worst |H_TT/H_CF − 1| over all (f, T_w):
+
+| packet | energy | CF-A (packet-free) | CF-B (packet kept) |
+|---|---|---|---|
+| 0.9 cycles, τ = 10 ps | 17.48 keV | **8.3 %** (0.14 ns, 87 GHz); 2.1 % at 0.5 ns; ≤ 0.6 % for T_w ≥ 1.4 ns | 0.30 % |
+| 0.9 cycles | 8 keV | 8.3 %; same pattern | 0.30 % |
+| 10 cycles, τ = 115 ps | both | 41 % | 0.78 % (0.08 % at S/1000) |
+| 100 cycles, τ = 1.15 ns | both | 49 % | 0.80 % (0.21 % at S/1000) |
+
+So **CF-A is rejected** as a 1 % closed form in T_w, per the rule; **CF-B is the closed form in
+T_w**: exact to first order in S at every window from 0.14 ns to 300 ns, both energies, three packet
+lengths, with the residual equal to the second-order term of TT. CF-A's failure is at windows
+T_w ≲ 1 ns ≈ 100 τ only, and its cause is in the dropped term: L_T(Λ) − G(−η) ≈ i(Λ − iη) ∂G/∂W, i.e.
+the packet's group delay t_g = ∂ arg G/∂W shortens the effective window to T_w − t_g. Post-hoc check
+(written after the run, not pre-registered): CF-A with T_w → T_w − t_g(η) is within 1.3 % at 0.14 ns
+and 0.5 % from 0.5 ns on, so the mechanism is identified but the Taylor form is not a 1 % closed form
+at 0.14 ns either (the remaining part is the phase of the −η image term, which CF-A takes from a
+cos mode). Nothing was changed in the rule; the packet-free form stands only for T_w ≳ 100 τ.
+
+H_TT(f; T_w) for the 0.9-cycle packet at 17.48 keV (CF-B agrees to 0.3 %; steady H of Entry 65 is
+0.480 at 20 GHz, 0.940 at 100 GHz; the full table is in the log):
+
+| T_w ns | 20 GHz | 40 | 100 | 150 | H(20)/H(100) |
+|---|---|---|---|---|---|
+| 0.14 | 0.0063 | 0.0064 | 0.0062 | 0.0064 | 1.020 |
+| 1.4 | 0.0620 | 0.0621 | 0.0621 | 0.0624 | 0.999 |
+| 5 | 0.203 | 0.204 | 0.205 | 0.206 | 0.990 |
+| 14 | 0.447 | 0.467 | 0.473 | 0.475 | 0.944 |
+| 22 | 0.553 | 0.613 | 0.633 | 0.636 | 0.873 |
+| 30 | 0.582 | 0.702 | 0.741 | 0.747 | 0.785 |
+| 50 | 0.505 | 0.777 | 0.880 | 0.893 | 0.574 |
+| 80 | 0.468 | 0.756 | 0.935 | 0.959 | 0.501 |
+| 300 | 0.479 | 0.737 | 0.940 | 0.975 | 0.510 |
+
+**4. The boundaries (CF-B, confirmed by TT at the same windows, 17.48 keV).**
+
+| | H(20)/H(100) target | T_w | CF-B | TT |
+|---|---|---|---|---|
+| T_flat (10 % departure from flat) | 0.900 | 19.6 ns | 0.899 | 0.897 |
+| T_half (halfway to steady) | 0.756 | 32.8 ns | 0.754 | 0.752 |
+| T_90 (within 10 % of steady) | 0.560 | 52.2 ns | 0.560 | 0.558 |
+
+Flat to 1 % up to 5 ns, to 6 % at 14 ns; the factor 2 is back at about 50 ns (window), i.e. a train
+≥ 440 µm long at v_L. H(f; T_w) is not monotonic: at 20 GHz it overshoots to 0.58 at 30 ns and
+undershoots to 0.47 at 80 ns before settling at 0.48, which is the |1 − e^{−(κ + iπ/x)T}| ripple of
+period 2x Λ/v_L (75 ns at 20 GHz) damped by e^{−κT}; TT reproduces the ripple (0.501 at 80 ns against
+0.511 steady). At 8 keV (1/κ = 4.8 ns) H is steady from 30 ns on and the departure from flat is 7 %.
+Below 0.5 ns the ratio oscillates by ±3 % at the difference frequency: the −η image term of a real
+signal truncated at T_w, of relative size 1/(2ηT_w); this is the "leakage" Entry 71 saw at 140 ps,
+and it is in CF-B (TT sits on the curve), so it is a property of the estimator, not noise.
+
+**5. What this changes.**
+- Entry 71's wording "flat to ±4 % (140 ps, leakage)" is right in kind; the ±4 % is the image term
+  plus the packet's group delay, both first order and both in CF-B. Entry 71's consequences stand.
+- The paper's H is now H(f; T_w) = CF-B, one formula from the ps packet (H flat, estimator = kinematic
+  law) to the steady train (Entry 65), with T_flat, T_half, T_90 as the design numbers for the
+  long-train experiment. The packet-free short form is a stated approximation (T_w ≳ 100 τ).
+- A time-resolved measurement whose window is 20–50 ns at Si 400 / 17.48 keV sits on the steep part
+  of the curve: there the crystal factor depends on the window length itself, which a measurer must
+  know to 10 % to keep H to 5 % (slope of the right panel of the figure).
+
+**Checks and scope.** Symmetric Bragg, σ, normal absorption, plane wave, quasi-static, semi-infinite;
+first order in S (ν ≪ 0.1); packet entering at t = 0 from the surface. Windows > 14 ns put the packet
+front 10–220 Λ (0.1–2.5 mm) deep, so a real crystal must be that thick and the quasi-static
+assumption (v_L/c ≪ 1) still holds; the plane-wave assumption is untouched by the depth. Anomalous
+absorption (T2c) and asymmetry not included. Class: **confirmed** (CF-B) and **falsified** (CF-A as
+a universal form); prior art for the windowed first-order form not searched (T2d).
