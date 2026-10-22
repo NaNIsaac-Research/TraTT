@@ -5840,3 +5840,42 @@ defined in advance, no fit).
 **Scope.** Laue, α_ac = 20, single phase, Gaussian beam centred on the channel, detector = one
 channel, t = 0⁺ rocking curve subtracted ray by ray; lossless; n = 1, 2; a slow ramp of 1 t_tr
 only. Bragg populations were shown unclean in Entry 86 and are not retested.
+
+---
+
+## 2026-10-23 — Entry 88: polarisation and the static Debye–Waller factor as rescalings (T2r)
+
+**Why.** `notes/referee_pass.md` objection 2 leaves two model limits open: the π polarisation
+component (DESIGN.md item 6) and the static Debye–Waller factor. BACKLOG T2r: do they reduce to a
+redefinition of S and κ (α), or do they need numbers in the limitations section? Script
+`explore/nb/e88_polarisation_dw.py`.
+
+**Algebra written before the run.**
+(a) Polarisation. The coupling carries C = 1 (σ) or |cos 2θ_B| (π); χ_0 does not. So for the π
+component c → C c (both couplings; with χ_ih, c = iπα + κ_h/2 → C(iπα + κ_h/2)), κ unchanged:
+α_π = C α_σ, g_π = g_σ/C, κ_h/κ unchanged, f_D,π = C f_D,σ so x_π = x_σ/C; the first-order
+amplitude ν_π = C ν_σ, the formation rate α_n → C α_n. For a pure polarisation this is the
+symmetric solver at another α: exact, as in Entry 81. An unpolarised beam adds the two
+polarisation intensities, both driven by the same strain, so the oscillating parts add
+deterministically: F_mix(ω) = F_σ(ω) + F_π(ω) (complex, each from CF-B with its own c), and the
+mixed crystal factor H_mix = |F_σ + F_π| / (N_σ + N_π) with N the kinematic laws (N_π/N_σ ≈ C²
+in the tail, since |R0| ∝ α there). For P2 the unpolarised centre intensity is
+½[sin²(πα_n t̃) + sin²(πCα_n t̃)], two periods, not one law. C = 0.348 for Si 400 at 8 keV
+(θ_B = 34.8°), 0.727 for Si 440 at 17.48 keV (21.7°), 0.866 for Si 400 at 17.48 keV (15.1°).
+(b) Static Debye–Waller. χ_h = χ_h⁰ e^{−M} for both χ_rh and χ_ih (same factor), χ_0 unchanged:
+α → α e^{−M}, κ unchanged, κ_h/κ ∝ e^{−M}. The X0h constants used throughout (Entry 20) are
+already the room-temperature values with e^{−M} (Si 400: e^{−M} = 0.94 with B = 0.47 Å²), so the
+model's Λ, g and χ_ih/χ_i0 already contain it; S = h·u is a phase and is untouched (the coherent
+displacement enters through J_n(S), Entry 33). What is not in the constants is a temperature
+change of M under drive: at the 1e-4 duty cycle of Entry 73 the average power is mW/cm² and the
+change is negligible; stated, not computed.
+
+**Pre-registered rule (BACKLOG T2r).** "Absorbed as a factor" if (i) the pure-π case is the σ
+closed form with (g/C, x/C) to machine precision against the TT run at α = C (identity check at
+one point), and (ii) the unpolarised H_mix from the closed-form sum agrees with the TT sum
+(σ run + π run, same packet, Entry 75 machinery with c = iπC for π) to 0.3 % at every (f, T_w) for
+Si 440 / 17.48 keV Bragg (longitudinal wave, x = 2.4–4.7, f = 1, 2 GHz, T_w = 7 and 300 ns) and
+Si 400 / 8 keV (f = 20, 40, 100 GHz, T_w = 14 and 300 ns); otherwise "numbers in the limitations
+section". Reported either way: H_π/H_σ, H_mix/H_σ, the window numbers T_flat/T_half/T_90 for σ,
+π and unpolarised, and ν_π/ν_σ = C; for (b) the e^{−M} values and the statement above. No new
+solver; the single-ray (σ-polarised) numbers of Entries 65–87 stand as the σ case.
