@@ -4551,3 +4551,82 @@ through a t_tr low-pass filter, order by order.
 **Scope.** Laue, no absorption, α = 0.5 (no Pendellösung crossing), R = 0.0125, one perturbation
 shape, n = 1, 2 only. The Bragg reading tanh²(πα|Θ_n|) is exact at resonance (Entry 30), so the
 same degeneracy holds there; not run.
+
+---
+
+## 2026-10-23 — Entry 73: what S = 0.5–6 means physically (T1c, directive C)
+
+**Why.** The poster's maps run S = 0.5–6 without saying what displacement, strain, stress and drive
+power that is. Script `explore/nb/e73_realisability.py` (constants only, no TT; 1 s), data
+`e73_realisability.json`, log `e73_realisability.log`. X-ray constants from X0h (Entry 20);
+c44 = 79.6 GPa, ρ = 2329 kg m⁻³, v_T = 5846 m/s (textbook, not re-verified); acoustic nonlinearity
+parameter β ≈ 5 (order of magnitude, not verified). Geometry: symmetric Laue, bulk shear wave along the
+surface normal polarised along h (Entry 6), L = 3 Λ_P.
+
+**Definitions.** u0 = S d/(2π); strain ε = K u0 = S d/Λ_ac (Λ_ac = v_T/f); stress σ = c44 ε; energy
+density w = ½ c44 ε²; intensity I = v_T w; second-harmonic strain after L, ε2/ε = (β/2) k ε L;
+R = Λ_ac/Λ_P (independent-satellite rule R ≤ 0.1, Entries 19, 54); β_qs = 2πfL/c (Entry 62).
+
+**1. Displacement vs strain.** u0 does not depend on frequency: u0 = 7.6 pm × S for Si 440 (d = 96 pm),
+so S = 6 is u0 = 92 pm = 0.95 d — the atoms move by almost one lattice spacing of the reflection. The
+strain is what elasticity sees, and it is small: ε = 1.6e-5 × S at 1 GHz, 3.3e-5 × S at 2 GHz (Si 440).
+A large S is a large absolute displacement at a small strain, because Λ_ac/d ≈ 6×10⁴.
+
+**2. Table, Si 440 (same for 17.48 and 30 keV except R, β_qs and ε2/ε, which scale with L).**
+
+| f GHz | S | u0 pm | u0/d | ε | σ MPa | w J/m³ | I W/cm² | ε2/ε (17.48 keV, L = 163 µm) | ε2/ε (30 keV, L = 296 µm) |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | 0.5 | 7.6 | 0.08 | 8.2e-6 | 0.65 | 2.7 | 1.6 | 0.004 | 0.007 |
+| 1 | 1 | 15.3 | 0.16 | 1.6e-5 | 1.3 | 11 | 6.3 | 0.007 | 0.013 |
+| 1 | 2 | 30.6 | 0.32 | 3.3e-5 | 2.6 | 43 | 25 | 0.014 | 0.026 |
+| 1 | 3 | 45.8 | 0.48 | 4.9e-5 | 3.9 | 97 | 56 | 0.022 | 0.039 |
+| 1 | 4 | 61.1 | 0.64 | 6.6e-5 | 5.2 | 172 | 100 | 0.029 | 0.052 |
+| 1 | 6 | 91.7 | 0.95 | 9.9e-5 | 7.8 | 386 | 226 | 0.043 | 0.078 |
+| 2 | 1 | 15.3 | 0.16 | 3.3e-5 | 2.6 | 43 | 25 | 0.029 | 0.052 |
+| 2 | 2 | 30.6 | 0.32 | 6.6e-5 | 5.2 | 172 | 100 | 0.058 | 0.105 |
+| 2 | 3 | 45.8 | 0.48 | 9.9e-5 | 7.8 | 386 | 226 | 0.086 | 0.157 |
+| 2 | 6 | 91.7 | 0.95 | 2.0e-4 | 15.7 | 1546 | 904 | 0.173 | 0.314 |
+
+Other reflections at the same S and f: Si 400 has 1.41× and Si 220 2× the strain, stress and ε2/ε
+(d larger), and 4× the intensity for 220. R at 1 / 2 GHz: 0.108 / 0.054 (440, 17.48 keV),
+0.059 / 0.030 (440, 30 keV), 0.137 / 0.069 (400), 0.161 / 0.081 (220). β_qs ≤ 1.2e-2 everywhere.
+
+**3. Sharp front vs smooth waveform.** A resonant transducer of quality factor Q rings up over ~Q/f.
+At Si 440: rise/t_tr = 0.36 / 1.08 / 3.59 for Q = 10 / 30 / 100 at 1 GHz and 17.48 keV (0.18 / 0.54 /
+1.79 at 2 GHz; 0.20 / 0.59 / 1.97 at 1 GHz and 30 keV). The step-onset law (poster Fig. 1 collapse)
+needs rise ≲ 0.2 t_tr, i.e. Q ≲ 5 at 1 GHz: unlikely for a resonant device. **The regime a real
+transducer gives is the ramp regime of Entry 67 (T/t_tr = 0.2–4)**, already mapped by the Θ_n law
+with ≤ 8e-5 error against TT, so no new TT run is needed to replace the sharp front by a smooth one.
+Within a cycle, the waveform stays sinusoidal while ε2/ε is small; above ~10 % (S ≥ 4 at 2 GHz, or
+S = 6 at 30 keV) the Entry 35 harmonic non-ideality applies (law error 0.014 at ε2 = 0.2).
+
+**4. Two validities, separately.**
+- **Elastic wave.** Linear elasticity holds throughout (ε ≤ 2e-4, σ ≤ 31 MPa, orders of magnitude
+  below fracture); the first correction is finite-amplitude harmonic generation, ε2/ε ≤ 5 % for
+  S ≤ 3 at 1 GHz and ≤ 2 at 2 GHz (17.48 keV), reaching 17–31 % at S = 6, 2 GHz. Attenuation at
+  1–2 GHz over 0.3 mm is ≤ 2 % amplitude (Entry 35 estimate, textbook order). So the elastic side is
+  **valid for all S ≤ 6 at 1 GHz, and for S ≤ 2–3 at 2 GHz as a clean sinusoid**.
+- **TT equation.** Two-beam, symmetric, quasi-static (β_qs ≤ 1.2e-2), and the displacement enters
+  the phase exactly for any u0 (the model never linearises in u). The independent-satellite reading
+  needs R ≤ 0.1: 1 GHz at 17.48 keV sits at the edge (0.108); 2 GHz, or 30 keV, is inside. Not
+  assessed: X-ray beam divergence against the Darwin width, lateral acoustic inhomogeneity.
+- **Drive power.** The one number this model cannot judge. S = 1 at 1 GHz is 6 W/cm² of acoustic
+  intensity, S = 6 at 2 GHz is 900 W/cm². A pulsed drive of ~100 ns (≥ 2 t_tr) at 1 kHz is a duty
+  cycle of 1e-4, so average powers are mW/cm² and heating is not the issue; the peak conversion of a
+  GHz bulk transducer is. **No verified transducer number is in hand**; this is a library/Isaac item.
+
+**Verdict (Si 440, 17.48–30 keV).**
+
+| S | 1 GHz | 2 GHz |
+|---|---|---|
+| 0.5–2 | **feasible**: ε ≤ 3.3e-5, I ≤ 25 W/cm² (pulsed), ε2/ε ≤ 3 % | **feasible**: ε ≤ 6.6e-5, I ≤ 100 W/cm², ε2/ε ≤ 10 % |
+| 3–4 | **limit**: I = 56–100 W/cm², ε2/ε 2–5 % | **limit**: I = 230–400 W/cm², ε2/ε 9–21 % (harmonics must be modelled) |
+| 6 | **limit**: I = 230 W/cm², ε2/ε 4–8 % | **not as a clean wave**: I = 900 W/cm², ε2/ε 17–31 % |
+
+"feasible / limit" here is on the elastic and TT side with the drive power unverified; a transducer
+delivering ≥ 50 W/cm² peak at 1–2 GHz would make the limit column feasible.
+
+**Consequence for the paper.** The poster's S = 3–6 overshoot cases (Entry 67 B, C) are at the
+limit at 1 GHz and need a transducer number; the S ≤ 2 regime (where the first satellite forms with
+τ_1 = 17–30 ns) is where the proposal should be written. The ramp regime, not the step, is the
+observable one.

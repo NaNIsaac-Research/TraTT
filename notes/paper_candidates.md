@@ -82,8 +82,12 @@ G = chance of completion before graduation (2027 spring).
 and both need the same measurement: a GHz bulk acoustic train read over a window longer than
 max(1/κ, x/π) Λ/v_s. For Si 400 at 17.48 keV that is ≥ 22 ns (train ≥ 185 µm long); for the
 poster's Si 440 Laue geometry t_tr is already 28–51 ns (Entry 20), so the same transducer drive
-serves both. Without such a measurement the paper is theory with a proposal; T1c decides whether
-S = 0.5–6 at 1–2 GHz is reachable.
+serves both. Without such a measurement the paper is theory with a proposal. T1c (Entry 73): on
+the elastic and TT side S ≤ 2 at 1–2 GHz is feasible (strain ≤ 6.6e-5, second harmonic ≤ 10 %),
+S = 3–6 is at the limit (harmonics 10–30 % at 2 GHz); the drive is 6–100 W/cm² peak acoustic
+intensity for S = 1–2, pulsed, and no verified GHz bulk-transducer number is in hand. A real
+transducer rings up over 0.2–4 t_tr, so the observable regime is the ramp map (Entry 67), not the
+step collapse.
 
 **Recommendation.** One paper, P1 + P2, around one experiment: a GHz bulk shear wave entering a
 Si crystal, read over tens of ns. Its linear regime (ν ≲ 0.1) is the H-corrected spectrometer, its
@@ -94,7 +98,8 @@ alone on the strength of the Chalise correction; Entry 71 removed that strength.
 
 Risks, in order:
 - No long-window (tens of ns) time-resolved satellite measurement exists yet; the paper's
-  experimental relevance is a proposal (T1c decides whether S = 0.5–6 at 1–2 GHz is reachable).
+  experimental relevance is a proposal. Entry 73: elastic side fine for S ≤ 2 (limit at 3–6); the
+  transducer peak power (6–100 W/cm² at 1–2 GHz for S = 1–2) is unverified.
 - A referee calls the Bloch-wave correction of S&W routine. Answer: the paper rests on the window
   condition, the bound and the formation law, not on the linearisation.
 - An earlier first-order Bloch-wave form exists (Chukhovskii & Förster, Wark & Lee). Not read.
