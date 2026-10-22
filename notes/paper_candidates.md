@@ -10,7 +10,9 @@ read in full; **hypothesis** = stated, not tested. Scores are 1–5 (5 = best), 
 **Claim.** An acoustic satellite of a Bragg reflection is a dynamical reflection with its own
 amplitude. Written to first order in the strain, that amplitude gives a closed-form transfer function
 H(ω; κ/2πα) between the strain spectrum and the time-Fourier weight of the reflectivity, valid
-inside the Darwin width where the Sondhauss–Wark (2003) plane-wave form fails (Entries 59, 64, 65).
+inside the Darwin width where the Sondhauss–Wark (2003) plane-wave form fails (Entries 59, 64, 65),
+**for a single ray**: a beam whose spread in detuning exceeds the ringing width κ + π/x measures the
+kinematic law times a flat factor κ√(π/2)/σ_η instead (Entry 82).
 When the amplitude is not small the satellite forms dynamically with extinction length
 Λ_P/|J_n(S)|, which is the poster's formation law (Entries 1, 9). The first-order amplitude ν is a
 sufficient linearity criterion: ν ≲ 0.1 keeps the weight linear to 2 % (Entry 68) on the scanned
