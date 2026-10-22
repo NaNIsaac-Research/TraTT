@@ -5492,3 +5492,36 @@ it sees a frequency-dependent, non-monotonic beam-averaged factor that carries t
 0.24 %) and falsifiable once σ_η is known from the optics. It is a pre-registration candidate
 (not run as such; the Entry 83 scan is its first map), and it means P1 + P2 still share an
 observable in the GHz regime even though the single-ray H needs an IXS-grade beam.
+
+---
+
+## 2026-10-23 — Entry 84: beam divergence and the formation law at the satellite centre (T2n)
+
+**Why.** Entries 82–83 settled the beam condition for the Fourier-weight estimator (P1). The
+poster's observable (P2) is different: the centre intensity of the n-th satellite, I_n(t̃) =
+sin²(πα|J_n(S)|t̃) in Laue, tanh² in Bragg (Entries 1, 9; Fig. 4b), a step-front drive at S ~ 1.
+Its angular scale is the satellite's own rocking width, w_n = 2πα|J_n(S)| in η (the Darwin-like
+half-width with coupling α_n = α|J_n|), which is |J_n(S)| = 0.3–0.6 main Darwin half-widths, i.e.
+0.5–1 µrad at Si 440 / 17.48 keV. BACKLOG T2n. Script `explore/nb/e84_satellite_divergence.py`.
+
+**Pre-registered rule (BACKLOG T2n, written before the run).** The four poster cases
+(S, α, n) = (0.5, 2, 1), (1.5, 2, 1), (2, 4, 2), (1.5, 4, 1), α_ac = 20, step front, Laue and Bragg,
+t̃ = 0–1 (61 points + the poster's offset 0.0037), full TT `rocking_cube` on an η grid
+nq + δ with spacing w_n/40 to ±5σ_η, Gaussian weights; σ_η = 0.1, 0.3, 1 × w_n. Metrics on the
+first maximum of I_n(t̃) (parabolic interpolation): its time (the "period") and its height (the
+"amplitude"), beam-averaged against single-ray.
+- **"P2 is measurable with an ordinary beam"** if at σ_η = 1 × w_n both |Δperiod| ≤ 1 % and
+  |Δamplitude| ≤ 5 % in every case and geometry; otherwise the table of the largest σ_η meeting
+  both, with w_n in µrad for Si 440 / 17.48 keV (Laue) and Si 400 / 8 keV (Bragg).
+- Check, not verdict: the beam average of the independent-satellite closed form (two-beam slab of
+  thickness t̃ with coupling α_n at detuning δ, computed with the lossless solvers at φ = 0 by the
+  scaling α → α_n t̃, η → δ t̃) must agree with the TT beam average to 2 %, else the independent-
+  satellite picture fails off-centre and the closed form is not used.
+- Expectation written beforehand: the satellite rocking curve at the first maximum has half-width
+  ≈ w_n, so σ_η = 0.3 w_n should cost ~5–10 % in amplitude and shift the maximum earlier by a few
+  per cent, and σ_η = w_n should halve the amplitude: the rule is expected to fail at 1 × w_n and
+  the condition to land at σ_η ≈ 0.2–0.3 w_n, i.e. 0.1–0.3 µrad — the same sub-µrad class as P1.
+- Reported, not pre-registered: for σ_η ≫ w_n the beam average becomes the integrated satellite
+  population, P_n(t̃) ∝ ∫_0^{2πα_n t̃} J_0(x) dx in Laue (the classic integrated Laue intensity of a
+  slab of coupling α_n t̃), which is a divergence-free observable with its own formation law; its
+  TT beam average at σ_η = 3 w_n is compared with that integral.
