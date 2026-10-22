@@ -4488,3 +4488,66 @@ picosecond packet 0.1 Λ deep sees none of it.
 **Not done.** A windowed closed form (the finite-T integral above, with G(W) for the packet);
 the intermediate regime T ~ 1/κ; windows beyond 14 ns (the packet is then 10 Λ deep and the
 quasi-static and plane-wave assumptions should be rechecked).
+
+---
+
+## 2026-10-22 — Entry 72: which histories time-resolved diffraction does not distinguish (directive B1)
+
+**Why.** Isaac's question B1: can two acoustic fields that steady-state diffraction cannot tell apart
+be told apart in time-resolved diffraction? Inside this model the steady state of a filled
+constant-amplitude wave knows only (S, q); any two drive histories with the same final amplitude are
+indistinguishable there, and Entries 28–31 already show them distinguishable in the transient. The
+quantitative content of B1 is therefore the converse: **what does the transient not distinguish?**
+By the accumulated-coupling law, order n reads only the running mean of J_n(S A(s)) over the last
+transit. Script `explore/nb/e72_history_degeneracy.py` (`law`, `tt`, `fig`); data
+`e72_history_degeneracy.json`; log `e72_history_degeneracy.log`; figure
+`figures/paper/e72_history_degeneracy.png`. Reproduce: `uv run python explore/nb/e72_history_degeneracy.py` (7 s).
+
+**Construction.** History 1: linear ramp A_1(s) = clip(s, 0, 1) (T = t_tr, then held). History 2:
+J_1(S A_2(s)) = J_1(S A_1(s)) + δ(s), δ = 0.1 sin(2π(s − 0.2)/0.5) on s ∈ [0.2, 0.7], zero outside;
+inverted on the monotone branch of J_1 (S = 1.5, S A ≤ 1.84). The envelopes differ by up to 0.167
+(a 17 % amplitude wobble during the ramp; A_2 is non-monotone). For t ∈ [0.7, 1.2] the window
+[t − 1, t] holds the whole wobble, whose mean is zero, so Θ_1 is identical there by construction.
+Both histories end in the same filled state S = 1.5.
+
+**Pre-registered rule (docstring, before the TT run).** Laue, α = 0.5, α_ac = 40 (R = 0.0125,
+Entry 67 conditions), 8 carrier phases at fixed envelope time, η = +q and +2q, n_z = 2800:
+(i) |ΔI_1| < 1e-3 for t ∈ [0.7, 1.2] → order-1 degeneracy confirmed, else claim #21 fails here;
+(ii) TT difference traces agree with the law's to 1e-3 at every t, both orders;
+(iii) if the law predicts max|ΔI_2| > 3e-3 in the window and TT confirms, order 2 breaks the
+degeneracy at this S; if the law predicts less, "not resolved at this S", no claim.
+
+**Results.**
+
+| | law | full TT |
+|---|---|---|
+| max\|ΔI_1\|, t ∈ [0.7, 1.2] | 8.4e-11 | **8.8e-7** |
+| max\|ΔI_1\|, outside the window | 2.50e-2 | 2.50e-2 |
+| max\|ΔI_2\|, in window | 1.25e-3 | 1.25e-3 |
+| max\|ΔI_2\|, outside | 5.82e-3 | 5.82e-3 |
+| max\|ΔI_TT − ΔI_law\|, n = 1 / 2 | — | 2.5e-6 / 4.4e-6 |
+| max\|I_TT − I_law\| (each history), n = 1 / 2 | — | 1.9e-5 / 6.7e-5 |
+| convergence (8 → 16 phases, n_z × 2), n = 1 / 2 | — | 5.7e-6 / 5.3e-5 |
+
+- (i) **Confirmed.** Two histories whose envelopes differ by 17 % give the same first-order
+  satellite to 9e-7 while the window contains the perturbation, and differ by up to 2.5e-2 before
+  and after. The order-1 transient reads only the t_tr running mean of J_1(S A), as the law says.
+- (ii) **Confirmed** at 4e-6, three orders below the threshold, on a non-monotone envelope.
+  Claim #21 (Entry 33) survives this attempt.
+- (iii) **Not resolved at this S.** The law predicts 1.25e-3 for the order-2 difference inside the
+  window, below the pre-set 3e-3; TT reproduces the number but no claim is made that order 2
+  breaks the degeneracy. (At S = 1.5 the n = 2 satellite is weak, I_2 ≤ 0.085; a larger S is outside
+  the monotone-inversion construction used here and was deliberately not tried tonight.)
+
+**Answer to B1, bounded.** Yes, the transient distinguishes histories the steady state cannot, but
+only up to a known equivalence class: at each order n it measures the moving average of J_n(S A)
+over one transit, so histories that differ by a zero-mean (per window) perturbation of J_n(S A)
+are degenerate at that order. Different orders have different kernels, so multi-order readout
+reduces, and may remove, the degeneracy; the size of that effect at S = 1.5 is 1e-3 and was not
+claimed. This is a consequence of the Θ_n law (confirmed phenomenon within the model), not a new
+mechanism, and it is the precise sense in which "time-resolved diffraction reads the drive history":
+through a t_tr low-pass filter, order by order.
+
+**Scope.** Laue, no absorption, α = 0.5 (no Pendellösung crossing), R = 0.0125, one perturbation
+shape, n = 1, 2 only. The Bragg reading tanh²(πα|Θ_n|) is exact at resonance (Entry 30), so the
+same degeneracy holds there; not run.

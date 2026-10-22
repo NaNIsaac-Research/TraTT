@@ -77,6 +77,14 @@ G = chance of completion before graduation (2027 spring).
 | P4 | Overlap regime: Bessel-zero resurrection with a computable third-order coupling and shifted zero (Entries 45, 51, 52, 54) | 4 | 1 | 3 | 2 | Possibly new, but observability is 4e-5 of the window integral (Entry 54) and Entin / Iolin–Entin are unread; theory only |
 | P5 | Second-order strain terms in the Chalise spectrum (Entry 66) | 2 | 3 | 5 | 5 | Known in kind (Bessel expansion); its value is the size at their strain and the fluence-series criterion; a section of P1 |
 
+**What carries the paper now (after Entry 71).** Not the Chalise correction. It is the pair
+"closed-form H valid inside the Darwin width + its window condition" together with the formation law,
+and both need the same measurement: a GHz bulk acoustic train read over a window longer than
+max(1/κ, x/π) Λ/v_s. For Si 400 at 17.48 keV that is ≥ 22 ns (train ≥ 185 µm long); for the
+poster's Si 440 Laue geometry t_tr is already 28–51 ns (Entry 20), so the same transducer drive
+serves both. Without such a measurement the paper is theory with a proposal; T1c decides whether
+S = 0.5–6 at 1–2 GHz is reachable.
+
 **Recommendation.** One paper, P1 + P2, around one experiment: a GHz bulk shear wave entering a
 Si crystal, read over tens of ns. Its linear regime (ν ≲ 0.1) is the H-corrected spectrometer, its
 dynamical regime is the formation law, and the window condition of Entry 71 is what makes both
