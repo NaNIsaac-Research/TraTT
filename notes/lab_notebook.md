@@ -5639,3 +5639,41 @@ T_half 12 ns, T_90 17 ns; 1/κ = 260 µm = 44 ns.
 **Scope.** Table only; no run beyond the 1 s closed-form window numbers; Laue absorption is not in
 the solver (the Laue contrast 1/cosh(2πα''J_1) of Entry 20 is 0.99 here); transducer output
 unverified (DotFiles#57).
+
+---
+
+## 2026-10-23 — Entry 86: does the integrated satellite population lift the beam condition? (T2p)
+
+**Why.** Entry 84: the centre formation law needs σ_η ≲ 0.3 w_n. A detector that integrates the
+whole satellite channel measures the population instead, which for a beam much wider than the
+satellite is the rocking-curve integral and should not care about σ_η. BACKLOG T2p. Script
+`explore/nb/e86_population_divergence.py`.
+
+**Observable and detector.** The n-th channel is |η − nq| ≤ q/2 (q = 2πα_ac = 126 at α_ac = 20,
+i.e. 6.7 main Darwin half-widths, 12 µrad at Si 440 / 17.48 keV); the detector accepts the whole
+channel and nothing else (an angle-resolving detector of that acceptance, or a slit). The beam
+has a Gaussian spread σ_η in detuning centred on nq. Measured population:
+P(t; σ_η) = ∫_channel p(δ) [I(nq + δ, t) − I(nq + δ, 0)] dδ / ∫_channel p(δ) dδ,
+with the t = 0 (unmodulated) intensity subtracted ray by ray, which a measurement can do (it is
+the pre-pump rocking curve). Reference: the flat-beam limit P_flat(t) = (1/q) ∫_channel [I(t) − I(0)] dδ.
+Full TT `rocking_cube` on the channel grid once per case and geometry (spacing w_n/40, ≤ 1600 rays),
+then every σ_η is a change of weights.
+
+**Pre-registered rule (BACKLOG T2p, written before the run).** Four poster cases, Laue and Bragg,
+α_ac = 20, step front, t̃ ≤ 1, σ_η = 0.3, 1, 3, 10 w_n. Metrics against P_flat: "period" = time of
+the first maximum (Laue; parabolic interpolation) or the half-rise time (Bragg, monotone);
+"amplitude" = P/P_flat at that time.
+- **"The integrated observable works with an ordinary beam"** if at σ_η = 1, 3 and 10 w_n both
+  |Δperiod| ≤ 1 % and |Δamplitude| ≤ 5 % in every case and geometry; otherwise the table of the
+  smallest σ_η from which both hold (the integrated observable converges to P_flat from above in
+  σ_η, the opposite direction to Entry 84), with w_n and q in µrad.
+- Reported, not judged: P_flat's own shape against the Laue integrated-intensity law
+  ∫_0^{2πα_n t̃} J_0(x) dx (normalised at t̃ = 1) and, for Bragg, against tanh²; and the signal size
+  P_flat(1)/q relative to the centre intensity.
+- Expectation written beforehand: at σ_η = 1 w_n the Gaussian still weights the satellite centre
+  and P/P_flat will be above 1 by ~10–30 % with the centre law's period; from σ_η ≳ 3 w_n (the
+  Gaussian flat over the satellite's ~2 w_n core) both criteria should hold; at 10 w_n the beam
+  is 3–6 half-widths wide and is cut by the channel edge, which the normalisation handles. So the
+  expected outcome is "condition table, σ_η ≳ 3 w_n", i.e. the integrated observable **does** lift
+  the sub-µrad condition, with the detector acceptance (one channel, ~12 µrad) as the new condition.
+- Convergence: δ-grid spacing halved at one case must change P/P_flat by < 0.2 %.
