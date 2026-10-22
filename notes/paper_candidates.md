@@ -34,6 +34,7 @@ Where each part stands:
 | beam condition at GHz-train frequencies (x = 1–10) | **confirmed, single-ray condition stands** (Entry 83): the 5 % tolerance allows σ ≤ 0.6 µrad / 7 meV (x = 1) to 0.3 µrad / 3.6 meV (x = 5) at 8 keV, ≤ 0.14 µrad / 9 meV at 17.48 keV; at x ≲ 2 the beam average first raises the factor 1.3–2× (resonance at π/x off the nominal detuning), so the flat law of Entry 82 holds only for x ≳ 10 | Entry 83 |
 | beam condition for the formation law (P2, satellite centre) | **confirmed, condition table** (Entry 84): at σ_η = w_n (the satellite's own rocking width 2πα\|J_n\|) the first maximum loses 13–21 % (Bragg) and 25–40 % (Laue); both criteria (period 1 %, amplitude 5 %) hold only for σ_η ≤ 0.3 w_n in Bragg and 0.1–0.3 w_n in Laue, i.e. 0.1–0.3 µrad at Si 440 / 17.48 keV, 0.6–1.4 µrad at Si 400 / 8 keV; the integrated population is the beam-tolerant observable (its law not established) | Entry 84 |
 | integrated satellite population as the beam-tolerant P2 observable | **rule failed as written** (Entry 86; the pre-registered amplitude metric compared differently normalised means, a stated flaw); post hoc, shape-normalised: the Laue population has the flat-beam shape from σ_η ≈ 3 w_n (1.3–3 µrad at Si 440 / 17.48 keV, one-channel detector 9–18 µrad), Bragg not even at 10 w_n; P_flat's shape is 13–38 % off sin²/∫J_0/tanh², so the population needs its own TT formation curve | Entry 86 |
+| Laue integrated population as the beam-tolerant P2 observable (corrected metrics) | **confirmed with a condition** (Entry 87): rule at 3 w_n fails in 3 of 5 runs; all step runs pass from σ_η = 5 w_n (2–5 µrad at Si 440 / 17.48 keV, one-channel detector 9–18 µrad), the 1 t_tr ramp from 10 w_n (10 µrad); the law is the TT channel integral P_0(t) (tabulated), not sin² | Entry 87 |
 | closed form in the window length, H(f; T_w) | confirmed: the packet-kept first-order form (CF-B) matches TT to 0.3 % at every window 0.14–300 ns, two energies, three packet lengths; the packet-free short form (CF-A, Entry 71's hand estimate) is **rejected** below ~100 τ by the pre-registered 1 % rule | Entry 75 |
 | signal maximum ≠ Fisher-information maximum (directive B2) | **negative** for a ps packet at one angle: amplitude maxima coincide (3 GHz apart), crystal moves nothing | Entry 70 |
 | formation law I_n = sin²/tanh²(πα\|J_n\|t̃), no fit | confirmed | Entries 1, 9, 19, 24; tests |
@@ -162,7 +163,10 @@ Risks, in order:
   integrated population is beam-tolerant from σ_η ≈ 3 w_n (1.3–3 µrad, one-channel detector), which
   would lift the condition for the Laue train, but only under a corrected pre-registration (the one
   run had a mis-specified amplitude metric) and with a TT-tabulated formation curve (13–25 % off
-  ∫J_0); Bragg populations are not clean. E of P2 stays 3 until that run.
+  ∫J_0); Bragg populations are not clean. Entry 87 (corrected metrics): the condition is σ_η ≈ 5 w_n
+  (2–5 µrad) for a step front and 10 w_n (10 µrad) for a 1 t_tr ramp, an ordinary high-resolution
+  beam; E of P2 can go to 4 if Isaac accepts that condition (the pre-registered 3 w_n failed, so it
+  is not raised here).
 - No long-window (tens of ns) time-resolved satellite measurement exists yet; the paper's
   experimental relevance is a proposal. Entries 73, 80: elastic side clean for all S ≤ 6; the
   transducer peak power (6–100 W/cm² at 1–2 GHz for S = 1–2, up to 900 W/cm² at S = 6) is unverified.

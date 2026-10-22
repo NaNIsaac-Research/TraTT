@@ -5795,3 +5795,48 @@ T_half 5, T_90 7 ns, 1/κ = 260 µm = 28 ns; the ringing-width column becomes 0.
 version's numbers are kept above, marked withdrawn. The elastic numbers for a longitudinal
 [110] wave (ε = S d/Λ_ac with Λ_ac = v_L/f: 0.64× the shear strain at the same S and f; intensity
 with ρv_L² in place of c44) are not re-tabulated here.
+
+**Run.** `uv run python explore/nb/e87_population_laue.py run fig` (40 s); data
+`e87_population_laue.json` (contains the law tables P_0(t) for all five runs), log
+`e87_population_laue.log`, figure `figures/paper/e87_population_laue.png`. 359–1652 rays per run;
+δ-spacing halving changes Ŝ_σ by 3e-6. Single carrier phase on the offset grid (the ramp's P_0
+shows the carrier ripple; the metrics use the first maximum of the envelope-scale shape).
+
+**Results** (Si 440 / 17.48 keV angles: 1 main Darwin half-width = 1.77 µrad):
+
+| run (S, α, n, rise) | w_n (hw) | channel q | σ_η = 3 w_n: Δperiod / A | 5 w_n | 10 w_n | smallest passing σ_η |
+|---|---|---|---|---|---|---|
+| (0.5, 2, 1, step) | 0.24 | 10 hw = 18 µrad | −1.05 % / +2.7 % (period fails by 0.05 %) | −0.9 % / +2.9 % | −0.6 % / +1.9 % | 5 w_n = 2.1 µrad |
+| (1.5, 2, 1, step) | 0.56 | 18 µrad | −0.07 % / +8.1 % | −0.02 % / +3.6 % | 0.0 % / +1.0 % | 5 w_n = 4.9 µrad |
+| (2, 4, 2, step) | 0.35 | 5 hw = 9 µrad | +0.4 % / −0.2 % | +0.2 % / −0.2 % | +0.1 % / −0.1 % | 3 w_n = 1.9 µrad |
+| (1.5, 4, 1, step) | 0.56 | 9 µrad | −0.2 % / +3.2 % | −0.1 % / +1.3 % | 0.0 % / +0.3 % | 3 w_n = 3.0 µrad |
+| (1.5, 2, 1, ramp 1 t_tr) | 0.56 | 18 µrad | −0.6 % / +11.9 % | −0.2 % / +5.4 % (fails by 0.4 %) | 0.0 % / +1.5 % | 10 w_n = 9.9 µrad |
+
+- **Verdict under the rule: condition table** (two step runs and the ramp fail at 3 w_n, as the
+  pre-run expectation said for one of them). The table: every step run passes from σ_η = 5 w_n
+  (2–5 µrad at Si 440 / 17.48 keV), the α = 4 runs already at 3 w_n (2–3 µrad); the 1 t_tr ramp
+  needs 10 w_n (10 µrad, half the channel). The period is never the problem (≤ 1.05 % at 3 w_n,
+  ≤ 0.9 % beyond); the amplitude A is, and it converges from above as 1/σ² (8.1 → 3.6 → 1.0 % for
+  (1.5, 2, 1)), i.e. the residual weighting of the satellite core by the Gaussian.
+- So the Laue integrated population is a beam-tolerant observable of the formation dynamics at
+  **σ_η ≈ 5 w_n ≈ 2–5 µrad with a one-channel detector of 9–18 µrad** (step front), 10 µrad for a
+  slow ramp: the range of an ordinary high-resolution beamline, 10–30× looser than the centre law
+  (Entry 84) and 100× looser than the single-ray crystal factor (Entries 82–83). What is measured
+  is not sin²(πα_n t̃): the flat-beam shape has its first maximum at α_n t̃ ≈ 0.4 with 1.6× the
+  end value (step) and follows the TT channel integral P_0(t), tabulated in the json for the
+  five runs; that table (or a TT run per case) is the law to compare an experiment with.
+- The pre-registered threshold 3 w_n was too tight by a factor 1.7 for the α = 2 cases, where
+  the channel (10 hw) holds the Gaussian comfortably but the satellite core is broader relative
+  to q; the α = 4 cases pass. Not adjusted; recorded.
+
+**Answer to T2q.** Not at 3 w_n for all five runs; yes at 5 w_n (step) and 10 w_n (ramp), which
+is still within an ordinary high-resolution beam (2–10 µrad) and a 9–18 µrad detector channel.
+For the paper: P2 as an integrated-population measurement in Laue is feasible with an ordinary
+beam, with its formation curve supplied by TT; the E score of P2 can be raised to 4 on this
+basis if Isaac accepts the 5 w_n condition (not raised by me, since the pre-registered 3 w_n
+failed). Class: **confirmed, with a condition** (full TT beam average, five runs, metrics
+defined in advance, no fit).
+
+**Scope.** Laue, α_ac = 20, single phase, Gaussian beam centred on the channel, detector = one
+channel, t = 0⁺ rocking curve subtracted ray by ray; lossless; n = 1, 2; a slow ramp of 1 t_tr
+only. Bragg populations were shown unclean in Entry 86 and are not retested.
