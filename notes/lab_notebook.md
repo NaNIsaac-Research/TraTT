@@ -4839,3 +4839,57 @@ degenerate order is identical by construction (checked numerically, law differen
 - One exploratory row after the scan, labelled as such: the (a) construction at S = 3 with a larger
   coupling ratio R = 0.1 (α = 1, α_ac = 10), to see whether R rather than S is what breaks the class.
   It is not covered by the rule above.
+
+**Setup (as run).** As pre-registered. The interval [a, b] is chosen automatically inside the
+branch so that J_n(S s) ± ε stays in the branch range (a ≥ 0.02, b ≤ 0.95); history 2 is built by
+Brent inversion on a 30001-point grid and interpolated. At S = 1.5 the automatic interval
+[0.134, 0.759] differs from Entry 72's [0.2, 0.7]; the order-1 result (1.2e-6 against 8.8e-7) is
+the same in kind. Two runs of under two minutes each (`runA` S ≤ 3, `runB` S ≥ 4 + exploratory),
+140 s in all. Reproduce: `uv run python explore/nb/e76_degeneracy_S.py runA runB fig`; data
+`e76_degeneracy_S.json`, log `e76_degeneracy_S.log`, figure `figures/paper/e76_degeneracy_S.png`.
+
+**Results.** Degenerate order: max over the window of |I_n^TT(2) − I_n^TT(1)|; "other" is the
+non-degenerate order in the same window (TT, with the law's value in brackets); threshold 5e-4 at
+every S (the re-measured convergence error never exceeded the Entry 72 value: 5.1e-5 at S = 1.5,
+falling to 1.3e-6 at S = 6).
+
+| S | (a) same Θ_1, J_1 rising: ΔI_1 | other ΔI_2 | (a2) same Θ_1, J_1 descending: ΔI_1 | other ΔI_2 | (b) same Θ_2: ΔI_2 | other ΔI_1 | law error |
+|---|---|---|---|---|---|---|---|
+| 1.5 | 1.2e-6 | 2.1e-3 (2.1e-3) | — | — | 1.2e-6 | 6.6e-3 (6.6e-3) | 6.7e-5 |
+| 2 | 1.1e-6 | 2.3e-3 | — | — | 1.1e-6 | 1.4e-2 | 8.2e-5 |
+| 3 | 1.3e-6 | 2.2e-3 | — | — | 3.0e-7 | 2.0e-2 | 5.0e-5 |
+| 4 | 2.0e-6 | 1.9e-3 | 1.9e-6 | 9.3e-3 | 5.2e-7 | 1.3e-2 | 5.3e-5 |
+| 5 | 2.6e-6 | 1.4e-3 | 2.3e-6 | 1.4e-2 | 4.0e-7 | 9.2e-3 | 6.5e-5 |
+| 6 | 3.0e-6 | 9.9e-4 | 1.7e-6 | 1.0e-2 | 8.3e-7 | 6.7e-3 | 7.1e-5 |
+
+- **Verdict under the rule: the class holds for every S ≤ 6, at both orders and on both branches
+  of J_1.** The largest degenerate-order difference is 3.0e-6 (S = 6, rising branch), 170 times
+  below the threshold and 20 times below the law's own absolute error. Outside the window the same
+  pairs differ by 2e-3 to 3e-2, so the test has power.
+- The non-degenerate order's TT difference agrees with the law's to ≤ 9e-6 at every S (Entry 72 ii
+  extended to S = 6), so the law predicts which order does distinguish the two histories and by how
+  much: in the (a2) pairs the order-2 difference is 1e-2 while order 1 is blind to 2e-6.
+- The law's absolute error stays 5e-5 to 8e-5 over S = 1.5–6 (Entry 67's 8.7e-5 at S ≤ 5 extended
+  to 6), while the convergence error falls to 1e-6; the 1e-6 degenerate-order residual is therefore
+  real but is 20–50 times smaller than the law's own error, i.e. the degeneracy is more exact than
+  the law that predicts it: whatever corrects the law at O(1e-4) depends on the history almost
+  only through Θ_n.
+- Exploratory row (not under the rule), R = 0.1 (α = 1, α_ac = 10): the degenerate-order residual
+  rises to 2.4e-4 (S = 3) and 2.9e-4 (S = 6, descending branch), still under 5e-4, with the law's
+  error at 2e-3. Going from R = 0.0125 to 0.1 multiplies the residual by about 170 (between R² = 64
+  and R³ = 512, two points only), so the coupling ratio R, not S, is what erodes the class, as
+  Entry 54 found for the independent-satellite approximation itself. At R ~ 0.2 the residual would
+  reach the threshold by that scaling; not run, not claimed.
+
+**Answer to Entry 72 (iii) / T2b.** Raising S to 6 does not break the running-mean class at
+R = 0.0125; at every order the transient still reads only Θ_n to 3e-6. The order-2 reading of
+Entry 72 (iii) is now quantified across S: the pairs that are degenerate at order 1 differ at
+order 2 by 1e-3 (S = 1.5–6, rising branch) to 1.4e-2 (descending branch), so a two-order readout
+resolves them when the order-2 satellite is measured to better than that. Class: **confirmed**
+(within the model; the class is a consequence of the Θ_n law, Entry 33 claim #21, not a new
+mechanism).
+
+**Scope.** Laue, no absorption, α = 0.5, R = 0.0125 (one exploratory R = 0.1), linear ramp with one
+sinusoidal zero-mean wobble of 5–10 % in J_n, orders 1 and 2, η exactly at nq. Bragg not run
+(Entry 30: tanh² reading is exact at resonance, so the same degeneracy is expected). Windows where
+the wobble is only partly inside [t − 1, t] are not degenerate and are not claimed to be.

@@ -72,7 +72,7 @@ form is what goes into the paper.
 4. Read Chukhovskii & Förster 1995 and Wark & Lee 1999 (time-dependent TT) for an earlier Bloch-wave
    first-order form. If one exists, the H part drops to "application"; the ν bound and the Si 400
    number stand. (T2d)
-5. B1 degeneracy at larger S (Entry 72 iii). (T2b)
+5. B1 degeneracy at larger S (Entry 72 iii): done, class holds to S = 6 (Entry 76, T2b).
 
 ## 2. Candidates, scored
 
@@ -144,7 +144,7 @@ Risks, in order:
 
 | question | entry | result |
 |---|---|---|
-| B1 two fields, same steady state, different transient | 72 | confirmed, and bounded: order n reads the t_tr running mean of J_n(S A); zero-mean perturbations are degenerate at that order (TT 9e-7); order-2 breaking 1e-3 at S = 1.5, not claimed |
+| B1 two fields, same steady state, different transient | 72, 76 | confirmed, and bounded: order n reads the t_tr running mean of J_n(S A); zero-mean perturbations are degenerate at that order (TT 9e-7 at S = 1.5; ≤ 3e-6 for S ≤ 6, both orders, both J_1 branches, Entry 76); the other order separates the same pairs by 1e-3 to 1.4e-2 (law and TT agree to 9e-6); the class erodes with the coupling ratio R (2.9e-4 at R = 0.1), not with S |
 | B2 signal maximum vs Fisher maximum | 70 | negative for a ps packet at one angle (3 GHz apart, crystal moves nothing); open for long trains |
 | B3 one dimensionless criterion | 68, 71 | falsified in strong form; ν ≲ 0.1 bound and the window condition survive |
 | B4 features when independent satellites fail | 45, 51, 52, 54 (no rerun) | Bessel-zero resurrection, confirmed in model, unobservable (4e-5), "possibly new" pending Entin / Iolin–Entin |
