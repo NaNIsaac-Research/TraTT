@@ -5048,6 +5048,54 @@ to it with the static |R0| ratio, so that the proposal states that the pair need
 curve as a second measurement, or an estimator built on W/|R0|.
 
 
+**Run.** `uv run python explore/nb/e78_side_asymmetry.py run fig` (10 s); data `e78_side_asymmetry.json`,
+log `e78_side_asymmetry.log`, figure `figures/paper/e78_side_asymmetry.png`. The first run was at
+S/100 (peak strain 1e-5) and failed the pre-registered S-convergence check (A moved by 0.54 % to
+S/1000) and, by the same amount, rule 1 (0.60 %): the ±η ratio is sensitive to the second-order term
+at a level the single-side H of Entry 75 (0.2–0.3 %) is not. The convergence check exists for this;
+the run was repeated at S/1000 (peak strain 1e-6), with S/1000 → S/10000 moving A by 0.054 % and the
+step doubling by < 1e-5. Rules unchanged. Numbers below are the S/1000 run.
+
+**Results.** A = H(−η)/H(+η) − 1 in per cent, κ_h = 0.93 κ; TT (CF-B in brackets):
+
+| T_w | 20 GHz | 30 | 40 | 60 | 87 | 100 | 150 |
+|---|---|---|---|---|---|---|---|
+| 17.48 keV, 1.4 ns | 0.26 (0.22) | 0.19 (0.14) | 0.15 (0.11) | 0.09 (0.07) | 0.05 (0.05) | 0.03 (0.04) | −0.03 (0.03) |
+| 17.48 keV, 14 ns | 2.00 (1.95) | 1.35 (1.30) | 1.02 (0.98) | 0.67 (0.65) | 0.45 (0.45) | 0.38 (0.39) | 0.20 (0.26) |
+| 17.48 keV, 52 ns | 2.24 (2.20) | 2.80 (2.75) | 2.36 (2.32) | 1.68 (1.65) | 1.17 (1.17) | 1.01 (1.02) | 0.62 (0.68) |
+| 17.48 keV, 300 ns | 1.62 (1.58) | 1.89 (1.84) | 1.91 (1.87) | 1.69 (1.67) | 1.34 (1.34) | 1.19 (1.21) | 0.80 (0.86) |
+| 8 keV, 14 ns | 5.83 (5.79) | 3.95 (3.90) | 2.97 (2.93) | 1.98 (1.96) | 1.35 (1.35) | 1.16 (1.17) | 0.72 (0.78) |
+| 8 keV, 300 ns | 6.17 (6.12) | 4.44 (4.39) | 3.42 (3.38) | 2.31 (2.29) | 1.59 (1.59) | 1.37 (1.38) | 0.86 (0.92) |
+
+- Rule 1 (κ_h = 0): max |A_TT − 1| = 0.060 % at both energies (second-order residual at S/1000).
+  Passed.
+- Rule 2 (κ_h = 0.93 κ): max |A_TT/A_CF − 1| = 0.060 % at both energies, every window, every f.
+  **The prediction is confirmed in the model.**
+- Spectrum cancellation: the 0.9-cycle and 10-cycle packets give the same A to 0.105 % (both
+  energies). The strain spectrum cancels, as claimed.
+- The |R0| ratio: |R0(−η)|/|R0(+η)| = 1.0000 at every f here (x = 27–205, kinematic tail, where
+  R0 ≈ −c/(iη_c) is even in η to O(κ_h/2η) ~ 1e-4), so the raw weight ratio equals A to 1e-4 in
+  this band. The physics-review caveat applies inside and near the Darwin width (x ≲ a few), where
+  the static asymmetry is 10 % (Entry 77 test, η = ±πα); a proposal that reads χ_ih from a ±ω pair
+  in the phonon band needs no second measurement at Si 400, but must say so with the x range.
+- Size and sensitivity: at 17.48 keV A − 1 reaches 1.9 % (steady, 30–40 GHz) and 2.8 % at the
+  52 ns window (the window ripple of Entry 75 is not even in η); at 8 keV 6.2 % at 20 GHz.
+  dA/d(χ_ih/χ_i0) = 0.017–0.020 (17.48 keV, 20–60 GHz) and 0.068 (8 keV, 20 GHz): a 0.1 % ratio
+  measurement at 8 keV resolves χ_ih/χ_i0 to 0.015, i.e. the Debye–Waller factor of the
+  reflection; at 17.48 keV to 0.05.
+- At short windows the asymmetry vanishes (0.03–0.3 % at 1.4 ns), as it must: it is a property of
+  the long-window crystal factor, zero when H is flat.
+
+**Answer to T2f.** Confirmed within the model: with χ_ih the two detunings of one phonon frequency
+carry different crystal factors, the ratio is independent of the strain spectrum (two packets agree
+to 0.1 %) and of |R0| in the phonon band, and it is a direct measure of χ_ih/χ_i0 with sensitivity
+0.02–0.07 per unit. Class: **confirmed** (full TT, two energies, four windows, two packets, no fit);
+**not observed**; prior art for a ±ω Borrmann asymmetry of acoustic satellites not searched (T2d).
+
+**Scope.** Symmetric Bragg, σ, centrosymmetric, semi-infinite, linear in S (S/1000), packet from the
+surface, x ≥ 27. Inside the Darwin width the |R0| ratio must be carried (Entry 77 §3 caveat). The
+asymmetry rides on the long-window H, so it needs the same window condition as Entry 75.
+
 ---
 
 ## 2026-10-23 — Entry 79: is the coupling ratio R what breaks the running-mean degeneracy class? (T2e)

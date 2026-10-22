@@ -26,6 +26,7 @@ Where each part stands:
 | S&W eq. 29 fails within ~1 Darwin width (factor 3–8) | confirmed, in our variables | Entry 64 §5 |
 | H is a factor-2 bias for Si 400 at 17.5 keV over 20–100 GHz | confirmed **only for a long window** (the strain must travel ≥ max(1/κ, x/π) Λ during the window, whether it is a train or a ps packet followed for ≥ 50 ns); wrong for the 140 ps Chalise window, where H is flat to 4 % | Entries 65, 71, 75 |
 | anomalous absorption χ_ih as a second crystal parameter | **rule fired** (Entry 77): with the X0h ratio χ_ih/χ_i0 = 0.93, H changes by 0.9 % (steady), 1.0 % (14 ns), 1.4 % (52 ns window) in the 20–150 GHz band at 17.48 keV and 3–4 % at 8 keV, opposite in sign on the two sides of the Bragg peak; the extended closed form (complex c) is TT-verified to 0.3 %; the ±η side asymmetry H(−η)/H(+η) = 1.02–1.09 is strain-spectrum-free and predicted, not verified | Entry 77 |
+| ±η side asymmetry of H with χ_ih, strain-spectrum-free, reads χ_ih/χ_i0 | **confirmed in the model** (Entry 78, pre-registered): full TT vs closed form to 0.06 % at two energies, four windows; two packets agree to 0.1 %; size 1.9 % (17.48 keV, steady), 2.8 % (52 ns), 6.2 % (8 keV, 20 GHz); sensitivity dA/d(χ_ih/χ_i0) = 0.02–0.07; \|R0\| ratio 1.0000 in the phonon band (x ≥ 27), to be carried near the Darwin width | Entry 78 |
 | closed form in the window length, H(f; T_w) | confirmed: the packet-kept first-order form (CF-B) matches TT to 0.3 % at every window 0.14–300 ns, two energies, three packet lengths; the packet-free short form (CF-A, Entry 71's hand estimate) is **rejected** below ~100 τ by the pre-registered 1 % rule | Entry 75 |
 | signal maximum ≠ Fisher-information maximum (directive B2) | **negative** for a ps packet at one angle: amplitude maxima coincide (3 GHz apart), crystal moves nothing | Entry 70 |
 | formation law I_n = sin²/tanh²(πα\|J_n\|t̃), no fit | confirmed | Entries 1, 9, 19, 24; tests |
@@ -65,8 +66,11 @@ uv run python explore/nb/e77_chi_ih.py run ttp ttm conv60 fig    # chi_ih: secon
 pre-registered 1 % rule fired at the 52 ns window (1.4 %), so H carries two tabulated crystal
 parameters, g and χ_ih/χ_i0, no fit. New in kind: the two detuning sides of one phonon frequency
 get different H (1.6–1.9 % at 17.48 keV, 3–9 % at 8 keV), a ratio in which the strain spectrum
-cancels; the measured weight ratio also carries |R0(−η)|/|R0(+η)|, so the pair needs the static
-rocking curve as a second measurement (physics cross-review). Pre-registered as Entry 78 (T2f).
+cancels; the measured weight ratio also carries |R0(−η)|/|R0(+η)|, which is 1.0000 in the phonon
+band (x ≥ 27) and 10 % near the Darwin width (physics cross-review). Pre-registered and confirmed in
+the model as Entry 78 (T2f): TT and closed form agree to 0.06 %, two packets to 0.1 %, and the ratio
+reads χ_ih/χ_i0 with sensitivity 0.02 (17.48 keV) to 0.07 (8 keV) per unit. This is the model's
+experimental test of the second parameter, and a Fig. 3 panel candidate.
 
 **Third step, Day 2 (Entry 75).** H(f; T_w) is now one closed form from the picosecond packet to the
 steady train: at Si 400 / 17.48 keV the crystal factor is flat to 1 % up to 5 ns, departs by 10 % at
@@ -96,7 +100,7 @@ G = chance of completion before graduation (2027 spring).
 | # | candidate | N | E | D | G | one-line reason |
 |---|---|---|---|---|---|---|
 | P1 | Transfer function H(f; T_w; g, χ_ih/χ_i0) + window condition + linearity bound for reading phonon spectra from time-resolved Bragg reflectivity (Entries 59, 64–66, 68, 71, 75, 77) | 3 | 3 | 4 | 5 | Closed form done and TT-verified; after Entry 71 it corrects long-train (GHz, tens of ns) measurements, not the 140 ps Chalise packet, so its experimental weight rests on the same apparatus as P2; novelty bounded by S&W 2003 and two unread 1990s papers |
-| P2 | Temporal Pendellösung of satellites behind a travelling front: formation law, Bessel ladder, period-ratio calibration of S (Entries 1, 9, 13, 19, 24) | 3 | 3 | 5 | 4 | Clean, no-fit, both geometries, tests; prior art DeCamp 2001 (n = 0 pulse) + Polikarpov 1987/88 (static extinction length) makes it "extension to every order"; needs a bulk GHz shear-wave experiment that does not yet exist |
+| P2 | Temporal Pendellösung of satellites behind a travelling front: formation law, Bessel ladder, period-ratio calibration of S (Entries 1, 9, 13, 19, 24) | 3 | 3 | 5 | 4 | Clean, no-fit, both geometries, tests; prior art DeCamp 2001 (n = 0 pulse) + Polikarpov 1987/88 (static extinction length) makes it "extension to every order"; needs a bulk GHz shear-wave experiment that does not yet exist; the elastic side is clean for all S ≤ 6 at 1–2 GHz (Entry 80), so the only open feasibility item is the transducer peak power, which keeps E at 3 until a number is in hand |
 | P3 | Path memory: Θ_n law, transient-only satellite, overshoot map (Entries 28, 30, 34, 67) | 2 | 3 | 5 | 4 | Robust in the model, but at α = 0.5 it is kinematic diffraction from a graded grating and the slow-ramp limit is the Bessel ladder (Entry 34); best as a section of P2, not a paper |
 | P4 | Overlap regime: Bessel-zero resurrection with a computable third-order coupling and shifted zero (Entries 45, 51, 52, 54) | 4 | 1 | 3 | 2 | Possibly new, but observability is 4e-5 of the window integral (Entry 54) and Entin / Iolin–Entin are unread; theory only |
 | P5 | Second-order strain terms in the Chalise spectrum (Entry 66) | 2 | 3 | 5 | 5 | Known in kind (Bessel expansion); its value is the size at their strain and the fluence-series criterion; a section of P1 |
@@ -180,6 +184,8 @@ Risks, in order:
 - Paper = P1 (transfer function) with P2 inside, or P2 (formation) as the first paper? P1 is
   closer to finished and tied to a current measurement; P2 is the poster's identity.
 - χ_ih is in `solve_bragg` (Entry 77, PR #16). Whether to add asymmetric geometry (Tier physics) before writing.
+- Whether the ±η side asymmetry (Entry 78, model-confirmed, unobserved) goes into the paper as a
+  proposed measurement of χ_ih/χ_i0.
 - Library access for Chukhovskii & Förster 1995 and Wark & Lee 1999.
 - Whether to tell Chalise et al. that, in this model, their low-frequency deficit is not the crystal
   factor (Entry 71) and only partly the second-order term (Entry 66); and whether to correct
