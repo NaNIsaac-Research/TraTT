@@ -20,19 +20,17 @@ authorship are Isaac's. Prior-art items marked **unread** are on BACKLOG T2d.
 
 ## 1. Abstract (150 words, P1 + P2 version)
 
-An acoustic wave in a Bragg-diffracting crystal produces satellites that are dynamical reflections
-in their own right. Solving the two-beam Takagi–Taupin equations for a strain field entering a
+An acoustic wave in a Bragg-diffracting crystal produces satellites that are dynamical reflections. Solving the two-beam Takagi–Taupin equations for a strain field entering a
 semi-infinite crystal, we show to first order in the strain that the time-Fourier weight of the
 reflectivity at the phonon frequency is the strain spectrum times a closed-form crystal factor
-H(ω; T_w), set by the measurement window T_w, the absorption parameter χ_i0/|χ_rh| and the anomalous
+H(ω; T_w), of the measurement window T_w, the absorption parameter χ_i0/|χ_rh| and the anomalous
 ratio χ_ih/χ_i0, with nothing fitted. H is flat for windows shorter than the strain's transit of the
 extinction and absorption depths and steady beyond; for Si 400 at 17.5 keV the crossover is 20–50 ns.
 Anomalous absorption makes the two detunings of one phonon frequency unequal, a ratio free of the
 strain spectrum. Beyond first order the satellites form with extinction length Λ_P/|J_n(S)|, and the
-transient reads a one-transit running mean of J_n(S A). We state the window and amplitude conditions
-under which each regime is measured.
+transient reads a one-transit running mean of J_n(S A). We give the window and amplitude conditions for each regime.
 
-(Count: 160 words. The P1-only abstract drops the last two sentences and adds the ps-packet delay
+(Count: 152 words. The P1-only abstract drops the last two sentences and adds the ps-packet delay
 scan.)
 
 ## 2. Sections
