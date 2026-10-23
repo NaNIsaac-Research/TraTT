@@ -1,0 +1,16 @@
+{
+  "sidebar": [
+    {
+      "text": "Getting Started",
+      "items": [{ "text": "Overview", "link": "index.md" }]
+    },
+    {
+      "text": "Theory",
+      "items": [{ "text": "Equations", "link": "equations.md" }]
+    },
+    {
+      "text": "History",
+      "items": [{ "text": "Lineage", "link": "lineage.md" }]
+    }
+  ]
+}
