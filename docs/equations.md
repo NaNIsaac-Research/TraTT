@@ -13,16 +13,18 @@ Everything is dimensionless.
 | $\zeta = z/L \in [0, 1]$ | depth in units of the crystal thickness $L$ | `zeta` |
 | $\tilde t = t / t_\mathrm{tr}$, $t_\mathrm{tr} = L / v_s$ | time in units of the acoustic transit time | `t` |
 | $\alpha = L / \Lambda_P$ | thickness in Pendellösung lengths | `alpha` |
-| $\eta$ | deviation from the Bragg angle, multiplied by $L$ | `eta` |
+| $\eta$ | deviation parameter (wavevector mismatch from the Bragg condition) multiplied by $L$ | `eta` |
 | $S = h \cdot u_0$ | acoustic modulation strength | `Drive.S` |
 | $\alpha_\mathrm{ac} = L / \Lambda_\mathrm{ac}$ | thickness in acoustic wavelengths | `Drive.alpha_ac` |
 | $q = w = 2\pi\alpha_\mathrm{ac}$ | acoustic phase across the slab, and per transit | `Drive.q`, `Drive.w` |
 
 The README's $R = \Lambda_\mathrm{ac} / \Lambda_P$ is $\alpha / \alpha_\mathrm{ac}$.
 
-The forward susceptibility $\chi_0$ enters both beams with the same coefficient in symmetric
-geometry and is removed by a common phase substitution; $\eta = 0$ is therefore the
-refraction-corrected Bragg angle.
+The forward susceptibility $\chi_0$ does not appear in the equations below. In Laue geometry it
+enters both beams with the same coefficient and is removed by a common phase substitution. In
+Bragg geometry it enters the two beams with opposite signs, so no common phase removes it: its
+real part is absorbed into $\eta$ and its imaginary part is the absorption $\kappa$ (below). In
+both, $\eta = 0$ is the refraction-corrected Bragg angle.
 
 ## Laue geometry
 
@@ -67,23 +69,34 @@ phase is a function of the retarded time alone, $\varphi = -S\, A(s) \sin(qs)$.
 
 ## Satellite channels
 
-Expanding the phase factor in Bessel functions,
+The channel positions and weights come from the kinematic limit (weak diffraction,
+$\alpha \ll 1$), where the Laue amplitude is a single integral over depth,
+
+$$
+D_h(1) = i\pi\alpha \int_0^1 e^{-i\varphi(\zeta)}\, e^{i\eta(1 - \zeta)}\, d\zeta .
+$$
+
+Where the crystal is filled ($A = 1$; with the step envelope, everywhere once $\tilde t \ge 1$),
+the phase factor expands in Bessel functions,
 
 $$
 e^{-i\varphi} = \sum_n (-1)^n J_n(S)\, e^{in(q\zeta - q\tilde t)},
 $$
 
-puts satellite $n$ at $\eta_n = nq$ (`Drive.eta_channel(n)`), with weight $J_n(S)$. The positions
-are analytic; nothing is fitted. In the kinematic limit, and for integer $\alpha_\mathrm{ac}$, the
-finite-slab response of one channel vanishes at the centres of the others.
+and term $n$ of the integral peaks at $\eta_n = nq$ (`Drive.eta_channel(n)`): satellite $n$ has
+amplitude $(-1)^n J_n(S)$ and intensity proportional to $J_n(S)^2$. The positions are analytic;
+nothing is fitted. For integer $\alpha_\mathrm{ac}$ the response of one channel vanishes at the
+centres of the others. Outside the kinematic limit the intensity ratios no longer follow
+$J_n(S)^2$; the full equations above give them.
 
 ## Limits the tests assert
 
-- Laue, no sound, $\eta = 0$: $|D_h(1)|^2 = \sin^2(\pi\alpha)$.
+- Laue, real $\alpha$, no sound, $\eta = 0$: $|D_h(1)|^2 = \sin^2(\pi\alpha)$.
 - Laue, real $\alpha$ and $\eta$, with or without sound: $|D_0|^2 + |D_h|^2 = 1$ at the exit face.
 - Bragg, real $\alpha$, with sound: $|R|^2 \le 1$.
-- Bragg, no sound, thick crystal ($\alpha = 4$ in the test): $|R|^2 \to 1$ for
-  $|\eta| < 2\pi\alpha$ and below 1 outside.
+- Bragg, no sound, $\alpha = 4$: $|R|^2 > 0.99$ for $|\eta| \le 0.6 \cdot 2\pi\alpha$ and
+  $|R|^2 < 0.5$ for $|\eta| \ge 1.6 \cdot 2\pi\alpha$, the total-reflection plateau of a thick
+  crystal, whose edge at $|\eta| = 2\pi\alpha$ is soft at this thickness.
 - Step envelope, $\tilde t \ge 1$: $\varphi$ has its final form, so $I(\eta, \tilde t)$ is
   periodic in $\tilde t$ with period $2\pi/w$.
 
