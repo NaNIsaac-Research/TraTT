@@ -47,8 +47,8 @@ def peaks_of(f, P, k=5, floor=0.05):
 
 
 if __name__ == "__main__":
-    # NOTE: a first version averaged over each acoustic period (8 samples); the period is 0.2 t_tr,
-    # which coarse-grained time to 0.2 and quantised every frequency. Kept out; see notebook.
+    # No averaging over each acoustic period (8 samples): the period is 0.2 t_tr, which
+    # coarse-grains time to 0.2 and quantises every frequency.
     q = 2 * np.pi * AAC
     out = {}
     for name, (alpha, S) in CASES.items():

@@ -42,9 +42,6 @@ def laue_exact(alpha: float, eta: np.ndarray):
     return D0, Dh
 
 
-# --- full rocking curve, not just the centre ------------------------------------
-
-
 @pytest.mark.parametrize("alpha", [0.3, 1.0, 2.7])
 def test_laue_full_rocking_curve_matches_closed_form(alpha):
     # n_z is set by the RK4 truncation error, which scales like h^4 eta^5:
@@ -60,9 +57,6 @@ def test_laue_full_rocking_curve_matches_closed_form(alpha):
 def test_bragg_centre_matches_tanh_squared(alpha):
     R = solve_bragg(alpha, 0.0, phi=None, n_z=4096)
     assert np.abs(R) ** 2 == pytest.approx(np.tanh(np.pi * alpha) ** 2, abs=1e-10)
-
-
-# --- the integrator is genuinely fourth order -----------------------------------
 
 
 def _laue_error(alpha, eta, n_z):
@@ -91,9 +85,6 @@ def test_losslessness_error_shrinks_with_the_grid():
         D0, Dh = solve_laue(0.8, eta, phi=drive.phi(1.4), n_z=n_z)
         defects.append(np.max(np.abs(np.abs(D0) ** 2 + np.abs(Dh) ** 2 - 1.0)))
     assert defects[0] > defects[1] > defects[2], defects
-
-
-# --- structural invariants -------------------------------------------------------
 
 
 def test_zero_coupling_is_transparent():
