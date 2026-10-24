@@ -111,7 +111,6 @@ def f0():
         gridspec_kw=dict(width_ratios=[2.5, 1.0], wspace=0.0),
     )
 
-    # ---- left: the crystal in cross-section, with the real phase profile inside it
     ax.set(xlim=(-3.3, 9.6), ylim=(-0.3, 10.4))
     ax.axis("off")
     x0, x1, y0, y1 = 0.0, 6.0, 2.1, 8.1  # slab; depth zeta runs left to right
@@ -222,7 +221,6 @@ def f0():
     )
     ax.text(9.2, ymid - 1.8, r"$D_h$", va="center", fontsize=KEY, color=ORANGE)
 
-    # ---- right: the same snapshot, actually solved, eta vertical so peaks face the beam
     eta = np.linspace(-2.6 * d.q, 2.6 * d.q, 4001)
     I = rocking(alpha, eta, phi=d.phi(t), n_z=required_nz(alpha, alpha_ac))
     axr.plot(I, eta / d.q, color=ORANGE, lw=2.2)
