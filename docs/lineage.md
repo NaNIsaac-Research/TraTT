@@ -170,7 +170,7 @@ Hypotheses in this list are not to be reopened without new evidence (tratt brief
 ## 4. Reproducing the main computations
 
 ```bash
-git clone https://github.com/NaNIsaac/TraTT.git
+git clone https://github.com/NaNIsaac-Research/TraTT.git
 cd TraTT
 uv sync --extra dev
 uv run pytest -q         # solver tests: analytic limits, Floquet cross-check, formation law

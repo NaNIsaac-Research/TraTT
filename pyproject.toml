@@ -27,9 +27,9 @@ dependencies = [
 dev = ["pytest>=8.0", "matplotlib>=3.8"]
 
 [project.urls]
-Homepage = "https://github.com/NaNIsaac/TraTT"
-Repository = "https://github.com/NaNIsaac/TraTT"
-Issues = "https://github.com/NaNIsaac/TraTT/issues"
+Homepage = "https://github.com/NaNIsaac-Research/TraTT"
+Repository = "https://github.com/NaNIsaac-Research/TraTT"
+Issues = "https://github.com/NaNIsaac-Research/TraTT/issues"
 
 [build-system]
 requires = ["uv_build>=0.12.7,<0.13"]

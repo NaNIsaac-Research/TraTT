@@ -8,7 +8,7 @@ authors:
     email: isaacyong@naver.com
     affiliation: "Sogang University"
 license: MIT
-repository-code: "https://github.com/NaNIsaac/TraTT"
+repository-code: "https://github.com/NaNIsaac-Research/TraTT"
 abstract: "Resolves how acoustic Bragg satellites form while a travelling acoustic wave crosses a perfect crystal, using two-beam Takagi-Taupin dynamical X-ray diffraction theory."
 keywords:
   - "dynamical diffraction"
