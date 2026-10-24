@@ -181,6 +181,7 @@ tests/          analytic ground truth as asserts
 notes/          lab_notebook.md: every result, with its script and its caveats (numbered entries)
 explore/nb/     one script per notebook entry (eNN_*.py), with small cached results
 explore/        figure scripts; make_poster_figs.py draws the poster figures
+examples/       satellite_movie.py: a 10 s movie of the satellites forming (Entry 24 conditions)
 poster/         poster.md (the only source of poster text), build.py (layout + checks), fonts
 figures/        figures referenced by the notebook and the poster
 DESIGN.md       physics conventions, analytic limits, assumptions
