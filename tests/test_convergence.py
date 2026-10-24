@@ -49,9 +49,6 @@ def _orders(errs):
     return np.log2(errs[:-1] / errs[1:])
 
 
-# --- 1. smooth modulated profiles stay fourth order ------------------------------
-
-
 @pytest.mark.parametrize("geometry", ["laue", "bragg"])
 @pytest.mark.parametrize(
     "drive, t",
@@ -61,9 +58,6 @@ def _orders(errs):
 def test_smooth_modulated_profile_is_fourth_order(geometry, drive, t):
     orders = _orders(_errors(geometry, drive.phi(t)))
     assert np.all(orders > 3.8), orders
-
-
-# --- 2. a step front inside the slab costs two orders -----------------------------
 
 
 @pytest.mark.parametrize("geometry", ["laue", "bragg"])
@@ -91,9 +85,6 @@ def test_laue_is_lossless_with_the_front_inside(rise):
     assert defects[1] < 1e-6, defects
 
 
-# --- 3. formation time converges with the time grid -------------------------------
-
-
 def test_formation_time_converges_with_time_sampling():
     """Refining per_period must move t_f by less than the coarser sample spacing."""
     alpha, d = 1.3, Drive(S=0.5, alpha_ac=5.0)
@@ -114,9 +105,6 @@ def test_formation_time_converges_with_time_sampling():
         for k, pp in enumerate(per_period[:-1]):
             step = d.period / pp
             assert abs(values[k] - values[k + 1]) <= step + 1e-12, (n, values)
-
-
-# --- 4. steady state: the dynamical Bessel limit ----------------------------------
 
 
 @pytest.mark.parametrize("n", [0, 1, 2])
