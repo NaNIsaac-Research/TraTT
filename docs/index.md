@@ -17,7 +17,7 @@ spectrum and the reflectivity.
 
 Work toward a paper (the transfer function in more detail, its dependence on the measurement
 window, and the conditions a real beam's divergence and bandwidth put on it) is on the branch
-`research/paper-viability`, [TraTT#16](https://github.com/NaNIsaac/TraTT/pull/16). It is a draft
+`research/paper-viability`, [TraTT#16](https://github.com/NaNIsaac-Research/TraTT/pull/16). It is a draft
 and its conclusions are being verified; they are not summarized on this site.
 
 ## Install

@@ -5,7 +5,8 @@ from pathlib import Path
 import segno
 
 ROOT = Path(__file__).resolve().parents[1]
-URL = "https://github.com/NaNIsaac/TraTT"
+# The printed KPS 2026 poster encodes the old URL github.com/NaNIsaac/TraTT, which redirects here.
+URL = "https://github.com/NaNIsaac-Research/TraTT"
 
 if __name__ == "__main__":
     out = ROOT / "figures" / "poster" / "qr_repo.png"

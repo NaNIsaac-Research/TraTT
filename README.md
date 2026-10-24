@@ -1,6 +1,6 @@
 # TraTT — X-ray diffraction satellites while a sound wave enters a crystal
 
-[![PyPI](https://img.shields.io/pypi/v/tratt)](https://pypi.org/project/tratt/) [![Tests](https://github.com/NaNIsaac/TraTT/actions/workflows/ci.yml/badge.svg)](https://github.com/NaNIsaac/TraTT/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/tratt)](https://pypi.org/project/tratt/) [![Tests](https://github.com/NaNIsaac-Research/TraTT/actions/workflows/ci.yml/badge.svg)](https://github.com/NaNIsaac-Research/TraTT/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 TraTT is a time-dependent Takagi–Taupin solver: it simulates what an X-ray diffraction
 measurement would see while a GHz sound wave is still entering a perfect crystal, before it has
@@ -13,7 +13,7 @@ results, and the source of a conference poster.
 Hyunjung Kim — Center for Ultrafast Phase Transformation, Sogang University.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/poster_preview.jpg" width="640" alt="KPS 2026 poster P2.17">
+  <img src="https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/poster_preview.jpg" width="640" alt="KPS 2026 poster P2.17">
 </p>
 
 ## Introduction
@@ -86,7 +86,7 @@ compared with a synchrotron X-ray pulse (~100 ps), so the growth could in princi
 These are calculation results only; no experiment has been compared yet. Each item gives the
 notebook entries with the numbers, scripts and limitations.
 
-![Schematic: the acoustic front fills the crystal; on the right, the rocking curve of that instant](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f0_scheme.png)
+![Schematic: the acoustic front fills the crystal; on the right, the rocking curve of that instant](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/f0_scheme.png)
 
 **1. Formation time of each satellite** (Entries 1, 9, 24). Satellite n at time t has the
 intensity of a uniform, unstrained crystal of thickness v<sub>s</sub>t with coupling
@@ -96,7 +96,7 @@ without a fitting parameter. The formation time of satellite n is therefore
 τ<sub>n</sub> = Λ<sub>P</sub>/(v<sub>s</sub>|J<sub>n</sub>(S)|). It does not depend on the
 crystal thickness, and the satellite with the largest |J<sub>n</sub>(S)| forms first.
 
-![Full TT (points) and the formulas of result 1 (lines)](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f1_collapse.png)
+![Full TT (points) and the formulas of result 1 (lines)](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/f1_collapse.png)
 
 **2. Gradual turn-on and overshoot** (Entries 28, 30, 67). If the amplitude A(t) changes in
 time, different depths of the crystal have different amplitudes. Satellite n then depends on the
@@ -109,7 +109,7 @@ the Θ<sub>n</sub> law; full TT at five points agrees with it to 8×10⁻⁵. Ne
 (J<sub>1</sub> = 0 at the final amplitude) the satellite reaches 0.53 during the turn-on and
 1.3×10⁻⁴ at the end.
 
-![Overshoot map from the Θ<sub>n</sub> law and three traces checked against full TT](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f7_overshoot.png)
+![Overshoot map from the Θ<sub>n</sub> law and three traces checked against full TT](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/f7_overshoot.png)
 
 **3. Validity of the independent-satellite approximation** (Entries 19, 26, 52–54). Results 1
 and 2 treat each satellite independently, so their error grows with
@@ -129,7 +129,7 @@ angular range of strong reflection) it agrees with full TT, while the perturbati
 Sondhauss & Wark (2003) differs from full TT by a factor of 3–8. Comparison with previous work is
 not complete (Entries 60, 61).
 
-![First-order theory and full TT inside the Darwin width](https://raw.githubusercontent.com/NaNIsaac/TraTT/main/figures/poster/f5_outlook.png)
+![First-order theory and full TT inside the Darwin width](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/f5_outlook.png)
 
 ## Install
 
