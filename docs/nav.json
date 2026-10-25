@@ -2,11 +2,18 @@
   "sidebar": [
     {
       "text": "Getting Started",
-      "items": [{ "text": "Overview", "link": "index.md" }]
+      "items": [
+        { "text": "Overview", "link": "index.md" },
+        { "text": "Background", "link": "background.md" }
+      ]
     },
     {
       "text": "Theory",
       "items": [{ "text": "Equations", "link": "equations.md" }]
+    },
+    {
+      "text": "Research",
+      "items": [{ "text": "Studies", "link": "research/README.md" }]
     },
     {
       "text": "History",
