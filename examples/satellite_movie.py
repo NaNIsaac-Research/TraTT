@@ -296,7 +296,7 @@ def comparison(data: dict[str, np.ndarray]):
     t, I = data["t"], data["I"]
     centre = I[:, :, N_WIN // 2]
     fig = plt.figure(figsize=(W / DPI, H / DPI), dpi=DPI)
-    ax = fig.add_axes((0.085, 0.14, 0.62, 0.66))
+    ax = fig.add_axes((0.085, 0.12, 0.62, 0.62))
     fine = np.linspace(0, 1, 400)
     every = np.unique(np.searchsorted(t, np.linspace(t[0], t[-1], 34)))
     order_index = {n: j for j, n in enumerate(ORDERS)}
@@ -328,8 +328,8 @@ def comparison(data: dict[str, np.ndarray]):
     fig.text(
         0.085,
         0.89,
-        "first maximum at t / t$_{\\rm tr}$ = 1 / (2α|J$_n$(S)|), "
-        "set by the sound amplitude S, not by the crystal thickness",
+        "first maximum at t / t$_{\\rm tr}$ = 1 / (2α|J$_n$(S)|), that is after "
+        "Λ$_{\\rm P}$ / (2 v$_s$ |J$_n$(S)|) whatever the crystal thickness",
         color=MUTED,
         va="center",
     )
