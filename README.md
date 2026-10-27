@@ -13,6 +13,17 @@ results, and the source of a conference poster.
 
 Main result, a calculation: satellite n forms in τ<sub>n</sub> = Λ<sub>P</sub>/(v<sub>s</sub>|J<sub>n</sub>(S)|), independent of the crystal thickness, and full TT (points) follows the closed formulas (lines) without a fitting parameter (notebook Entries 1, 9, 24). The physics background, the question and the dimensionless numbers are in [docs/background.md](docs/background.md).
 
+## Reports
+
+| Date | Study | Result |
+|---|---|---|
+| 2026-10-27 | [Solver checks](verify/checks.py) | Convergence, limit and boundary-flux checks of the solver as one table and one figure. |
+| 2026-10-19 | [Overshoot map under a linear turn-on](docs/research/README.md#8-overshoot-map-under-a-linear-turn-on-entry-67) | Largest excess 0.603 at S = 3.8, on the rise-time boundary of the scan. |
+| 2026-10-15 | [Transfer function from strain spectrum to reflectivity](docs/research/README.md#6-transfer-function-from-strain-spectrum-to-reflectivity-entries-57-61-64-66) | Closed form matches TT with no fit parameter; two parts withdrawn for short windows. |
+| 2026-10-08 | [Quasi-static condition and surface waves](docs/research/README.md#7-quasi-static-condition-and-surface-waves-entries-62-63) | No result transfers to SAW geometry as it stands. |
+
+[All reports →](docs/reports/README.md)
+
 ## Install
 
 ```
