@@ -16,13 +16,13 @@ conclusions. Numbers follow notes/tasks/poster_facts.md.
 
 [[ 0.41 c
 
-![](figures/poster/f0_scheme.png){E0}
+![Right: rocking curve now; $\eta/q=\beta/K$, peaks at orders $n$.](figures/poster/f0_scheme.png){E0}
 
 || 0.59
 
 **Motivation.** Time-resolved X-ray diffraction can follow GHz acoustic waves in crystals: satellites form over a few ns, much longer than 50–100 ps synchrotron pulses, and a strain pulse entering a Laue crystal has been used to switch X-rays (DeCamp et al., Nature 413, 825 (2001)). {E6}{E7}{E21}
 
-**Acoustic satellites.** A displacement $u$ shifts the phase of the diffracted wave by $\phi=hu$, so a travelling acoustic wave acts as a moving phase grating with satellites $n=\pm1,\pm2,\dots$ at $\eta=nq$, $q=2\pi L/\Lambda_{ac}$ ($\eta$: angular deviation, $L$: thickness, $\Lambda_{ac}$: acoustic wavelength). In a filled crystal $e^{i\phi}=\Sigma_nJ_n(S)\,e^{in(q\zeta-q\tilde t)}$ with $S=hu_0$, and satellite $n$ couples with strength $\alpha\left|J_n(S)\right|$, $\alpha=L/\Lambda_P$ ($\Lambda_P$: Pendellösung length); its intensity follows from multiple scattering (Polikarpov & Skadorov, phys. stat. sol. (b) 143, 11 (1987)). {E0}{E7}{E29}
+**Acoustic satellites.** A displacement $u$ shifts the phase of the diffracted wave by $\phi=hu$, so a travelling acoustic wave ($K=2\pi/\Lambda_{ac}$, $\Lambda_{ac}$: wavelength, $\Omega=Kv_s$) acts as a moving phase grating with satellites $n=\pm1,\pm2,\dots$ at detuning $\beta_n=nK$ ($\beta$: detuning from the Bragg condition). In a filled crystal $e^{-i\phi}=\Sigma_n(-1)^nJ_n(S)\,e^{in(Kz-\Omega t)}$ with $S=hu_0$; $(-1)^n$ flips odd-order signs, not intensities. Satellite $n$ couples with strength $\alpha\left|J_n(S)\right|$, $\alpha=L/\Lambda_P$ ($L$: thickness, $\Lambda_P$: Pendellösung length); its intensity follows from multiple scattering (Polikarpov & Skadorov, phys. stat. sol. (b) 143, 11 (1987)). {E0}{E7}{E29}
 
 ]]
 
@@ -44,11 +44,11 @@ conclusions. Numbers follow notes/tasks/poster_facts.md.
 
 $$ $dD_0/d\zeta = i\pi\alpha\,e^{+i\phi}D_h,\qquad dD_h/d\zeta = i\pi\alpha\,e^{-i\phi}D_0 + i\eta D_h$ {E0}
 
-$\pi\alpha$ couples the beams, $i\eta D_h$ is the angular detuning ($\eta$: dimensionless, scaled by $L$), and the lattice displacement enters only as the phase $e^{\pm i\phi}$ of the coupling. {E0}
+$\pi\alpha$ couples the beams, $i\eta D_h$ is the detuning ($\eta=\beta L$: detuning times thickness $L$, dimensionless; satellite $n$ at $\eta_n=nKL$), and the lattice displacement enters only as the phase $e^{\pm i\phi}$ of the coupling. {E0}
 
-**2 Travelling acoustic deformation,** with $\tilde t=t/t_{tr}$: {E0}
+**2 Travelling acoustic deformation,** $\phi(z,t)=S\,A(t-z/v_s)\,\sin(Kz-\Omega t)$; in the solver's scaled variables $\zeta=z/L$, $\tilde t=t/t_{tr}$, $KL$ and $w=\Omega t_{tr}$ ($=KL$, since $\Omega=Kv_s$): {E0}
 
-$$ $\phi(\zeta,\tilde t)=S\,A(\tilde t-\zeta)\,\sin(q\zeta-q\tilde t)$ {E0}
+$$ $\phi(\zeta,\tilde t)=S\,A(\tilde t-\zeta)\,\sin(KL\,\zeta-w\tilde t)$ {E0}
 
 Causal envelope: $A=0$ ahead of the front ($\zeta>\tilde t$); its profile sets the onset. {E0}{E28}
 
@@ -69,7 +69,7 @@ $$ $dR/d\zeta=-i\pi\alpha\,e^{-i\phi}-i\eta R-i\pi\alpha\,e^{+i\phi}R^2,\qquad R
 
 ]]
 
-=> time $\tilde t$ // acoustic snapshot | fix $\phi(\zeta,\tilde t)$ // quasi-static | RK4 in $\zeta$ // Laue forward, Bragg backward, all $\eta$ | $I(\eta,\tilde t)$ // time-resolved rocking curve | $I_n(\tilde t)=I(nq,\tilde t)$ // satellite $n$ {E0}{E62}
+=> time $\tilde t$ // acoustic snapshot | fix $\phi(\zeta,\tilde t)$ // quasi-static | RK4 in $\zeta$ // Laue forward, Bragg backward, all $\eta$ | $I(\eta,\tilde t)$ // time-resolved rocking curve | $I_n(\tilde t)=I(\eta_n,\tilde t)$ // satellite $n$ {E0}{E62}
 
 @pair
 
@@ -81,7 +81,7 @@ With the satellites treated as independent, the strained layer acts as a uniform
 
 $$ $I_n=\sin^2(\pi\alpha_n\tilde t)$ (Laue), $\qquad I_n=\tanh^2(\pi\alpha_n\tilde t)$ (Bragg) {E1}{E9}
 
-The formation time $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$ is independent of $L$, and the order follows $\left|J_n(S)\right|$ rather than $n$ (at $S=3$: $n=2,1,3$). {E1}{E6}
+The formation time $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$ (Laue: one period, first maximum at $\tau_n/2$; Bragg: 99 % at $0.95\,\tau_n$) is independent of $L$, and the order follows $\left|J_n(S)\right|$ rather than $n$ (at $S=3$: $n=2,1,3$). {E1}{E6}
 
 ![Deviations of the TT markers from the lines reflect the approximation, not numerical solver error.](figures/poster/f1_collapse.png){E1}{E9}{E19}{E26}
 

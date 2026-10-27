@@ -11,7 +11,7 @@ results, and the source of a conference poster.
 
 ![Full TT (points) and the formulas of result 1 (lines)](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/f1_collapse.png)
 
-Main result, a calculation: satellite n forms in τ<sub>n</sub> = Λ<sub>P</sub>/(v<sub>s</sub>|J<sub>n</sub>(S)|), independent of the crystal thickness, and full TT (points) follows the closed formulas (lines) without a fitting parameter (notebook Entries 1, 9, 24). The physics background, the question and the dimensionless numbers are in [docs/background.md](docs/background.md).
+Main result, a calculation: satellite n forms in τ<sub>n</sub> = Λ<sub>P</sub>/(v<sub>s</sub>|J<sub>n</sub>(S)|) (in Laue one Pendellösung period of the satellite, first maximum at τ<sub>n</sub>/2), independent of the crystal thickness, and full TT (points) follows the closed formulas (lines) without a fitting parameter (notebook Entries 1, 9, 24). The physics background, the question and the dimensionless numbers are in [docs/background.md](docs/background.md).
 
 ## Reports
 
@@ -56,17 +56,22 @@ notebook entries with the numbers, scripts and limitations.
 
 ![Schematic: the acoustic front fills the crystal; on the right, the rocking curve of that instant](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/f0_scheme.png)
 
+The vertical axis of the right panel, η/q, is the detuning in units of the acoustic wave vector
+K = 2π/Λ<sub>ac</sub> (η/q = β/K, with η = βL and q = KL), so the peaks sit at the satellite orders n.
+
 **1. Formation time of each satellite** (Entries 1, 9, 24). Satellite n at time t has the
 intensity of a uniform, unstrained crystal of thickness v<sub>s</sub>t with coupling
-α|J<sub>n</sub>(S)|: I<sub>n</sub> = sin²(πα|J<sub>n</sub>|t̃) in Laue and
+α|J<sub>n</sub>(S)|. With t̃ = t/t<sub>tr</sub>: I<sub>n</sub> = sin²(πα|J<sub>n</sub>|t̃) in Laue and
 tanh²(πα|J<sub>n</sub>|t̃) in Bragg geometry. These formulas agree with the full TT calculation
 without a fitting parameter. The formation time of satellite n is therefore
-τ<sub>n</sub> = Λ<sub>P</sub>/(v<sub>s</sub>|J<sub>n</sub>(S)|). It does not depend on the
+τ<sub>n</sub> = Λ<sub>P</sub>/(v<sub>s</sub>|J<sub>n</sub>(S)|): in Laue one oscillation period, with
+the first maximum at τ<sub>n</sub>/2; in Bragg 99 % is reached at 0.95τ<sub>n</sub>. It does not depend on the
 crystal thickness, and the satellite with the largest |J<sub>n</sub>(S)| forms first. The figure at the top shows it.
 
 **2. Gradual turn-on and overshoot** (Entries 28, 30, 67). If the amplitude A(t) changes in
 time, different depths of the crystal have different amplitudes. Satellite n then depends on the
-amplitude during the last transit time, Θ<sub>n</sub> = ∫J<sub>n</sub>(S A(t−ζ)) dζ, and not only
+amplitude during the last transit time, Θ<sub>n</sub>(t̃) = ∫<sub>0</sub><sup>1</sup> J<sub>n</sub>(S A(t̃−ζ)) dζ
+with depth ζ = z/L, and not only
 on the present amplitude. With a linear turn-on over T<sub>rise</sub> the satellite can overshoot:
 its maximum during the turn-on exceeds the steady value. In a scan of 11,211 (S, T<sub>rise</sub>)
 conditions for the first Laue satellite (α = 0.5, R = 0.0125) the largest overshoot is 0.603 of the
@@ -102,7 +107,9 @@ Every study in the repository, with its notebook entries, status and reproduce c
 ## Poster
 
 **KPS 2026 Fall Meeting, poster P2.17** (Jeju, 22 October 2026). Isaac Yong, Ouyoung Kwon,
-Hyunjung Kim — Center for Ultrafast Phase Transformation, Sogang University.
+Hyunjung Kim — Center for Ultrafast Phase Transformation, Sogang University. The preview is
+built from the current source, whose notation was corrected after the meeting; the printed poster
+is the source at commit 40676f4.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/poster_preview.jpg" width="640" alt="KPS 2026 poster P2.17">
