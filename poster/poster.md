@@ -16,7 +16,7 @@ conclusions. Numbers follow notes/tasks/poster_facts.md.
 
 [[ 0.41 c
 
-![Right: rocking curve now; $\eta/q=\beta/K$, peaks at orders $n$.](figures/poster/f0_scheme.png){E0}
+![Right: rocking curve now; detuning $\beta$ in units of $K$, peaks at orders $n$.](figures/poster/f0_scheme.png){E0}
 
 || 0.59
 
@@ -81,7 +81,7 @@ With the satellites treated as independent, the strained layer acts as a uniform
 
 $$ $I_n=\sin^2(\pi\alpha_n\tilde t)$ (Laue), $\qquad I_n=\tanh^2(\pi\alpha_n\tilde t)$ (Bragg) {E1}{E9}
 
-The formation time $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$ (Laue: one period, first maximum at $\tau_n/2$; Bragg: 99 % at $0.95\,\tau_n$) is independent of $L$, and the order follows $\left|J_n(S)\right|$ rather than $n$ (at $S=3$: $n=2,1,3$). {E1}{E6}
+The characteristic time $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$ (Laue: one period, first maximum at $\tau_n/2$; Bragg: 99 % at $0.95\,\tau_n$) is independent of $L$, and the order follows $\left|J_n(S)\right|$ rather than $n$ (at $S=3$: $n=2,1,3$). {E1}{E6}
 
 ![Deviations of the TT markers from the lines reflect the approximation, not numerical solver error.](figures/poster/f1_collapse.png){E1}{E9}{E19}{E26}
 
@@ -101,7 +101,7 @@ Overshoot: $\Delta I=I_{max}-I_{steady}$ in incident-intensity units, for the fi
 
 [[ 0.59 c
 
-We calculated the formation of acoustic diffraction satellites while an acoustic wavefront propagates through the crystal, using the two-beam Takagi–Taupin equations. The simulations show satellite-dependent formation times, $\tau_n\propto1/\left|J_n(S)\right|$, and a transient intensity overshoot for finite acoustic rise times. {E0}{E1}{E9}{E67}
+We calculated the formation of acoustic diffraction satellites while an acoustic wavefront propagates through the crystal, using the two-beam Takagi–Taupin equations. The simulations show satellite-dependent characteristic times, $\tau_n\propto1/\left|J_n(S)\right|$, and a transient intensity overshoot for finite acoustic rise times. {E0}{E1}{E9}{E67}
 
 || 0.41 c
 
