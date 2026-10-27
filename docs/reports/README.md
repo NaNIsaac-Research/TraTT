@@ -5,6 +5,19 @@ entries are grouped into studies in [docs/research](../research/README.md), whic
 question, results, limits and reproduce commands. This page lists the studies newest first, by the
 date of their last entry. The status words are the notebook's; all results are calculations.
 
+## Start here
+
+- **Key result:** [1. Formation laws](../research/README.md#1-formation-laws-entries-0-27). Satellite n forms
+  at t* = 1/(2α|J<sub>n</sub>(S)|) within ~2 %, independent of the crystal thickness; three early claims
+  withdrawn.
+- **Method:** [Equations](../equations.md). The model TraTT solves, written out from the solver, with the
+  assumptions in [DESIGN.md](../../DESIGN.md).
+- **Verification and limits:** [Solver checks](../../verify/checks.py), convergence, limit and boundary-flux
+  checks as one table and one figure. Limits: all results are calculations, and no experiment has been
+  compared; each study in [docs/research](../research/README.md) states its own.
+
+## Studies
+
 | Date | Study | Result | Status |
 |---|---|---|---|
 | 2026-10-27 | [Solver checks](../../verify/checks.py) | Convergence, limit and boundary-flux checks of the solver as one table and one figure. | numbers only |
