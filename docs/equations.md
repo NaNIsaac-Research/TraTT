@@ -6,17 +6,20 @@ The assumptions behind it and the analytic limits the tests assert are in
 
 ## Variables
 
-Everything is dimensionless.
+The solver works in scaled, dimensionless variables. The physical quantities behind them are the
+detuning β from the Bragg condition (1/length), the acoustic wave vector K = 2π/Λ<sub>ac</sub> and
+the acoustic angular frequency Ω = K v<sub>s</sub>.
 
 | symbol | meaning | in the code |
 |---|---|---|
 | $\zeta = z/L \in [0, 1]$ | depth in units of the crystal thickness $L$ | `zeta` |
 | $\tilde t = t / t_\mathrm{tr}$, $t_\mathrm{tr} = L / v_s$ | time in units of the acoustic transit time | `t` |
 | $\alpha = L / \Lambda_P$ | thickness in Pendellösung lengths | `alpha` |
-| $\eta$ | deviation parameter (wavevector mismatch from the Bragg condition) multiplied by $L$ | `eta` |
+| $\eta = \beta L$ | detuning scaled by the thickness: the wave-vector mismatch $\beta$ from the Bragg condition times $L$ | `eta` |
 | $S = h \cdot u_0$ | acoustic modulation strength | `Drive.S` |
 | $\alpha_\mathrm{ac} = L / \Lambda_\mathrm{ac}$ | thickness in acoustic wavelengths | `Drive.alpha_ac` |
-| $q = w = 2\pi\alpha_\mathrm{ac}$ | acoustic phase across the slab, and per transit | `Drive.q`, `Drive.w` |
+| $q = KL$ | scaled acoustic wave vector: acoustic phase across the slab | `Drive.q` |
+| $w = \Omega t_\mathrm{tr}$ | scaled acoustic frequency: acoustic phase per transit; $w = q = 2\pi\alpha_\mathrm{ac}$ because $\Omega = K v_s$ | `Drive.w` |
 
 The README's $R = \Lambda_\mathrm{ac} / \Lambda_P$ is $\alpha / \alpha_\mathrm{ac}$.
 
@@ -80,7 +83,7 @@ Where the crystal is filled ($A = 1$; with the step envelope, everywhere once $\
 the phase factor expands in Bessel functions,
 
 $$
-e^{-i\varphi} = \sum_n (-1)^n J_n(S)\, e^{in(q\zeta - q\tilde t)},
+e^{-i\varphi} = \sum_n (-1)^n J_n(S)\, e^{in(q\zeta - w\tilde t)},
 $$
 
 and term $n$ of the integral peaks at $\eta_n = nq$ (`Drive.eta_channel(n)`): satellite $n$ has

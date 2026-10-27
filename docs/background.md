@@ -7,12 +7,15 @@ The physics behind TraTT, the question it works on and the numbers it reduces to
 **X-ray diffraction from a crystal.** An X-ray beam hitting a crystal is reflected strongly only
 near one angle, the Bragg angle, where the reflections from successive atomic planes add up in
 phase. Scanning the crystal angle through that point and recording the reflected intensity gives
-the *rocking curve* I(η), where η is the (dimensionless) angular offset from the Bragg angle.
+the *rocking curve* I(η). Here η = βL is the detuning β from the Bragg condition (a wave-vector
+mismatch, 1/length, proportional to the angular offset) times the crystal thickness L, so η is
+dimensionless.
 
 **Dynamical diffraction.** In a thin or imperfect crystal each X-ray is scattered at most once
 (kinematic theory). In a thick, perfect crystal such as a silicon wafer the diffracted beam is
 scattered back into the forward direction, and the two beams trade intensity back and forth as
-they go deeper. The depth for one full exchange is the *Pendellösung length* Λ<sub>P</sub>,
+they go deeper. The depth over which the intensity goes from the forward beam to the diffracted
+beam and back is the *Pendellösung length* Λ<sub>P</sub>,
 typically 15–100 µm in silicon. The **Takagi–Taupin (TT) equations** describe this: two coupled
 differential equations, along the depth, for the amplitude of the forward beam D<sub>0</sub> and
 of the diffracted beam D<sub>h</sub>. They also allow the lattice to be locally displaced, which
@@ -25,7 +28,7 @@ the front surface, and mainly the top ~Λ<sub>P</sub> contributes.
 **Acoustic satellites.** A sound wave (here a GHz acoustic wave of wavelength Λ<sub>ac</sub>)
 shifts the atomic planes periodically. For the X-rays this is a periodic phase modulation, so the
 rocking curve gains extra peaks, *satellites*, on both sides of the main peak, spaced by the
-acoustic wave vector. Satellite n carries the weight J<sub>n</sub>(S), a Bessel function of the
+acoustic wave vector K = 2π/Λ<sub>ac</sub>: satellite n sits at detuning β = nK. Satellite n carries the weight J<sub>n</sub>(S), a Bessel function of the
 modulation strength S = h·u<sub>0</sub> (reciprocal lattice vector times displacement amplitude).
 This steady state, with the whole crystal already vibrating, has been known for decades.
 
@@ -55,6 +58,8 @@ The problem reduces to a few dimensionless numbers:
 | α = L/Λ<sub>P</sub> | crystal thickness in units of the Pendellösung length |
 | S = h·u<sub>0</sub> | strength of the acoustic modulation |
 | R = Λ<sub>ac</sub>/Λ<sub>P</sub> | acoustic wavelength in units of the Pendellösung length |
+| η = βL | detuning scaled by the thickness; satellite n at η<sub>n</sub> = nKL |
+| KL = 2πL/Λ<sub>ac</sub> | acoustic wave vector scaled by the thickness (the code's `Drive.q`) |
 | t̃ = t/t<sub>tr</sub> | time in units of the transit time (t̃ = 1: the sound reaches the back surface) |
 
 Main simplifications: two beams only, symmetric geometry, a plane monochromatic X-ray wave, no
