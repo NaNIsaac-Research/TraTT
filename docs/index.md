@@ -11,7 +11,7 @@ maps.
 The results so far are calculations only; no experiment has been compared yet. They were
 presented as poster P2.17 at the KPS 2026 Fall Meeting. The README's
 [Results](../README.md#results) section lists them with the notebook entries that hold the numbers:
-the formation time of each satellite, the overshoot under a gradual turn-on, where the
+the characteristic time of each satellite, the overshoot under a gradual turn-on, where the
 independent-satellite approximation holds, and a first-order transfer function between the strain
 spectrum and the reflectivity.
 

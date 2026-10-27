@@ -4212,3 +4212,19 @@ order, and linear envelope. It does not map thickness-dependent Pendellösung
 overshoot, arbitrary envelope shapes, absorption, or an experimental detection limit.
 The mechanism is the one already documented in Entry 15; the new result is its
 parameter map and explicit checks, not a claim of a newly discovered mechanism.
+
+## 2026-10-27 — Entry 89: terminology change, characteristic time and the f0 detuning axis
+
+Reader-facing text (README, poster, docs) changes two names from here on; earlier
+entries keep the words they were written with.
+
+- "Formation time" for tau_n = Lambda_P / (v_s abs(J_n(S))) = t_tr / alpha_n becomes
+  the **characteristic time** tau_n. In Laue it is one full Pendellösung period, with
+  the first maximum at tau_n / 2; in Bragg 99 % is reached at 0.95 tau_n (Entry 9).
+  Earlier entries that say "formation time" for these mean the same tau_n, or the
+  99 % time; `observe.formation_time()` is the convergence time of the travelling-front
+  result and keeps its name.
+- The detuning axis of the poster schematic f0 is labelled beta / K (detuning from the
+  Bragg condition in units of the acoustic wave vector K = 2 pi / Lambda_ac) instead of
+  eta / q, and its intensity axis I(beta). Same numbers: eta / q = beta / K with
+  eta = beta L and q = K L. The f0 rerun gave an identical rocking curve.

@@ -56,14 +56,14 @@ notebook entries with the numbers, scripts and limitations.
 
 ![Schematic: the acoustic front fills the crystal; on the right, the rocking curve of that instant](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/f0_scheme.png)
 
-The vertical axis of the right panel, η/q, is the detuning in units of the acoustic wave vector
-K = 2π/Λ<sub>ac</sub> (η/q = β/K, with η = βL and q = KL), so the peaks sit at the satellite orders n.
+The vertical axis of the right panel, β/K, is the detuning β from the Bragg condition in units of the
+acoustic wave vector K = 2π/Λ<sub>ac</sub>, so the peaks sit at the satellite orders n.
 
-**1. Formation time of each satellite** (Entries 1, 9, 24). Satellite n at time t has the
+**1. Characteristic time of each satellite** (Entries 1, 9, 24). Satellite n at time t has the
 intensity of a uniform, unstrained crystal of thickness v<sub>s</sub>t with coupling
 α|J<sub>n</sub>(S)|. With t̃ = t/t<sub>tr</sub>: I<sub>n</sub> = sin²(πα|J<sub>n</sub>|t̃) in Laue and
 tanh²(πα|J<sub>n</sub>|t̃) in Bragg geometry. These formulas agree with the full TT calculation
-without a fitting parameter. The formation time of satellite n is therefore
+without a fitting parameter. The characteristic time of satellite n is therefore
 τ<sub>n</sub> = Λ<sub>P</sub>/(v<sub>s</sub>|J<sub>n</sub>(S)|): in Laue one oscillation period, with
 the first maximum at τ<sub>n</sub>/2; in Bragg 99 % is reached at 0.95τ<sub>n</sub>. It does not depend on the
 crystal thickness, and the satellite with the largest |J<sub>n</sub>(S)| forms first. The figure at the top shows it.
@@ -133,7 +133,7 @@ src/tratt/      solver package
   core.py         Laue IVP and Bragg Riccati (RK4, vectorised over eta and time; Bragg absorption kappa)
   drive.py        travelling acoustic drive phi(zeta; t): front, rise, amplitude profile
   floquet.py      exact Floquet solver for a uniformly filled crystal (independent cross-check)
-  observe.py      channel windows, formation time, peak width
+  observe.py      channel windows, convergence time, peak width
   cube.py         rocking curve over time (I(eta, t) cubes)
   sweep.py        parameter grids
 tests/          analytic ground truth as asserts

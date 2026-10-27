@@ -50,8 +50,9 @@ Behind the front, satellite n sees a crystal of thickness v_s t with coupling
 pi alpha |J_n(S)|. It replays its static thickness curve in time:
 
 - Laue: I(nq, t) = sin^2(pi alpha_n t) — temporal Pendellösung, period
-  tau_n = Lambda_P / (v_s |J_n(S)|), independent of L. (C-1.10, Entry 1)
-- Bragg: I(nq, t) = tanh^2(pi alpha_n t); formation time 0.95 t_tr / alpha_n.
+  tau_n = Lambda_P / (v_s |J_n(S)|) (characteristic time; first maximum at tau_n / 2),
+  independent of L. (C-1.10, Entry 1)
+- Bragg: I(nq, t) = tanh^2(pi alpha_n t); 99 % at 0.95 t_tr / alpha_n = 0.95 tau_n.
   The naive t_f ~ t_tr / alpha is right with alpha -> alpha |J_n(S)|. (Entry 9)
 
 No fit parameter; all (alpha, S, n) collapse onto one curve.

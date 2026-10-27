@@ -30,7 +30,7 @@ observability?
 
 **Results.** The first maximum falls at t* = 1/(2α|J<sub>n</sub>(S)|) to within the time grid plus
 ~2 %, and at S = 3 the order is n = 2, 1, 3 (Entry 1); Bragg follows tanh² with
-t<sub>99</sub> ≈ 0.953/(α|J<sub>n</sub>(S)|) to ~1-3 % (Entry 9); the formation time does not depend
+t<sub>99</sub> ≈ 0.953/(α|J<sub>n</sub>(S)|) to ~1-3 % (Entry 9); the characteristic time τ<sub>n</sub> = t<sub>tr</sub>/(α|J<sub>n</sub>(S)|) does not depend
 on the crystal thickness (Entry 6); S can be read from two periods to ~1 % (Entry 13); the law holds
 to a worst 0.031 in the 12 of 30 random cases with Λ<sub>ac</sub>/Λ<sub>P</sub> ≤ 0.05 (Entry 19), with an error of about 0.9 Λ<sub>ac</sub>/Λ<sub>P</sub>
 (Entry 26). Realistic case: Si 440 at 17-30 keV, 150-300 µm, a 1-2 GHz shear wave (Entry 20).
@@ -157,5 +157,5 @@ the candidate papers. The scripts (`explore/nb/e68_*.py` to `e88_*.py`) exist on
 
 ## Not in a study
 
-`results_sweep_laue.json` is the first-session sweep; Entry 31 calls its formation times
+`results_sweep_laue.json` is the first-session sweep; Entry 31 calls its convergence times
 uninformative and asks for a re-run with the new grid rule if they are used.
