@@ -468,7 +468,7 @@ of the final value.
 0.004 (S 1.5, alpha 0.5, n 1), 0.006 (1.5, 1, 1), 0.031 (1.5, 2, 1),
 0.043 (3, 2, 2).
 
-99 % formation time, prediction t99 = atanh(sqrt(0.99) tanh(pi alpha_n)) / (pi alpha_n)
+99 % time, prediction t99 = atanh(sqrt(0.99) tanh(pi alpha_n)) / (pi alpha_n)
 (handoff 7.3 formula with alpha -> alpha_n):
 
 | S, alpha, n | alpha_n | t99 sim | t99 pred |
@@ -486,11 +486,11 @@ of the final value.
   sets the time: t99 ~ 0.953 / (alpha |J_n(S)|) for large alpha_n, capped at 1.
   With alpha_n rather than alpha, it holds to ~1–3 %.
 - Why session 1 saw no 1/alpha: in Laue there is no saturation to reach early,
-  and the formation-time definition keyed on the full-profile residual always
+  and the convergence time keyed on the full-profile residual always
   ends at t = 1. In Bragg the centre intensity genuinely reaches its final
   value before the transit ends.
 - So the answer to the abstract's central question differs by geometry:
-  **Bragg — the satellite formation time is dynamical, 0.95 t_tr / alpha_n;
+  **Bragg — the satellite's 99 % time is dynamical, 0.95 t_tr / alpha_n;
   Laue — the transient is a dynamical oscillation of period t_tr / alpha_n and
   only the end point is set by the transit.**
 
@@ -577,7 +577,7 @@ Status key: **V** verified against full TT here, no fit; **E** estimate only;
 | 1 | During transit, satellite n is a crystal of the filled depth t with coupling pi alpha abs(J_n(S)) | C-1.10; Entries 1, 4, 9; `figures/poster_mapping.png` | V (resolved channels, alpha/alpha_ac <~ 0.2) |
 | 2 | Laue: centre intensity sin^2(pi alpha_n t) — temporal Pendellösung with period t_tr / alpha_n = Lambda_P / (v_s abs(J_n)) | C-1.10, Entry 1, Entry 6 | V; physics of the main-line analogue is prior art (DeCamp 2001) |
 | 3 | Laue: integrated intensity pi^2 alpha_n int_0^{2 pi alpha_n t} J_0 | C-1.10, Entry 2b | V to ~5–15 % rms of pi^2 alpha_n; static tail limits it |
-| 4 | Bragg: centre intensity tanh^2(pi alpha_n t); 99 % formation time 0.953 t_tr / alpha_n | Entry 9 | V (centre only) |
+| 4 | Bragg: centre intensity tanh^2(pi alpha_n t); 99 % at 0.953 t_tr / alpha_n (0.95 tau_n) | Entry 9 | V (centre only) |
 | 5 | Formation order set by abs(J_n(S)), reorderable with S (n = 2, 1, 3 at S = 3) | Entry 1, poster panel c | V |
 | 6 | n = 0 main line: sin^2(pi alpha [1 - (1 - J_0) t]); counter-rotation when J_0 < 0 | Entry 1 | V; CW analogue of DeCamp's dividing layer |
 | 7 | Finite rise: sin^2(pi alpha abs(int_0^1 J_n(S A(t - zeta)) dzeta)) for all n | Entry 5, poster panel d | V, residual ~ (alpha/alpha_ac)^2 |
@@ -1033,7 +1033,7 @@ lobes -6.46 / +6.28 (th ±6.37).
    alpha_n t = 0.5, 1.5: the integral leads by ~1/8 of a period, and its
    minimum (0.88–0.93) comes *before* the centre's zero (1.0). The integral
    oscillation is damped (J_0 envelope ~ (alpha_n t)^(-1/2)), the centre's is not.
-   Same period, different phase and damping — so "the formation time" depends
+   Same period, different phase and damping — so "the time to form" depends
    on the observable, and the two must not be mixed.
 4. The total over all eta is dominated by the n = 0 channel and the main-line
    tail; it is reported in the script output but carries no satellite-specific

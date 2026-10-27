@@ -227,7 +227,7 @@ def f0():
     axr.fill_betweenx(eta / d.q, 0, I, color=ORANGE, alpha=0.16)
     axr.set(xlim=(0, 1.55 * I.max()), ylim=(-2.75, 2.75), xticks=[], yticks=[-2, -1, 0, 1, 2])
     axr.set_xlabel(r"$I(\eta)$", fontsize=LAB, labelpad=1)
-    axr.set_ylabel(r"$\eta / q$", fontsize=LAB, labelpad=0)
+    axr.set_ylabel(r"$\beta / K$", fontsize=LAB, labelpad=0)
     axr.tick_params(labelsize=LAB, length=4)
     for s in ("top", "right", "bottom"):
         axr.spines[s].set_visible(False)

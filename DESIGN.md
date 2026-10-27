@@ -43,7 +43,7 @@ same coefficient, i.e. only in symmetric geometry (`gamma_0 = gamma_h`).
 Be precise about complex `chi_0`: `Re chi_0` is a pure phase and does vanish from
 `|D_h|^2`, but `Im chi_0` leaves a common `exp(-mu z)` that survives in the
 absolute intensity. It cancels only in normalized observables — `p_n`, curve
-shape, formation times — which is all we use. (This model sets `chi_0 = 0`
+shape, time scales — which is all we use. (This model sets `chi_0 = 0`
 outright, so the point is moot here and matters only when comparing to data.)
 
 `chi_0` does not vanish physically. It shifts the Bragg angle by
@@ -124,7 +124,7 @@ the depth at which `|R|²` reaches 99 % of its final value is
 
 so `ζ_sat = min(1, 1/α)` holds to 2–4 % for α ≥ 4.
 
-This is a static penetration depth, not a formation time — the real problem is
+This is a static penetration depth, not a time scale — the real problem is
 modulated and time dependent, so it may not carry over. That is exactly why it is
 useful: a quantitative baseline fixed *before* the sweep, which the parameter sweep either
 confirms or breaks. If it holds, the "additional dynamical timescale" of the
