@@ -80,7 +80,23 @@ the Θ<sub>n</sub> law; full TT at five points agrees with it to 8×10⁻⁵. Ne
 (J<sub>1</sub> = 0 at the final amplitude) the satellite reaches 0.53 during the turn-on and
 1.3×10⁻⁴ at the end.
 
-![Overshoot map from the Θ<sub>n</sub> law and three traces checked against full TT](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/f7_overshoot.png)
+![Overshoot map from the Θ<sub>n</sub> law, three traces against full TT, their differences, and twelve full-TT checks](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/overshoot.png)
+
+*Calculated, not measured.* First Laue satellite (n = 1), α = 0.5, α<sub>ac</sub> = 40; the observable
+is the satellite centre intensity (η = q) averaged over the acoustic carrier phase, in units of the
+incident intensity. The amplitude rises linearly to S over T<sub>rise</sub> and is then held; time is in
+units of the transit time t<sub>tr</sub> = L/v<sub>s</sub>. **a** Overshoot ΔI = peak − steady (0 where the trace never exceeds its steady value) from the
+reduced Θ<sub>n</sub> model over 101 × 111 (T<sub>rise</sub>, S) conditions; the maximum, 0.603, lies on
+the T<sub>rise</sub> = 4t<sub>tr</sub> edge of the scan. Crosses mark the twelve full-TT checks, symbols
+the traced cases. **b** Cases A–C: model (line) and full TT (open symbols, 16 carrier phases, every
+second TT time shown); dashed, the steady value (1.3×10⁻⁴ for C). **c** |TT − model| for the same
+traces; dotted, how much the TT trace itself changes from 8 to 16 phases with the depth grid doubled.
+**d** Largest |TT − model| over each of the twelve check traces (8 phases). Data
+[`explore/nb/e67_overshoot.npz`, `.json`](explore/nb), written by
+[`explore/nb/e67_overshoot_map.py`](explore/nb/e67_overshoot_map.py); figure
+[`explore/make_overshoot_figure.py`](explore/make_overshoot_figure.py), which reads the saved data only:
+`uv run --group figures python explore/make_overshoot_figure.py`. The poster version is
+`make_poster_figs.py f7`.
 
 **3. Validity of the independent-satellite approximation** (Entries 19, 26, 52–54). Results 1
 and 2 treat each satellite independently, so their error grows with
