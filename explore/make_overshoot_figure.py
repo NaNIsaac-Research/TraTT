@@ -127,7 +127,7 @@ def check_errors(ax, summary):
     ax.set_title("12 full-TT checks", loc="left")
     handles, labels = ax.get_legend_handles_labels()
     handles.append(Line2D([], [], color="0.6", marker="D", ls="none", ms=3))
-    labels.append(r"$\Delta I$, same $T_\mathrm{rise}$ shapes")
+    labels.append(r"$|\Delta I_\mathrm{TT} - \Delta I_\mathrm{model}|$, same $T_\mathrm{rise}$")
     ax.legend(handles, labels, fontsize=SMALL, loc="upper left", handlelength=1.0, ncols=1)
 
 
