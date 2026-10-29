@@ -144,8 +144,14 @@ agrees to 8.65×10⁻⁵. The mechanism is the one of Entry 15; the new part is 
 **Limits.** Selected checks, not a global error bound; one thickness, geometry, order and envelope;
 a centre observable, not an integrated population.
 
-**Reproduce.** `explore/nb/e67_overshoot_map.py`, `e67_worker_audit.py`;
-`uv run python explore/make_poster_figs.py f7` draws the figure.
+**Figure.** [`figures/overshoot.png`](../../figures/overshoot.png) (PDF beside it): the map, the twelve
+full-TT checks, the three traced cases against full TT and their difference in time; caption in the
+[README, result 2](../../README.md#results).
+
+**Reproduce.** `explore/nb/e67_overshoot_map.py`, `e67_worker_audit.py` write
+`explore/nb/e67_overshoot.npz` and `.json`;
+`uv run --group figures python explore/make_overshoot_figure.py` draws the figure from them without
+recomputing, and `uv run python explore/make_poster_figs.py f7` the poster version.
 
 ## 9. Paper viability (Entries 68-88, PR #16)
 

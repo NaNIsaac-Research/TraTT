@@ -80,7 +80,33 @@ the Θ<sub>n</sub> law; full TT at five points agrees with it to 8×10⁻⁵. Ne
 (J<sub>1</sub> = 0 at the final amplitude) the satellite reaches 0.53 during the turn-on and
 1.3×10⁻⁴ at the end.
 
-![Overshoot map from the Θ<sub>n</sub> law and three traces checked against full TT](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/f7_overshoot.png)
+![Overshoot map from the Θ<sub>n</sub> law, three traces against full TT, their differences, and twelve full-TT checks](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/overshoot.png)
+
+*Calculated, not measured.* First satellite (n = 1), Laue geometry, α = L/Λ<sub>P</sub> = 0.5 and
+α<sub>ac</sub> = L/Λ<sub>ac</sub> = 40 (R = 0.0125); S = h·u<sub>0</sub> is the strength of the acoustic
+modulation ([notation](docs/background.md)). The observable is the satellite centre intensity
+I<sub>1</sub>(η = q) averaged over the acoustic carrier phase, in units of the incident intensity
+I<sub>0</sub>. The amplitude rises linearly to S over T<sub>rise</sub> and is then held; each trace runs
+from t = 0 to T<sub>rise</sub> + t<sub>tr</sub>, with t<sub>tr</sub> = L/v<sub>s</sub> the transit time.
+**a** Overshoot ΔI = peak − steady (0 where the trace never exceeds its steady value) from the reduced
+Θ<sub>n</sub> model over 101 × 111 (T<sub>rise</sub>, S) conditions. The largest value in the scan,
+0.603 at S = 3.8, lies on the T<sub>rise</sub> = 4t<sub>tr</sub> edge, where ΔI still grows by about
+0.012 per t<sub>tr</sub>, so the maximum over T<sub>rise</sub> lies outside the scan. Crosses mark the
+twelve full-TT checks, coloured symbols the traced cases. **b** The twelve checks (8 carrier phases):
+largest |I<sub>TT</sub> − I<sub>model</sub>|/I<sub>0</sub> along each trace (black) and the difference in
+ΔI (grey), which is at most 8.2×10⁻⁵. The trace values include TT discretization of up to about
+3×10⁻⁵: at S = 1.5, T<sub>rise</sub> = t<sub>tr</sub> the 8-phase check gives 4.65×10⁻⁵ and case A with
+16 phases 1.36×10⁻⁵. **c** Cases A–C: model (line) and full TT (open symbols, 16 carrier phases with the
+depth grid doubled, every second TT time shown); dashed, the steady value. **d**
+|I<sub>TT</sub> − I<sub>model</sub>|/I<sub>0</sub> along the same traces. Dotted: the largest change of
+the TT trace between 8 phases and 16 phases with the depth grid doubled, an error scale for the TT runs.
+For B and C the difference is about ten times larger than this, so it is the reduced model's own error;
+for A it is below it and not resolved. The value at t = 0, 1.5×10⁻⁸, is the TT result at zero
+amplitude, not a model error. Data [`explore/nb/e67_overshoot.npz`, `.json`](explore/nb), written by
+[`explore/nb/e67_overshoot_map.py`](explore/nb/e67_overshoot_map.py); figure
+[`explore/make_overshoot_figure.py`](explore/make_overshoot_figure.py), which reads the saved data only:
+`uv run --group figures python explore/make_overshoot_figure.py`. The poster version is
+`make_poster_figs.py f7`.
 
 **3. Validity of the independent-satellite approximation** (Entries 19, 26, 52–54). Results 1
 and 2 treat each satellite independently, so their error grows with
