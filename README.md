@@ -24,6 +24,14 @@ Main result, a calculation: satellite n forms in τ<sub>n</sub> = Λ<sub>P</sub>
 
 [All reports →](docs/reports/README.md)
 
+## Findings
+
+- [F8: Under a linear turn-on, the first satellite overshoots its steady value by up to 0.603 within the scan](docs/FINDINGS.md#f8-under-a-linear-turn-on-the-first-satellite-overshoots-its-steady-value-by-up-to-0603-within-the-scan)
+- [F6: The reflectivity spectrum is the strain spectrum times a closed-form crystal transfer function](docs/FINDINGS.md#f6-the-reflectivity-spectrum-is-the-strain-spectrum-times-a-closed-form-crystal-transfer-function)
+- [F7: An X-ray crossing is quasi-static, and no result transfers to surface waves as it stands](docs/FINDINGS.md#f7-an-x-ray-crossing-is-quasi-static-and-no-result-transfers-to-surface-waves-as-it-stands)
+
+[All findings →](docs/FINDINGS.md)
+
 ## Install
 
 ```
