@@ -144,8 +144,8 @@ agrees to 8.65×10⁻⁵. The mechanism is the one of Entry 15; the new part is 
 **Limits.** Selected checks, not a global error bound; one thickness, geometry, order and envelope;
 a centre observable, not an integrated population.
 
-**Figure.** [`figures/overshoot.png`](../../figures/overshoot.png) (PDF beside it): the map, the
-three traces against full TT, their difference in time, and the twelve checks; caption in the
+**Figure.** [`figures/overshoot.png`](../../figures/overshoot.png) (PDF beside it): the map, the twelve
+full-TT checks, the three traced cases against full TT and their difference in time; caption in the
 [README, result 2](../../README.md#results).
 
 **Reproduce.** `explore/nb/e67_overshoot_map.py`, `e67_worker_audit.py` write

@@ -73,6 +73,15 @@ def main():
         map_refinement_max_change=map_change,
         observable="carrier-phase-averaged intensity at eta=q, incident intensity=1",
         map_method="independent-satellite accumulated-coupling approximation",
+        geometry="laue",
+        trace_window="0 <= t/t_tr <= rise + 1",
+        tt_checks=dict(phases=8, depth_grid="required_nz", times=101),
+        tt_cases=dict(
+            phases=16,
+            depth_grid="2 x required_nz",
+            times=61,
+            refinement_reference=dict(phases=8, depth_grid="required_nz"),
+        ),
         cases=[],
         checks=[],
     )
