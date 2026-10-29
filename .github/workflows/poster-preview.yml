@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
       - name: Render from committed plot caches (no TT reruns)
         run: |
           uv run --python 3.12 --extra dev python explore/make_poster_figs.py f1 f7
@@ -28,7 +28,7 @@ jobs:
               assert f.is_file() and f.stat().st_size>20000, x
               print(x, f.stat().st_size, 'bytes')
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: tratt-poster-figure-proportion-proof
           path: |
