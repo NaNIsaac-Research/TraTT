@@ -84,7 +84,8 @@ on the present amplitude. With a linear turn-on over T<sub>rise</sub> the satell
 its maximum during the turn-on exceeds the steady value. In a scan of 11,211 (S, T<sub>rise</sub>)
 conditions for the first Laue satellite (α = 0.5, R = 0.0125) the largest overshoot is 0.603 of the
 incident intensity, at the edge of the scan (T<sub>rise</sub> = 4t<sub>tr</sub>). The map comes from
-the Θ<sub>n</sub> law; full TT at five points agrees with it to 8×10⁻⁵. Near a Bessel zero
+the Θ<sub>n</sub> law; full TT agrees with it to 8×10⁻⁵
+([`explore/nb/e67_overshoot.json`](explore/nb/e67_overshoot.json)). Near a Bessel zero
 (J<sub>1</sub> = 0 at the final amplitude) the satellite reaches 0.53 during the turn-on and
 1.3×10⁻⁴ at the end.
 
