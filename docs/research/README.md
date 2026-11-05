@@ -20,7 +20,7 @@ entries state a hypothesis before the setup but no threshold.
 | 6 | Strain spectrum to reflectivity: the transfer function H | 57-61, 64-66 | closed form verified (Entry 59); its linearisation is prior art (Entry 64); Entry 65 §2 and Entry 66 §3 withdrawn for short windows by Entry 71 (PR #16) | README result 4 |
 | 7 | The quasi-static condition, and why a surface wave does not do it | 62-63 | estimate (Entry 62); negative for SAW geometry (Entry 63) | README, poster (Entry 62) |
 | 8 | Overshoot map under a linear turn-on | 67 | verified at selected points (Entry 67); mechanism already in Entry 15 | README result 2, poster |
-| 9 | Paper viability, T1 and T2 | 68-88 | draft on [PR #16](https://github.com/NaNIsaac-Research/TraTT/pull/16); conclusions being verified | no |
+| 9 | Paper viability | 68-88 | draft on [PR #16](https://github.com/NaNIsaac-Research/TraTT/pull/16); conclusions being verified | no |
 
 ## 1. Formation laws (Entries 0-27)
 
@@ -150,7 +150,7 @@ a centre observable, not an integrated population.
 ## 9. Paper viability (Entries 68-88, PR #16)
 
 Draft work toward a paper on [PR #16](https://github.com/NaNIsaac-Research/TraTT/pull/16)
-(branch `research/paper-viability`): T1 (Entries 68-74, 80) and T2 (Entries 75-79, 81-88). Every
+(branch `research/paper-viability`): Entries 68-74, 80 and Entries 75-79, 81-88. Every
 computational entry there has a rule written before its run. The conclusions are being verified and are
 not summarised here; the branch notebook gives each entry's verdict, and its `notes/paper_candidates.md`
 the candidate papers. The scripts (`explore/nb/e68_*.py` to `e88_*.py`) exist on that branch only.
