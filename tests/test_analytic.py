@@ -8,7 +8,7 @@ These go beyond tests/test_core.py in two ways:
    integrator. A conserved quantity holding at one n_z proves nothing about
    accuracy; a fourth-order error decay does.
 
-Derivations (handoff sections 6.1 and 6.3):
+Derivations:
 
 Laue, phi = 0. Substituting D0 = e^{i eta zeta/2} f, Dh = e^{i eta zeta/2} g
 symmetrizes the system into f' = -i(eta/2) f + i kappa g, g' = i kappa f +

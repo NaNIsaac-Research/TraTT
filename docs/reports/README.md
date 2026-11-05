@@ -21,7 +21,7 @@ date of their last entry. The status words are the notebook's; all results are c
 | Date | Study | Result | Status |
 |---|---|---|---|
 | 2026-10-27 | [Solver checks](../../verify/checks.py) | Convergence, limit and boundary-flux checks of the solver as one table and one figure. | numbers only |
-| 2026-10-22 | [9. Paper viability, T1 and T2](../research/README.md#9-paper-viability-entries-68-88-pr-16) | Draft work toward a paper on [PR #16](https://github.com/NaNIsaac-Research/TraTT/pull/16); conclusions are being verified. | draft |
+| 2026-10-22 | [9. Paper viability](../research/README.md#9-paper-viability-entries-68-88-pr-16) | Draft work toward a paper on [PR #16](https://github.com/NaNIsaac-Research/TraTT/pull/16); conclusions are being verified. | draft |
 | 2026-10-19 | [8. Overshoot map under a linear turn-on](../research/README.md#8-overshoot-map-under-a-linear-turn-on-entry-67) | Largest excess 0.603 at S = 3.8, on the rise-time boundary of the scan; full TT agrees to 8.65×10⁻⁵ at selected conditions. | verified at selected points |
 | 2026-10-15 | [6. Transfer function from strain spectrum to reflectivity](../research/README.md#6-transfer-function-from-strain-spectrum-to-reflectivity-entries-57-61-64-66) | Closed form matches TT with no fit parameter; its linearisation is prior art; two parts withdrawn for short windows (Entry 71). | verified, partly withdrawn |
 | 2026-10-08 | [7. Quasi-static condition and surface waves](../research/README.md#7-quasi-static-condition-and-surface-waves-entries-62-63) | An X-ray crossing takes 0.2 % of an acoustic period; no result transfers to SAW geometry as it stands. | estimate; negative for SAW |

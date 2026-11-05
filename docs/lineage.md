@@ -1,6 +1,6 @@
 # Lineage of TraTT
 
-Where TraTT came from, which script produced which notebook entry, which claims stand, which were withdrawn, and how to rerun the main computations. Written 2026-10-23 for the repository audit (NaNIsaac BACKLOG A2) from git history, `notes/lab_notebook.md`, `notes/paper_draft.md` and Isaac's project files. It adds no new result and does not reinterpret any; where a status is quoted it is quoted from the notebook or the draft.
+Where TraTT came from, which script produced which notebook entry, which claims stand, which were withdrawn, and how to rerun the main computations. Written 2026-10-23 for the repository audit from git history, `notes/lab_notebook.md`, `notes/paper_draft.md` and Isaac's project files. It adds no new result and does not reinterpret any; where a status is quoted it is quoted from the notebook or the draft.
 
 The research notes (`notes/`) belong to the TraTT research lane and are not changed here. Entries 68-88 and `notes/paper_draft.md` are on the branch `research/paper-viability` (PR #16, draft), not yet on `main`; links below say so.
 
@@ -8,11 +8,11 @@ The research notes (`notes/`) belong to the TraTT research lane and are not chan
 
 | Name | What it was | Where the record is | Relation to TraTT |
 |---|---|---|---|
-| FTT (Floquet-Takagi-Taupin) | Isaac's first line on X-ray diffraction from a crystal modulated by a bulk acoustic wave: Floquet channels of the two-beam Takagi-Taupin (TT) equations. Manuscript drafts "Floquet-Takagi-Taupin" v1 and v2, slides "Floquet-Takagi-Taupin" and "DynamicFTT" | Isaac's Drive project folder `01_Projects/X-AOM/` (`05_Paper/`, `04_Slides/`); not in any repository | same physics question. TraTT's first design document was titled "DynamicFTT" (`DynamicFTT_Research_Handoff.md`, added in 1216ff8, 2026-09-30, removed from the tree in 7438afe, 2026-10-15; still in history) |
-| `calculate` | first code of the FTT line (2026-01-15, 0bff8d2): `FTTSolver` with Euler and RK45 TT integrators for a travelling-wave phase, and a notebook of Bessel sideband weights and satellite angles | [NaNIsaac/calculate](https://github.com/NaNIsaac/calculate) (private); its working copy is in the same Drive folder, `02_Src/calculate` | one function copied: `explore/calculate_rk45.py` (b91b15b, 2026-10-16) keeps the adaptive RK45 integrator. TraTT's solvers in `src/tratt/` were written separately and are not derived from it |
+| FTT (Floquet-Takagi-Taupin) | Isaac's first line on X-ray diffraction from a crystal modulated by a bulk acoustic wave: Floquet channels of the two-beam Takagi-Taupin (TT) equations. Manuscript drafts "Floquet-Takagi-Taupin" v1 and v2, slides "Floquet-Takagi-Taupin" and "DynamicFTT" | Private manuscript and slide archives; not in any repository | same physics question. TraTT's first design document was titled "DynamicFTT" (added in 1216ff8, 2026-09-30, removed from the tree in 7438afe, 2026-10-15; still in history) |
+| `calculate` | first code of the FTT line (2026-01-15, 0bff8d2): `FTTSolver` with Euler and RK45 TT integrators for a travelling-wave phase, and a notebook of Bessel sideband weights and satellite angles | [NaNIsaac/calculate](https://github.com/NaNIsaac/calculate) (private) | one function copied: `explore/calculate_rk45.py` (b91b15b, 2026-10-16) keeps the adaptive RK45 integrator. TraTT's solvers in `src/tratt/` were written separately and are not derived from it |
 | FTT package (`src/ftt/`) | a later FTT code base described in Isaac's notes of 2026-08-04: `tt.py` (stroboscopic RK4 TT solver, Laue), `model.py` (travelling drive, parameters S, q, w), `floquet.py` (channel projection), `metrics.py`, `experiment.py`, `tdtt.py` (time-derivative channel-coupled engine), `transient/` (Landau-Zener overshoot, realization map) | not found on this PC or in any NaNIsaac repository | TraTT has modules with the same roles (`core.py`, `drive.py`, `floquet.py`, `observe.py`); whether code moved cannot be checked without the source |
 | AW_TT_EXP | an experiment-feasibility calculator (`spec_calc.py`): from X-ray energy, acoustic frequency, sound speed, Bragg angle, rocking width, crystal thickness, pixel size and distance, decides whether the ±1 acoustic satellites are separable in angle or on the detector | described in the same notes; source not found | no counterpart in TraTT; the realisability tables of Entries 20, 73 and 85 answer a related question with verified constants |
-| TrTT | the name used for TraTT's KPS 2026 Fall poster preparation (`TrTT_presentation_handbook`, `TrTT_last_minute`, in `01_Projects/Conferences/2026_KPS_Fall/`) | Drive | the same project; the handbook names the repository NaNIsaac/TraTT and the package `tratt` |
+| TrTT | the name used for TraTT's KPS 2026 Fall poster preparation (`TrTT_presentation_handbook`, `TrTT_last_minute`) | Private presentation archive | the same project; the handbook names the repository NaNIsaac/TraTT and the package `tratt` |
 
 Order in time, from git and file dates (Drive file dates are copy dates and only bound the authoring date from above): FTT manuscript drafts and slides by early 2026; `calculate` 2026-01-15; FTT package by 2026-08-04; TraTT initial commit e761142 on 2026-08-28 (DESIGN.md, `core.py`, `drive.py`, tests); transient-formation pipeline and notebook Entries 0-9 on 2026-09-30; poster at KPS 2026 Fall on 2026-10-22; paper-viability work (Entries 68-88) on 2026-10-22/23.
 
@@ -95,7 +95,7 @@ Scripts are in `explore/nb/` unless a path is given; `explore/make_*.py` draw th
 | 71 | H needs a long window | `e71_window_H.py` (PR #16) |
 | 72 | histories that cannot be told apart | `e72_history_degeneracy.py` (PR #16) |
 | 73 | what S = 0.5-6 means physically | `e73_realisability.py` (PR #16) |
-| 74 | directive questions B3, B4 (no computation) | — |
+| 74 | research questions (no computation) | — |
 | 75 | H as a closed form in window length | `e75_window_cf.py run posthoc fig` (PR #16) |
 | 76 | degeneracy class at larger S | `e76_degeneracy_S.py runA runB fig` (PR #16) |
 | 77 | anomalous absorption χ_ih | `e77_chi_ih.py run ttp ttm conv60 fig` (PR #16) |
@@ -136,14 +136,14 @@ This is `notes/paper_draft.md` §4 as of ffa4d9c (2026-10-23, research/paper-via
 | 12 | Order n reads the one-transit running mean of J_n(S A); zero-mean perturbations degenerate (≤ 3e-6 for S ≤ 6); boundary R = 0.2 | confirmed with a boundary | Entries 72, 76, 79 |
 | 12b | Beam condition for the centre formation law: σ_η ≲ 0.3 w_n (0.1–0.3 µrad, Si 440 / 17.48 keV Laue; 0.6–1.4 µrad, Si 400 / 8 keV Bragg); at σ_η = w_n the first maximum loses 13–40 % | confirmed (full TT beam average, 8 cases) | Entry 84 |
 | 8c | Polarisation: π = σ form with α → Cα (κ fixed), unpolarised = two-term closed-form sum (TT 0.02 %); negligible at Si 400 / 8 keV (C² = 0.12), 20–32 % at Si 440 / 17.48 keV; static Debye–Waller already in the X0h constants | confirmed | Entry 88 |
-| 12c | Integrated Laue satellite population: flat-beam shape from σ_η ≈ 5 w_n (2–5 µrad, step) and 10 w_n (10 µrad, 1 t_tr ramp) with a one-channel detector (9–18 µrad); formation curve from TT (tabulated; 13–25 % off ∫J_0); Bragg population not clean | pre-registered threshold falsified: 3 w_n failed in 3 of 5 runs (Entry 87; Entry 86 failed under its own rule). 5 w_n (step) and 10 w_n (ramp) are post-hoc conditions from the same cases; confirmation needs a pre-registered run on new cases (T2s) | Entries 86, 87 |
+| 12c | Integrated Laue satellite population: flat-beam shape from σ_η ≈ 5 w_n (2–5 µrad, step) and 10 w_n (10 µrad, 1 t_tr ramp) with a one-channel detector (9–18 µrad); formation curve from TT (tabulated; 13–25 % off ∫J_0); Bragg population not clean | pre-registered threshold falsified: 3 w_n failed in 3 of 5 runs (Entry 87; Entry 86 failed under its own rule). 5 w_n (step) and 10 w_n (ramp) are post-hoc conditions from the same cases; confirmation needs a pre-registered run on new cases | Entries 86, 87 |
 | 13 | Signal maximum = Fisher-information maximum for a ps packet at one angle | negative result | Entry 70 |
 | 14 | Bessel-zero resurrection at third order | confirmed in the model, unobservable (4e-5); **unread** Entin, Iolin–Entin | Entries 45, 51, 52, 54 (not in this paper; P4) |
 | 15 | Realisability: S ≤ 6 at 1–2 GHz clean on the elastic side; drive power 6–900 W/cm² peak | constants only; harmonic column withdrawn (shear symmetry); transducer number unverified | Entries 73, 80 |
 
 ### Withdrawn, falsified or corrected
 
-Hypotheses in this list are not to be reopened without new evidence (tratt brief, BACKLOG T1).
+Hypotheses in this list are not to be reopened without new evidence.
 
 | Where | What | By |
 |---|---|---|
@@ -156,8 +156,8 @@ Hypotheses in this list are not to be reopened without new evidence (tratt brief
 | Entry 51 | dynamical localisation or diffusion in order space; single-phase breakdown metrics | absent; micromotion that averages away |
 | Entry 56 | any "new mechanism" claim for the Entry 39 phase wall | withdrawn: it is a stacking fault per satellite (Authier & Simon 1968) |
 | Entry 65 §2, Entry 66 §3 | "17 keV under-reads 20 GHz by a factor 2" for the Chalise packet; "two factors multiply, 0.33-0.45" | withdrawn for the 140 ps window by Entry 71; holds only for long windows (the strain travels ≥ max(1/κ, x/π) Λ during the window; a 10 ps packet read over 52 ns shows it, Entry 75) |
-| Entry 68 | one dimensionless number sets the linearity limit (directive B3, strong form) | falsified: 1 − K spreads ×10-14 at equal ν |
-| Entry 70 | directive B2 (crystal moves the signal maximum away from the information maximum) | negative in the case computed |
+| Entry 68 | one dimensionless number sets the linearity limit (strong form) | falsified: 1 − K spreads ×10-14 at equal ν |
+| Entry 70 | crystal moves the signal maximum away from the information maximum | negative in the case computed |
 | Entry 73 | ε2/ε column and harmonic verdicts for the shear geometry | withdrawn by Entry 80 |
 | Entry 75 | packet-free short form of H(f; T_w) | rejected below ~100 τ |
 | Entry 65 §3(a) | the `tt` run at 24 RK4 steps per cycle (x ≥ 30) | not converged; "do not quote it" (48 steps per cycle is converged to < 0.5 %) |
@@ -200,11 +200,11 @@ Run times and convergence checks are in each entry. Several sweeps take minutes;
 
 ## 5. Open questions and implementation tasks
 
-From `notes/paper_draft.md` §5 and §7, `notes/paper_candidates.md` and the tratt handoff; listed, not re-ranked.
+From `notes/paper_draft.md` §5 and §7, `notes/paper_candidates.md`; listed, not re-ranked.
 
-- Novelty of claim 2 depends on three unread papers (Sondhauss & Wark 2003 in full, Chukhovskii & Förster 1995, Wark & Lee 1999) and six more named in the cross-review (T2d, waiting for the PDFs).
-- Paper scope: P1 + P2 in one paper or P1 alone; whether to propose the ±η asymmetry as a measurement; asymmetric cut; whether to accept the 5 w_n condition (Isaac's decisions, tratt handoff).
-- Claim 12c needs a pre-registered confirmation run on new cases (T2s).
+- Novelty of claim 2 depends on three unread papers (Sondhauss & Wark 2003 in full, Chukhovskii & Förster 1995, Wark & Lee 1999) and six more named in the cross-review (waiting for the PDFs).
+- Paper scope: P1 + P2 in one paper or P1 alone; whether to propose the ±η asymmetry as a measurement; asymmetric cut; whether to accept the 5 w_n condition (Isaac's decisions).
+- Claim 12c needs a pre-registered confirmation run on new cases.
 - Model limits stated for the paper: two-beam, plane wave, quasi-static, centrosymmetric; Laue lossless only; strain as a phase only (no elasto-optic change of χ_h); first order in S for the closed form.
 - Experimental side: no long-window satellite measurement; transducer peak power unverified.
 - Future project named in Entry 51: a perturbative theory of the overlap regime and its comparison with the Entin / Iolin-Entin resonance theory.
