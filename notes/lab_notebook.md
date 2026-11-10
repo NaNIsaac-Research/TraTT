@@ -5944,3 +5944,71 @@ not modelled). Class: **confirmed** (algebra + TT identity + 0.02 % mixed check)
 polarisations see the same strain and detuning (true for a single ray; a divergent beam is
 Entry 82's question, independent of polarisation). The P2 (Laue) two-period statement is algebra
 from the rescaling, not run.
+
+## 2026-11-10 — Entry 89: P1 novelty verdict from the four prior-art papers (TRATT-P1-VERDICT)
+
+**Sources, read in full** (PDFs in the repo root, untracked, copyright):
+- [CF95] F. N. Chukhovskii & E. Förster, Acta Cryst. A51, 668–672 (1995), 5 pp.
+- [WL99] J. S. Wark & R. W. Lee, J. Appl. Cryst. 32, 692–703 (1999), 12 pp.
+- [SW03] P. Sondhauss & J. S. Wark, Acta Cryst. A59, 7–13 (2003), 7 pp. (Entry 64; re-read).
+- [Sh05] J. M. H. Sheppard, P. Sondhauss, R. Merlin, P. Bucksbaum, R. W. Lee, J. S. Wark,
+  Solid State Commun. 136, 181–185 (2005), 5 pp.
+
+No paper was unreadable. Not read and not judged here: Wark & He, Laser Part. Beams 12, 507 (1994)
+(the original time-dependent TT, cited by the three later papers), and the referee list of
+`notes/paper_candidates.md` (Reis 2001, Trigo 2013, Schick 2014 udkm1Dsim, Shayduk 2013).
+
+**1. What each paper computes (facts, with locations).**
+
+| | CF95 | WL99 | SW03 | Sh05 |
+|---|---|---|---|---|
+| theory | time-dependent TT (eq. 1), solved by Fourier transform in T and the Green function of the stationary problem (eq. 9–12) | time-dependent TT (eq. 6–7, 9–10), Zachariasen units g, k, y, A, T (eq. 11–18), upwind finite differences (eq. 22–25) | generalised time-dependent TT for non-uniform (optical-phonon) displacements (eq. 14); classical one recovered (eq. 16); first-order perturbative solution (eq. 25–31) | SW03 eq. 14 and its first-order solution (eq. 1, 6–9 = SW03 eq. 14, 28–30) |
+| time dependence | of the incident X-ray pulse; δ-pulse response saturates on t0 = Λ/2πc (dynamical), (μ0 c)⁻¹ (kinematic) (eq. 15–16, Fig. 1–2; p. 672: ~10 fs and ~200 fs) | switch-on and switch-off of the X-ray beam (Fig. 2–10); susceptibility reduced by a heating front ψ_H(A, T) (eq. 26, Fig. 11–15) | phonon enters as cos(Ωt − q·r) (eq. 17–19); the ∂_t terms matter only when Ω/ω is not small (p. 11, eq. 34–36, Doppler shift of satellites) | one optical-phonon pair ±q, steady-state sideband amplitudes (p. 183); sideband intensity oscillates at 2Ω (eq. 11, Fig. 3) |
+| strain / phonon | none (perfect crystal) | none coherent; ψ′ and ψ″ scaled down together, lattice spacing fixed (p. 693, 699) | coherent acoustic and optical single mode; acoustic = phase modulation of χ_h (eq. 21, Fig. 1a); InSb 111, longitudinal acoustic, \|q\| = 1e8 rad/m, strain 0.1 % (Fig. 3) | GaAs 004, 8.12 THz TO phonon pair (p. 183, Fig. 1–5) |
+| geometry | Bragg, general γ0, γh (eq. 2, 14) | symmetric Bragg and Laue with b (eq. 9–10, 16); simulations Bragg, b = −1 | general two-beam (eq. 26); InSb with 5° asymmetry (p. 11) | symmetric Bragg 004 (Fig. 1–2) |
+| satellites | no | no | yes, at k − k0 = G_h ± q (eq. 23–24, 31), plane-wave constant amplitudes d^± (eq. 28–29) | yes, d^± and d̄^± for ±q (eq. 7, 10), split by the Doppler asymmetry (Fig. 3) |
+| window / crystal factor on a spectrum | no | no spectrum; the steady angular shape near y = k/g and the Pendellösung fringes take much longer than the integrated reflectivity (p. 695–696, Fig. 3–5, p. 702); under heating, the decay is set by the front crossing an absorption depth when that is ≫ the extinction depth (p. 700–702, Fig. 12–14) | no time window; proposes fitting a measured rocking curve with a sum of mode solutions for occupation numbers (p. 12) | no |
+| stated validity of first order | — | — | satellite peak ≤ 10 % of main peak (p. 12); **not safe when sidebands lie within about one rocking-curve width** (p. 12, Fig. 4); inaccurate for thin crystals with Laue oscillations (p. 12) | perturbative solution "breaks down for sidebands that are not well separated from the main Bragg peak" (p. 184) |
+| absorption, polarisation, geometry | complex σ = (π/Λ)(1 + ik) (eq. 11), C (p. 669) | g ∝ ψ″_0, k = ψ″_H/ψ′_H (eq. 11–12), K = C (eq. 13); rocking-curve asymmetry with its peak at y = k/g (p. 695, Fig. 4) | C, β_h with complex χ_0 (eq. 26–27, 33) | C (eq. 7) |
+
+Neither CF95 nor WL99 contains a first-order strain or phonon form, Bloch-wave or otherwise: CF95
+treats a perfect crystal, WL99 a susceptibility scaled down without strain, solved numerically. So
+item 4 of the falsification list in `paper_candidates.md` (an earlier Bloch-wave first-order form)
+is answered **no** for these two papers. Sh05 adds no new first-order form; it applies SW03 eq. 29
+and repeats its limitation.
+
+**2. Verdict per P1 sub-claim** (wording from the `paper_candidates.md` table).
+
+| P1 sub-claim | verdict | basis |
+|---|---|---|
+| first-order linearisation of TT for a phonon | **known** | SW03 eq. 25–31 (Entry 64); used again in Sh05 eq. 6–10 |
+| time-resolved reflectivity oscillating with the phonon, from first-order TT | **partly known** | Sh05 eq. 11, Fig. 3: sideband intensity at 2Ω from two counter-propagating modes, angle–time map; SW03 eq. 31 has the oscillating cross term without discussing it (Entry 64). Neither uses the time-Fourier weight as a spectral estimator or divides out a crystal factor |
+| closed-form H, Bloch-wave depth dependence, valid inside the Darwin width | **new** against these four | SW03 p. 12 and Sh05 p. 184 state that their first order fails there; CF95 and WL99 have no first-order form (§1) |
+| S&W eq. 29 fails within ~1 Darwin width (factor 3–8) | **partly known** | the failure is stated in SW03 p. 12 (Fig. 4) and Sh05 p. 184; its size in our variables is ours (Entry 64 §5) |
+| window condition H(f; T_w): strain travels ≥ max(1/κ, x/π) Λ | **new as a law; partly known in kind** | WL99 p. 700–702 (Fig. 12–14): with a perturbation front moving in, the reflectivity time scale is set by the front crossing an absorption depth, not an extinction depth, when absorption depth ≫ extinction depth. That is the 1/κ half of our condition, in kind, for a susceptibility reduction moving at the X-ray-front speed and an integrated reflectivity. The x/π half, the acoustic speed and the closed form in T_w are not there. The CF95 and WL99 response times (fs, eq. 16; ~2 T units, Fig. 2) are X-ray transit times; they support the quasi-static treatment (Entry 62) and are not our window |
+| factor-2 bias for Si 400 at 17.48 keV, long window | **new** (a number) | no paper computes Si 400 or a phonon spectrum weight |
+| χ_ih/χ_i0 as a second crystal parameter of H; ±η side asymmetry | **parameter known, its effect on H new** | k = ψ″_H/ψ′_H and the asymmetric rocking curve it gives are in WL99 eq. 12, p. 695, Fig. 4 (from Zachariasen 1945); none of the four applies it to a satellite or to H, or proposes the ±η ratio as a χ_ih measurement |
+| asymmetric Bragg as a rescaling, g → g(√b + 1/√b)/2 | **known** | WL99 eq. 11: g = (1 − b) ψ″_0 / (2K \|ψ′_H\| \|b\|^½); for Bragg (b < 0) the ratio to the symmetric g is (1 + \|b\|)/(2√\|b\|) = (√\|b\| + 1/√\|b\|)/2, our factor (Zachariasen units). The window numbers in Λ_asym (Entry 81) are application |
+| polarisation as α → Cα (Entry 88) | **known** | C in SW03 eq. 26, 29 and Sh05 eq. 7; K in WL99 eq. 13; CF95 p. 669. The unpolarised two-term sum for H is application |
+| crystal factor is a single-ray property; beam spread σ ≥ κ + π/x gives the flat κ√(π/2)/σ_η | **new as a statement on H; analogous in kind** | WL99 p. 695–696, 702: the angle-integrated reflectivity reaches steady state in ~2 T units while narrow angular features (peak at y = k/g, Pendellösung fringes) take far longer, being "narrow in frequency space ... broad in the temporal domain". CF95 p. 670: the plane-wave δ-pulse reflectivity does not depend on Δφ0 and keeps its shape after angular integration. Sh05 p. 184 names divergence and transverse coherence as limiting the contrast, one sentence. None states it for a phonon transfer function |
+| linearity bound ν ≲ 0.1 ⇒ weight linear to 2 % | **partly known** | SW03 p. 12: first order "reasonable" while the satellite peak is ≤ 10 % of the main peak; Sh05 Fig. 4: sideband intensity ∝ (amplitude)² up to 1 Å. Ours is quantified against TT on a stated domain; theirs is a rule of thumb |
+| one dimensionless number joins the regimes | withdrawn (Entry 68), not judged | — |
+
+**3. Overall** (inference from §1–2, limited to these four papers).
+**P1 holds if narrowed to** the Bloch-wave first-order transfer function H(f; T_w) that stays valid
+inside the Darwin width, where the SW03 / Sh05 plane-wave form is stated to fail, together with its
+window law (acoustic travel ≥ max(1/κ, x/π) Λ) and its beam condition (single ray vs the flat
+κ√(π/2)/σ_η), as an estimator of phonon spectra from time-resolved Bragg reflectivity. The
+linearisation, the polarisation and asymmetric-geometry factors and χ_ih as a parameter are prior
+art, cited and not claimed; the ν bound and the ±η asymmetry are claimed as quantified results on
+known ingredients.
+
+**Facts vs inference.** Facts: §1 and the "basis" column, with page and equation numbers.
+Inference: the classification words (new / partly known / known), the reading of WL99 p. 700–702 as
+the 1/κ half "in kind", and the beam-condition analogy with WL99 p. 695–696. "New" means new
+against these four papers only; the unread Wark & He 1994 and the referee list remain the risk,
+udkm1Dsim (dynamical X-ray diffraction from strain pulses) first among them.
+
+**Effect on the scores.** N stays 3: the H-inside-the-Darwin-width claim survives the two papers
+that could have removed it (CF95, WL99), while two supporting parts (asymmetric g, polarisation)
+move from "ours" to "cited". P1 row of `notes/paper_candidates.md` updated. No solver change, no run.
