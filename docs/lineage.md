@@ -112,6 +112,8 @@ Scripts are in `explore/nb/` unless a path is given; `explore/make_*.py` draw th
 | 88 | polarisation and Debye-Waller as rescalings | `e88_polarisation_dw.py` |
 | 89 | terminology: characteristic time, f0 detuning axis | — |
 | 90 | prior-art verdict on the transfer-function claims (reading, no computation) | — |
+| 91 | prior-art reading of five further papers (reading, no computation) | — |
+| 92 | corrections: window law from the saved Entry 75 data, Laue beam tolerance of Entry 84 | `e92_window_law.py` |
 
 Script names follow the entry numbers except in 42 (`e46_bands.py`), 48 (`e49_time.py`) and 49 (`e50_anomaly.py`). Not cited by any entry: `explore/calculate_rk45.py` (see §1), `explore/make_collapse_figure.py`, `explore/make_dephasing_figure.py`, `explore/make_poster_qr.py`, `explore/p0_equations.ipynb` (static penetration-depth table from the initial commit) and `explore/nb/paper_figs.py` (paper figures, `notes/paper_draft.md` §3).
 
