@@ -16,9 +16,8 @@ independent-satellite approximation holds, and a first-order transfer function b
 spectrum and the reflectivity.
 
 Work toward a paper (the transfer function in more detail, its dependence on the measurement
-window, and the conditions a real beam's divergence and bandwidth put on it) is on the branch
-`research/paper-viability`, [TraTT#16](https://github.com/NaNIsaac-Research/TraTT/pull/16). It is a draft
-and its conclusions are being verified; they are not summarized on this site.
+window, and the conditions a real beam's divergence and bandwidth put on it) is in notebook
+Entries 68-90, with the claim table in `notes/paper_draft.md`. It is a draft.
 
 ## Install
 

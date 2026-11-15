@@ -1,7 +1,7 @@
 # Paper candidates — what in TraTT can carry a journal paper
 
-Written 2026-10-22 (night), for Isaac's directive of the same day (`docs/isaac-directive-20261022.md`
-in the NaNIsaac workspace), BACKLOG T1d. Every statement points to a notebook entry. Status words:
+Written 2026-10-22 (night), for Isaac Yong's questions of the same day (B1-B4 in §3b). Every
+statement points to a notebook entry. Status words:
 **confirmed** = full TT in this model, converged, no fit; **prior art** = in the literature we have
 read in full; **hypothesis** = stated, not tested. Scores are 1–5 (5 = best), each with its reason.
 
@@ -37,9 +37,9 @@ Where each part stands:
 | Laue integrated population as the beam-tolerant P2 observable (corrected metrics) | **confirmed with a condition** (Entry 87): rule at 3 w_n fails in 3 of 5 runs; all step runs pass from σ_η = 5 w_n (2–5 µrad at Si 440 / 17.48 keV, one-channel detector 9–18 µrad), the 1 t_tr ramp from 10 w_n (10 µrad); the law is the TT channel integral P_0(t) (tabulated), not sin² | Entry 87 |
 | polarisation and static Debye–Waller | **absorbed** (Entry 88): π is the σ form with α → Cα, κ fixed (g/C, x/C, ν → Cν), exact; an unpolarised beam is the two-term closed-form sum, TT to 0.02 %; H_mix within 0.3 % of H_σ at Si 400 / 8 keV (C² = 0.12) but 20–32 % above at Si 440 / 17.48 keV (C = 0.73), so the polarisation state must be known there (vertical diffraction plane = σ); e^{−M} is already in the X0h constants | Entry 88 |
 | closed form in the window length, H(f; T_w) | confirmed: the packet-kept first-order form (CF-B) matches TT to 0.3 % at every window 0.14–300 ns, two energies, three packet lengths; the packet-free short form (CF-A, Entry 71's hand estimate) is **rejected** below ~100 τ by the pre-registered 1 % rule | Entry 75 |
-| signal maximum ≠ Fisher-information maximum (directive B2) | **negative** for a ps packet at one angle: amplitude maxima coincide (3 GHz apart), crystal moves nothing | Entry 70 |
+| signal maximum ≠ Fisher-information maximum (question B2) | **negative** for a ps packet at one angle: amplitude maxima coincide (3 GHz apart), crystal moves nothing | Entry 70 |
 | formation law I_n = sin²/tanh²(πα\|J_n\|t̃), no fit | confirmed | Entries 1, 9, 19, 24; tests |
-| one dimensionless number joins the two regimes (directive B3) | **falsified in strong form** | Entry 68: spread 10–14× at fixed ν |
+| one dimensionless number joins the two regimes (question B3) | **falsified in strong form** | Entry 68: spread 10–14× at fixed ν |
 | ν ≲ 0.1 ⇒ linear to 2 % | confirmed as a bound on the scanned domain | Entry 68 §4 |
 | Chalise et al. Fig. 2 tails = second-order strain terms | consistent in location; the low-frequency deficit is only partly explained (K = 0.65–0.88 vs their ~4×) once H is removed for their window | Entries 66, 71 |
 
@@ -57,7 +57,7 @@ of **long-window** measurements: the strain must travel ≥ max(1/κ, x/π) Λ d
 train read over tens of ns satisfies it, and so does a picosecond packet followed over a delay scan
 of ≥ 50 ns (Entry 75: the 10 ps packet shows the full steady factor, H(20)/H(100) = 0.558 at
 52 ns). The window condition therefore does not by itself tie P1 to the poster's apparatus
-(physics cross-review, PR #16); sharing one apparatus remains an option, see below.
+(physics cross-review); sharing one apparatus remains an option, see below.
 
 Reproduce:
 
@@ -78,7 +78,7 @@ parameters, g and χ_ih/χ_i0, no fit. New in kind: the two detuning sides of on
 get different H (1.6–1.9 % at 17.48 keV, 3–9 % at 8 keV), a ratio in which the strain spectrum
 cancels; the measured weight ratio also carries |R0(−η)|/|R0(+η)|, which is 1.0000 in the phonon
 band (x ≥ 27) and 10 % near the Darwin width (physics cross-review). Pre-registered and confirmed in
-the model as Entry 78 (T2f): TT and closed form agree to 0.06 %, two packets to 0.1 %, and the ratio
+the model as Entry 78: TT and closed form agree to 0.06 %, two packets to 0.1 %, and the ratio
 reads χ_ih/χ_i0 with sensitivity 0.02 (17.48 keV) to 0.07 (8 keV) per unit. This is the model's
 experimental test of the second parameter, and a Fig. 3 panel candidate.
 
@@ -89,18 +89,18 @@ ripples around the steady value with period 2x Λ/v_L. The packet-free short for
 140 ps (packet group delay and the −η image term) and was rejected under the rule; the packet-kept
 form is what goes into the paper.
 
-**Next falsification experiments, smallest first.** (T2a done: Entry 75. T2b done: Entry 76. T2c done: Entry 77.)
+**Next falsification experiments, smallest first.** (Entries 75, 76, 77 done.)
 1. Anomalous absorption χ_ih in Bragg: done (Entry 77, `solve_bragg(kappa_h=)`); rule fired at the
    52 ns window (1.4 %), second parameter kept. Next smallest: pre-register the ±η side asymmetry
-   as a claim and test it in full TT with a packet (not a single mode) at both energies. (T2c)
-2. Asymmetric geometry (γ_0 ≠ γ_h): done, Entry 81 (T2g). No solver change: exact rescaling, one
+   as a claim and test it in full TT with a packet (not a single mode) at both energies.
+2. Asymmetric geometry (γ_0 ≠ γ_h): done, Entry 81. No solver change: exact rescaling, one
    geometry factor in g, window condition in units of Λ_asym.
 3. A smooth strain front instead of the step front of the Entry 58 packet: changes the high-frequency
    wing, and may change the saturation route of Entry 68.
 4. Read Chukhovskii & Förster 1995 and Wark & Lee 1999 (time-dependent TT) for an earlier Bloch-wave
    first-order form. If one exists, the H part drops to "application"; the ν bound and the Si 400
-   number stand. (T2d) Done, Entry 90: neither has a first-order strain form; the H part stands.
-5. B1 degeneracy at larger S (Entry 72 iii): done, class holds to S = 6 (Entry 76, T2b).
+   number stand. Done, Entry 90: neither has a first-order strain form; the H part stands.
+5. B1 degeneracy at larger S (Entry 72 iii): done, class holds to S = 6 (Entry 76).
 
 ## 2. Candidates, scored
 
@@ -133,7 +133,7 @@ the crystal factor is flat (within 10 %) up to **T_flat = 19.6 ns**, halfway to 
 value at **T_half = 32.8 ns**, and within 10 % of it from **T_90 = 52.2 ns** on (TT-confirmed to
 0.002). A measurement with a 20–50 ns window sits on the steep part, where H depends on the window
 length itself; the experiment should therefore read either ≤ 5 ns (H flat to 1 %, kinematic
-estimator) or ≥ 52 ns (steady H), and in between must know its window to 10 %. Without such a measurement the paper is theory with a proposal. T1c (Entry 73): on
+estimator) or ≥ 52 ns (steady H), and in between must know its window to 10 %. Without such a measurement the paper is theory with a proposal. Entry 73: on
 the elastic and TT side S ≤ 6 at 1–2 GHz is clean (strain ≤ 2e-4; the second-harmonic column of
 Entry 73 was withdrawn in Entry 80: a pure shear wave along ⟨100⟩ has no collinear second harmonic,
 and the non-phase-matched longitudinal 2ω component is ≤ 1e-3 and invisible to the in-plane
@@ -175,7 +175,7 @@ Risks, in order:
   condition, the bound and the formation law, not on the linearisation.
 - An earlier first-order Bloch-wave form exists. Chukhovskii & Förster 1995 and Wark & Lee 1999
   read (Entry 90): none there; Wark & He 1994 unread.
-- Papers a referee will name (physics cross-review, bibliography unchecked, on the T2d list): for
+- Papers a referee will name (physics cross-review, bibliography unchecked): for
   P1 Reis et al. PRL 86, 3072 (2001), Trigo et al. Nat. Phys. 9, 790 (2013), Schick et al.
   udkm1Dsim CPC 185, 651 (2014); for P2 Bucksbaum & Merlin SSC (1999), Zolotoyabko and Iolin on
   acoustically modulated crystals, Grigoriev et al. APL (2006). The novelty sentences are to be
@@ -202,7 +202,7 @@ Risks, in order:
    (b) the formation law of the poster, I_n(t̃) = sin²(πα|J_n|t̃) collapse (`figures/poster/f1_collapse.png`
    re-drawn in `figures/paper/`), as the ν ~ 1 limit.
 
-## 3b. Directive questions, where each stands (T1b)
+## 3b. The questions B1-B4, where each stands
 
 | question | entry | result |
 |---|---|---|
@@ -215,7 +215,7 @@ Risks, in order:
 
 - Paper = P1 (transfer function) with P2 inside, or P2 (formation) as the first paper? P1 is
   closer to finished and tied to a current measurement; P2 is the poster's identity.
-- χ_ih is in `solve_bragg` (Entry 77, PR #16). Asymmetric geometry needs no solver change (Entry 81):
+- χ_ih is in `solve_bragg` (Entry 77). Asymmetric geometry needs no solver change (Entry 81):
   closed. Whether an asymmetric cut (b = 4–10, T_90 = 33–16 ns) goes into the proposal as the way
   to shorten the delay scan.
 - Whether the ±η side asymmetry (Entry 78, model-confirmed, unobserved) goes into the paper as a

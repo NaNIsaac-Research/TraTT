@@ -1,11 +1,11 @@
-# Paper draft skeleton (BACKLOG T2h, draft tier; nothing here is new computation)
+# Paper draft skeleton (draft; nothing here is new computation)
 
 Written 2026-10-23 from `notes/paper_candidates.md` and lab notebook Entries 1–88; prior-art status
 updated 2026-11-16 to the four-paper verdict of Entry 90. Every number
 cites the entry and the script that produced it; a claim's status is the notebook's (confirmed =
 full TT in this model, converged, no fit; prior art = in literature read in full; hypothesis /
 predicted = stated or computed, not tested against experiment). Posting, journal choice and
-authorship are Isaac's. Prior-art items marked **unread** are on BACKLOG T2d.
+authorship are Isaac's. Prior-art items marked **unread** have not been read in full.
 
 ## 0. Title candidates
 
@@ -107,7 +107,7 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
 | 12 | Order n reads the one-transit running mean of J_n(S A); zero-mean perturbations degenerate (≤ 3e-6 for S ≤ 6); boundary R = 0.2 | confirmed with a boundary | Entries 72, 76, 79 |
 | 12b | Beam condition for the centre formation law: σ_η ≲ 0.3 w_n (0.1–0.3 µrad, Si 440 / 17.48 keV Laue; 0.6–1.4 µrad, Si 400 / 8 keV Bragg); at σ_η = w_n the first maximum loses 13–40 % | confirmed (full TT beam average, 8 cases) | Entry 84 |
 | 8c | Polarisation: π = σ form with α → Cα (κ fixed), unpolarised = two-term closed-form sum (TT 0.02 %); negligible at Si 400 / 8 keV (C² = 0.12), 20–32 % at Si 440 / 17.48 keV; static Debye–Waller already in the X0h constants | confirmed; **prior art**: C in SW03 eq. 26, 29, Sheppard 2005 eq. 7, Wark & Lee 1999 eq. 13 (Entry 90), cited and not claimed; the unpolarised sum for H is application | Entries 88, 90 |
-| 12c | Integrated Laue satellite population: flat-beam shape from σ_η ≈ 5 w_n (2–5 µrad, step) and 10 w_n (10 µrad, 1 t_tr ramp) with a one-channel detector (9–18 µrad); formation curve from TT (tabulated; 13–25 % off ∫J_0); Bragg population not clean | pre-registered threshold falsified: 3 w_n failed in 3 of 5 runs (Entry 87; Entry 86 failed under its own rule). 5 w_n (step) and 10 w_n (ramp) are post-hoc conditions from the same cases; confirmation needs a pre-registered run on new cases (T2s) | Entries 86, 87 |
+| 12c | Integrated Laue satellite population: flat-beam shape from σ_η ≈ 5 w_n (2–5 µrad, step) and 10 w_n (10 µrad, 1 t_tr ramp) with a one-channel detector (9–18 µrad); formation curve from TT (tabulated; 13–25 % off ∫J_0); Bragg population not clean | pre-registered threshold falsified: 3 w_n failed in 3 of 5 runs (Entry 87; Entry 86 failed under its own rule). 5 w_n (step) and 10 w_n (ramp) are post-hoc conditions from the same cases; confirmation needs a pre-registered run on new cases | Entries 86, 87 |
 | 13 | Signal maximum = Fisher-information maximum for a ps packet at one angle | negative result | Entry 70 |
 | 14 | Bessel-zero resurrection at third order | confirmed in the model, unobservable (4e-5); **unread** Entin, Iolin–Entin | Entries 45, 51, 52, 54 (not in this paper; P4) |
 | 15 | Realisability: S ≤ 6 at 1–2 GHz clean on the elastic side; drive power 6–900 W/cm² peak | constants only; harmonic column withdrawn (shear symmetry); transducer number unverified | Entries 73, 80 |
@@ -165,7 +165,7 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
 ## 7. What is still missing before a first full draft
 
 - Isaac's decision P1 + P2 vs P1 alone (title, §4 and §5.2 depend on it).
-- (done, T2i) Fig. 1, Fig. 2, Fig. 4b are files in `figures/paper/` with captions in `CAPTIONS.md`.
+- (done) Fig. 1, Fig. 2, Fig. 4b are files in `figures/paper/` with captions in `CAPTIONS.md`.
 - Wark & He 1994 and the referee list (Reis 2001, Trigo 2013, udkm1Dsim 2014, Shayduk 2013) for
   the novelty sentences of §3 and §6; the four papers of Entry 90 are read.
-- A transducer number for §5.2 (DotFiles#57).
+- A transducer peak-power number for §5.2.
