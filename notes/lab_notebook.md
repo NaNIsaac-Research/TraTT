@@ -14,7 +14,7 @@ Notation: t = t_real / t_tr (filled depth fraction), alpha_n = alpha |J_n(S)|.
 
 ## 2026-09-30 — Entry 0: starting point
 
-Established (handoff C-1.10, commit c8c7193): satellite n during formation is a
+Established (commit c8c7193): satellite n during formation is a
 Laue slab of thickness t and coupling pi alpha_n.
 
     I(nq, t) ~ sin^2(pi alpha_n t)
@@ -299,7 +299,7 @@ alpha = 4 case versus alpha_ac (n_z = 60 alpha_ac):
     tau_n = t_tr / alpha_n = (L / v_s) / (alpha |J_n(S)|) = Lambda_P / (v_s |J_n(S)|)
 
 with Lambda_P = L / alpha the intensity Pendellösung period (the code's
-convention, handoff 7.3). **L cancels.** tau_n is the time the acoustic front
+convention). **L cancels.** tau_n is the time the acoustic front
 needs to cross one *satellite* Pendellösung length Lambda_P / |J_n(S)|. The
 crystal thickness only sets how many oscillations fit in the transit
 (alpha_n of them).
@@ -308,7 +308,7 @@ crystal thickness only sets how many oscillations fit in the transit
 flagged in the script as TO VERIFY with X0h/XOP before publication:
 Lambda_P(Si 220, ~8 keV, sigma) ~ 15 um; shear wave in Si [100]
 v_T = 5.84 km/s (a shear wave is needed so that h.u != 0 in symmetric Laue,
-handoff 7.4); d_220 = 1.920 A. alpha_ac chosen >= max(20, 5 alpha) to keep the
+original geometry notes); d_220 = 1.920 A. alpha_ac chosen >= max(20, 5 alpha) to keep the
 channels resolved.
 
 | L | alpha | t_tr | f_ac | S | u0 | strain | alpha_1 | tau_1 | first max |
@@ -469,7 +469,7 @@ of the final value.
 0.043 (3, 2, 2).
 
 99 % formation time, prediction t99 = atanh(sqrt(0.99) tanh(pi alpha_n)) / (pi alpha_n)
-(handoff 7.3 formula with alpha -> alpha_n):
+(original formula with alpha -> alpha_n):
 
 | S, alpha, n | alpha_n | t99 sim | t99 pred |
 |---|---|---|---|
@@ -481,7 +481,7 @@ of the final value.
 **Reading.**
 - The mapping holds in Bragg too. The satellite forms by *saturation*
   (tanh^2) rather than oscillation (sin^2); which one you get is the geometry.
-- **The handoff's original hypothesis t_f / t_tr ~ min(1, 1/alpha) (section 9.3)
+- **The original hypothesis t_f / t_tr ~ min(1, 1/alpha)
   is right in form and wrong in the variable.** The satellite's own extinction
   sets the time: t99 ~ 0.953 / (alpha |J_n(S)|) for large alpha_n, capped at 1.
   With alpha_n rather than alpha, it holds to ~1–3 %.
@@ -1180,7 +1180,7 @@ alpha = alpha_1 / J_1, alpha_ac = alpha / x; 121 times; colour = max_t of
   fixed ratio": at fixed S it does not; the Entry 16 trend came from
   alpha_1 and the integer-alpha_ac structure varying together.
 - Caveat: stroboscopic model. Any genuine dependence on v_s beyond t_tr
-  (e.g. the X-ray response time, quasi-static breakdown, handoff 7.5) is outside
+  (e.g. the X-ray response time, quasi-static breakdown) is outside
   this map by construction.
 
 **Entry 21 addendum (user, 2026-10-01).** Time-resolved rocking curves of
@@ -3770,14 +3770,14 @@ and it is not what the filled-depth law describes.
 
 **Consequence for the poster.** The experiment this work predicts is a **bulk** wave launched into
 the depth from a transducer, and shear-polarised so that `h . u != 0` in symmetric Laue (Entry 6,
-Entry 20, handoff 7.4). That is already the poster's geometry; it should be said out loud, because
+Entry 20, original geometry notes). That is already the poster's geometry; it should be said out loud, because
 a visitor from the SAW community will otherwise assume a surface wave.
 
 **Not done.**
 - No calculation with an in-plane acoustic wavevector; the solver cannot do one.
 - The exponential skin is a model. The real Rayleigh profile is a sum of two partial waves whose
   normal displacement changes sign with depth, and the `h . u` projection varies with depth too.
-- The 2017 sagittal-SAW Bragg paper (handoff ref [3]) has still not been read.
+- The 2017 sagittal-SAW Bragg paper has still not been read.
 - Nothing here says a SAW experiment is uninteresting; it says it measures a different quantity.
 
 ---
@@ -3786,7 +3786,7 @@ a visitor from the SAW community will otherwise assume a surface wave.
 
 **Source.** P. Sondhauss & J. S. Wark, Acta Cryst. A59, 7-13 (2003), DOI 10.1107/S010876730201704X.
 Full text, all 7 pages, read. File: `SondhaussWark2003_ActaA59_7.pdf` in the repo root, untracked
-(copyright), next to the Authier & Simon PDF. The page range cited in Entries 60-61 and the handoff
+(copyright), next to the Authier & Simon PDF. The page range cited in Entries 60-61 and the original notes
 (100-107) was wrong and has been corrected to 7-13.
 
 **1. What the paper does.**
@@ -5945,7 +5945,27 @@ polarisations see the same strain and detuning (true for a single ray; a diverge
 Entry 82's question, independent of polarisation). The P2 (Laue) two-period statement is algebra
 from the rescaling, not run.
 
-## 2026-11-10 — Entry 89: P1 novelty verdict from the four prior-art papers (TRATT-P1-VERDICT)
+---
+
+## 2026-10-27 — Entry 89: terminology change, characteristic time and the f0 detuning axis
+
+Reader-facing text (README, poster, docs) changes two names from here on; earlier
+entries keep the words they were written with.
+
+- "Formation time" for tau_n = Lambda_P / (v_s abs(J_n(S))) = t_tr / alpha_n becomes
+  the **characteristic time** tau_n. In Laue it is one full Pendellösung period, with
+  the first maximum at tau_n / 2; in Bragg 99 % is reached at 0.95 tau_n (Entry 9).
+  Earlier entries that say "formation time" for these mean the same tau_n, or the
+  99 % time; `observe.formation_time()` is the convergence time of the travelling-front
+  result and keeps its name.
+- The detuning axis of the poster schematic f0 is labelled beta / K (detuning from the
+  Bragg condition in units of the acoustic wave vector K = 2 pi / Lambda_ac) instead of
+  eta / q, and its intensity axis I(beta). Same numbers: eta / q = beta / K with
+  eta = beta L and q = K L. The f0 rerun gave an identical rocking curve.
+
+---
+
+## 2026-11-10 — Entry 90: P1 novelty verdict from the four prior-art papers
 
 **Sources, read in full** (PDFs in the repo root, untracked, copyright):
 - [CF95] F. N. Chukhovskii & E. Förster, Acta Cryst. A51, 668–672 (1995), 5 pp.

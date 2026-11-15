@@ -10,7 +10,7 @@ import numpy as np
 from scipy.special import jv
 
 LAMBDA_P = 15e-6  # m, Si(220) symmetric Laue near 8 keV, sigma pol. -- TO VERIFY
-V_T = 5.84e3  # m/s, Si transverse [100] -- shear wave needed so h.u != 0 (handoff 7.4)
+V_T = 5.84e3  # m/s, Si transverse [100] -- shear wave needed so h.u != 0
 D220 = 1.920e-10  # m
 
 for L in (50e-6, 100e-6, 200e-6):

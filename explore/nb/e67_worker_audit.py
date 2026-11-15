@@ -50,9 +50,6 @@ def say(*parts):
     LOG.flush()
 
 
-# ---- approximation, computed directly ----------------------------------------
-
-
 def theta_direct(S, T, t):
     """int_0^1 J1(S clip((t - zeta)/T, 0, 1)) dzeta, piecewise with adaptive quad.
 
@@ -83,9 +80,6 @@ def peak_direct(S, T, nt=2001):
     if -r.fun >= vals[k]:
         return float(r.x), float(-r.fun)
     return float(times[k]), float(vals[k])
-
-
-# ---- full TT, independent phase-average wrapper -------------------------------
 
 
 def tt_phase_avg(S, T, times, phases, nz):
@@ -132,7 +126,6 @@ def main():
         findings=[],
     )
 
-    # 1. observable definition -------------------------------------------------
     say("\n== 1. observable: single eta = +q, carrier-phase average at fixed envelope time ==")
     S, T = 3.0, 1.0
     nz = required_nz(ALPHA, AAC, S=S, eta_max=Q)
@@ -168,7 +161,6 @@ def main():
         steady_law=float(np.sin(np.pi * ALPHA * jv(1, S)) ** 2),
     )
 
-    # 2. Laue normalization in source ------------------------------------------
     say("\n== 2. Laue normalization ==")
     I0 = float(rocking(ALPHA, 0.0, n_z=2048))
     pend_err = abs(I0 - np.sin(np.pi * ALPHA) ** 2)
@@ -195,7 +187,6 @@ def main():
         lossless_max_err=lossless_err,
     )
 
-    # 3. direct quadrature: causality, endpoint, map-law comparison -------------
     say("\n== 3. direct depth quadrature vs saved map law ==")
     quad_block = {}
     for label, S, T in CASES:
@@ -255,7 +246,6 @@ def main():
         cases=quad_block,
     )
 
-    # 4. full TT: depth, phase, time, approximation ----------------------------
     say("\n== 4. full TT convergence (separated) ==")
     tt_block = {}
     for label, S, T in CASES:
@@ -334,7 +324,6 @@ def main():
         )
     out["tt"] = tt_block
 
-    # 5. Pendelloesung bound and mechanism --------------------------------------
     say("\n== 5. Pendelloesung bound ==")
     x = np.linspace(0, 6, 60001)
     j1max = float(np.max(np.abs(jv(1, x))))
@@ -365,7 +354,6 @@ def main():
         ),
     )
 
-    # 6. findings from thresholds ----------------------------------------------
     for label, r in tt_block.items():
         for key in ("depth_change", "phase_change_16_vs_32", "approx_error"):
             v = r[key]["max" if key != "approx_error" else "max_trace"]

@@ -28,6 +28,115 @@ by t_tr/α_n, i.e. by the satellite's own extinction length." {E1}{E9}{E33}
 
 ---
 
+## 1b. Basics — easy questions that are easy to get wrong
+
+Answer in this order: definition, physical picture, assumptions, what is measured, limits.
+**[F]** marks a computed or looked-up fact with its entry; **[I]** marks interpretation. Say
+which one you are giving.
+
+### Q. "What is S?"
+
+- **Definition.** S = h·u₀: the largest phase the lattice displacement adds to the diffracted
+  wave. h = 2π/d along the reflection, u₀ the displacement amplitude. It is the modulation index
+  of the phase grating e^{iφ}.
+- **Picture.** e^{iS sin(…)} = Σₙ Jₙ(S) e^{in(…)} is an exact identity, so S decides how the
+  coupling is shared among the orders. S is a phase, not a strain.
+- **Assumptions.** Only the part of u along h counts. In symmetric Laue h lies in the surface,
+  so the wave travelling into the depth must be shear, polarised along h; a longitudinal wave
+  gives h·u = 0. One sinusoid, uniform amplitude behind the front.
+- **Measured.** Not directly. In strain terms S = ε₀Λ_ac/d with ε₀ = Ku₀ [F E20]: Si 440,
+  30 keV, 0.6 GHz, S = 1.5 is ε₀ = 1.5×10⁻⁵. In an experiment, from τ₂/τ₁ = |J₁/J₂| [F E13].
+- **Limits.** The same S at a different frequency is a different strain. The expansion holds at
+  any S; the independent-channel picture needs R = Λ_ac/Λ_P ≲ 0.34–0.57 [F E53, E54].
+
+### Q. "What is ν?"
+
+- **Definition.** On this sheet (§6b) ν is the satellite amplitude that first-order theory, linear
+  in S, predicts [F E65]. **Not a frequency**; the acoustic frequency is f. (Entry 57 uses ν for a
+  frequency in one line. Do not mix them.)
+- **Picture.** Roughly the coupling the satellite accumulates over the strained depth the X-rays
+  see, ~π|J₁(S)|·ℓ/Λ_P [I, order estimate, E65]. Small ν: a weak, kinematic satellite, and the
+  Fourier-weight spectroscopy of the Outlook works. ν ~ 1: the satellite has become its own
+  dynamical reflection, which is the rest of the poster.
+- **Assumptions.** First-order perturbation of TT. Si 400, symmetric Bragg.
+- **Measured.** Not measured; it is a predicted amplitude. What it controls is computed: the
+  error of the linear estimator grows as ν², ≲ 4 % for ν ≲ 0.2 [F E65].
+- **Limits.** Chalise et al.'s ν ≈ 0.03 is an order estimate, not a TT run of their packet [E65].
+
+### Q. "Extinction length or Pendellösung length — which is your Λ_P?"
+
+- **Definition.** Λ_P is the intensity Pendellösung period in symmetric Laue at the Bragg angle:
+  I = sin²(πL/Λ_P), Λ_P = λ cos θ_B/|χ_h| (σ). It is what X0h lists as the Laue extinction
+  length (Si 220, 8 keV: 15.21 µm by hand against 15.203 reported) [F E20]. α = L/Λ_P.
+- **Picture.** Laue: the depth over which energy swings from D₀ to D_h and back. Bragg, from the
+  same TT equations: at η = 0 in a thick crystal the field decays as e^{−πz/Λ_P}, so the
+  amplitude 1/e depth is Λ_P/π [I, follows from the poster's equations].
+- **Assumptions.** Two beams, symmetric, σ polarisation, no absorption.
+- **Measured.** Λ_P from Pendellösung fringes against thickness or energy; the poster uses X0h
+  values [F E20].
+- **Limits.** Books differ by factors of π and 2 between Pendellösung distance, extinction
+  distance and extinction depth. Always say "intensity period, I = sin²(πL/Λ_P)" first. For
+  satellite n the length is Λ_P/|Jₙ(S)|; that steady-state form is prior art (Polikarpov) [E29].
+
+### Q. "What is the 'filled depth' v_s·t?"
+
+- **Definition.** How far the acoustic front has travelled since it entered: z = v_s·t, i.e.
+  ζ = t̃ = t/t_tr with t_tr = L/v_s. Behind the front the lattice is modulated; ahead, A = 0.
+- **Picture.** A modulated layer of thickness v_s·t on top of a perfect crystal. For a step onset
+  with the channels independent, satellite n sees a uniform crystal of that thickness with
+  coupling α|Jₙ(S)|: sin²(πα_n t̃) in Laue, tanh² in Bragg [F E1, E9].
+- **Assumptions (all in the model).** The sound enters at the X-ray entrance face as a plane
+  front parallel to the surface. No dispersion, no attenuation, and no wave reflected back from
+  the far face. Quasi-static: the X-ray transit is 0.2 % of an acoustic period [F E62].
+- **Measured.** Time, not depth. v_s·t follows from the timing with a known v_s (shear
+  5846 m/s from a textbook c₄₄, not measured) [F E20]. The observable is Iₙ(t).
+- **Limits.** After t_tr the crystal is full. A real crystal then gets an acoustic echo from the
+  far face, which the model does not have. A gradual front replaces the step law by Θₙ [E28].
+
+### Q. "Isn't the satellite intensity just |Jₙ(S)|²?" (why Jₙ is not the time-resolved intensity)
+
+- **Definition.** Jₙ(S) is a Fourier coefficient of e^{iφ}: the amplitude with which channel n
+  couples D₀ and D_h in the filled crystal. It is a coupling, not an intensity.
+- **Picture.** For weak coupling, sin²(πα_n t̃) ≈ (πα|Jₙ|t̃)² ∝ |Jₙ|²: the familiar
+  Bessel-squared ladder is the kinematic limit of the poster's own formula [I, algebra]. In the
+  dynamical regime the intensity oscillates (Laue) or saturates (Bragg), and Jₙ sets the rate:
+  τₙ = Λ_P/(v_s|Jₙ(S)|) [F E6].
+- **Assumptions.** Step onset, independent channels.
+- **Measured.** Iₙ(t) at η = nq. Jₙ enters through the periods, hence τ₂/τ₁ = |J₁/J₂| [F E13].
+- **Limits.** A larger |Jₙ| can give a dimmer satellite at a given time (sin² past its maximum);
+  formation order at S = 3 is n = 2, 1, 3 [F E1]. At a Bessel zero the slow clock stops [F E53].
+  With a finite ramp Θₙ replaces Jₙ, and the overshoot can be large even where the final |Jₙ|
+  is small [F E67].
+
+### Q. "Laue or Bragg — what differs?"
+
+- **Definition.** Laue: the diffracted beam leaves through the far face; both beams travel
+  forward, so it is an initial-value problem integrated from the entrance. Bragg: the diffracted
+  beam leaves through the entrance face; a two-point boundary problem, solved as a Riccati
+  equation for R = D_h/D₀ integrated backward from the far face.
+- **Picture.** Laue: energy swings through the whole thickness, sin². Bragg: total reflection
+  builds within about Λ_P/π of the surface, tanh², and saturates.
+- **Assumptions.** Symmetric reflections, no absorption, σ.
+- **Measured.** Laue: the diffracted beam behind the crystal, so the crystal must transmit
+  (Si 440 at 17–30 keV: 0.78–0.92) [F E20]. Bragg: the reflectivity.
+- **Limits / what changes for formation.** Bragg formation ends at ≈ 0.95 t_tr/α_n, capped at
+  t_tr; the first guess 1/α was wrong [F E9]. The ramp law Θₙ holds equally in both (error
+  ≤ 0.03) [F E28]. Polarisation of the sound: symmetric Laue needs shear (above); in symmetric
+  Bragg h is along the normal, so a longitudinal wave works [I].
+
+### Q. "And the phase wall — is that new?"
+
+**No, and say so first.** The acoustic phase wall is the stacking-fault contrast of Authier &
+Simon (1968), satellite by satellite, with fault phase δ = n·dφ. Manukyan (2014) eq. 11 is the
+same amplitude at η = 0. For n = 1, 2 the 1968 formula reproduces our TT integrals within
+1–3 % [F E56]. The "new mechanism" claim was withdrawn in Entry 56.
+
+What differs, as fact and not as a novelty claim: δ depends on n (a crystallographic fault has
+one δ for all satellites), and position and phase are set by the drive. Whether that enables a
+new measurement is not shown [E56]. It is not on the poster; do not raise it.
+
+---
+
 ## 2. Prior art — the questions that decide whether you are taken seriously
 
 ### Q. "Pendellösung in the time domain is not new. DeCamp did this in 2001."
@@ -194,7 +303,7 @@ RK4 fourth-order convergence measured at 3.98–4.00). An independent exact Floq
 | The dark point — is the satellite gone? | Centre drops to 0.1–0.2 %, but ~52 % of the integrated satellite is still there, in two side lobes; lobes collapse as (η−nq)t = G(α_n t) | E23 |
 | Centre vs integrated intensity? | Same period, different phase and damping: the integral leads by ~1/8 period and damps as J₀ | E23 |
 | Is the transient-only satellite just a slow amplitude sweep? | See §5 — concede most of it | E34 |
-| 1–3 % on the phase walls? | Formula-level check against the plane-wave stacking-fault result with δ = n·dφ (Authier & Simon 1968; Manukyan 2014) | E56 |
+| 1–3 % on the phase walls? | That 1–3 % is the agreement with the 1968 plane-wave stacking-fault formula, δ = n·dφ (Authier & Simon; Manukyan 2014): known physics, not ours (§1b) | E56 |
 
 ---
 
@@ -277,6 +386,10 @@ because α₂ = 0.35 and the n = 2 trace never completed half an oscillation. {E
 | "we derived the first-order solution" | "the linearisation is Sondhauss & Wark 2003; ours keeps the Bloch-wave depth dependence and holds inside the Darwin width" |
 | "temporal Pendellösung is new" | "the organising principle, from DeCamp 2001, extended to every order" |
 | "satellite extinction length ~ Λ/\|J_n\| is ours" | "that is the steady-state ingredient, from Polikarpov and the superlattice literature" |
+| "the phase wall is a new mechanism" | "that is the 1968 stacking-fault contrast with δ = n·dφ; withdrawn in Entry 56" |
+| "the satellite intensity is Jₙ(S)²" | "Jₙ is the coupling; Jₙ² is only the kinematic limit of sin²(πα_n t̃)" |
+| ν for a frequency | f for the acoustic frequency; ν here is the linear satellite amplitude |
+| "S is the strain" | "S = h·u₀ is a phase; strain = S·d/Λ_ac" |
 | any number not on this sheet | "I don't have that checked — can I take your email?" |
 
 ---
@@ -284,6 +397,12 @@ because α₂ = 0.35 and the n = 2 trace never completed half an oscillation. {E
 ## 9. Pocket card
 
 ```
+S            h u0 (a phase);  strain = S d / Lambda_ac;  S = 1.5 <-> 1.5e-5 at Si 440, 30 keV, 0.6 GHz
+Lambda_P     intensity period, Laue I = sin^2(pi L / Lambda_P) = X0h "extinction length"
+             Bragg amplitude depth Lambda_P / pi;  satellite n: Lambda_P / |J_n|  (prior art)
+filled depth v_s t;  model: no echo from the far face, quasi-static (transit 0.2 % of a period)
+J_n          coupling, not intensity;  J_n^2 only in the kinematic limit
+phase wall   Authier & Simon 1968 stacking fault, delta = n dphi -> NOT new (E56)
 clock        t_tr / alpha_n,   alpha_n = alpha |J_n(S)|
 Laue         sin^2(pi alpha_n t)        Bragg  tanh^2(pi alpha_n t)
 order        t*/t_tr = 1 / (2 alpha |J_n(S)|)      S = 3 -> n = 2, 1, 3

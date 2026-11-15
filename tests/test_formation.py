@@ -14,8 +14,6 @@ from tratt.cube import front_and_full, rocking_cube
 from tratt.drive import Drive
 from tratt.observe import channel_stats, channel_window, formation_time
 
-# --- the steady reference itself ------------------------------------------------
-
 
 def test_steady_phi_is_periodic_in_time():
     d = Drive(S=0.8, alpha_ac=5.0, rise=0.3)
@@ -60,9 +58,6 @@ def test_cubes_agree_after_transit():
     assert np.max(np.abs(If - Is)) < 1e-12
 
 
-# --- channel observables ---------------------------------------------------------
-
-
 def test_channel_windows_tile_without_overlap():
     d = Drive(S=1.0, alpha_ac=5.0)
     eta = np.linspace(-2.5 * d.q, 2.5 * d.q, 1001)
@@ -88,9 +83,6 @@ def test_channel_stats_flag_an_empty_window():
     c = channel_stats(eta, np.zeros((1, eta.size)), d, 0)
     assert c.p[0] == 0.0
     assert np.isnan(c.eta_c[0]) and np.isnan(c.sigma[0])
-
-
-# --- formation time verdicts -----------------------------------------------------
 
 
 def test_formation_time_requires_the_tolerance_to_hold_forever_after():
@@ -126,9 +118,6 @@ def test_step_onset_formation_time_never_exceeds_the_transit():
         )
         assert F.status == "formed", (n, F.status)
         assert F.t_f <= 1.0 + 1e-12, f"channel {n}: t_f = {F.t_f} exceeds the transit time"
-
-
-# --- satellite formation = Laue thickness curve of the filled depth -------------
 
 
 def test_satellite_formation_follows_filled_depth_pendelloesung():

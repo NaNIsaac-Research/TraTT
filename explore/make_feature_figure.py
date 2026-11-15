@@ -56,7 +56,6 @@ def channels(alpha, d, eta, times, n_z, ns):
 def main(out="figures/feature_overshoot_asymmetry.png"):
     fig, ax = plt.subplots(2, 3, figsize=(15, 8), constrained_layout=True)
 
-    # ---- column 1: asymmetry of the reference case, with its validity weight
     d = Drive(S=0.5, alpha_ac=5.0)
     eta = np.linspace(-3 * d.q, 3 * d.q, 1501)
     t = np.linspace(0.0, 1.6, 321)
@@ -106,7 +105,6 @@ def main(out="figures/feature_overshoot_asymmetry.png"):
         arrowprops=dict(arrowstyle="->", color=INK2, lw=0.8),
     )
 
-    # ---- column 2: how both features depend on alpha
     alphas = np.array([0.2, 0.5, 1.0, 2.0, 3.0])
     maxA, rmsA, steadyA = [], [], []
     for a in alphas:
@@ -141,7 +139,6 @@ def main(out="figures/feature_overshoot_asymmetry.png"):
         title=r"c  Asymmetry is nearly $\alpha$-independent",
     )
 
-    # ---- overshoot in the resolved regime
     d2 = Drive(S=1.0, alpha_ac=20.0)
     eta2 = np.linspace(-2.5 * d2.q, 2.5 * d2.q, 2001)
     t2 = np.linspace(0.0, 1.2, 241)
@@ -170,7 +167,6 @@ def main(out="figures/feature_overshoot_asymmetry.png"):
     )
     ax[1, 1].legend(frameon=False, fontsize=9, ncol=3)
 
-    # ---- column 3: the overshoot itself, and its independence of the rise time
     cf4, cs4 = channels(2.0, d2, eta2, t2, 1024, (0, 1, 2))
     for n, col in zip((0, 1, 2), (BLUE, ORANGE, AQUA), strict=False):
         norm = np.mean(cs4[n].p)

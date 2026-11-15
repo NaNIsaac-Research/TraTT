@@ -163,7 +163,7 @@ def main(out="figures/poster_mapping.png"):
         "bragg",
         lambda s: np.tanh(np.pi * s) ** 2,
         r"$\tanh^2(\pi\alpha_n\tilde t)$",
-        "b  Bragg: saturation, formation time $\\approx 0.95\\,t_{\\rm tr}/\\alpha_n$",
+        "b  Bragg: saturation, 99 % at $0.95\\,\\tau_n$, $\\tau_n=t_{\\rm tr}/\\alpha_n$",
     )
     order_panel(ax[1, 0])
     rise_panel(ax[1, 1])

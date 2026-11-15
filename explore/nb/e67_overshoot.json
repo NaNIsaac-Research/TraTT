@@ -10,6 +10,22 @@
   "map_refinement_max_change": 4.493352813161877e-06,
   "observable": "carrier-phase-averaged intensity at eta=q, incident intensity=1",
   "map_method": "independent-satellite accumulated-coupling approximation",
+  "geometry": "laue",
+  "trace_window": "0 <= t/t_tr <= rise + 1",
+  "tt_checks": {
+    "phases": 8,
+    "depth_grid": "required_nz",
+    "times": 101
+  },
+  "tt_cases": {
+    "phases": 16,
+    "depth_grid": "2 x required_nz",
+    "times": 61,
+    "refinement_reference": {
+      "phases": 8,
+      "depth_grid": "required_nz"
+    }
+  },
   "cases": [
     {
       "label": "A",

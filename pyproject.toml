@@ -27,13 +27,16 @@ dependencies = [
 dev = ["pytest>=8.0", "matplotlib>=3.8"]
 
 [project.urls]
-Homepage = "https://github.com/NaNIsaac/TraTT"
-Repository = "https://github.com/NaNIsaac/TraTT"
-Issues = "https://github.com/NaNIsaac/TraTT/issues"
+Homepage = "https://github.com/NaNIsaac-Research/TraTT"
+Repository = "https://github.com/NaNIsaac-Research/TraTT"
+Issues = "https://github.com/NaNIsaac-Research/TraTT/issues"
 
 [build-system]
 requires = ["uv_build>=0.12.7,<0.13"]
 build-backend = "uv_build"
+
+[tool.pr-land]
+test-command = "uv run --extra dev pytest -q -p no:cacheprovider --basetemp {basetemp}"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
@@ -45,6 +48,12 @@ dev = [
     "jupytext>=1.19.5",
     "nbstripout>=0.9.1",
 ]
+figures = ["qoraplot", "cvdkit"]
+
+# Neither is on PyPI yet
+[tool.uv.sources]
+qoraplot = { git = "https://github.com/NaNIsaac/qoraplot", rev = "4133d42d873132df4e69111652ad0f98fafa5f22" }
+cvdkit = { git = "https://github.com/NaNIsaac/cvdkit", rev = "8c3566008e861e70e97b6dec62071d3ddc3ac453" }
 
 [tool.ruff]
 line-length = 100
