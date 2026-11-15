@@ -1,6 +1,7 @@
 # Paper draft skeleton (BACKLOG T2h, draft tier; nothing here is new computation)
 
-Written 2026-10-23 from `notes/paper_candidates.md` and lab notebook Entries 1–81. Every number
+Written 2026-10-23 from `notes/paper_candidates.md` and lab notebook Entries 1–88; prior-art status
+updated 2026-11-16 to the four-paper verdict of Entry 90. Every number
 cites the entry and the script that produced it; a claim's status is the notebook's (confirmed =
 full TT in this model, converged, no fit; prior art = in literature read in full; hypothesis /
 predicted = stated or computed, not tested against experiment). Posting, journal choice and
@@ -66,9 +67,10 @@ scan.)
    estimator needs no crystal factor; with it, 5.1–5.4 apply. State which regime the proposal is in.
 6. Discussion: relation to Sondhauss–Wark 2003 (Entries 64, 69), to Chalise et al. (Entries 57,
    66, 71: their 140 ps window sees no crystal factor; the second-order term K = 0.65–0.88
-   remains), what is not new (Bessel ladder, Pendellösung), what is (window condition, two-
-   parameter H verified inside the Darwin width, degeneracy class, side asymmetry), and the
-   prior-art caveat (§6, unread items).
+   remains), what is not new (Bessel ladder, Pendellösung, the linearisation, polarisation C, the
+   asymmetric g factor, χ_ih as a parameter; Entry 90), what is (window condition, two-parameter H
+   verified inside the Darwin width, its beam condition, degeneracy class, side asymmetry), and the
+   prior-art caveat (§6: Wark & He 1994 and the referee list unread).
 7. Limitations (§5 below).
 Appendix A: the retarded-time Riccati and the analytic continuation past the packet (Entry 75).
 Appendix B: pre-registered rules and their outcomes, one line each (Entries 68, 70–72, 75–79, 81).
@@ -78,33 +80,33 @@ Appendix B: pre-registered rules and their outcomes, one line each (Entries 68, 
 | figure | panels | source (entry; script; reproduce) | status |
 |---|---|---|---|
 | Fig. 1 estimator and one-curve collapse | (a) R(t) at one detuning for a packet with the Fourier component at ω = \|η\| marked; (b) W/W_kin against ω/ω_D for three packet spectra at κ/2πα = 0.12 | Entry 59; `explore/nb/paper_figs.py fig1` → `figures/paper/fig1_estimator.png` (a: e75 packet run, 0.2 s; b: e58 json + e59 closed form); captions in `figures/paper/CAPTIONS.md` | confirmed |
-| Fig. 2 where the plane-wave first order fails | \|F_pred\|/\|F_TT\| against ω/ω_D for S&W eq. 29, S&W normalised, Bloch-wave (Riccati) form; near-peak error | Entries 64, 69; `explore/nb/paper_figs.py fig2` → `figures/paper/fig2_planewave_vs_bloch.png` (from `e64_sw.json`) | confirmed in our variables; S&W PDF not seen (Entry 69, transcription of Entry 64) |
+| Fig. 2 where the plane-wave first order fails | \|F_pred\|/\|F_TT\| against ω/ω_D for S&W eq. 29, S&W normalised, Bloch-wave (Riccati) form; near-peak error | Entries 64, 69; `explore/nb/paper_figs.py fig2` → `figures/paper/fig2_planewave_vs_bloch.png` (from `e64_sw.json`) | confirmed in our variables; S&W read in full (Entry 90); the failure inside ~1 Darwin width is stated there (SW03 p. 12), its size in our variables is ours |
 | Fig. 3 the window and the crystal parameters | (a) H(f; T_w) against T_w with TT circles and T_flat/T_half/T_90; (b) H(20)/H(100) against T_w; (c) H(f) with and without χ_ih at both energies; (d) ±η asymmetry against f at four windows | (a, b) Entry 75; `explore/nb/e75_window_cf.py run posthoc fig` → `figures/paper/e75_window_H.png`. (c) Entry 77; `e77_chi_ih.py run ttp ttm conv60 fig` → `figures/paper/e77_chi_ih.png`. (d) Entry 78; `e78_side_asymmetry.py run fig` → `figures/paper/e78_side_asymmetry.png` | confirmed (a–c), model-confirmed prediction (d) |
 | Fig. 4 linearity bound and the dynamical satellite | (a) 1 − K against ν for the 24 series of Entry 68 with the tanh² and sin² laws; (b) the formation-law collapse I_n(t̃) = sin²(πα\|J_n\|t̃) | (a) Entry 68; `e68_nu_collapse.py run stats fit2 fig` → `figures/paper/e68_nu_collapse.png`. (b) Entries 1, 9; `explore/nb/paper_figs.py fig4b` → `figures/paper/fig4b_formation_collapse.png` (from `explore/nb/poster_f1_points.npz`; poster frozen) | confirmed |
 
 Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degeneracy_S.png`,
 `e79_degeneracy_R.png` (degeneracy class and its R boundary); `figures/si400_harmonic.png`
-(second-order term for a ps packet, Entry 66); `figures/poster/f7_overshoot.png` (Entry 67, frozen).
+(second-order term for a ps packet, Entry 66); `figures/overshoot.png` (Entry 67, with residuals and the twelve full-TT checks).
 
 ## 4. Claims and their status
 
 | # | claim | status | evidence |
 |---|---|---|---|
-| 1 | First-order linearisation of TT for a phonon | prior art | Sondhauss & Wark 2003 eq. 25–29 (Entries 64, 69) |
-| 2 | Closed-form H with the Bloch-wave (Riccati) depth dependence, valid inside the Darwin width where the plane-wave form is off by 3–8× | confirmed in the model; novelty bounded by **unread** Chukhovskii & Förster 1995, Wark & Lee 1999 | Entries 59, 64, 65 |
-| 3 | H needs a long window: the strain must travel ≥ max(1/κ, x/π) Λ during it; closed form H(f; T_w) exact to first order at every window 0.14–300 ns | confirmed (TT 0.3 %); packet-free short form rejected below ~100 τ | Entries 71, 75 |
+| 1 | First-order linearisation of TT for a phonon | prior art | Sondhauss & Wark 2003 eq. 25–31 (Entries 64, 69); used again in Sheppard et al. 2005 eq. 6–10 (Entry 90) |
+| 2 | Closed-form H with the Bloch-wave (Riccati) depth dependence, valid inside the Darwin width where the plane-wave form is off by 3–8× | confirmed in the model; new against the four papers read in full (Entry 90: neither Chukhovskii & Förster 1995 nor Wark & Lee 1999 has a first-order strain form; SW03 p. 12 and Sheppard 2005 p. 184 state that their form fails there); Wark & He 1994 and the referee list unread | Entries 59, 64, 65, 90 |
+| 3 | H needs a long window: the strain must travel ≥ max(1/κ, x/π) Λ during it; closed form H(f; T_w) exact to first order at every window 0.14–300 ns | confirmed (TT 0.3 %); packet-free short form rejected below ~100 τ; new as a law, the 1/κ half known in kind (Wark & Lee 1999 p. 700–702, Entry 90) | Entries 71, 75, 90 |
 | 4 | Design numbers Si 400 / 17.48 keV: T_flat 19.6, T_half 32.8, T_90 52.2 ns; ripple with period 2x Λ/v | confirmed (TT to 0.002) | Entry 75 |
 | 5 | Chalise et al. 140 ps window sees no crystal factor (H flat to 4 %); their low-frequency deficit is only partly the second-order term K = 0.65–0.88 | confirmed in the model; their normalisation unknown; any real beam also flattens the crystal factor (Entry 82) | Entries 66, 71, 82 |
-| 6 | χ_ih is a second tabulated crystal parameter: 0.9 % steady, 1.4 % at 52 ns, 3–4 % at 8 keV | confirmed; pre-registered rule fired | Entry 77 |
+| 6 | χ_ih is a second tabulated crystal parameter: 0.9 % steady, 1.4 % at 52 ns, 3–4 % at 8 keV | confirmed; pre-registered rule fired; the parameter k = ψ″_H/ψ′_H is prior art (Wark & Lee 1999 eq. 12), its effect on H is new (Entry 90) | Entries 77, 90 |
 | 7 | ±η side asymmetry, strain-spectrum-free, reads χ_ih/χ_i0 (1.9–6.2 %, sensitivity 0.02–0.07) | predicted and confirmed in the model (TT 0.06 %); unobserved; a single-ray observable: odd in δ, it averages to zero over a symmetric beam (Entry 82) | Entries 77, 78, 82 |
-| 8 | Asymmetric Bragg = exact rescaling; one geometry factor g(√b + 1/√b)/2; T_90 shortens with Λ_asym | confirmed (TT 1e-16) | Entry 81 |
-| 8b | Beam divergence / bandwidth: for σ_η ≫ κ + π/x the crystal factor is flat, κ√(π/2)/σ_η, at every window (x ≳ 10); H(f; T_w) and the ±η asymmetry are single-ray (meV, sub-µrad) observables; at x = 1–5 the tolerance is 0.3–0.6 µrad / 4–7 meV (8 keV) and the beam-averaged factor is non-monotonic in σ | confirmed (TT beam average vs closed form 0.02–0.24 %) | Entries 82, 83 |
-| 9 | ν ≲ 0.1 ⇒ weight linear to 2 % (1 − K ≤ 1.8 ν²) | confirmed as a bound on the scanned domain (Bragg, x ∈ {2, 5}, one packet family, weight at the peak) | Entry 68 |
+| 8 | Asymmetric Bragg = exact rescaling; one geometry factor g(√b + 1/√b)/2; T_90 shortens with Λ_asym | confirmed (TT 1e-16); **prior art**: the g factor is Wark & Lee 1999 eq. 11 (Entry 90), cited and not claimed; the window numbers in Λ_asym are application | Entries 81, 90 |
+| 8b | Beam divergence / bandwidth: for σ_η ≫ κ + π/x the crystal factor is flat, κ√(π/2)/σ_η, at every window (x ≳ 10); H(f; T_w) and the ±η asymmetry are single-ray (meV, sub-µrad) observables; at x = 1–5 the tolerance is 0.3–0.6 µrad / 4–7 meV (8 keV) and the beam-averaged factor is non-monotonic in σ | confirmed (TT beam average vs closed form 0.02–0.24 %); new as a statement on H, analogous in kind to Wark & Lee 1999 p. 695–696 (Entry 90) | Entries 82, 83, 90 |
+| 9 | ν ≲ 0.1 ⇒ weight linear to 2 % (1 − K ≤ 1.8 ν²) | confirmed as a bound on the scanned domain (Bragg, x ∈ {2, 5}, one packet family, weight at the peak); partly known as a rule of thumb (SW03 p. 12, Entry 90) | Entries 68, 90 |
 | 10 | "One dimensionless criterion joins the regimes" | falsified (spread ×10–14 at fixed ν) | Entry 68 |
 | 11 | Formation law I_n = sin²/tanh²(πα\|J_n\|t̃), Bessel ladder, period-ratio calibration | confirmed; prior art in kind DeCamp 2001 (n = 0), Polikarpov 1987/88 (static); as a centre observable it needs the beam condition of 12b | Entries 1, 9, 13, 19, 24; tests |
 | 12 | Order n reads the one-transit running mean of J_n(S A); zero-mean perturbations degenerate (≤ 3e-6 for S ≤ 6); boundary R = 0.2 | confirmed with a boundary | Entries 72, 76, 79 |
 | 12b | Beam condition for the centre formation law: σ_η ≲ 0.3 w_n (0.1–0.3 µrad, Si 440 / 17.48 keV Laue; 0.6–1.4 µrad, Si 400 / 8 keV Bragg); at σ_η = w_n the first maximum loses 13–40 % | confirmed (full TT beam average, 8 cases) | Entry 84 |
-| 8c | Polarisation: π = σ form with α → Cα (κ fixed), unpolarised = two-term closed-form sum (TT 0.02 %); negligible at Si 400 / 8 keV (C² = 0.12), 20–32 % at Si 440 / 17.48 keV; static Debye–Waller already in the X0h constants | confirmed | Entry 88 |
+| 8c | Polarisation: π = σ form with α → Cα (κ fixed), unpolarised = two-term closed-form sum (TT 0.02 %); negligible at Si 400 / 8 keV (C² = 0.12), 20–32 % at Si 440 / 17.48 keV; static Debye–Waller already in the X0h constants | confirmed; **prior art**: C in SW03 eq. 26, 29, Sheppard 2005 eq. 7, Wark & Lee 1999 eq. 13 (Entry 90), cited and not claimed; the unpolarised sum for H is application | Entries 88, 90 |
 | 12c | Integrated Laue satellite population: flat-beam shape from σ_η ≈ 5 w_n (2–5 µrad, step) and 10 w_n (10 µrad, 1 t_tr ramp) with a one-channel detector (9–18 µrad); formation curve from TT (tabulated; 13–25 % off ∫J_0); Bragg population not clean | pre-registered threshold falsified: 3 w_n failed in 3 of 5 runs (Entry 87; Entry 86 failed under its own rule). 5 w_n (step) and 10 w_n (ramp) are post-hoc conditions from the same cases; confirmation needs a pre-registered run on new cases (T2s) | Entries 86, 87 |
 | 13 | Signal maximum = Fisher-information maximum for a ps packet at one angle | negative result | Entry 70 |
 | 14 | Bessel-zero resurrection at third order | confirmed in the model, unobservable (4e-5); **unread** Entin, Iolin–Entin | Entries 45, 51, 52, 54 (not in this paper; P4) |
@@ -139,9 +141,14 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
 ## 6. Prior art (bibliography to be checked before citing; "unread" = not read in full here)
 
 - Sondhauss & Wark, Acta Cryst. A 59, 7 (2003): first-order TT for a phonon; plane-wave form fails
-  within ~1 Darwin width (Entries 64, 69). Read from a transcription; PDF not seen (human-todo).
-- Chukhovskii & Förster 1995; Wark & Lee 1999: time-dependent TT, possible earlier Bloch-wave
-  first-order form. **unread** (DotFiles#55).
+  within ~1 Darwin width (Entries 64, 69). Read in full (Entry 90).
+- Chukhovskii & Förster, Acta Cryst. A 51, 668 (1995); Wark & Lee, J. Appl. Cryst. 32, 692 (1999):
+  time-dependent TT for a perfect crystal and for a heated crystal without strain. Read in full
+  (Entry 90): neither has a first-order strain form. WL99 gives the asymmetric g factor (eq. 11),
+  k = ψ″_H/ψ′_H (eq. 12) and the 1/κ time scale in kind (p. 700–702).
+- Sheppard et al., Solid State Commun. 136, 181 (2005): SW03 applied to an optical-phonon pair;
+  no new first-order form. Read in full (Entry 90).
+- Wark & He, Laser Part. Beams 12, 507 (1994): the original time-dependent TT. **unread**.
 - Chalise et al. (Entry 57): ps-ultrasonics strain spectrum vs reflectivity spectrum, Fig. 2.
 - Shayduk 2013: names the heterodyne oscillation (Entry 60).
 - DeCamp et al. 2001 (n = 0 pulse); Polikarpov 1987/88 (static extinction length); Bucksbaum &
@@ -159,5 +166,6 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
 
 - Isaac's decision P1 + P2 vs P1 alone (title, §4 and §5.2 depend on it).
 - (done, T2i) Fig. 1, Fig. 2, Fig. 4b are files in `figures/paper/` with captions in `CAPTIONS.md`.
-- The three unread 1990s/2001 papers for the novelty sentences of §3 and §6.
+- Wark & He 1994 and the referee list (Reis 2001, Trigo 2013, udkm1Dsim 2014, Shayduk 2013) for
+  the novelty sentences of §3 and §6; the four papers of Entry 90 are read.
 - A transducer number for §5.2 (DotFiles#57).
