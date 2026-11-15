@@ -56,9 +56,9 @@ from scipy.special import jv
 
 from tratt import Drive, rocking
 
-alpha = 0.5                            # crystal thickness in Pendelloesung lengths
-drive = Drive(S=1.5, alpha_ac=10.0)    # modulation strength, L in acoustic wavelengths
-eta1 = drive.eta_channel(1)            # centre of the first satellite
+alpha = 0.5  # crystal thickness in Pendelloesung lengths
+drive = Drive(S=1.5, alpha_ac=10.0)  # modulation strength, L in acoustic wavelengths
+eta1 = drive.eta_channel(1)  # centre of the first satellite
 
 print("  t/t_tr   satellite 1   sin^2(pi alpha |J1(S)| t)")
 for t in (0.25, 0.5, 0.75, 1.0):
