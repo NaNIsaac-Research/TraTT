@@ -81,7 +81,15 @@ def cf_H(st, kappa_h, T, sign):
         R0, c = root_c(eta, kappa, kappa_h)
         lam = 1j * (eta + 1j * kappa) + 2 * c * R0
         G, L = packet_specs(st["q0"], st["tau"], eta, lam, T)
-        Ft = {Wk: 1j * c * S * (1 - R0**2) * (G(Wk) - np.exp((lam + 1j * Wk) * T) * L) / (lam + 1j * Wk) for Wk in (W, -W)}
+        Ft = {
+            Wk: 1j
+            * c
+            * S
+            * (1 - R0**2)
+            * (G(Wk) - np.exp((lam + 1j * Wk) * T) * L)
+            / (lam + 1j * Wk)
+            for Wk in (W, -W)
+        }
         Iw = np.conj(R0) * Ft[W] + R0 * np.conj(Ft[-W])
         out.append(abs(Iw) / (abs(G(W)) * abs(R0) * np.pi * S / kappa))
     return np.array(out)
@@ -102,7 +110,15 @@ def one(E, kappa_h_ratio, ncyc=0.9, s_lin=S_LIN, per_cycle=64):
         A_tt = Hm / Hp
         raw = w[nf:] / w[:nf]
         A_cf = cf_H(st, kh, Ta, -1) / cf_H(st, kh, Ta, +1)
-        rows.append(dict(T_ns=T_ns, A_tt=A_tt.tolist(), A_cf=A_cf.tolist(), raw=raw.tolist(), r0_ratio=(r0[nf:] / r0[:nf]).tolist()))
+        rows.append(
+            dict(
+                T_ns=T_ns,
+                A_tt=A_tt.tolist(),
+                A_cf=A_cf.tolist(),
+                raw=raw.tolist(),
+                r0_ratio=(r0[nf:] / r0[:nf]).tolist(),
+            )
+        )
     return rows
 
 
@@ -113,20 +129,39 @@ def section_run():
         # rule 1: symmetry without kappa_h
         rows0 = one(E, 0.0)
         w0 = max(np.max(np.abs(np.array(r["A_tt"]) - 1)) for r in rows0)
-        print(f"Si 400 {E:g} keV, kappa_h = 0: max |A_TT - 1| over f, T_w = {w0 * 100:.3f} %  (rule 1: < 0.5 %)")
+        print(
+            f"Si 400 {E:g} keV, kappa_h = 0: max |A_TT - 1| over f, T_w = {w0 * 100:.3f} %  (rule 1: < 0.5 %)"
+        )
         # rule 2: prediction
         rows = one(E, RATIO)
         w2 = max(np.max(np.abs(np.array(r["A_tt"]) / np.array(r["A_cf"]) - 1)) for r in rows)
-        print(f"Si 400 {E:g} keV, kappa_h = {RATIO} kappa: max |A_TT/A_CF - 1| = {w2 * 100:.3f} %  (rule 2: < 0.5 %)")
+        print(
+            f"Si 400 {E:g} keV, kappa_h = {RATIO} kappa: max |A_TT/A_CF - 1| = {w2 * 100:.3f} %  (rule 2: < 0.5 %)"
+        )
         for r in rows:
-            print(f"   T_w = {r['T_ns']:5g} ns  A_TT  " + " ".join(f"{f:g}:{v:.4f}" for f, v in zip(F, r["A_tt"], strict=True)))
-            print(f"                   A_CF  " + " ".join(f"{f:g}:{v:.4f}" for f, v in zip(F, r["A_cf"], strict=True)))
-            print(f"                   raw W " + " ".join(f"{f:g}:{v:.4f}" for f, v in zip(F, r["raw"], strict=True))
-                  + "   |R0| ratio " + " ".join(f"{v:.4f}" for v in r["r0_ratio"]))
+            print(
+                f"   T_w = {r['T_ns']:5g} ns  A_TT  "
+                + " ".join(f"{f:g}:{v:.4f}" for f, v in zip(F, r["A_tt"], strict=True))
+            )
+            print(
+                f"                   A_CF  "
+                + " ".join(f"{f:g}:{v:.4f}" for f, v in zip(F, r["A_cf"], strict=True))
+            )
+            print(
+                f"                   raw W "
+                + " ".join(f"{f:g}:{v:.4f}" for f, v in zip(F, r["raw"], strict=True))
+                + "   |R0| ratio "
+                + " ".join(f"{v:.4f}" for v in r["r0_ratio"])
+            )
         # spectrum cancellation: second packet
         rows10 = one(E, RATIO, ncyc=10.0)
-        wsp = max(np.max(np.abs(np.array(a["A_tt"]) / np.array(b["A_tt"]) - 1)) for a, b in zip(rows, rows10, strict=True))
-        print(f"   two packet spectra (0.9 vs 10 cycles): max |A_TT ratio - 1| = {wsp * 100:.3f} %  (< 0.5 %)")
+        wsp = max(
+            np.max(np.abs(np.array(a["A_tt"]) / np.array(b["A_tt"]) - 1))
+            for a, b in zip(rows, rows10, strict=True)
+        )
+        print(
+            f"   two packet spectra (0.9 vs 10 cycles): max |A_TT ratio - 1| = {wsp * 100:.3f} %  (< 0.5 %)"
+        )
         # sensitivity from the closed form, steady, at 20 and 100 GHz
         st = setup(E)
         T = 300e-9 / st["t_unit"]
@@ -135,17 +170,31 @@ def section_run():
             kh = rr * st["kappa"]
             dA.append(cf_H(st, kh, T, -1) / cf_H(st, kh, T, +1))
         sens = (dA[1] - dA[0]) / 0.1
-        print("   dA/d(kappa_h/kappa), steady: " + " ".join(f"{f:g}:{v:.3f}" for f, v in zip(F, sens, strict=True)))
-        out["cases"][f"E{E:g}"] = dict(sym=w0, pred=w2, spectra=wsp, rows0=rows0, rows=rows, rows10=rows10, sens=sens.tolist())
+        print(
+            "   dA/d(kappa_h/kappa), steady: "
+            + " ".join(f"{f:g}:{v:.3f}" for f, v in zip(F, sens, strict=True))
+        )
+        out["cases"][f"E{E:g}"] = dict(
+            sym=w0, pred=w2, spectra=wsp, rows0=rows0, rows=rows, rows10=rows10, sens=sens.tolist()
+        )
     # convergence at 17.48 keV, 14 ns
     a = one(17.48, RATIO)[1]["A_tt"]
     b = one(17.48, RATIO, s_lin=10 * S_LIN)[1]["A_tt"]
     c_ = one(17.48, RATIO, per_cycle=128)[1]["A_tt"]
-    print(f"convergence (17.48 keV, 14 ns): S/{S_LIN:g} -> S/{10 * S_LIN:g} max |dA| = {np.max(np.abs(np.array(a) - np.array(b))) * 100:.3f} %, step 64 -> 128 {np.max(np.abs(np.array(a) - np.array(c_))) * 100:.3f} %")
-    out["conv"] = dict(S=float(np.max(np.abs(np.array(a) - np.array(b)))), step=float(np.max(np.abs(np.array(a) - np.array(c_)))))
+    print(
+        f"convergence (17.48 keV, 14 ns): S/{S_LIN:g} -> S/{10 * S_LIN:g} max |dA| = {np.max(np.abs(np.array(a) - np.array(b))) * 100:.3f} %, step 64 -> 128 {np.max(np.abs(np.array(a) - np.array(c_))) * 100:.3f} %"
+    )
+    out["conv"] = dict(
+        S=float(np.max(np.abs(np.array(a) - np.array(b)))),
+        step=float(np.max(np.abs(np.array(a) - np.array(c_)))),
+    )
     ok1 = all(out["cases"][k]["sym"] < 0.005 for k in out["cases"])
     ok2 = all(out["cases"][k]["pred"] < 0.005 for k in out["cases"])
-    out["verdict"] = ("setup suspect" if not ok1 else ("prediction confirmed in the model" if ok2 else "prediction rejected"))
+    out["verdict"] = (
+        "setup suspect"
+        if not ok1
+        else ("prediction confirmed in the model" if ok2 else "prediction rejected")
+    )
     print("verdict:", out["verdict"], f"({time.time() - t0:.0f} s)")
     json.dump(out, open(OUT, "w"), indent=1)
 
@@ -159,11 +208,29 @@ def section_fig():
     for ax, E in zip(axs, ("17.48", "8"), strict=True):
         c = d["cases"][f"E{E}"]
         for r, col in zip(c["rows"], ("C0", "C1", "C3", "k"), strict=True):
-            ax.plot(f, 100 * (np.array(r["A_cf"]) - 1), "-", color=col, lw=1.4, label=f"closed form, {r['T_ns']:g} ns")
+            ax.plot(
+                f,
+                100 * (np.array(r["A_cf"]) - 1),
+                "-",
+                color=col,
+                lw=1.4,
+                label=f"closed form, {r['T_ns']:g} ns",
+            )
             ax.plot(f, 100 * (np.array(r["A_tt"]) - 1), "o", color=col, ms=4, mfc="none")
-        ax.plot(f, 100 * (np.array(c["rows"][-1]["raw"]) - 1), "--", color="0.5", lw=1, label="raw weight ratio, 300 ns (incl. |R0| ratio)")
+        ax.plot(
+            f,
+            100 * (np.array(c["rows"][-1]["raw"]) - 1),
+            "--",
+            color="0.5",
+            lw=1,
+            label="raw weight ratio, 300 ns (incl. |R0| ratio)",
+        )
         ax.axhline(0, color="0.6", lw=0.6)
-        ax.set(xscale="log", xlabel="phonon frequency (GHz)", title=f"Si 400, {E} keV, $\\chi_{{ih}} = 0.93\\,\\chi_{{i0}}$")
+        ax.set(
+            xscale="log",
+            xlabel="phonon frequency (GHz)",
+            title=f"Si 400, {E} keV, $\\chi_{{ih}} = 0.93\\,\\chi_{{i0}}$",
+        )
         ax.grid(color="#e4e3df", lw=0.6)
     axs[0].set_ylabel("$H(-\\eta)/H(+\\eta) - 1$ (%)  [lines: closed form, circles: TT]")
     axs[0].legend(fontsize=7, frameon=False)

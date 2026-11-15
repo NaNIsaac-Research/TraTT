@@ -56,11 +56,17 @@ def section_run():
             f"construction {key}: residual vs R = "
             + " ".join(f"{a:g}:{b:.1e}" for a, b in zip(R, d, strict=True))
             + f"; law error {' '.join(f'{v:.1e}' for v in err)}; power law R^{slope:.2f}; "
-            + (f"R-boundary at R = {hit[0]['R']:g} (law error there {hit[0]['n1']['law_err']:.1e})" if hit else "no boundary for R <= 0.3")
+            + (
+                f"R-boundary at R = {hit[0]['R']:g} (law error there {hit[0]['n1']['law_err']:.1e})"
+                if hit
+                else "no boundary for R <= 0.3"
+            )
         )
     out["bounds"] = bnd
     anyb = [b["boundary"] for b in bnd.values() if b["boundary"] is not None]
-    out["verdict"] = f"R-boundary exists, smallest R = {min(anyb):g}" if anyb else "R-independent for R <= 0.3"
+    out["verdict"] = (
+        f"R-boundary exists, smallest R = {min(anyb):g}" if anyb else "R-independent for R <= 0.3"
+    )
     print("verdict:", out["verdict"], f"({time.time() - t0:.0f} s)")
     json.dump(out, open(OUT, "w"), indent=1)
 
@@ -72,11 +78,26 @@ def section_fig():
     fig, ax = plt.subplots(figsize=(5.4, 4), constrained_layout=True)
     for key, mk, lab in (("a", "o", "S = 3, J$_1$ rising"), ("a2", "s", "S = 6, J$_1$ descending")):
         b = d["bounds"][key]
-        (ln,) = ax.plot(b["R"], b["d"], mk + "-", label=f"{lab}: TT $|\\Delta I_1|$, same $\\Theta_1$")
-        ax.plot(b["R"], b["law_err"], mk + ":", color=ln.get_color(), mfc="none", label=f"{lab}: law error")
+        (ln,) = ax.plot(
+            b["R"], b["d"], mk + "-", label=f"{lab}: TT $|\\Delta I_1|$, same $\\Theta_1$"
+        )
+        ax.plot(
+            b["R"],
+            b["law_err"],
+            mk + ":",
+            color=ln.get_color(),
+            mfc="none",
+            label=f"{lab}: law error",
+        )
     ax.axhline(5e-4, color="C3", lw=1, ls="--")
     ax.text(0.013, 6e-4, "threshold 5e-4", color="C3", fontsize=8)
-    ax.set(xscale="log", yscale="log", xlabel="coupling ratio $R = \\alpha/\\alpha_{ac}$", ylabel="max over the window", title="degeneracy residual against R ($\\alpha_{ac}$ = 10)")
+    ax.set(
+        xscale="log",
+        yscale="log",
+        xlabel="coupling ratio $R = \\alpha/\\alpha_{ac}$",
+        ylabel="max over the window",
+        title="degeneracy residual against R ($\\alpha_{ac}$ = 10)",
+    )
     ax.legend(fontsize=7)
     ax.grid(color="#e4e3df", lw=0.6)
     FIG.parent.mkdir(parents=True, exist_ok=True)

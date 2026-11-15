@@ -30,7 +30,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
 GRID = dict(color="#e4e3df", lw=0.6)
-COMMIT = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()
+COMMIT = subprocess.run(
+    ["git", "-C", str(ROOT), "rev-parse", "--short", "HEAD"], capture_output=True, text=True
+).stdout.strip()
 CAPTIONS = {}
 
 
@@ -57,10 +59,24 @@ def fig1():
     fig, ax = plt.subplots(1, 2, figsize=(11, 4.2), constrained_layout=True)
     ax[0].plot(tt, yy / abs(r0) ** 2, color="#2a78d6", lw=1.0)
     ax[0].plot(tt, np.abs(np.cos(eta * np.concatenate([s, s2]))) * 0 + 0, lw=0)  # keeps limits
-    ax[0].set(xlabel="time after the packet enters (ps)", ylabel=r"$(|R|^2 - |R_0|^2)\,/\,|R_0|^2$",
-              title=f"a  Si 400, 17.48 keV, detuning {f_sel:g} GHz, peak strain 1e-5", xlim=(0, 1000))
-    ax[0].text(0.98, 0.95, r"oscillation at $\omega = |\eta|$ = 40 GHz" + "\n" + r"amplitude decays as $e^{\mathrm{Re}\,\Lambda\, t}$ (tens of ns)",
-               transform=ax[0].transAxes, ha="right", va="top", fontsize=9, color="#52514e")
+    ax[0].set(
+        xlabel="time after the packet enters (ps)",
+        ylabel=r"$(|R|^2 - |R_0|^2)\,/\,|R_0|^2$",
+        title=f"a  Si 400, 17.48 keV, detuning {f_sel:g} GHz, peak strain 1e-5",
+        xlim=(0, 1000),
+    )
+    ax[0].text(
+        0.98,
+        0.95,
+        r"oscillation at $\omega = |\eta|$ = 40 GHz"
+        + "\n"
+        + r"amplitude decays as $e^{\mathrm{Re}\,\Lambda\, t}$ (tens of ns)",
+        transform=ax[0].transAxes,
+        ha="right",
+        va="top",
+        fontsize=9,
+        color="#52514e",
+    )
     ax[0].grid(**GRID)
     # (b) the Entry 59 one-curve collapse, as in e59_transfer.figure panel b
     alpha, kappa, S = 8.0, 6.0, 0.02
@@ -68,18 +84,29 @@ def fig1():
     wd = 2 * np.pi * alpha
     D = json.load(open(HERE / "e58_darwin.json"))
     A = json.load(open(HERE / "e58_abs.json"))
-    cases = [(0.05, A["S0.02"], 2 * np.pi * alpha / 0.05), (0.2, D["RD0.2"], D["RD0.2"]["q0"]), (0.5, D["RD0.5"], D["RD0.5"]["q0"])]
+    cases = [
+        (0.05, A["S0.02"], 2 * np.pi * alpha / 0.05),
+        (0.2, D["RD0.2"], D["RD0.2"]["q0"]),
+        (0.5, D["RD0.5"], D["RD0.5"]["q0"]),
+    ]
     for (RD, r, q0), c in zip(cases, ("#2a78d6", "#eb6834", "#1baf7a"), strict=True):
         e = np.array(r["eta"])
         Wn = np.array(r["W"])
         Wp, R0 = predict(alpha, kappa, S, q0, e)
         Wk = np.abs(R0) * np.abs(G(*packet(S, q0), e)) * np.pi * alpha * S / kappa / T
         x = e / wd
-        ax[1].plot(x, Wn / Wk, "o", ms=3.5, color=c, mec="white", mew=0.4, label=rf"TT, $R_D$ = {RD}")
+        ax[1].plot(
+            x, Wn / Wk, "o", ms=3.5, color=c, mec="white", mew=0.4, label=rf"TT, $R_D$ = {RD}"
+        )
         ax[1].plot(x, Wp / Wk, "-", color=c, lw=1.4)
     ax[1].axhline(1, color="#52514e", lw=0.8, ls=":")
-    ax[1].set(xscale="log", yscale="log", xlabel=r"$\omega/\omega_D$ = phonon frequency / Darwin half-width",
-              ylabel="Fourier weight / kinematic law", title=r"b  one curve at $\kappa/2\pi\alpha$ = 0.12 (points TT, lines closed form)")
+    ax[1].set(
+        xscale="log",
+        yscale="log",
+        xlabel=r"$\omega/\omega_D$ = phonon frequency / Darwin half-width",
+        ylabel="Fourier weight / kinematic law",
+        title=r"b  one curve at $\kappa/2\pi\alpha$ = 0.12 (points TT, lines closed form)",
+    )
     ax[1].legend(frameon=False, fontsize=8)
     ax[1].grid(**GRID)
     out = OUTD / "fig1_estimator.png"
@@ -106,16 +133,25 @@ def fig2():
         eta = np.array(r["eta"])
         Ft = np.array(r["TT"][0]) + 1j * np.array(r["TT"][1])
         big = np.abs(Ft) > 0.02 * np.abs(Ft).max()
-        for kind, lab, c in (("SW", "plane-wave first order (S&W eq. 29)", "#eb6834"), ("SWn", "same, normalised to the incident wave", "#e3b505"), ("Riccati", "Bloch-wave (Riccati) first order, Entry 59", "#2a78d6")):
+        for kind, lab, c in (
+            ("SW", "plane-wave first order (S&W eq. 29)", "#eb6834"),
+            ("SWn", "same, normalised to the incident wave", "#e3b505"),
+            ("Riccati", "Bloch-wave (Riccati) first order, Entry 59", "#2a78d6"),
+        ):
             Fp = np.array(r[kind][0]) + 1j * np.array(r[kind][1])
             a.plot(eta[big] / WD, np.abs(Fp[big]) / np.abs(Ft[big]), ".", ms=4, color=c, label=lab)
         a.axhline(1, color="#52514e", lw=0.8, ls=":")
         for x in (r["W"], -r["W"]):
             a.axvline(x / WD, color="0.7", lw=0.8, ls="--")
-        a.set(xlabel=r"$\eta/(2\pi\alpha)$ (detuning in Darwin half-widths)", yscale="log",
-              title=rf"$R_D$ = {RD}: satellite at $\pm${1 / RD:.0f} half-widths (dashed)")
+        a.set(
+            xlabel=r"$\eta/(2\pi\alpha)$ (detuning in Darwin half-widths)",
+            yscale="log",
+            title=rf"$R_D$ = {RD}: satellite at $\pm${1 / RD:.0f} half-widths (dashed)",
+        )
         a.grid(**GRID)
-    ax[0].set_ylabel(r"$|F_{\rm pred}|\,/\,|F_{\rm TT}|$ (Fourier amplitude of $R$ at $\omega = W$)")
+    ax[0].set_ylabel(
+        r"$|F_{\rm pred}|\,/\,|F_{\rm TT}|$ (Fourier amplitude of $R$ at $\omega = W$)"
+    )
     ax[0].legend(frameon=False, fontsize=8, loc="upper left")
     out = OUTD / "fig2_planewave_vs_bloch.png"
     fig.savefig(out, dpi=200)
@@ -137,12 +173,35 @@ def fig4b():
     t, cases, laue, bragg = z["t"], z["cases"], z["laue"], z["bragg"]
     s = np.linspace(0, 2.3, 500)
     fig, ax = plt.subplots(1, 2, figsize=(11, 4.2), constrained_layout=True, sharey=True)
-    for a, data, law, title in ((ax[0], laue, np.sin(np.pi * s) ** 2, r"Laue: $I_n = \sin^2(\pi\alpha|J_n(S)|\tilde t)$"),
-                                (ax[1], bragg, np.tanh(np.pi * s) ** 2, r"Bragg: $I_n = \tanh^2(\pi\alpha|J_n(S)|\tilde t)$")):
+    for a, data, law, title in (
+        (ax[0], laue, np.sin(np.pi * s) ** 2, r"Laue: $I_n = \sin^2(\pi\alpha|J_n(S)|\tilde t)$"),
+        (
+            ax[1],
+            bragg,
+            np.tanh(np.pi * s) ** 2,
+            r"Bragg: $I_n = \tanh^2(\pi\alpha|J_n(S)|\tilde t)$",
+        ),
+    ):
         a.plot(s, law, color="#1d1d1b", lw=1.8, zorder=3, label="law, no fitted parameter")
-        for (S, al, n), I, c, m in zip(cases, data, ("#2a78d6", "#eb6834", "#1baf7a", "#e3b505"), ("o", "s", "^", "D"), strict=True):
-            a.plot(al * abs(jv(int(n), S)) * t, I, m, color=c, mec="white", mew=0.6, ms=6, ls="none", zorder=2,
-                   label=rf"TT: $S$ = {S:g}, $\alpha$ = {al:g}, $n$ = {int(n)}")
+        for (S, al, n), I, c, m in zip(
+            cases,
+            data,
+            ("#2a78d6", "#eb6834", "#1baf7a", "#e3b505"),
+            ("o", "s", "^", "D"),
+            strict=True,
+        ):
+            a.plot(
+                al * abs(jv(int(n), S)) * t,
+                I,
+                m,
+                color=c,
+                mec="white",
+                mew=0.6,
+                ms=6,
+                ls="none",
+                zorder=2,
+                label=rf"TT: $S$ = {S:g}, $\alpha$ = {al:g}, $n$ = {int(n)}",
+            )
         a.set(xlabel=r"$\alpha\,|J_n(S)|\,\tilde t$", title=title, xlim=(0, 2.3))
         a.grid(**GRID)
     ax[0].set_ylabel(r"satellite centre intensity $I_n$")
@@ -171,7 +230,9 @@ def write_captions():
             elif cur:
                 old[cur] += line + "\n"
     old.update({k: v + "\n" for k, v in CAPTIONS.items()})
-    text = "# Captions for figures/paper (data file, script, commit per figure)\n\n" + "".join(f"## {k}\n{v.strip()}\n\n" for k, v in old.items())
+    text = "# Captions for figures/paper (data file, script, commit per figure)\n\n" + "".join(
+        f"## {k}\n{v.strip()}\n\n" for k, v in old.items()
+    )
     p.write_text(text, encoding="utf-8", newline="\n")
     print("wrote", p)
 

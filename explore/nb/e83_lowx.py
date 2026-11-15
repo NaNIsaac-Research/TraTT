@@ -32,7 +32,9 @@ TOL = 0.05
 def angle_scale(E):
     th, xr, _ = SI400[E]
     thD = xr / np.sin(np.radians(2 * th))  # Darwin half-width, rad
-    return thD, thD / np.tan(np.radians(th)) * E * 1e6  # urad per half-width -> (rad, meV per half-width)
+    return thD, thD / np.tan(
+        np.radians(th)
+    ) * E * 1e6  # urad per half-width -> (rad, meV per half-width)
 
 
 def section_run():
@@ -84,19 +86,38 @@ def section_run():
                 else:
                     j = int(np.argmax(r > TOL))
                     smax[T_ns].append(float(np.interp(TOL, [r[j - 1], r[j]], [sg[j - 1], sg[j]])))
-        out["cases"][f"E{E:g}"] = dict(g=g, f_GHz=f_GHz.tolist(), urad_per_hw=thD * 1e6, meV_per_hw=meV,
-                                        H_single={str(k): v.tolist() for k, v in H1.items()},
-                                        ratio={f"s{s:g}": {str(k): v for k, v in rows[s].items()} for s in SIGMAS},
-                                        sigma_max_hw={str(k): v for k, v in smax.items()},
-                                        expect_hw=(0.25 * (g + 1 / (2 * XS))).tolist())
-        print(f"Si 400 {E:g} keV: g = {g:.4f}, Darwin half-width {thD * 1e6:.2f} urad = {meV:.1f} meV; f = " + " ".join(f"{v:.2f}" for v in f_GHz) + " GHz for x = 1, 2, 5, 10")
+        out["cases"][f"E{E:g}"] = dict(
+            g=g,
+            f_GHz=f_GHz.tolist(),
+            urad_per_hw=thD * 1e6,
+            meV_per_hw=meV,
+            H_single={str(k): v.tolist() for k, v in H1.items()},
+            ratio={f"s{s:g}": {str(k): v for k, v in rows[s].items()} for s in SIGMAS},
+            sigma_max_hw={str(k): v for k, v in smax.items()},
+            expect_hw=(0.25 * (g + 1 / (2 * XS))).tolist(),
+        )
+        print(
+            f"Si 400 {E:g} keV: g = {g:.4f}, Darwin half-width {thD * 1e6:.2f} urad = {meV:.1f} meV; f = "
+            + " ".join(f"{v:.2f}" for v in f_GHz)
+            + " GHz for x = 1, 2, 5, 10"
+        )
         for T_ns in T_NS:
             print(f"  T_w = {T_ns:g} ns: H_single = " + " ".join(f"{v:.3f}" for v in H1[T_ns]))
             for s in SIGMAS:
-                print(f"     sigma = {s:4g} hw: H_conv/H_single = " + " ".join(f"{v:.3f}" for v in rows[s][T_ns]))
+                print(
+                    f"     sigma = {s:4g} hw: H_conv/H_single = "
+                    + " ".join(f"{v:.3f}" for v in rows[s][T_ns])
+                )
             sm = np.array(smax[T_ns])
-            print(f"     sigma_max (5 %) = " + " ".join(f"x={x:g}:{v:.3f} hw ({v * thD * 1e6:.2f} urad, {v * meV:.1f} meV)" for x, v in zip(XS, sm, strict=True))
-                  + "   expected 0.25 (g + 1/2x) = " + " ".join(f"{v:.3f}" for v in 0.25 * (g + 1 / (2 * XS))))
+            print(
+                f"     sigma_max (5 %) = "
+                + " ".join(
+                    f"x={x:g}:{v:.3f} hw ({v * thD * 1e6:.2f} urad, {v * meV:.1f} meV)"
+                    for x, v in zip(XS, sm, strict=True)
+                )
+                + "   expected 0.25 (g + 1/2x) = "
+                + " ".join(f"{v:.3f}" for v in 0.25 * (g + 1 / (2 * XS)))
+            )
         print(f"  ({time.time() - t0:.0f} s)", flush=True)
     # convergence at 8 keV, x = 2, sigma = 0.3, 300 ns
     base = setup(8.0, s_lin=1000.0)
@@ -106,7 +127,9 @@ def section_run():
         run = integrate_packet(st)
         Itt, _ = fourier_complex(st, run, 300e-9 / base["t_unit"], np.full(d.size, 2 * np.pi * 2.0))
         W = abs((Itt * p).sum())
-        print(f"convergence 8 keV, x = 2, sigma = 0.3, 300 ns, du = {du}: {d.size} rays, W_conv = {W:.6e}")
+        print(
+            f"convergence 8 keV, x = 2, sigma = 0.3, 300 ns, du = {du}: {d.size} rays, W_conv = {W:.6e}"
+        )
         out[f"conv_du{du}"] = float(W)
     print(f"TT vs closed-form convolution, worst: {out['worst_tt_cf'] * 100:.3f} %")
     json.dump(out, open(OUT, "w"), indent=1)
@@ -121,9 +144,21 @@ def section_fig():
     for ax, E in zip(axs, ("17.48", "8"), strict=True):
         c = d["cases"][f"E{E}"]
         for i, (x, col) in enumerate(zip(d["xs"], ("C0", "C1", "C3", "k"), strict=True)):
-            ax.plot(d["sigmas"], [c["ratio"][f"s{s:g}"]["300.0"][i] for s in d["sigmas"]], "o-", color=col, label=f"x = {x:g} ({c['f_GHz'][i]:.1f} GHz)")
+            ax.plot(
+                d["sigmas"],
+                [c["ratio"][f"s{s:g}"]["300.0"][i] for s in d["sigmas"]],
+                "o-",
+                color=col,
+                label=f"x = {x:g} ({c['f_GHz'][i]:.1f} GHz)",
+            )
         ax.axhspan(1 - d["tol"], 1 + d["tol"], color="#e4e3df", lw=0, zorder=0)
-        ax.set(xscale="log", xlabel="beam spread $\\sigma$ (Darwin half-widths)", ylabel="$H_{conv}/H_{single}$ (300 ns)", title=f"Si 400, {E} keV: {c['urad_per_hw']:.1f} µrad, {c['meV_per_hw']:.0f} meV per half-width", ylim=(0, 1.1))
+        ax.set(
+            xscale="log",
+            xlabel="beam spread $\\sigma$ (Darwin half-widths)",
+            ylabel="$H_{conv}/H_{single}$ (300 ns)",
+            title=f"Si 400, {E} keV: {c['urad_per_hw']:.1f} µrad, {c['meV_per_hw']:.0f} meV per half-width",
+            ylim=(0, 1.1),
+        )
         ax.legend(fontsize=8, frameon=False)
         ax.grid(color="#e4e3df", lw=0.6)
     fig.savefig(FIG, dpi=170)

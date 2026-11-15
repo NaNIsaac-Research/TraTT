@@ -78,13 +78,24 @@ def closed_forms(st, T):
         Lam = 1j * (e + 1j * kappa) + 2 * c * R0
         norm = abs(R0) * np.pi * S / kappa
         # CF-A: Entry 65 cos-mode form, kernels truncated at T
-        D = {s: 1j * c * S * (1 - R0**2) / 2 * (1 - np.exp((Lam - 1j * s * e) * T)) / (Lam - 1j * s * e) for s in (1, -1)}
+        D = {
+            s: 1j
+            * c
+            * S
+            * (1 - R0**2)
+            / 2
+            * (1 - np.exp((Lam - 1j * s * e) * T))
+            / (Lam - 1j * s * e)
+            for s in (1, -1)
+        }
         A.append(abs(np.conj(R0) * D[-1] + R0 * np.conj(D[1])) / (norm / 2))
         # CF-B: packet kept, spectra truncated at the window (G_T at +-eta, L_T at Lambda)
         G, L = packet_specs(st["q0"], st["tau"], e, Lam, T)
         Ft = {}
         for W in (e, -e):
-            Ft[W] = 1j * c * S * (1 - R0**2) * (G(W) - np.exp((Lam + 1j * W) * T) * L) / (Lam + 1j * W)
+            Ft[W] = (
+                1j * c * S * (1 - R0**2) * (G(W) - np.exp((Lam + 1j * W) * T) * L) / (Lam + 1j * W)
+            )
         I = np.conj(R0) * Ft[e] + R0 * np.conj(Ft[-e])
         B.append(abs(I) / (abs(G(e)) * norm))  # same |G_T(eta)| normalisation as H_TT
     return np.array(A), np.array(B)
@@ -134,7 +145,12 @@ def tt_weight(st, run, T, omega=None, mean_sub=False):
         w[[0, -1]] /= 2
         tot = np.sum(w[:, None] * I[: n + 1] * np.exp(1j * eta[None, :] * s[: n + 1, None]), axis=0)
         if mean_sub:
-            tot -= np.sum(w[:, None] * I[: n + 1], axis=0) / T * (np.exp(1j * eta * T) - 1) / (1j * eta)
+            tot -= (
+                np.sum(w[:, None] * I[: n + 1], axis=0)
+                / T
+                * (np.exp(1j * eta * T) - 1)
+                / (1j * eta)
+            )
         return np.abs(tot), T
     w = np.full(s.size, run["h"])
     w[[0, -1]] /= 2
@@ -157,8 +173,12 @@ def tt_weight(st, run, T, omega=None, mean_sub=False):
     mean_lin = np.zeros(eta.size, complex)
     for j in range(eta.size):
         a = k * Lam[j]
-        lin[j] = np.conj(r1[j]) * np.sum(d[:, j] * fint(a, eta[j])) + r1[j] * np.sum(np.conj(d[:, j]) * fint(np.conj(a), eta[j]))
-        mean_lin[j] = np.conj(r1[j]) * np.sum(d[:, j] * fint(a, 0.0)) + r1[j] * np.sum(np.conj(d[:, j]) * fint(np.conj(a), 0.0))
+        lin[j] = np.conj(r1[j]) * np.sum(d[:, j] * fint(a, eta[j])) + r1[j] * np.sum(
+            np.conj(d[:, j]) * fint(np.conj(a), eta[j])
+        )
+        mean_lin[j] = np.conj(r1[j]) * np.sum(d[:, j] * fint(a, 0.0)) + r1[j] * np.sum(
+            np.conj(d[:, j]) * fint(np.conj(a), 0.0)
+        )
         # |delta|^2 term, second order (kept so that the continuation is exact, not linearised)
         aa = (k[:, None] * Lam[j] + k[None, :] * np.conj(Lam[j])).ravel()
         dd = (d[:, j][:, None] * np.conj(d[:, j])[None, :]).ravel()
@@ -202,27 +222,41 @@ def section_run():
     # --- checks on the main case ---
     st = setup(17.48)
     run = integrate_packet(st)
-    print(f"Si 400 17.48 keV: Lambda = {st['p']['Lambda_um']:.2f} um, t_unit = {st['t_unit'] * 1e9:.3f} ns, "
-          f"kappa = {st['kappa']:.4f}, S = {st['S']:.2e}, s_p = {run['s_p'] * st['t_unit'] * 1e12:.0f} ps, "
-          f"RK4 steps = {run['s'].size - 1} ({time.time() - t0:.1f} s)")
+    print(
+        f"Si 400 17.48 keV: Lambda = {st['p']['Lambda_um']:.2f} um, t_unit = {st['t_unit'] * 1e9:.3f} ns, "
+        f"kappa = {st['kappa']:.4f}, S = {st['S']:.2e}, s_p = {run['s_p'] * st['t_unit'] * 1e12:.0f} ps, "
+        f"RK4 steps = {run['s'].size - 1} ({time.time() - t0:.1f} s)"
+    )
     T14 = 14e-9 / st["t_unit"]
     w_cont, _ = tt_weight(st, run, T14)
     w_plain = plain_rk4(st, T14)
-    print("check continuation vs plain RK4 at 14 ns: ratio = " + " ".join(f"{a / b:.5f}" for a, b in zip(w_cont, w_plain, strict=True)))
+    print(
+        "check continuation vs plain RK4 at 14 ns: ratio = "
+        + " ".join(f"{a / b:.5f}" for a, b in zip(w_cont, w_plain, strict=True))
+    )
     out["check_continuation_14ns"] = (w_cont / w_plain).tolist()
     w_ms, _ = tt_weight(st, run, T14, mean_sub=True)
     hn = h_norm(st)
     r = (w_ms / hn) / (w_ms / hn)[list(F).index(100.0)]
-    print("check Entry 71 (mean-subtracted, /H(100)) at 14 ns: " + " ".join(f"{f:g}:{v:.3f}" for f, v in zip(F, r, strict=True)))
+    print(
+        "check Entry 71 (mean-subtracted, /H(100)) at 14 ns: "
+        + " ".join(f"{f:g}:{v:.3f}" for f, v in zip(F, r, strict=True))
+    )
     out["check_e71_14ns"] = r.tolist()
     run128 = integrate_packet(st, per_cycle=128)
     w128, _ = tt_weight(st, run128, T14)
-    print("check step 64 -> 128 at 14 ns: ratio = " + " ".join(f"{a / b:.5f}" for a, b in zip(w_cont, w128, strict=True)))
+    print(
+        "check step 64 -> 128 at 14 ns: ratio = "
+        + " ".join(f"{a / b:.5f}" for a, b in zip(w_cont, w128, strict=True))
+    )
     out["check_step_14ns"] = (w_cont / w128).tolist()
     st1k = setup(17.48, s_lin=1000.0)
     run1k = integrate_packet(st1k)
     w1k, _ = tt_weight(st1k, run1k, T14)
-    print("check S/100 -> S/1000 at 14 ns: ratio of H = " + " ".join(f"{a / b:.5f}" for a, b in zip(w_cont / hn, w1k / h_norm(st1k), strict=True)))
+    print(
+        "check S/100 -> S/1000 at 14 ns: ratio of H = "
+        + " ".join(f"{a / b:.5f}" for a, b in zip(w_cont / hn, w1k / h_norm(st1k), strict=True))
+    )
     out["check_S_14ns"] = ((w_cont / hn) / (w1k / h_norm(st1k))).tolist()
     # --- scan: energies x packets x windows ---
     worst = {}
@@ -240,22 +274,44 @@ def section_run():
                 w, Ta = tt_weight(st, run, T)
                 A, B = closed_forms(st, Ta)
                 Htt = w / h_norm(st, Ta)
-                rows.append(dict(T_ns=T_ns, T=Ta, H_tt=Htt.tolist(), H_A=A.tolist(), H_B=B.tolist()))
+                rows.append(
+                    dict(T_ns=T_ns, T=Ta, H_tt=Htt.tolist(), H_A=A.tolist(), H_B=B.tolist())
+                )
                 wa = max(wa, np.abs(Htt / A - 1).max())
                 wb = max(wb, np.abs(Htt / B - 1).max())
             worst[key] = (wa, wb)
-            out["cases"][key] = dict(E=E, ncyc=ncyc, tau_ns=st["tau"] * st["t_unit"] * 1e9, kappa=st["kappa"], S=st["S"], rows=rows)
-            print(f"{key}: tau = {st['tau'] * st['t_unit'] * 1e12:.0f} ps, steps = {run['s'].size - 1}, "
-                  f"worst |H_TT/H_CF-A - 1| = {wa * 100:.2f} %, |H_TT/H_CF-B - 1| = {wb * 100:.3f} % ({time.time() - t1:.1f} s)")
+            out["cases"][key] = dict(
+                E=E,
+                ncyc=ncyc,
+                tau_ns=st["tau"] * st["t_unit"] * 1e9,
+                kappa=st["kappa"],
+                S=st["S"],
+                rows=rows,
+            )
+            print(
+                f"{key}: tau = {st['tau'] * st['t_unit'] * 1e12:.0f} ps, steps = {run['s'].size - 1}, "
+                f"worst |H_TT/H_CF-A - 1| = {wa * 100:.2f} %, |H_TT/H_CF-B - 1| = {wb * 100:.3f} % ({time.time() - t1:.1f} s)"
+            )
             if ncyc == 0.9:
                 i100 = list(F).index(100.0)
-                print("   T_ns     " + "".join(f"{f:>8g}" for f in F) + "   | H(20)/H(100): TT  CF-A  steady")
+                print(
+                    "   T_ns     "
+                    + "".join(f"{f:>8g}" for f in F)
+                    + "   | H(20)/H(100): TT  CF-A  steady"
+                )
                 for r_ in rows:
                     Htt, A = np.array(r_["H_tt"]), np.array(r_["H_A"])
-                    print(f"   {r_['T_ns']:6g}  TT " + "".join(f"{v:8.4f}" for v in Htt)
-                          + f"   | {Htt[0] / Htt[i100]:.3f} {A[0] / A[i100]:.3f}")
-                    print("          CF-A " + "".join(f"{v:8.4f}" for v in A)
-                          + "   ratio " + "".join(f"{v:6.3f}" for v in Htt / A))
+                    print(
+                        f"   {r_['T_ns']:6g}  TT "
+                        + "".join(f"{v:8.4f}" for v in Htt)
+                        + f"   | {Htt[0] / Htt[i100]:.3f} {A[0] / A[i100]:.3f}"
+                    )
+                    print(
+                        "          CF-A "
+                        + "".join(f"{v:8.4f}" for v in A)
+                        + "   ratio "
+                        + "".join(f"{v:6.3f}" for v in Htt / A)
+                    )
     out["worst"] = worst
     # --- boundaries from the closed form that passes the rule (CF-B, 17.48 keV), then confirmed by TT ---
     st = setup(17.48)
@@ -266,16 +322,26 @@ def section_run():
     steady = closed_forms(st, 1e4)[1]
     r_inf = steady[i20] / steady[i100]
     bounds = {}
-    for name, target in (("T_flat", 0.9), ("T_half", 0.5 * (1 + r_inf)), ("T_90", r_inf + 0.1 * (1 - r_inf))):
+    for name, target in (
+        ("T_flat", 0.9),
+        ("T_half", 0.5 * (1 + r_inf)),
+        ("T_90", r_inf + 0.1 * (1 - r_inf)),
+    ):
         j = np.argmax(ratio < target)
         T = Tg[j]
         w, Ta = tt_weight(st, run, T)
         _, B = closed_forms(st, Ta)
         Htt = w / h_norm(st, Ta)
-        bounds[name] = dict(T_ns=T * st["t_unit"] * 1e9, target=target, cf=B[i20] / B[i100], tt=Htt[i20] / Htt[i100])
-        print(f"{name}: ratio target {target:.3f} at T = {T * st['t_unit'] * 1e9:.1f} ns  (CF-B {B[i20] / B[i100]:.3f}, TT {Htt[i20] / Htt[i100]:.3f})")
+        bounds[name] = dict(
+            T_ns=T * st["t_unit"] * 1e9, target=target, cf=B[i20] / B[i100], tt=Htt[i20] / Htt[i100]
+        )
+        print(
+            f"{name}: ratio target {target:.3f} at T = {T * st['t_unit'] * 1e9:.1f} ns  (CF-B {B[i20] / B[i100]:.3f}, TT {Htt[i20] / Htt[i100]:.3f})"
+        )
     out["bounds"] = bounds
-    out["ratio_curve"] = dict(T_ns=(Tg * st["t_unit"] * 1e9).tolist(), ratio=ratio.tolist(), steady=r_inf)
+    out["ratio_curve"] = dict(
+        T_ns=(Tg * st["t_unit"] * 1e9).tolist(), ratio=ratio.tolist(), steady=r_inf
+    )
     json.dump(out, open(OUT, "w"), indent=1)
     print(f"wrote {OUT.name} ({time.time() - t0:.0f} s)")
 
@@ -302,7 +368,10 @@ def section_posthoc():
             A.append(closed_forms(st1, Ta - tg)[0][0])
         A = np.array(A)
         rows.append(dict(T_ns=T_ns, ratio=(Htt / A).tolist()))
-        print(f"post-hoc CF-A with T - t_g, {T_ns:5g} ns: TT/CF-A' = " + " ".join(f"{v:.4f}" for v in Htt / A))
+        print(
+            f"post-hoc CF-A with T - t_g, {T_ns:5g} ns: TT/CF-A' = "
+            + " ".join(f"{v:.4f}" for v in Htt / A)
+        )
     res["group_delay"] = rows
     for ncyc in (10.0, 100.0):
         wb = {}
@@ -316,7 +385,9 @@ def section_posthoc():
                 _, B = closed_forms(st, Ta)
                 worst = max(worst, np.abs(w / h_norm(st, Ta) / B - 1).max())
             wb[s_lin] = worst
-        print(f"post-hoc ncyc = {ncyc:g}: worst |H_TT/H_CF-B - 1| at S/100 = {wb[100.0] * 100:.3f} %, at S/1000 = {wb[1000.0] * 100:.3f} %")
+        print(
+            f"post-hoc ncyc = {ncyc:g}: worst |H_TT/H_CF-B - 1| at S/100 = {wb[100.0] * 100:.3f} %, at S/1000 = {wb[1000.0] * 100:.3f} %"
+        )
         res[f"cfb_ncyc{ncyc:g}"] = wb
     d = json.load(open(OUT))
     d["posthoc"] = res
@@ -340,7 +411,12 @@ def section_fig():
         HB = np.array([r["H_B"][j] for r in c["rows"]])
         (ln,) = ax.plot(Tn, HB, "-", lw=1.5, label=f"{fj:g} GHz")
         ax.plot(Tn, Htt, "o", color=ln.get_color(), ms=4, mfc="none")
-    ax.set(xscale="log", xlabel="window $T_w$ (ns)", ylabel="crystal factor $H(f; T_w)$", title="Si 400, 17.48 keV: first-order closed form (lines), TT (circles)")
+    ax.set(
+        xscale="log",
+        xlabel="window $T_w$ (ns)",
+        ylabel="crystal factor $H(f; T_w)$",
+        title="Si 400, 17.48 keV: first-order closed form (lines), TT (circles)",
+    )
     ax.axvline(22, color="0.6", lw=0.8, ls=":")
     ax.text(23, 0.05, r"$1/\kappa$", color="0.4", fontsize=9)
     ax.legend(frameon=False, fontsize=9)
@@ -349,13 +425,34 @@ def section_fig():
     rc = d["ratio_curve"]
     ax.plot(rc["T_ns"], rc["ratio"], "-", color="C3", lw=1.5, label="closed form (CF-B)")
     i100 = list(f).index(100.0)
-    ax.plot(Tn, [r["H_tt"][0] / r["H_tt"][i100] for r in c["rows"]], "o", color="C3", ms=4, mfc="none", label="TT")
+    ax.plot(
+        Tn,
+        [r["H_tt"][0] / r["H_tt"][i100] for r in c["rows"]],
+        "o",
+        color="C3",
+        ms=4,
+        mfc="none",
+        label="TT",
+    )
     ax.axhline(rc["steady"], color="0.5", lw=0.8, ls="--")
     ax.text(150, rc["steady"] + 0.012, "steady (Entry 65)", color="0.4", fontsize=9, ha="center")
     for k, (name, b) in enumerate(d["bounds"].items()):
         ax.axvline(b["T_ns"], color="0.7", lw=0.8, ls=":")
-        ax.text(b["T_ns"], 1.03 - 0.045 * k, f"{name.replace('T_', '')} {b['T_ns']:.0f} ns", fontsize=8, color="0.4", ha="right")
-    ax.set(xscale="log", xlabel="window $T_w$ (ns)", ylabel="$H(20\\,\\mathrm{GHz}; T_w)\\,/\\,H(100\\,\\mathrm{GHz}; T_w)$", ylim=(0.45, 1.06), title="where the Entry 65 factor 2 comes back")
+        ax.text(
+            b["T_ns"],
+            1.03 - 0.045 * k,
+            f"{name.replace('T_', '')} {b['T_ns']:.0f} ns",
+            fontsize=8,
+            color="0.4",
+            ha="right",
+        )
+    ax.set(
+        xscale="log",
+        xlabel="window $T_w$ (ns)",
+        ylabel="$H(20\\,\\mathrm{GHz}; T_w)\\,/\\,H(100\\,\\mathrm{GHz}; T_w)$",
+        ylim=(0.45, 1.06),
+        title="where the Entry 65 factor 2 comes back",
+    )
     ax.legend(frameon=False, fontsize=9, loc="lower left")
     ax.grid(color="#e4e3df", lw=0.6)
     fig.savefig(HERE.parents[1] / "figures" / "paper" / "e75_window_H.png", dpi=200)

@@ -67,7 +67,15 @@ def H_window(E, f, T_ns, ratio, sign):
         R0, c = root(1.0, eta, kappa, ratio * kappa)
         lam = 1j * (eta + 1j * kappa) + 2 * c * R0
         G, L = packet_specs(st["q0"], st["tau"], eta, lam, T)
-        Ft = {Wk: 1j * c * S * (1 - R0**2) * (G(Wk) - np.exp((lam + 1j * Wk) * T) * L) / (lam + 1j * Wk) for Wk in (W, -W)}
+        Ft = {
+            Wk: 1j
+            * c
+            * S
+            * (1 - R0**2)
+            * (G(Wk) - np.exp((lam + 1j * Wk) * T) * L)
+            / (lam + 1j * Wk)
+            for Wk in (W, -W)
+        }
         Iw = np.conj(R0) * Ft[W] + R0 * np.conj(Ft[-W])
         out.append(abs(Iw) / (abs(G(W)) * abs(R0) * np.pi * S / kappa))
     return np.array(out)
@@ -86,26 +94,44 @@ def section_run():
             H1 = H_steady(x, g, RATIO, sign)
             r = H1 / H0
             case[f"steady_{lab}"] = dict(H0=H0.tolist(), H1=H1.tolist(), ratio=r.tolist())
-            print(f"  steady {lab}: H(kh)/H(0) = " + " ".join(f"{fj:g}:{v:.4f}" for fj, v in zip(F, r, strict=True))
-                  + f"   max|r-1| in band {np.max(np.abs(r[BAND] - 1)) * 100:.2f} %, outside {np.max(np.abs(r[~BAND] - 1)) * 100:.2f} %")
+            print(
+                f"  steady {lab}: H(kh)/H(0) = "
+                + " ".join(f"{fj:g}:{v:.4f}" for fj, v in zip(F, r, strict=True))
+                + f"   max|r-1| in band {np.max(np.abs(r[BAND] - 1)) * 100:.2f} %, outside {np.max(np.abs(r[~BAND] - 1)) * 100:.2f} %"
+            )
             for T_ns in (14.0, 52.0):
                 Hw0 = H_window(E, F, T_ns, 0.0, sign)
                 Hw1 = H_window(E, F, T_ns, RATIO, sign)
                 rw = Hw1 / Hw0
                 case[f"T{T_ns:g}_{lab}"] = dict(H0=Hw0.tolist(), H1=Hw1.tolist(), ratio=rw.tolist())
-                print(f"  window {T_ns:g} ns {lab}: H(kh)/H(0) = " + " ".join(f"{fj:g}:{v:.4f}" for fj, v in zip(F, rw, strict=True))
-                      + f"   max|r-1| in band {np.max(np.abs(rw[BAND] - 1)) * 100:.2f} %")
+                print(
+                    f"  window {T_ns:g} ns {lab}: H(kh)/H(0) = "
+                    + " ".join(f"{fj:g}:{v:.4f}" for fj, v in zip(F, rw, strict=True))
+                    + f"   max|r-1| in band {np.max(np.abs(rw[BAND] - 1)) * 100:.2f} %"
+                )
         asym = np.array(case["steady_eta<0"]["H1"]) / np.array(case["steady_eta>0"]["H1"])
         case["asym_steady"] = asym.tolist()
-        print("  steady H(eta<0)/H(eta>0) with kh: " + " ".join(f"{fj:g}:{v:.4f}" for fj, v in zip(F, asym, strict=True)))
+        print(
+            "  steady H(eta<0)/H(eta>0) with kh: "
+            + " ".join(f"{fj:g}:{v:.4f}" for fj, v in zip(F, asym, strict=True))
+        )
         out["cases"][f"E{E:g}"] = case
     c17 = out["cases"]["E17.48"]
-    worst = {k: float(np.max(np.abs(np.array(c17[k]["ratio"])[BAND] - 1)) * 100) for k in c17 if isinstance(c17[k], dict)}
+    worst = {
+        k: float(np.max(np.abs(np.array(c17[k]["ratio"])[BAND] - 1)) * 100)
+        for k in c17
+        if isinstance(c17[k], dict)
+    }
     out["worst_band_17keV_pct"] = worst
     wmax = max(worst.values())
-    out["verdict"] = "second parameter needed" if wmax > 1.0 else "one parameter suffices (<= 1 % in band)"
-    print(f"verdict at g = {c17['g']:.4f}: max |H(kh)/H(0) - 1| over 20-150 GHz, steady and windows 14/52 ns, both signs: "
-          + ", ".join(f"{k} {v:.2f} %" for k, v in worst.items()) + f" -> max {wmax:.2f} % -> {out['verdict']}")
+    out["verdict"] = (
+        "second parameter needed" if wmax > 1.0 else "one parameter suffices (<= 1 % in band)"
+    )
+    print(
+        f"verdict at g = {c17['g']:.4f}: max |H(kh)/H(0) - 1| over 20-150 GHz, steady and windows 14/52 ns, both signs: "
+        + ", ".join(f"{k} {v:.2f} %" for k, v in worst.items())
+        + f" -> max {wmax:.2f} % -> {out['verdict']}"
+    )
     json.dump(out, open(OUT, "w"), indent=1)
 
 
@@ -130,17 +156,50 @@ def section_tt(signs=(+1, -1)):
             def phi(zeta):
                 return S * np.cos(W * (t[:, None] - zeta))  # noqa: B023
 
-            R = np.abs(solve_bragg(alpha, np.array([eta]), phi=phi, n_z=nz, kappa=kappa, kappa_h=RATIO * kappa)) ** 2
+            R = (
+                np.abs(
+                    solve_bragg(
+                        alpha, np.array([eta]), phi=phi, n_z=nz, kappa=kappa, kappa_h=RATIO * kappa
+                    )
+                )
+                ** 2
+            )
             F_tt = abs(np.mean((R - R.mean(axis=0)) * np.exp(1j * W * t[:, None]), axis=0)[0])
             R0, c = root(alpha, eta, kappa, RATIO * kappa)
-            F_cf = H_steady(x, g, RATIO, sign, alpha=alpha, S=S)[0] * abs(R0) * np.pi * alpha * S / (2 * kappa)
+            F_cf = (
+                H_steady(x, g, RATIO, sign, alpha=alpha, S=S)[0]
+                * abs(R0)
+                * np.pi
+                * alpha
+                * S
+                / (2 * kappa)
+            )
             # same run without kappa_h, for the size of the effect in TT itself
             R_0 = np.abs(solve_bragg(alpha, np.array([eta]), phi=phi, n_z=nz, kappa=kappa)) ** 2
             F_tt0 = abs(np.mean((R_0 - R_0.mean(axis=0)) * np.exp(1j * W * t[:, None]), axis=0)[0])
-            F_cf0 = H_steady(x, g, 0.0, sign, alpha=alpha, S=S)[0] * abs(root(alpha, eta, kappa)[0]) * np.pi * alpha * S / (2 * kappa)
-            rows.append(dict(sign=sign, x=x, nz=nz, tt_over_cf=F_tt / F_cf, tt_ratio=F_tt / F_tt0, cf_ratio=F_cf / F_cf0))
-            print(f"  g={g:.4f} x={x:6.1f} eta{'>' if sign > 0 else '<'}0 (n_z={nz}): TT / closed form = {F_tt / F_cf:.4f};"
-                  f"  effect of kappa_h: TT {F_tt / F_tt0:.4f}, closed form {F_cf / F_cf0:.4f} ({time.time() - t0:.0f} s)", flush=True)
+            F_cf0 = (
+                H_steady(x, g, 0.0, sign, alpha=alpha, S=S)[0]
+                * abs(root(alpha, eta, kappa)[0])
+                * np.pi
+                * alpha
+                * S
+                / (2 * kappa)
+            )
+            rows.append(
+                dict(
+                    sign=sign,
+                    x=x,
+                    nz=nz,
+                    tt_over_cf=F_tt / F_cf,
+                    tt_ratio=F_tt / F_tt0,
+                    cf_ratio=F_cf / F_cf0,
+                )
+            )
+            print(
+                f"  g={g:.4f} x={x:6.1f} eta{'>' if sign > 0 else '<'}0 (n_z={nz}): TT / closed form = {F_tt / F_cf:.4f};"
+                f"  effect of kappa_h: TT {F_tt / F_tt0:.4f}, closed form {F_cf / F_cf0:.4f} ({time.time() - t0:.0f} s)",
+                flush=True,
+            )
     out["tt"] = rows
     out["tt_worst_pct"] = float(max(abs(r["tt_over_cf"] - 1) for r in rows) * 100)
     print(f"TT vs extended closed form: worst {out['tt_worst_pct']:.2f} %")
@@ -161,12 +220,34 @@ def section_conv60():
         nz = int(per * (W / (2 * np.pi) + alpha)) + 256
         for kh in (0.0, RATIO):
             t0 = time.time()
-            R = np.abs(solve_bragg(alpha, np.array([W]), phi=lambda z: S * np.cos(W * (t[:, None] - z)), n_z=nz, kappa=kappa, kappa_h=kh * kappa)) ** 2
+            R = (
+                np.abs(
+                    solve_bragg(
+                        alpha,
+                        np.array([W]),
+                        phi=lambda z: S * np.cos(W * (t[:, None] - z)),
+                        n_z=nz,
+                        kappa=kappa,
+                        kappa_h=kh * kappa,
+                    )
+                )
+                ** 2
+            )
             F_tt = abs(np.mean((R - R.mean(axis=0)) * np.exp(1j * W * t[:, None]), axis=0)[0])
             R0, _ = root(alpha, W, kappa, kh * kappa)
-            F_cf = H_steady(x, g, kh, +1, alpha=alpha, S=S)[0] * abs(R0) * np.pi * alpha * S / (2 * kappa)
+            F_cf = (
+                H_steady(x, g, kh, +1, alpha=alpha, S=S)[0]
+                * abs(R0)
+                * np.pi
+                * alpha
+                * S
+                / (2 * kappa)
+            )
             res[f"per{per}_kh{kh:g}"] = F_tt / F_cf
-            print(f"  x=60 eta>0 {per} steps/cycle (n_z={nz}) kappa_h/kappa={kh:g}: TT / closed form = {F_tt / F_cf:.4f} ({time.time() - t0:.0f} s)", flush=True)
+            print(
+                f"  x=60 eta>0 {per} steps/cycle (n_z={nz}) kappa_h/kappa={kh:g}: TT / closed form = {F_tt / F_cf:.4f} ({time.time() - t0:.0f} s)",
+                flush=True,
+            )
     out["conv60"] = res
     json.dump(out, open(OUT, "w"), indent=1)
 
@@ -188,21 +269,51 @@ def section_fig():
     ax = axs[0]
     c = d["cases"]["E17.48"]
     ax.plot(f, c["steady_eta>0"]["H0"], "k-", lw=1.5, label="$\\chi_{ih} = 0$ (Entry 65)")
-    ax.plot(f, c["steady_eta>0"]["H1"], "C0-", lw=1.5, label="$\\chi_{ih} = 0.93\\,\\chi_{i0}$, $\\eta > 0$")
-    ax.plot(f, c["steady_eta<0"]["H1"], "C3-", lw=1.5, label="$\\chi_{ih} = 0.93\\,\\chi_{i0}$, $\\eta < 0$ (Borrmann edge)")
+    ax.plot(
+        f,
+        c["steady_eta>0"]["H1"],
+        "C0-",
+        lw=1.5,
+        label="$\\chi_{ih} = 0.93\\,\\chi_{i0}$, $\\eta > 0$",
+    )
+    ax.plot(
+        f,
+        c["steady_eta<0"]["H1"],
+        "C3-",
+        lw=1.5,
+        label="$\\chi_{ih} = 0.93\\,\\chi_{i0}$, $\\eta < 0$ (Borrmann edge)",
+    )
     ax.axvspan(20, 150, color="#e4e3df", lw=0, zorder=0)
-    ax.set(xscale="log", xlabel="phonon frequency (GHz)", ylabel="crystal factor $H$ (steady)", title="Si 400, 17.48 keV", ylim=(0, 1.05))
+    ax.set(
+        xscale="log",
+        xlabel="phonon frequency (GHz)",
+        ylabel="crystal factor $H$ (steady)",
+        title="Si 400, 17.48 keV",
+        ylim=(0, 1.05),
+    )
     ax.legend(fontsize=8, frameon=False, loc="lower right")
     ax.grid(color="#e4e3df", lw=0.6)
     ax = axs[1]
     for E, ls in (("17.48", "-"), ("8", "--")):
         c = d["cases"][f"E{E}"]
         for lab, col in (("eta>0", "C0"), ("eta<0", "C3")):
-            ax.plot(f, 100 * (np.array(c[f"steady_{lab}"]["ratio"]) - 1), ls, color=col, lw=1.5, label=f"{E} keV, {lab}")
+            ax.plot(
+                f,
+                100 * (np.array(c[f"steady_{lab}"]["ratio"]) - 1),
+                ls,
+                color=col,
+                lw=1.5,
+                label=f"{E} keV, {lab}",
+            )
     ax.axhspan(-1, 1, color="#e4e3df", lw=0, zorder=0)
     ax.axvspan(20, 150, color="#f2f1ee", lw=0, zorder=0)
     ax.axhline(0, color="0.5", lw=0.6)
-    ax.set(xscale="log", xlabel="phonon frequency (GHz)", ylabel="$H(\\chi_{ih}) / H(0) - 1$ (%)", title="change of $H$ with anomalous absorption")
+    ax.set(
+        xscale="log",
+        xlabel="phonon frequency (GHz)",
+        ylabel="$H(\\chi_{ih}) / H(0) - 1$ (%)",
+        title="change of $H$ with anomalous absorption",
+    )
     ax.legend(fontsize=8, frameon=False)
     ax.grid(color="#e4e3df", lw=0.6)
     fig.savefig(HERE.parents[1] / "figures" / "paper" / "e77_chi_ih.png", dpi=200)

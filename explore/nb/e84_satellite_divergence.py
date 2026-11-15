@@ -33,11 +33,16 @@ AAC, OFF = 20.0, 0.0037
 T = np.linspace(0.0, 1.0, 61) + OFF
 SIG = (0.1, 0.3, 1.0, 3.0)
 # Darwin half-widths in angle (|chi_rh| / sin 2 theta_B), X0h constants of e20_units_x0h.py
-SCALE = {"Si440_17.48keV_Laue": 0.12130e-5 / np.sin(np.radians(2 * 21.679)), "Si400_8keV_Bragg": 0.78073e-5 / np.sin(np.radians(2 * 34.802))}
+SCALE = {
+    "Si440_17.48keV_Laue": 0.12130e-5 / np.sin(np.radians(2 * 21.679)),
+    "Si400_8keV_Bragg": 0.78073e-5 / np.sin(np.radians(2 * 34.802)),
+}
 
 
 def first_max(t, y):
-    i = int(np.argmax(y[: len(y) // 2 + 5]))  # first maximum lies in the first half period for alpha_n t <= 0.5
+    i = int(
+        np.argmax(y[: len(y) // 2 + 5])
+    )  # first maximum lies in the first half period for alpha_n t <= 0.5
     if 0 < i < len(y) - 1:
         a, b, c = y[i - 1], y[i], y[i + 1]
         den = a - 2 * b + c
@@ -56,7 +61,9 @@ def closed_form(alpha_n, delta, t, geometry):
 
 def section_run():
     t0 = time.time()
-    out = dict(cases=CASES, sigmas=SIG, scale_urad={k: v * 1e6 for k, v in SCALE.items()}, results=[])
+    out = dict(
+        cases=CASES, sigmas=SIG, scale_urad={k: v * 1e6 for k, v in SCALE.items()}, results=[]
+    )
     verdict_ok = True
     for geometry in ("laue", "bragg"):
         for S, alpha, n in CASES:
@@ -81,23 +88,61 @@ def section_run():
                 cf_err = float(np.max(np.abs(Ic - Cc)))
                 if sig == 0:
                     tmax_s, Imax_s, I_single = tm, Im, Ic
-                row = dict(sigma=sig, sigma_eta=se, tmax=tm, Imax=Im, dperiod=tm / tmax_s - 1, damp=Im / Imax_s - 1, cf_abs_err=cf_err, I=Ic.tolist())
+                row = dict(
+                    sigma=sig,
+                    sigma_eta=se,
+                    tmax=tm,
+                    Imax=Im,
+                    dperiod=tm / tmax_s - 1,
+                    damp=Im / Imax_s - 1,
+                    cf_abs_err=cf_err,
+                    I=Ic.tolist(),
+                )
                 if sig == 3.0 and geometry == "laue":
                     pop = np.array([quad(j0, 0, 2 * np.pi * an * tt)[0] for tt in T])
                     k = Ic[-1] / pop[-1]
                     row["pop_law_err"] = float(np.max(np.abs(Ic - k * pop)) / Ic.max())
                 rows.append(row)
-                print(f"{geometry:5s} S={S:g} a={alpha:g} n={n}: sigma={sig:3g} w_n ({se:6.2f} eta): t_max {tm:.4f} ({row['dperiod'] * 100:+.2f} %), I_max {Im:.4f} ({row['damp'] * 100:+.1f} %), TT-vs-CF max|dI| {cf_err:.1e}"
-                      + (f", population law err {row['pop_law_err']:.3f}" if "pop_law_err" in row else ""), flush=True)
+                print(
+                    f"{geometry:5s} S={S:g} a={alpha:g} n={n}: sigma={sig:3g} w_n ({se:6.2f} eta): t_max {tm:.4f} ({row['dperiod'] * 100:+.2f} %), I_max {Im:.4f} ({row['damp'] * 100:+.1f} %), TT-vs-CF max|dI| {cf_err:.1e}"
+                    + (
+                        f", population law err {row['pop_law_err']:.3f}"
+                        if "pop_law_err" in row
+                        else ""
+                    ),
+                    flush=True,
+                )
             r1 = [r for r in rows if r["sigma"] == 1.0][0]
             if abs(r1["dperiod"]) > 0.01 or abs(r1["damp"]) > 0.05:
                 verdict_ok = False
-            ok = [r["sigma"] for r in rows if r["sigma"] > 0 and abs(r["dperiod"]) <= 0.01 and abs(r["damp"]) <= 0.05]
+            ok = [
+                r["sigma"]
+                for r in rows
+                if r["sigma"] > 0 and abs(r["dperiod"]) <= 0.01 and abs(r["damp"]) <= 0.05
+            ]
             smax = max(ok) if ok else 0.0
-            out["results"].append(dict(geometry=geometry, S=S, alpha=alpha, n=n, alpha_n=an, w_n=wn, w_n_hw=abs(jv(n, S)), sigma_max_wn=smax, rows=rows))
-            print(f"   largest sigma meeting both (scan): {smax:g} w_n = {smax * abs(jv(n, S)):.3f} main half-widths; w_n = {abs(jv(n, S)):.3f} half-widths = "
-                  + ", ".join(f"{abs(jv(n, S)) * v * 1e6:.2f} urad ({k})" for k, v in SCALE.items()))
-    out["verdict"] = "P2 measurable with an ordinary beam" if verdict_ok else "condition table applies (sigma_eta < w_n)"
+            out["results"].append(
+                dict(
+                    geometry=geometry,
+                    S=S,
+                    alpha=alpha,
+                    n=n,
+                    alpha_n=an,
+                    w_n=wn,
+                    w_n_hw=abs(jv(n, S)),
+                    sigma_max_wn=smax,
+                    rows=rows,
+                )
+            )
+            print(
+                f"   largest sigma meeting both (scan): {smax:g} w_n = {smax * abs(jv(n, S)):.3f} main half-widths; w_n = {abs(jv(n, S)):.3f} half-widths = "
+                + ", ".join(f"{abs(jv(n, S)) * v * 1e6:.2f} urad ({k})" for k, v in SCALE.items())
+            )
+    out["verdict"] = (
+        "P2 measurable with an ordinary beam"
+        if verdict_ok
+        else "condition table applies (sigma_eta < w_n)"
+    )
     print("verdict:", out["verdict"], f"({time.time() - t0:.0f} s)")
     json.dump(out, open(OUT, "w"), indent=1)
 
@@ -108,11 +153,25 @@ def section_fig():
     d = json.load(open(OUT))
     fig, axs = plt.subplots(1, 2, figsize=(10, 4), constrained_layout=True, sharey=True)
     for ax, geometry in zip(axs, ("laue", "bragg"), strict=True):
-        r = [x for x in d["results"] if x["geometry"] == geometry and x["S"] == 1.5 and x["alpha"] == 2.0][0]
+        r = [
+            x
+            for x in d["results"]
+            if x["geometry"] == geometry and x["S"] == 1.5 and x["alpha"] == 2.0
+        ][0]
         an = r["alpha_n"]
         for row, c in zip(r["rows"], ("k", "C0", "C1", "C3", "0.6"), strict=True):
-            ax.plot(an * T, row["I"], "-", color=c, lw=1.4, label=f"$\\sigma_\\eta$ = {row['sigma']:g} $w_n$")
-        ax.set(xlabel="$\\alpha|J_n(S)|\\,\\tilde t$", title=f"{geometry.capitalize()}: S = 1.5, $\\alpha$ = 2, n = 1")
+            ax.plot(
+                an * T,
+                row["I"],
+                "-",
+                color=c,
+                lw=1.4,
+                label=f"$\\sigma_\\eta$ = {row['sigma']:g} $w_n$",
+            )
+        ax.set(
+            xlabel="$\\alpha|J_n(S)|\\,\\tilde t$",
+            title=f"{geometry.capitalize()}: S = 1.5, $\\alpha$ = 2, n = 1",
+        )
         ax.grid(color="#e4e3df", lw=0.6)
         ax.legend(fontsize=8, frameon=False)
     axs[0].set_ylabel("$I_n$ (beam average)")

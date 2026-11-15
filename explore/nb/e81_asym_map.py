@@ -38,7 +38,13 @@ def geometry(E, b):
     th = np.radians(SI400[E][0])
     chi = brentq(lambda x: np.sin(th + x) / np.sin(th - x) - b, -th + 1e-6, th - 1e-6)
     g0, gh = np.sin(th + chi), np.sin(th - chi)
-    return dict(chi_deg=np.degrees(chi), gamma0=g0, gammah=gh, lam_ratio=np.sqrt(g0 * gh) / np.sin(th), gfac=(np.sqrt(b) + 1 / np.sqrt(b)) / 2)
+    return dict(
+        chi_deg=np.degrees(chi),
+        gamma0=g0,
+        gammah=gh,
+        lam_ratio=np.sqrt(g0 * gh) / np.sin(th),
+        gfac=(np.sqrt(b) + 1 / np.sqrt(b)) / 2,
+    )
 
 
 def integrate(st, c_h, c_0, per_cycle=64, s_cut=30.0):
@@ -86,7 +92,9 @@ def section_run():
         st["t_unit"] = t_unit
         st["q0"] = 2 * np.pi * 87e9 * t_unit
         st["tau"] = 0.9 * 2 * np.pi / st["q0"]
-        st["eta"] = np.concatenate([2 * np.pi * F * 1e9 * t_unit, -2 * np.pi * F[[0, 5]] * 1e9 * t_unit])
+        st["eta"] = np.concatenate(
+            [2 * np.pi * F * 1e9 * t_unit, -2 * np.pi * F[[0, 5]] * 1e9 * t_unit]
+        )
         st["kappa"] = 2 * np.pi * g_sym * geo["gfac"]
         st["S"] = base["S"]  # S = eps G Lambda / q0 is unit-independent: same peak strain 1e-5
         c_h, c_0 = 1j * np.pi * np.sqrt(b), 1j * np.pi / np.sqrt(b)
@@ -105,10 +113,15 @@ def section_run():
         nf = F.size
         dH = float(np.max(np.abs(H_asym[:nf] / B[:nf] - 1)))
         worst_H = max(worst_H, dH)
-        print(f"b = {b:g}: chi = {geo['chi_deg']:+.2f} deg, Lambda_asym/Lambda_sym = {geo['lam_ratio']:.3f}, g_asym = g ({geo['gfac']:.4f}) = {g_sym * geo['gfac']:.5f}; "
-              f"mapping: max|R_asym - sqrt(b) R~| = {dmap:.1e}; W_asym / (b W~) at 14 ns: {np.max(np.abs(wa / (b * ws) - 1)):.1e}; "
-              f"H_TT(b) / CF-B(g_asym) worst {dH * 100:.2f} %  [H(20)/H(100) TT {H_asym[0] / H_asym[5]:.4f}, CF {B[0] / B[5]:.4f}]  ({time.time() - t0:.0f} s)", flush=True)
-        out["cases"][f"b{b:g}"] = dict(geo=geo, map_err=dmap, H_err=dH, H_asym=H_asym.tolist(), H_cf=B.tolist(), T14_units=Ta)
+        print(
+            f"b = {b:g}: chi = {geo['chi_deg']:+.2f} deg, Lambda_asym/Lambda_sym = {geo['lam_ratio']:.3f}, g_asym = g ({geo['gfac']:.4f}) = {g_sym * geo['gfac']:.5f}; "
+            f"mapping: max|R_asym - sqrt(b) R~| = {dmap:.1e}; W_asym / (b W~) at 14 ns: {np.max(np.abs(wa / (b * ws) - 1)):.1e}; "
+            f"H_TT(b) / CF-B(g_asym) worst {dH * 100:.2f} %  [H(20)/H(100) TT {H_asym[0] / H_asym[5]:.4f}, CF {B[0] / B[5]:.4f}]  ({time.time() - t0:.0f} s)",
+            flush=True,
+        )
+        out["cases"][f"b{b:g}"] = dict(
+            geo=geo, map_err=dmap, H_err=dH, H_asym=H_asym.tolist(), H_cf=B.tolist(), T14_units=Ta
+        )
     out["verdict_map"] = "mapping exact (< 1e-6)" if worst_map < 1e-6 else "MAPPING WRONG"
     out["verdict_H"] = "one geometry factor" if worst_H < 0.003 else "closed form needs extension"
     print("verdict:", out["verdict_map"], "/", out["verdict_H"])
@@ -129,12 +142,26 @@ def section_run():
         Tg = np.geomspace(0.5, 500, 1500) * 1e-9 / t_unit
         ratio = np.array([(lambda B: B[0] / B[5])(closed_forms(st, T)[1]) for T in Tg])
         bnd = {}
-        for name, target in (("T_flat", 0.9), ("T_half", 0.5 * (1 + r_inf)), ("T_90", r_inf + 0.1 * (1 - r_inf))):
+        for name, target in (
+            ("T_flat", 0.9),
+            ("T_half", 0.5 * (1 + r_inf)),
+            ("T_90", r_inf + 0.1 * (1 - r_inf)),
+        ):
             j = int(np.argmax(ratio < target))
             bnd[name] = float(Tg[j] * t_unit * 1e9)
-        table[f"b{b:g}"] = dict(chi_deg=geo["chi_deg"], lam_um=base["p"]["Lambda_um"] * geo["lam_ratio"], g_asym=g_sym * geo["gfac"], H20_H100=float(r_inf), H20=float(steady[0]), H100=float(steady[5]), **bnd)
-        print(f"  b = {b:4g}: chi = {geo['chi_deg']:+6.2f} deg, Lambda = {table[f'b{b:g}']['lam_um']:.2f} um, g = {g_sym * geo['gfac']:.5f}, steady H(20) = {steady[0]:.3f}, H(100) = {steady[5]:.3f}, ratio {r_inf:.3f}, "
-              f"T_flat {bnd['T_flat']:.1f} / T_half {bnd['T_half']:.1f} / T_90 {bnd['T_90']:.1f} ns")
+        table[f"b{b:g}"] = dict(
+            chi_deg=geo["chi_deg"],
+            lam_um=base["p"]["Lambda_um"] * geo["lam_ratio"],
+            g_asym=g_sym * geo["gfac"],
+            H20_H100=float(r_inf),
+            H20=float(steady[0]),
+            H100=float(steady[5]),
+            **bnd,
+        )
+        print(
+            f"  b = {b:4g}: chi = {geo['chi_deg']:+6.2f} deg, Lambda = {table[f'b{b:g}']['lam_um']:.2f} um, g = {g_sym * geo['gfac']:.5f}, steady H(20) = {steady[0]:.3f}, H(100) = {steady[5]:.3f}, ratio {r_inf:.3f}, "
+            f"T_flat {bnd['T_flat']:.1f} / T_half {bnd['T_half']:.1f} / T_90 {bnd['T_90']:.1f} ns"
+        )
     out["table"] = table
     json.dump(out, open(OUT, "w"), indent=1)
     print(f"wrote {OUT.name} ({time.time() - t0:.0f} s)")

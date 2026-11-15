@@ -116,7 +116,9 @@ def one_case(S, key, alpha=0.5, aac=40.0, verbose=True):
             dlaw_out=float(np.max(np.abs(d_law[~win]))),
             dtt_out=float(np.max(np.abs(d_tt[~win]))),
             d_tt_vs_law=float(np.max(np.abs(d_tt - d_law))),
-            law_err=float(max(np.max(np.abs(T1[:, m - 1] - L[m][0])), np.max(np.abs(T2[:, m - 1] - L[m][1])))),
+            law_err=float(
+                max(np.max(np.abs(T1[:, m - 1] - L[m][0])), np.max(np.abs(T2[:, m - 1] - L[m][1])))
+            ),
             I_max=float(max(T1[:, m - 1].max(), T2[:, m - 1].max())),
         )
     sub = np.array([0.5, 0.95, 1.4])
@@ -158,7 +160,9 @@ def section_run(S_sub=S_SCAN, explore=True):
             out["cases"].append(r)
     out["cases"].sort(key=lambda r: (r["S"], r["key"]))
     broken = [(r["S"], r["key"]) for r in out["cases"] if r["broken"]]
-    print("verdict:", f"BROKEN at {broken}" if broken else "class holds for all S <= 6, both orders")
+    print(
+        "verdict:", f"BROKEN at {broken}" if broken else "class holds for all S <= 6, both orders"
+    )
     out["verdict"] = "broken" if broken else "holds"
     out["broken_at"] = broken
     if explore:
@@ -185,17 +189,39 @@ def section_fig():
     d = json.load(open(OUT))
     fig, axs = plt.subplots(1, 2, figsize=(10, 4), constrained_layout=True)
     ax = axs[0]
-    for key, mk, lab in (("a", "o", "same $\\Theta_1$ (J$_1$ rising)"), ("a2", "s", "same $\\Theta_1$ (J$_1$ descending)"), ("b", "^", "same $\\Theta_2$ (J$_2$ rising)")):
+    for key, mk, lab in (
+        ("a", "o", "same $\\Theta_1$ (J$_1$ rising)"),
+        ("a2", "s", "same $\\Theta_1$ (J$_1$ descending)"),
+        ("b", "^", "same $\\Theta_2$ (J$_2$ rising)"),
+    ):
         rows = [r for r in d["cases"] if r["key"] == key]
         if not rows:
             continue
         S = [r["S"] for r in rows]
         n = rows[0]["n"]
-        ax.plot(S, [r[f"n{n}"]["dtt_win"] for r in rows], mk + "-", label=f"{lab}: TT $|\\Delta I_{n}|$ in window")
-        ax.plot(S, [r[f"n{3 - n}"]["dtt_win"] for r in rows], mk + ":", mfc="none", color="0.5", label=f"{lab}: other order $|\\Delta I_{3 - n}|$")
+        ax.plot(
+            S,
+            [r[f"n{n}"]["dtt_win"] for r in rows],
+            mk + "-",
+            label=f"{lab}: TT $|\\Delta I_{n}|$ in window",
+        )
+        ax.plot(
+            S,
+            [r[f"n{3 - n}"]["dtt_win"] for r in rows],
+            mk + ":",
+            mfc="none",
+            color="0.5",
+            label=f"{lab}: other order $|\\Delta I_{3 - n}|$",
+        )
     ax.axhline(d["thresh"], color="C3", lw=1, ls="--")
     ax.text(1.6, d["thresh"] * 1.2, "threshold 5e-4", color="C3", fontsize=8)
-    ax.set(yscale="log", xlabel="S", ylabel="max difference between the two histories", title="degenerate order vs the other order, full TT", ylim=(1e-8, 1))
+    ax.set(
+        yscale="log",
+        xlabel="S",
+        ylabel="max difference between the two histories",
+        title="degenerate order vs the other order, full TT",
+        ylim=(1e-8, 1),
+    )
     ax.legend(fontsize=7, loc="lower right")
     ax.grid(color="#e4e3df", lw=0.6)
     ax = axs[1]
@@ -204,9 +230,26 @@ def section_fig():
         if not rows:
             continue
         S = [r["S"] for r in rows]
-        ax.plot(S, [max(r["n1"]["law_err"], r["n2"]["law_err"]) for r in rows], mk + "-", label=f"|I_TT − I_law| ({key})")
-        ax.plot(S, [max(r["conv"]) for r in rows], mk + ":", color="0.5", mfc="none", label=f"convergence ({key})")
-    ax.set(yscale="log", xlabel="S", ylabel="max over t, both histories, both orders", title="law error and convergence error")
+        ax.plot(
+            S,
+            [max(r["n1"]["law_err"], r["n2"]["law_err"]) for r in rows],
+            mk + "-",
+            label=f"|I_TT − I_law| ({key})",
+        )
+        ax.plot(
+            S,
+            [max(r["conv"]) for r in rows],
+            mk + ":",
+            color="0.5",
+            mfc="none",
+            label=f"convergence ({key})",
+        )
+    ax.set(
+        yscale="log",
+        xlabel="S",
+        ylabel="max over t, both histories, both orders",
+        title="law error and convergence error",
+    )
     ax.legend(fontsize=7)
     ax.grid(color="#e4e3df", lw=0.6)
     FIG.parent.mkdir(parents=True, exist_ok=True)
