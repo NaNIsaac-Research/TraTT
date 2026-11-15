@@ -6032,3 +6032,66 @@ udkm1Dsim (dynamical X-ray diffraction from strain pulses) first among them.
 **Effect on the scores.** N stays 3: the H-inside-the-Darwin-width claim survives the two papers
 that could have removed it (CF95, WL99), while two supporting parts (asymmetric g, polarisation)
 move from "ours" to "cited". P1 row of `notes/paper_candidates.md` updated. No solver change, no run.
+
+---
+
+## 2026-11-16 — Entry 91: P1 against Wark & He 1994 and the referee list (reading, no computation)
+
+**Why.** Entry 90 judged P1 against four papers and named the rest as the remaining risk: Wark & He
+1994 and the papers a referee will name (Reis 2001, Trigo 2013, udkm1Dsim 2014, Shayduk 2013). The
+novelty paragraph of any write-up waits on them.
+
+**Sources and access** (PDFs obtained from open copies, kept outside the repository, copyright):
+- [WH94] J. S. Wark & H. He, "Subpicosecond X-ray diffraction", Laser Part. Beams 12, 507–513
+  (1994), doi:10.1017/S0263034600008363. **Abstract only**: the article is behind a paywall and no
+  open copy was found. Not judged.
+- [Re01] D. A. Reis et al., "Probing impulsive strain propagation with x-ray pulses", Phys. Rev.
+  Lett. 86, 3072–3075 (2001). Full published text (institutional repository copy) and
+  arXiv:cond-mat/0102179.
+- [Tr13] M. Trigo et al., "Fourier-transform inelastic X-ray scattering from time- and
+  momentum-dependent phonon–phonon correlations", Nat. Phys. 9, 790–794 (2013). Accepted manuscript
+  (SLAC-PUB-15897); its Methods and Supplementary Information were not in that copy and were not read.
+- [Sc14] D. Schick et al., "udkm1Dsim – A simulation toolkit for 1D ultrafast dynamics in condensed
+  matter", Comput. Phys. Commun. 185, 651–660 (2014). Full text of the authors' preprint.
+- [Sh13] A. Shayduk et al., Phys. Rev. B 87, 184301 (2013), arXiv:1303.5643. Full arXiv text
+  (Entry 60 read pp. 1–6; re-read in full). Page numbers below are arXiv pages.
+
+**1. What each paper computes or measures (facts, with locations).**
+
+| | Re01 | Tr13 | Sc14 | Sh13 |
+|---|---|---|---|---|
+| system | InSb 111 and 222, 10 keV, symmetric Bragg, ~100 ps pulses; laser-launched bipolar strain (Thomsen model) | Ge, 10 keV, grazing incidence, fs pulses; diffuse scattering (not Bragg) after a laser quench | toolkit: N-temperature model, then linear-chain strain, then XRD; symmetric coplanar geometry | SrRuO3/SrTiO3 superlattice transducer, 55 and 110 GHz LA packets in STO; STO 002 at 8 keV, 100 ps pulses |
+| X-ray theory | numerical dynamical diffraction of the given strain profile (Wie et al. method, Takagi–Taupin cited, p. 3074), convolved with 1.25 mdeg and 100 ps Gaussians | kinematic, harmonic oscillators; intensity ∝ ⟨u_q u_−q⟩, oscillating at 2ω (eq. 1) | kinematic (Sec. 2.5.1) and dynamical by a 2×2 transfer matrix per atomic plane (Sec. 2.5.2, eq. 26–34), recomputed for every time step (eq. 33) | linear chain plus dynamical XRD simulation; estimator ⟨I_p⟩_t = I_up + β\|A(q)\|² (eq. 2, p. 3), second order in strain |
+| time-Fourier analysis | "a fast-Fourier transform of the data ... gives a dispersion relation" (p. 3073): frequencies only | FT of the diffuse intensity maps the TA dispersion (Fig. 3–4); FT magnitudes shown, no crystal response divided out | none | none: the first-order oscillation is named ("interference" of a moving grating and the static lattice, p. 4), called "not very strong" and averaged away |
+| window | — | resolution 0.05 THz "given by the finite time window" (p. 4) | — | "the shape of the blue curve slightly depends on the averaging time window" (p. 4), cured by long or integer-period averaging |
+| beam | "x-ray pulse length, timing jitter and dephasing (due to a small momentum spread of the x-rays) limit the detection of oscillations to approximately 10 GHz" (p. 3073) | FEL wavelength jitter kept them away from q = 0 (manuscript p. 7) | Pseudo-Voigt convolution of the static curve only (Fig. 4) | measured peaks convolved with a 15×10⁻³ nm⁻¹ resolution, attributed to bending (p. 5) |
+| Darwin width, extinction | sidebands need momentum transfer "large compared to the Darwin width" (p. 3072); extinction "sets a lower limit on the phonon wave vector which can be resolved as a sideband" (p. 3073) | — | the matrix method is exact numerics at every detuning, including inside the Darwin width; no closed form | validity requires q ≫ 1/l, l the extinction or coherence length (eq. 12, p. 4); extinction called negligible off Bragg (p. 5) |
+
+None of the four contains an analytic first-order (linear in strain) dynamical-diffraction form, a
+Bloch-wave or Riccati form, χ_ih or a ±q satellite asymmetry, or a percentage linearity bound.
+
+**2. Verdict per P1 sub-claim** (adds to the Entry 90 table; the verdict words are inference).
+
+| P1 sub-claim | Entry 90 | after these four | basis |
+|---|---|---|---|
+| closed-form first-order H, Bloch-wave depth dependence, valid inside the Darwin width | new against CF95, WL99, SW03, Sh05 | **unchanged** | no analytic first-order form in Re01, Tr13, Sc14, Sh13. Sc14 computes the full nonlinear response numerically inside the Darwin width, so H for one case can be obtained from udkm1Dsim by brute force; the closed form, its parameters and the estimator are not there |
+| time-Fourier weight of the reflectivity as a phonon estimator | partly known | **partly known, more so** | Re01 p. 3073 and Tr13 Fig. 3–4 read phonon frequencies from time Fourier transforms of diffraction data; neither treats the Fourier amplitude as a spectral weight or divides out a crystal factor |
+| window law, strain travels ≥ max(1/κ, x/π) Λ | new as a law, 1/κ half in kind in WL99 | **unchanged** | Sh13 p. 4 notes a dependence on the averaging window for a time-averaged, second-order estimator, the opposite case (there the window removes the first-order term); Tr13 p. 4 states only a frequency resolution set by the window. Neither is the crystal-factor window law |
+| beam condition: H is a single-ray property; σ ≫ κ + π/x gives κ√(π/2)/σ_η | new as a statement on H, analogous in kind to WL99 | **new as a quantitative law; qualitative precursor in Re01** | Re01 p. 3073: dephasing from the beam's momentum spread limits the detection of oscillations (to ~10 GHz in their case). That is the physical idea of Entry 82 in one clause, with no formula, threshold or flat-factor law. Cite it |
+| Darwin width and extinction bound which phonons appear as sidebands | — | **known qualitatively** | Re01 p. 3072–3073, Sh13 eq. 12. The quantitative failure of the plane-wave first order inside ~1 Darwin width stays SW03's statement and our size (Entry 64) |
+| χ_ih/χ_i0 effect on H, ±η side asymmetry | parameter known, effect on H new | **unchanged** | absent from all four. Sc14 carries f″ in its form factors (eq. 28), so its numerics would contain the effect without stating it (inference) |
+| linearity bound ν ≲ 0.1 ⇒ 2 % | partly known (SW03 rule of thumb) | **unchanged** | Sh13 eq. 10 requires displacements ≪ interatomic distance; no bound on the weight |
+
+**3. Overall** (inference, limited to the eight papers now read). P1 keeps the narrowed form of
+Entry 90: the Bloch-wave first-order H(f; T_w) valid inside the Darwin width, its window law and its
+quantitative beam condition. Two sentences of the eventual novelty paragraph change: reading phonon
+frequencies from time Fourier transforms of diffraction data is prior art (Re01, Tr13), and beam
+dephasing of the oscillations was noted qualitatively by Re01. udkm1Dsim is the numerical
+alternative a referee will name: a one-case cross-check against it (Si 400, 17.48 keV, the Entry 66
+packet) remains the cheapest answer to "your TT is wrong" and was not run.
+
+**Not judged.** Wark & He 1994 (abstract only: it treats the temporal response of crystals to short
+X-ray pulses in the dynamical and kinematic regimes; strain and phonons are not mentioned in the
+abstract). No novelty is claimed over it. Tr13 Methods and Supplementary Information.
+
+**Effect on the scores.** N stays 3 for P1. No solver change, no run.
