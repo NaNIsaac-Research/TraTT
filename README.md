@@ -15,6 +15,7 @@ Main result, a calculation: satellite n forms in τ<sub>n</sub> = Λ<sub>P</sub>
 
 ## Findings
 
+The scientific report, with the model, all results, prior work, limitations and how to reproduce them: [docs/REPORT.md](docs/REPORT.md).
 Each finding with its question, figure, data, status and limits: [docs/FINDINGS.md](docs/FINDINGS.md).
 Every study with its notebook entries and reproduce commands: [docs/research/README.md](docs/research/README.md).
 
@@ -118,8 +119,10 @@ filled crystal the agreement is about 10⁻⁵ (Entry 42). The tests in `tests/`
 component of the reflectivity at frequency ω is the strain spectrum multiplied by a crystal
 transfer function H(ω). We obtained H(ω) analytically to first order. Inside the Darwin width (the
 angular range of strong reflection) it agrees with full TT, while the perturbation theory of
-Sondhauss & Wark (2003) differs from full TT by a factor of 3–8. Comparison with previous work is
-not complete (Entries 60, 61).
+Sondhauss & Wark (2003) differs from full TT by a factor of 3–8. H depends on the measurement
+window, and it is a single-ray property: it is seen only with a beam collimated to about 0.03-0.4 µrad and
+monochromatic to about 2-4 meV, and an ordinary beam measures a flat factor instead (Entries 75, 82;
+[report](docs/REPORT.md) §3.2-3.3).
 
 ![First-order theory and full TT inside the Darwin width](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/f5_outlook.png)
 

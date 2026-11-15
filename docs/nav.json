@@ -13,7 +13,10 @@
     },
     {
       "text": "Research",
-      "items": [{ "text": "Studies", "link": "research/README.md" }]
+      "items": [
+        { "text": "Report", "link": "REPORT.md" },
+        { "text": "Studies", "link": "research/README.md" }
+      ]
     },
     {
       "text": "History",
