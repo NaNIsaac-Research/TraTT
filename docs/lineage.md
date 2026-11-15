@@ -2,7 +2,7 @@
 
 Where TraTT came from, which script produced which notebook entry, which claims stand, which were withdrawn, and how to rerun the main computations. Written 2026-10-23 for the repository audit from git history, `notes/lab_notebook.md`, `notes/paper_draft.md` and Isaac's project files. It adds no new result and does not reinterpret any; where a status is quoted it is quoted from the notebook or the draft.
 
-The research notes (`notes/`) belong to the TraTT research lane and are not changed here. Entries 68-88 and `notes/paper_draft.md` are on the branch `research/paper-viability` (PR #16, draft), not yet on `main`; links below say so.
+The research notes (`notes/`) are not changed here.
 
 ## 1. Earlier work and names
 
@@ -14,13 +14,13 @@ The research notes (`notes/`) belong to the TraTT research lane and are not chan
 | AW_TT_EXP | an experiment-feasibility calculator (`spec_calc.py`): from X-ray energy, acoustic frequency, sound speed, Bragg angle, rocking width, crystal thickness, pixel size and distance, decides whether the ±1 acoustic satellites are separable in angle or on the detector | described in the same notes; source not found | no counterpart in TraTT; the realisability tables of Entries 20, 73 and 85 answer a related question with verified constants |
 | TrTT | the name used for TraTT's KPS 2026 Fall poster preparation (`TrTT_presentation_handbook`, `TrTT_last_minute`) | Private presentation archive | the same project; the handbook names the repository NaNIsaac/TraTT and the package `tratt` |
 
-Order in time, from git and file dates (Drive file dates are copy dates and only bound the authoring date from above): FTT manuscript drafts and slides by early 2026; `calculate` 2026-01-15; FTT package by 2026-08-04; TraTT initial commit e761142 on 2026-08-28 (DESIGN.md, `core.py`, `drive.py`, tests); transient-formation pipeline and notebook Entries 0-9 on 2026-09-30; poster at KPS 2026 Fall on 2026-10-22; paper-viability work (Entries 68-88) on 2026-10-22/23.
+Order in time, from git and file dates (Drive file dates are copy dates and only bound the authoring date from above): FTT manuscript drafts and slides by early 2026; `calculate` 2026-01-15; FTT package by 2026-08-04; TraTT initial commit e761142 on 2026-08-28 (DESIGN.md, `core.py`, `drive.py`, tests); transient-formation pipeline and notebook Entries 0-9 on 2026-09-30; poster at KPS 2026 Fall on 2026-10-22; paper-viability work (Entries 68-88) on 2026-10-22/23; prior-art verdict (Entry 90) on 2026-11-10.
 
 `calculate`'s README said "Merged into TraTT"; that is being corrected in NaNIsaac/calculate#1. Only the one integrator above was copied.
 
 ## 2. Scripts and notebook entries
 
-Scripts are in `explore/nb/` unless a path is given; `explore/make_*.py` draw the poster and notebook figures. Run from the repository root with `uv run python <script> [args]`; the arguments are the ones written in the entry or in the script's docstring. "(PR #16)" marks scripts that are only on `research/paper-viability`.
+Scripts are in `explore/nb/` unless a path is given; `explore/make_*.py` draw the poster and notebook figures. Run from the repository root with `uv run python <script> [args]`; the arguments are the ones written in the entry or in the script's docstring.
 
 | Entry | Topic | Script(s) |
 |---|---|---|
@@ -89,27 +89,29 @@ Scripts are in `explore/nb/` unless a path is given; `explore/make_*.py` draw th
 | 65 | transfer function for Si 400 | `e65_si400.py [tt] [fig]`, `e65_conv.py`, `e65_packet.py` |
 | 66 | Chalise Fig. 2 tails in full TT | `e66_harmonic.py` |
 | 67 | overshoot map | `e67_overshoot_map.py`, `e67_worker_audit.py`, `explore/make_poster_figs.py` |
-| 68 | one-number linearity limit (falsification run) | `e68_nu_collapse.py run stats fit2 fig` (PR #16) |
-| 69 | S&W vs Entry 59 term by term | `e64_sw_compare.py` (PR #16) |
-| 70 | signal max vs Fisher-information max | `e70_fisher.py run fig` (PR #16) |
-| 71 | H needs a long window | `e71_window_H.py` (PR #16) |
-| 72 | histories that cannot be told apart | `e72_history_degeneracy.py` (PR #16) |
-| 73 | what S = 0.5-6 means physically | `e73_realisability.py` (PR #16) |
+| 68 | one-number linearity limit (falsification run) | `e68_nu_collapse.py run stats fit2 fig` |
+| 69 | S&W vs Entry 59 term by term | `e64_sw_compare.py` |
+| 70 | signal max vs Fisher-information max | `e70_fisher.py run fig` |
+| 71 | H needs a long window | `e71_window_H.py` |
+| 72 | histories that cannot be told apart | `e72_history_degeneracy.py` |
+| 73 | what S = 0.5-6 means physically | `e73_realisability.py` |
 | 74 | research questions (no computation) | — |
-| 75 | H as a closed form in window length | `e75_window_cf.py run posthoc fig` (PR #16) |
-| 76 | degeneracy class at larger S | `e76_degeneracy_S.py runA runB fig` (PR #16) |
-| 77 | anomalous absorption χ_ih | `e77_chi_ih.py run ttp ttm conv60 fig` (PR #16) |
-| 78 | ±η side asymmetry | `e78_side_asymmetry.py run fig` (PR #16) |
-| 79 | coupling ratio R and the degeneracy class | `e79_degeneracy_R.py run fig` (PR #16) |
+| 75 | H as a closed form in window length | `e75_window_cf.py run posthoc fig` |
+| 76 | degeneracy class at larger S | `e76_degeneracy_S.py runA runB fig` |
+| 77 | anomalous absorption χ_ih | `e77_chi_ih.py run ttp ttm conv60 fig` |
+| 78 | ±η side asymmetry | `e78_side_asymmetry.py run fig` |
+| 79 | coupling ratio R and the degeneracy class | `e79_degeneracy_R.py run fig` |
 | 80 | corrections to Entry 73 | — |
-| 81 | asymmetric Bragg as a rescaling | `e81_asym_map.py run` (PR #16) |
-| 82 | beam divergence and H | `e82_divergence.py run fig` (PR #16) |
-| 83 | beam condition at GHz-train frequencies | `e83_lowx.py run fig` (PR #16) |
-| 84 | beam divergence and the centre formation law | `e84_satellite_divergence.py run fig` (PR #16) |
-| 85 | Si 440 / 17.48 keV, 1-2 GHz case | `e85_si440_case.py` (PR #16) |
-| 86 | integrated population and the beam condition | `e86_population_divergence.py run fig` (PR #16) |
-| 87 | Laue integrated population at 3 w_n | `e87_population_laue.py run fig` (PR #16) |
-| 88 | polarisation and Debye-Waller as rescalings | `e88_polarisation_dw.py` (PR #16) |
+| 81 | asymmetric Bragg as a rescaling | `e81_asym_map.py run` |
+| 82 | beam divergence and H | `e82_divergence.py run fig` |
+| 83 | beam condition at GHz-train frequencies | `e83_lowx.py run fig` |
+| 84 | beam divergence and the centre formation law | `e84_satellite_divergence.py run fig` |
+| 85 | Si 440 / 17.48 keV, 1-2 GHz case | `e85_si440_case.py` |
+| 86 | integrated population and the beam condition | `e86_population_divergence.py run fig` |
+| 87 | Laue integrated population at 3 w_n | `e87_population_laue.py run fig` |
+| 88 | polarisation and Debye-Waller as rescalings | `e88_polarisation_dw.py` |
+| 89 | terminology: characteristic time, f0 detuning axis | — |
+| 90 | prior-art verdict on the transfer-function claims (reading, no computation) | — |
 
 Script names follow the entry numbers except in 42 (`e46_bands.py`), 48 (`e49_time.py`) and 49 (`e50_anomaly.py`). Not cited by any entry: `explore/calculate_rk45.py` (see §1), `explore/make_collapse_figure.py`, `explore/make_dephasing_figure.py`, `explore/make_poster_qr.py`, `explore/p0_equations.ipynb` (static penetration-depth table from the initial commit) and `explore/nb/paper_figs.py` (paper figures, `notes/paper_draft.md` §3).
 
@@ -117,29 +119,9 @@ Script names follow the entry numbers except in 42 (`e46_bands.py`), 48 (`e49_ti
 
 ### Current table
 
-This is `notes/paper_draft.md` §4 as of ffa4d9c (2026-10-23, research/paper-viability), copied verbatim; §4 is authoritative and this copy is not re-judged. "Confirmed" there means confirmed in the model by full TT or a closed form, and, for the rows the physics lane reviewed, cross-checked between AI lanes; it is not an experimental confirmation. No long-window satellite measurement exists.
-
-| # | claim | status | evidence |
-|---|---|---|---|
-| 1 | First-order linearisation of TT for a phonon | prior art | Sondhauss & Wark 2003 eq. 25–29 (Entries 64, 69) |
-| 2 | Closed-form H with the Bloch-wave (Riccati) depth dependence, valid inside the Darwin width where the plane-wave form is off by 3–8× | confirmed in the model; novelty bounded by **unread** Chukhovskii & Förster 1995, Wark & Lee 1999 | Entries 59, 64, 65 |
-| 3 | H needs a long window: the strain must travel ≥ max(1/κ, x/π) Λ during it; closed form H(f; T_w) exact to first order at every window 0.14–300 ns | confirmed (TT 0.3 %); packet-free short form rejected below ~100 τ | Entries 71, 75 |
-| 4 | Design numbers Si 400 / 17.48 keV: T_flat 19.6, T_half 32.8, T_90 52.2 ns; ripple with period 2x Λ/v | confirmed (TT to 0.002) | Entry 75 |
-| 5 | Chalise et al. 140 ps window sees no crystal factor (H flat to 4 %); their low-frequency deficit is only partly the second-order term K = 0.65–0.88 | confirmed in the model; their normalisation unknown; any real beam also flattens the crystal factor (Entry 82) | Entries 66, 71, 82 |
-| 6 | χ_ih is a second tabulated crystal parameter: 0.9 % steady, 1.4 % at 52 ns, 3–4 % at 8 keV | confirmed; pre-registered rule fired | Entry 77 |
-| 7 | ±η side asymmetry, strain-spectrum-free, reads χ_ih/χ_i0 (1.9–6.2 %, sensitivity 0.02–0.07) | predicted and confirmed in the model (TT 0.06 %); unobserved; a single-ray observable: odd in δ, it averages to zero over a symmetric beam (Entry 82) | Entries 77, 78, 82 |
-| 8 | Asymmetric Bragg = exact rescaling; one geometry factor g(√b + 1/√b)/2; T_90 shortens with Λ_asym | confirmed (TT 1e-16) | Entry 81 |
-| 8b | Beam divergence / bandwidth: for σ_η ≫ κ + π/x the crystal factor is flat, κ√(π/2)/σ_η, at every window (x ≳ 10); H(f; T_w) and the ±η asymmetry are single-ray (meV, sub-µrad) observables; at x = 1–5 the tolerance is 0.3–0.6 µrad / 4–7 meV (8 keV) and the beam-averaged factor is non-monotonic in σ | confirmed (TT beam average vs closed form 0.02–0.24 %) | Entries 82, 83 |
-| 9 | ν ≲ 0.1 ⇒ weight linear to 2 % (1 − K ≤ 1.8 ν²) | confirmed as a bound on the scanned domain (Bragg, x ∈ {2, 5}, one packet family, weight at the peak) | Entry 68 |
-| 10 | "One dimensionless criterion joins the regimes" | falsified (spread ×10–14 at fixed ν) | Entry 68 |
-| 11 | Formation law I_n = sin²/tanh²(πα\|J_n\|t̃), Bessel ladder, period-ratio calibration | confirmed; prior art in kind DeCamp 2001 (n = 0), Polikarpov 1987/88 (static); as a centre observable it needs the beam condition of 12b | Entries 1, 9, 13, 19, 24; tests |
-| 12 | Order n reads the one-transit running mean of J_n(S A); zero-mean perturbations degenerate (≤ 3e-6 for S ≤ 6); boundary R = 0.2 | confirmed with a boundary | Entries 72, 76, 79 |
-| 12b | Beam condition for the centre formation law: σ_η ≲ 0.3 w_n (0.1–0.3 µrad, Si 440 / 17.48 keV Laue; 0.6–1.4 µrad, Si 400 / 8 keV Bragg); at σ_η = w_n the first maximum loses 13–40 % | confirmed (full TT beam average, 8 cases) | Entry 84 |
-| 8c | Polarisation: π = σ form with α → Cα (κ fixed), unpolarised = two-term closed-form sum (TT 0.02 %); negligible at Si 400 / 8 keV (C² = 0.12), 20–32 % at Si 440 / 17.48 keV; static Debye–Waller already in the X0h constants | confirmed | Entry 88 |
-| 12c | Integrated Laue satellite population: flat-beam shape from σ_η ≈ 5 w_n (2–5 µrad, step) and 10 w_n (10 µrad, 1 t_tr ramp) with a one-channel detector (9–18 µrad); formation curve from TT (tabulated; 13–25 % off ∫J_0); Bragg population not clean | pre-registered threshold falsified: 3 w_n failed in 3 of 5 runs (Entry 87; Entry 86 failed under its own rule). 5 w_n (step) and 10 w_n (ramp) are post-hoc conditions from the same cases; confirmation needs a pre-registered run on new cases | Entries 86, 87 |
-| 13 | Signal maximum = Fisher-information maximum for a ps packet at one angle | negative result | Entry 70 |
-| 14 | Bessel-zero resurrection at third order | confirmed in the model, unobservable (4e-5); **unread** Entin, Iolin–Entin | Entries 45, 51, 52, 54 (not in this paper; P4) |
-| 15 | Realisability: S ≤ 6 at 1–2 GHz clean on the elastic side; drive power 6–900 W/cm² peak | constants only; harmonic column withdrawn (shear symmetry); transducer number unverified | Entries 73, 80 |
+The table of claims and their status is [`notes/paper_draft.md`](../notes/paper_draft.md) §4; it
+is kept there only. Entry 90 moved two of its rows, the asymmetric geometry factor (claim 8) and
+polarisation (claim 8c), to prior art.
 
 ### Withdrawn, falsified or corrected
 

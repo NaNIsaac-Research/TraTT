@@ -1,9 +1,9 @@
-# Referee pass on the draft skeleton (BACKLOG T2j, draft tier; no new computation)
+# Referee pass on the draft skeleton (draft; no new computation)
 
 Written 2026-10-23 against `notes/paper_draft.md` (d20df9c). Three objections a referee is most
 likely to raise, in referee wording, each followed by what already answers it (entry, number) and
 what does not yet exist: the smallest computation or measurement that would. The three are the
-three axes boss named: prior art, model limits, experimental feasibility. A fourth, shorter list
+three axes chosen for the pass: prior art, model limits, experimental feasibility. A fourth, shorter list
 of secondary objections follows.
 
 ## Objection 1 (prior art). "The first-order treatment of a phonon in dynamical diffraction is in Sondhauss & Wark (2003), and time-dependent Takagi–Taupin codes (udkm1Dsim; Chukhovskii & Förster; Wark & Lee) have integrated strain profiles through the Darwin width for twenty years. What is new beyond rewriting the known linear response with a window?"
@@ -29,7 +29,7 @@ finite-time Fourier integral; neither is a physical result.
   linear-response paper we have read states.
 
 **What is missing, smallest first.**
-1. Reading Chukhovskii & Förster 1995 and Wark & Lee 1999 in full (T2d, PDFs pending). If either
+1. Reading Chukhovskii & Förster 1995 and Wark & Lee 1999 in full (done since, Entry 90: neither has a first-order strain form). If either
    writes the first-order Bloch-wave amplitude in closed form, claim 2 of the draft drops to
    "application" and the paper leans on claims 3, 4, 6, 7, 12 (window, design numbers, χ_ih,
    asymmetry, degeneracy), which are not in that literature as far as read.
@@ -40,7 +40,7 @@ finite-time Fourier integral; neither is a physical result.
    computation that would pre-empt the "your TT is wrong" variant of this objection. Not run.
 3. Reis et al. 2001 and Trigo et al. 2013: cite as the two experimental settings (ps packet with
    dynamical interpretation; Fourier-domain phonon spectroscopy) and say explicitly that neither
-   corrects by a window-dependent crystal factor. Reading them is a T2d item.
+   corrects by a window-dependent crystal factor. They have not been read in full.
 
 ## Objection 2 (model limits). "A plane-wave, monochromatic, σ-polarised, two-beam, quasi-static model with the strain entering only as a phase. Real measurements have a divergent, polychromatic beam, a finite footprint, both polarisations, thermal Debye–Waller change under GHz drive, and a transducer-launched wave that is neither a step nor a perfect plane. Which of the paper's percent-level numbers survive?"
 
@@ -70,7 +70,7 @@ divergence integrates over the Darwin width.
   the part of the model a referee distrusts most.
 
 **What is missing, smallest first.**
-1. (done, Entry 82, T2k) The convolution was run, in full TT and closed form, and the referee is
+1. (done, Entry 82) The convolution was run, in full TT and closed form, and the referee is
    right in a stronger way than "a few per cent": the ringing linewidth is κ + π/x, 0.01–0.05 Darwin
    half-widths, so any beam spread of 0.3 half-widths or more dephases the ringing after 1/σ_η and
    makes the crystal factor flat, κ√(π/2)/σ_η, at every window. The answer in the paper: (a) for an
@@ -105,7 +105,7 @@ divergence integrates over the Darwin width.
 
 **What is missing, smallest first.**
 1. A transducer number: peak acoustic intensity of a GHz bulk shear transducer on Si (ZnO or AlN
-   film, or a bonded LiNbO3 plate). Library/Isaac item (DotFiles#57); without it the train route
+   film, or a bonded LiNbO3 plate). Not yet found; without it the train route
    stays "feasible on the elastic side, unverified on the drive".
 2. A signal-to-noise estimate for the ratio measurement: with R0 ≈ πα/η in the tail, the
    oscillation amplitude is 2|R0||δ| ≈ 2(πα/η)² S|G|... at 1e-5 strain (Fig. 1a: 1 % of |R0|² at
@@ -136,6 +136,6 @@ divergence integrates over the Darwin width.
 
 | objection | strongest answer in hand | smallest missing item |
 |---|---|---|
-| prior art | Entries 64, 69 (S&W fails at x ≲ 5), 75 (window law is not trivial), 77–78 (new parameter and observable) | read C&F 1995, W&L 1999 (T2d); one udkm1Dsim cross-check |
+| prior art | Entries 64, 69 (S&W fails at x ≲ 5), 75 (window law is not trivial), 77–78 (new parameter and observable) | C&F 1995, W&L 1999 read (Entry 90); one udkm1Dsim cross-check |
 | model limits | Entries 82–88: beam spread → single-ray average (flat factor at x ≫ 1, non-monotonic at GHz); centre law needs 0.3 w_n, Laue integrated population 5 w_n (2–5 µrad); polarisation and Debye–Waller absorbed as rescalings | lateral acoustic uniformity (transducer width, not modelled) |
-| feasibility | Entries 73/80 (elastic clean), 75 (ps route), 81 (asymmetric cut), 78 (ratio at one delay) | transducer number (DotFiles#57); photon-count line; propose Si 400 at 8 keV first |
+| feasibility | Entries 73/80 (elastic clean), 75 (ps route), 81 (asymmetric cut), 78 (ratio at one delay) | transducer number; photon-count line; propose Si 400 at 8 keV first |

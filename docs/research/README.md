@@ -17,10 +17,10 @@ entries state a hypothesis before the setup but no threshold.
 | 3 | Chirps, acoustic walls and an automated anomaly search | 38-41 | negative: "nothing qualitatively new" (Entry 41) | no |
 | 4 | Floquet picture of the filled crystal and where independent satellites fail | 42-54 | verified within the model; boundary made S-dependent by Entries 53-54; novelty open until Entin and Iolin-Entin are read (Entry 50) | README result 3, solver checks |
 | 5 | Acoustic phase walls against stacking-fault theory | 55-56 | known physics, reproduced within 1-3 % by the 1968 formula (Entry 56) | no |
-| 6 | Strain spectrum to reflectivity: the transfer function H | 57-61, 64-66 | closed form verified (Entry 59); its linearisation is prior art (Entry 64); Entry 65 §2 and Entry 66 §3 withdrawn for short windows by Entry 71 (PR #16) | README result 4 |
+| 6 | Strain spectrum to reflectivity: the transfer function H | 57-61, 64-66 | closed form verified (Entry 59); its linearisation is prior art (Entry 64); Entry 65 §2 and Entry 66 §3 withdrawn for short windows by Entry 71 | README result 4 |
 | 7 | The quasi-static condition, and why a surface wave does not do it | 62-63 | estimate (Entry 62); negative for SAW geometry (Entry 63) | README, poster (Entry 62) |
 | 8 | Overshoot map under a linear turn-on | 67 | verified at selected points (Entry 67); mechanism already in Entry 15 | README result 2, poster |
-| 9 | Paper viability | 68-88 | draft on [PR #16](https://github.com/NaNIsaac-Research/TraTT/pull/16); conclusions being verified | no |
+| 9 | Paper viability: window, beam condition and prior art of the transfer function | 68-90 | draft; one rule written before each run; prior art read in four papers (Entry 90) | no |
 
 ## 1. Formation laws (Entries 0-27)
 
@@ -117,7 +117,7 @@ closed form and matching TT with no fit parameter (medians 0.984-1.021, Entry 59
 linearisation is prior art (Sondhauss & Wark 2003); with the Bloch wave restored it equals Entry 59
 exactly (Entry 64). For Si 400 at 17.48 keV, H(20 GHz)/H(100 GHz) = 0.51 for a long train (Entry 65).
 
-**Corrected on PR #16.** Entry 71 withdraws Entry 65 §2 and Entry 66 §3 for a 140 ps measurement:
+**Corrected by Entry 71.** Entry 71 withdraws Entry 65 §2 and Entry 66 §3 for a 140 ps measurement:
 the closed form is the infinite-window limit.
 
 **Reproduce.** `explore/nb/e58_chalise_ref.py`, `e59_transfer.py`, `e64_sw_compare.py` (9 s),
@@ -153,13 +153,19 @@ full-TT checks, the three traced cases against full TT and their difference in t
 `uv run --group figures python explore/make_overshoot_figure.py` draws the figure from them without
 recomputing, and `uv run python explore/make_poster_figs.py f7` the poster version.
 
-## 9. Paper viability (Entries 68-88, PR #16)
+## 9. Paper viability (Entries 68-90)
 
-Draft work toward a paper on [PR #16](https://github.com/NaNIsaac-Research/TraTT/pull/16)
-(branch `research/paper-viability`): Entries 68-74, 80 and Entries 75-79, 81-88. Every
-computational entry there has a rule written before its run. The conclusions are being verified and are
-not summarised here; the branch notebook gives each entry's verdict, and its `notes/paper_candidates.md`
-the candidate papers. The scripts (`explore/nb/e68_*.py` to `e88_*.py`) exist on that branch only.
+Draft work toward a paper: Entries 68-88 test the transfer function H of study 6 (window length,
+anomalous absorption, asymmetric geometry, beam divergence and bandwidth, polarisation) and the
+formation law under a divergent beam; Entry 90 classifies the transfer-function claims against four
+prior-art papers read in full. Every computational entry has a rule written before its run. Each
+entry gives its own verdict; [`notes/paper_candidates.md`](../../notes/paper_candidates.md) scores
+the candidate papers and [`notes/paper_draft.md`](../../notes/paper_draft.md) §4 holds the claim
+table with each claim's status.
+
+**Reproduce.** One script per entry, `explore/nb/e68_*.py` to `e88_*.py`; the arguments are in
+each entry and in [lineage](../lineage.md#2-scripts-and-notebook-entries). Entry 69 reuses
+`e64_sw_compare.py`; Entries 74, 80 and 90 have no run.
 
 ## Not in a study
 

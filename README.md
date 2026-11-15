@@ -13,24 +13,10 @@ results, and the source of a conference poster.
 
 Main result, a calculation: satellite n forms in τ<sub>n</sub> = Λ<sub>P</sub>/(v<sub>s</sub>|J<sub>n</sub>(S)|) (in Laue one Pendellösung period of the satellite, first maximum at τ<sub>n</sub>/2), independent of the crystal thickness, and full TT (points) follows the closed formulas (lines) without a fitting parameter (notebook Entries 1, 9, 24). The physics background, the question and the dimensionless numbers are in [docs/background.md](docs/background.md).
 
-## Reports
-
-| Date | Study | Result |
-|---|---|---|
-| 2026-10-27 | [Solver checks](verify/checks.py) | Convergence, limit and boundary-flux checks of the solver as one table and one figure. |
-| 2026-10-19 | [Overshoot map under a linear turn-on](docs/research/README.md#8-overshoot-map-under-a-linear-turn-on-entry-67) | Largest excess 0.603 at S = 3.8, on the rise-time boundary of the scan. |
-| 2026-10-15 | [Transfer function from strain spectrum to reflectivity](docs/research/README.md#6-transfer-function-from-strain-spectrum-to-reflectivity-entries-57-61-64-66) | Closed form matches TT with no fit parameter; two parts withdrawn for short windows. |
-| 2026-10-08 | [Quasi-static condition and surface waves](docs/research/README.md#7-quasi-static-condition-and-surface-waves-entries-62-63) | No result transfers to SAW geometry as it stands. |
-
-[All reports →](docs/reports/README.md)
-
 ## Findings
 
-- [F8: Under a linear turn-on, the first satellite overshoots its steady value by up to 0.603 within the scan](docs/FINDINGS.md#f8-under-a-linear-turn-on-the-first-satellite-overshoots-its-steady-value-by-up-to-0603-within-the-scan)
-- [F6: The reflectivity spectrum is the strain spectrum times a closed-form crystal transfer function](docs/FINDINGS.md#f6-the-reflectivity-spectrum-is-the-strain-spectrum-times-a-closed-form-crystal-transfer-function)
-- [F7: An X-ray crossing is quasi-static, and no result transfers to surface waves as it stands](docs/FINDINGS.md#f7-an-x-ray-crossing-is-quasi-static-and-no-result-transfers-to-surface-waves-as-it-stands)
-
-[All findings →](docs/FINDINGS.md)
+Each finding with its question, figure, data, status and limits: [docs/FINDINGS.md](docs/FINDINGS.md).
+Every study with its notebook entries and reproduce commands: [docs/research/README.md](docs/research/README.md).
 
 ## Install
 
@@ -126,7 +112,7 @@ coupled through the forward beam. This is a limit of the approximate laws, not o
 
 **Solver checks.** Against the closed-form Laue and Bragg solutions without sound the error is
 below 10⁻⁹; the RK4 step converges at fourth order; against the independent Floquet solver for a
-filled crystal the agreement is about 10⁻⁵ (Entry 42). The 54 tests in `tests/` cover these.
+filled crystal the agreement is about 10⁻⁵ (Entry 42). The tests in `tests/` cover these.
 
 **4. Outlook: measurement of the phonon spectrum** (Entries 59, 64). For small strain, the Fourier
 component of the reflectivity at frequency ω is the strain spectrum multiplied by a crystal
@@ -136,8 +122,6 @@ Sondhauss & Wark (2003) differs from full TT by a factor of 3–8. Comparison wi
 not complete (Entries 60, 61).
 
 ![First-order theory and full TT inside the Darwin width](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/f5_outlook.png)
-
-Every study in the repository, with its notebook entries, status and reproduce commands: [docs/research/README.md](docs/research/README.md).
 
 ## Poster
 
@@ -154,7 +138,7 @@ is the source at commit 40676f4.
 
 ```
 uv sync --extra dev
-uv run pytest -q                        # 54 tests: analytic limits, Floquet cross-check, formation law
+uv run pytest -q                        # tests: analytic limits, Floquet cross-check, formation law
 uv run python explore/make_poster_figs.py   # poster figures -> figures/poster/
 uv run python poster/build.py               # poster/poster.md -> poster/out/poster.pdf
 ```

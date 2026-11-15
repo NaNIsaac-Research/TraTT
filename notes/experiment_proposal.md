@@ -1,4 +1,4 @@
-# First proposed experiment, one page (BACKLOG T2l, draft; posting is Isaac's; no new computation)
+# First proposed experiment, one page (draft; posting is Isaac's; no new computation)
 
 Written 2026-10-23 from Entries 65, 71, 73, 75, 77, 78, 80, 81, 82. Numbers are the model's
 (symmetric Bragg, σ polarisation, plane-wave rays, first order in strain); nothing here has been
@@ -107,14 +107,14 @@ the satellite's own rocking width and is not computed.
    has the opposite sign, the sign convention of Entry 77 (higher static reflectivity on the
    low-absorption edge) must be checked against the static rocking curve, which is recorded.
 
-Any of the three is reported as a falsification, not fitted away (BACKLOG rule 20).
+Any of the three is reported as a falsification, not fitted away.
 
 ## 4. Transducer alternative (the poster's regime)
 
 A GHz bulk shear train in Si 440 Laue or Si 400 Bragg, read over tens of ns (Entries 20, 73, 80):
 S ≤ 2 needs 6–100 W/cm² peak acoustic intensity at 1–2 GHz, pulsed at 1e-4 duty cycle; the
 elastic side is clean for all S ≤ 6 (no shear second harmonic); the only unverified number is the
-transducer's peak output (DotFiles#57). It measures the formation law (P2) at S ~ 1–6, a different
+transducer's peak output. It measures the formation law (P2) at S ~ 1–6, a different
 observable (satellite centre intensity) whose divergence sensitivity is the satellite's own
 rocking width w_n = 2πα|J_n(S)|: Entry 84 finds the centre law intact only for σ_η ≲ 0.3 w_n,
 0.1–0.3 µrad at Si 440 / 17.48 keV (0.6–1.4 µrad at Si 400 / 8 keV Bragg, the more tolerant
