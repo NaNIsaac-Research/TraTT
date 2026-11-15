@@ -6,7 +6,7 @@ Labels used where it matters: **[fact]** is read from a result file, a notebook 
 
 ## Abstract
 
-A GHz or picosecond acoustic strain wave in a perfect crystal adds satellites to an X-ray Bragg reflection, and time-resolved measurements read phonon spectra from the time dependence of the reflectivity. We asked what the time-Fourier weight of that reflectivity measures. We solved the two-beam Takagi–Taupin (TT) equations for a strain field entering a crystal, linearised them around the static Bloch wave, and tested every closed form against full TT, with a pass/fail rule fixed before each run from Entry 68 on. To first order in the strain, the Fourier weight at the phonon frequency is the strain spectrum times a crystal transfer function H(f; T<sub>w</sub>) that depends on the measurement window T<sub>w</sub>, the absorption and the anomalous absorption, with nothing fitted. For a 0.9-cycle packet the closed form agrees with full TT to 0.30 % at every window from 0.14 to 300 ns (Si 400, 8 and 17.48 keV; 0.8 % for 10- and 100-cycle packets, the second-order residual). It also holds inside the Darwin width, where the plane-wave first-order form of Sondhauss and Wark is off by a factor 3-8. H is flat for short windows and reaches its steady value only when the strain has travelled at least max(1/κ, x/π) extinction lengths: for Si 400 at 17.48 keV the ratio H(20 GHz)/H(100 GHz) departs from 1 by 10 % at 19.6 ns and is within 10 % of its steady 0.51 from 52.2 ns. The main limit is the beam. H is a single-ray property: it is observable only with a beam collimated to about 0.03-0.4 µrad and monochromatic to about 2-4 meV. With any ordinary beam the measured weight is the kinematic law times a flat factor κ√(π/2)/σ<sub>η</sub>, agreeing with full TT to 0.02 %. At larger strain the satellite forms dynamically with extinction length Λ<sub>P</sub>/|J<sub>n</sub>(S)|. Novelty was checked against eight papers. One relevant paper, Wark and He (1994), could not be read beyond its abstract, and no novelty is claimed over it.
+A GHz or picosecond acoustic strain wave in a perfect crystal adds satellites to an X-ray Bragg reflection, and time-resolved measurements read phonon spectra from the time dependence of the reflectivity. We asked what the time-Fourier weight of that reflectivity measures. We solved the two-beam Takagi–Taupin (TT) equations for a strain field entering a crystal, linearised them around the static Bloch wave, and tested every closed form against full TT, with a pass/fail rule fixed before each computational run from Entry 68 on (two constants tables excepted, §2.6). To first order in the strain, the Fourier weight at the phonon frequency is the strain spectrum times a crystal transfer function H(f; T<sub>w</sub>) that depends on the measurement window T<sub>w</sub>, the absorption and the anomalous absorption, with nothing fitted. For a 0.9-cycle packet the closed form agrees with full TT to 0.30 % at every window from 0.14 to 300 ns (Si 400, 8 and 17.48 keV; 0.8 % for 10- and 100-cycle packets, the second-order residual). It also holds inside the Darwin width, where the plane-wave first-order form of Sondhauss and Wark is off by a factor 3-8. H is flat for short windows and reaches its steady value only when the strain has travelled at least max(1/κ, x/π) extinction lengths: for Si 400 at 17.48 keV the ratio H(20 GHz)/H(100 GHz) departs from 1 by 10 % at 19.6 ns and is within 10 % of its steady 0.51 from 52.2 ns. The main limit is the beam. H is a single-ray property: it is observable only with a beam collimated to about 0.03-0.4 µrad and monochromatic to about 2-4 meV. In the picosecond band (x ≳ 10) an ordinary beam measures the kinematic law times a flat factor κ√(π/2)/σ<sub>η</sub>; the beam-averaged closed form agrees with the full-TT beam average to 0.02 %. At larger strain the satellite forms dynamically with extinction length Λ<sub>P</sub>/|J<sub>n</sub>(S)|. Novelty was checked against eight papers. One relevant paper, Wark and He (1994), could not be read beyond its abstract, and no novelty is claimed over it.
 
 ## 1 Background and question
 
@@ -67,13 +67,13 @@ $$F_T(W)=\int_0^{T_w}\delta\,e^{iWt}dt=\frac{ic(1-R_0^2)S\,\big[G_T(W)-e^{(\lamb
 
 $$G_T(W)=\int_0^{T_w}g\,e^{iWs}ds,\qquad L_T(\lambda_B)=\int_0^{T_w}g\,e^{-\lambda_B s}ds,\qquad \tilde I(\eta)=R_0^*F_T(\eta)+R_0\,F_T(-\eta)^* .$$
 
-Ĩ(η) is the Fourier component, at ω = |η|, of |R|² − |R<sub>0</sub>|². The crystal factor H is Ĩ divided by the kinematic law |G<sub>T</sub>(η)| |R<sub>0</sub>| πS/κ. Three limits:
+Ĩ(η) is the Fourier component, at ω = |η|, of |R|² − |R<sub>0</sub>|². The crystal factor H is Ĩ divided by the kinematic law |G<sub>T</sub>(η)| |R<sub>0</sub>| παS/κ (Entry 59; Entries 75 and 78 work per extinction length, α = 1, and write πS/κ). Three limits:
 
 - **Kinematic tail** [fact, Entry 59 §1]. |R<sub>0</sub>| ≈ πα/η, so W ∝ |ε̂|/ω² for a strain spectrum ε̂. The Fourier weight is the strain spectrum times |R<sub>0</sub>|/ω, not the strain spectrum itself.
 - **Infinite window** (Entries 59, 65, 71). H<sub>∞</sub> = κ/|κ − 2cR<sub>0</sub>|, with |2cR<sub>0</sub>| ≈ π/x per Λ in the tail.
-- **Packet-free short form** (CF-A, Entry 71). H(f; T<sub>w</sub>) ≈ H<sub>∞</sub>(f)·|1 − e<sup>−(κ+iπ/x)T<sub>w</sub></sup>|, with T<sub>w</sub> in units of Λ/v<sub>L</sub>. This form was tested and rejected as a 1 % closed form for T<sub>w</sub> ≲ 100 packet lengths (§3.2).
+- **Packet-free short form** (CF-A, Entry 75). CF-B with L<sub>T</sub> = G(−η) and G<sub>T</sub> = G, which assumes a packet short against the window and against 1/|λ<sub>B</sub> − iη|: every kernel 1/(λ<sub>B</sub> − isW) of the cos-mode form becomes [1 − e<sup>(λ<sub>B</sub> − isW)T</sup>]/(λ<sub>B</sub> − isW). Its resonant term alone is Entry 71's hand estimate, H(f; T<sub>w</sub>) ≈ H<sub>∞</sub>(f)·|1 − e<sup>−(κ+iπ/x)T<sub>w</sub></sup>|, with T<sub>w</sub> in units of Λ/v<sub>L</sub>. CF-A was tested and rejected as a 1 % closed form for T<sub>w</sub> ≲ 100 packet lengths (§3.2).
 
-The first-order amplitude of the satellite is ν = |cS(1 − R<sub>0</sub>²)/(2(λ<sub>B</sub> − iW))| (Entry 65). It sets the size of the second-order error.
+For a single mode the first-order amplitude of the satellite is ν = |cS(1 − R<sub>0</sub>²)/(2(λ<sub>B</sub> − iW))| (Entry 65). For a packet, Entry 68 defines ν = max<sub>t</sub> |R<sub>lin</sub>(t) − r<sub>0</sub>| from a linear run scaled by S. ν sets the size of the second-order error.
 
 ### 2.4 Beam average
 
@@ -81,7 +81,7 @@ A beam with a spread of detunings p(δ) (angle and bandwidth combined into one G
 
 ### 2.5 Parameters
 
-Si 400, symmetric Bragg, σ polarisation, X0h constants (Entry 20), v<sub>L</sub> = 8433 m/s [fact, Entries 65, 82, 83; `explore/nb/e82_divergence.json` "scale"]:
+Si 400, symmetric Bragg, σ polarisation, X0h constants (Entry 20), v<sub>L</sub> = 8433 m/s [fact: Λ, f<sub>D</sub> and g from Entry 65; the widths from Entry 83 and `explore/nb/e82_divergence.json` "scale"]:
 
 | E (keV) | Λ (µm) | f<sub>D</sub> (GHz) | g = χ<sub>i0</sub>/\|χ<sub>rh</sub>\| | Darwin half-width | ringing half-width κ (angle / energy) |
 |---|---|---|---|---|---|
@@ -92,7 +92,7 @@ The packet is the one from Entry 66: g(s) = e<sup>−s/τ</sup> sin(q<sub>0</sub
 
 ### 2.6 Protocol
 
-From Entry 68 on, every computational entry states a pass/fail rule before its run. A rule that fails is reported as failed. A threshold found after a run is labelled post hoc. The notebook keeps negative and withdrawn results. Earlier entries state a hypothesis before the setup, without a numeric threshold.
+From Entry 68 on, every computational entry states a pass/fail rule before its run, except Entries 73 and 85, which compute constants tables with nothing pre-registered. A rule that fails is reported as failed. A threshold found after a run is labelled post hoc. The notebook keeps negative and withdrawn results. Earlier entries state a hypothesis before the setup, without a numeric threshold.
 
 ## 3 Results
 
@@ -131,7 +131,7 @@ With the Bloch wave (1, R<sub>0</sub>)e<sup>cR<sub>0</sub>ζ</sup> in place of c
 | H, 8 keV | 0.52 | 0.78 | 0.93 | 0.98 | 0.99 | 1.00 | 1.00 |
 | H, 17.48 keV | 0.14 | 0.26 | 0.48 | 0.74 | 0.85 | 0.94 | 0.98 |
 
-H(20 GHz)/H(100 GHz) = 0.51 at 17.48 keV and 0.93 at 8 keV. Converged TT agrees with the closed form to ≤ 0.5 % out to x = 100 in the linear regime (S = 0.002). The `tt` run in `e65_si400.log` used 24 steps per cycle, is not converged at x ≥ 30, and is not used.
+H(20 GHz)/H(100 GHz) = 0.51 at 17.48 keV and 0.93 at 8 keV. In the linear regime (S = 0.002, 48 steps per cycle) converged TT differs from the closed form by 0.2 % at x = 30 and 1.3 % at x = 100 at 17.48 keV, and by 0.1 % and 0.5 % at 8 keV (Entry 65 §3 table; the entry's verdict rounds this to ≤ 0.5 %). At S = 0.02 the difference grows as ν² (4.4 % at x = 30, 25 % at x = 100, 17.48 keV): the satellite stops being linear. The `tt` run in `e65_si400.log` used 24 steps per cycle, is not converged at x ≥ 30, and is not used.
 
 ### 3.2 The crystal factor needs a long window
 
@@ -149,10 +149,10 @@ The windowed closed form CF-B (§2.3) was then tested against full TT. The rule 
 | packet | CF-A (packet-free) | CF-B (packet kept) |
 |---|---|---|
 | 0.9 cycles, both energies | 8.3 % (0.14 ns, 87 GHz): **rejected** | 0.30 % |
-| 10 cycles | 41 % | 0.78 % (0.08 % at S/1000) |
-| 100 cycles | 49 % | 0.80 % (0.21 % at S/1000) |
+| 10 cycles | 41 % | 0.78 % (0.08 % at S/1000, post-hoc run) |
+| 100 cycles | 49 % | 0.80 % (0.21 % at S/1000, post-hoc run) |
 
-The residual of CF-B shrinks with the strain, so it is the second-order term of TT. CF-A fails because it drops the packet's group delay and the phase of the −η image term. It holds only for T<sub>w</sub> ≳ 100τ (Entry 75 §3).
+The residual of CF-B shrinks with the strain (post-hoc run at S/1000), so it is the second-order term of TT. CF-A holds only for T<sub>w</sub> ≳ 100τ. A post-hoc check identifies the cause: CF-A drops the packet's group delay and takes the phase of the −η image term from a cos mode (Entry 75 §3).
 
 The design numbers for Si 400 at 17.48 keV, with the 20 GHz / 100 GHz ratio taken from CF-B and confirmed by TT [fact, `e75_window_cf.json` "bounds"]:
 
@@ -168,7 +168,7 @@ The crystal factor is flat to 1 % up to 5 ns. It is not monotonic in T<sub>w</su
 
 *Figure 2. Si 400, 17.48 keV, 0.9-cycle packet. Left: crystal factor H(f; T<sub>w</sub>) at 20, 40, 100 and 150 GHz, CF-B (lines) and full TT (circles). Right: H(20 GHz)/H(100 GHz) with T<sub>flat</sub>, T<sub>half</sub> and T<sub>90</sub>; dashed, the steady value 0.511. Below 0.5 ns the ±3 % oscillation is the −η image term of a truncated real signal; it is part of CF-B. Data `explore/nb/e75_window_cf.json`; `explore/nb/e75_window_cf.py run posthoc fig`.*
 
-**The window law** [inference from §2.3 and these tables]. H takes its steady value only when the strain has travelled more than both the absorption depth 1/κ and the extinction-phase depth x/π during the window. For Si 400 at 17.48 keV this is at least 22 ns, a train at least 185 µm long. A picosecond packet followed over a delay scan of ≥ 50 ns also satisfies it.
+**The window law** [inference from §2.3 and these tables]. H takes its steady value only when the strain has travelled more than both the absorption depth 1/κ and the extinction-phase depth x/π during the window. For Si 400 at 17.48 keV this is at least 22 ns, a train at least 185 µm long. A picosecond packet followed over a delay scan of ≥ 52 ns (T<sub>90</sub>) also satisfies it.
 
 ### 3.3 Main limit: the crystal factor is a single-ray property
 
@@ -189,21 +189,21 @@ Each ray at detuning η + δ rings at its own frequency with damping κ. The wei
 
 *Figure 3. Si 400, 17.48 keV. Left: H<sub>conv</sub>(20 GHz)/H<sub>conv</sub>(100 GHz) against window for Gaussian spreads σ = 0, 0.3, 1 and 3 Darwin half-widths; only the single ray (σ = 0) shows the window law. Right: absolute H<sub>conv</sub> at 20 and 100 GHz; for σ > 0 it is flat in f and in T<sub>w</sub> at κ√(π/2)/σ<sub>η</sub>. Data `explore/nb/e82_divergence.json`; `explore/nb/e82_divergence.py run fig`.*
 
-**The condition, stated plainly** [fact for the numbers, inference for the reading]. The steady H, the window law and design numbers of §3.2, and the χ<sub>ih</sub> effects of §3.4 are observable only with an incident beam whose spread in detuning is below the ringing width κ + π/x. At Si 400 that means **collimated to about 0.03 µrad (17.48 keV) to 0.4 µrad (8 keV) and monochromatic to about 2-4 meV**. An angle-resolving detector of that resolution removes only the angular part. Ordinary beams are 100-1000× broader (Entry 82). For them the estimator is the kinematic law, "divide by |R<sub>0</sub>|/ω", times a flat factor, with no frequency-dependent crystal correction.
+**The condition, stated plainly** [fact for the numbers, inference for the reading]. The steady H, the window law and design numbers of §3.2, and the χ<sub>ih</sub> effects of §3.4 are observable only with an incident beam whose spread in detuning is below the ringing width κ + π/x. At Si 400 that means **collimated to about 0.03 µrad (17.48 keV) to 0.4 µrad (8 keV) and monochromatic to about 2-4 meV**. An angle-resolving detector of that resolution removes only the angular part. Ordinary beams are 100-1000× broader (Entry 82). That estimate adds angle and bandwidth in quadrature; Entry 83 (addendum c) corrects it: after a crystal monochromator the two are correlated, a non-dispersive arrangement cancels the bandwidth in η, and σ<sub>η</sub> must be computed from the actual optics. The requirement on σ<sub>η</sub> itself stands. In the picosecond band (x ≳ 10), a beam that fails it measures the kinematic law, "divide by |R<sub>0</sub>|/ω", times a flat factor, with no frequency-dependent crystal correction.
 
 **At GHz-train frequencies** [fact, Entry 83, `e83_lowx.json`]. At x = 1-10 the 5 % tolerance at 8 keV is 0.63 µrad / 7 meV (x = 1) to 0.26 µrad / 2.9 meV (x = 10). At 17.48 keV it is ≤ 0.14 µrad / 9 meV. At x ≲ 2 the beam average first *raises* the factor (up to 2.0× at 17.48 keV) before suppressing it, because the single-ray resonance sits at π/x from the nominal detuning. The flat law of the previous paragraph therefore holds for x ≳ 10, not for a GHz train.
 
 ### 3.4 Crystal parameters of H: anomalous absorption, asymmetric geometry, polarisation
 
-- **χ<sub>ih</sub> is a second parameter** [fact, Entry 77, `e77_chi_ih.json`]. With χ<sub>ih</sub>/χ<sub>i0</sub> = 0.93 (X0h), H changes by 0.9 % (steady), 1.0 % (14 ns) and 1.4 % (52 ns) over 20-150 GHz at 17.48 keV, and by 3-4 % at 8 keV. The pre-registered 1 % rule fired. The extended closed form agrees with TT to 0.3 %.
+- **χ<sub>ih</sub> is a second parameter** [fact, Entry 77, `e77_chi_ih.json`]. With χ<sub>ih</sub>/χ<sub>i0</sub> = 0.93 (X0h), H changes by 0.9 % (steady), 1.0 % (14 ns) and 1.4 % (52 ns) over 20-150 GHz at 17.48 keV, and by 2.8-3.2 % at 8 keV (up to 4.5 % at 5-10 GHz), with opposite signs on the two sides of the Bragg peak. The pre-registered 1 % rule fired, by the 52 ns window; at the steady limit and at 14 ns it would have passed by 0.02-0.09 %. The extended closed form agrees with TT to 0.3 %.
 - **±η side asymmetry** [fact, Entry 78, `e78_side_asymmetry.json`, pre-registered]. With χ<sub>ih</sub>, the two detunings of one phonon frequency have different H. A = H(−η)/H(+η) − 1 is up to 1.9 % at 17.48 keV (300 ns window), up to 2.8 % at 52 ns, and 6.2 % at 8 keV and 20 GHz. Full TT agrees with the closed form to 0.06 %. Two different packets give the same ratio to 0.1 %, so the strain spectrum cancels. The ratio reads χ<sub>ih</sub>/χ<sub>i0</sub> with sensitivity 0.02-0.07 per unit. It is not observed. Being odd in δ, it averages to zero over a symmetric beam, so it needs the single-ray condition of §3.3.
 - **Asymmetric Bragg** [fact, Entry 81, `e81_asym_map.json`]. The asymmetric case is an exact rescaling of the symmetric solver (machine precision). H keeps its form with g → g(√b + 1/√b)/2, b = γ<sub>0</sub>/|γ<sub>h</sub>|, and lengths in Λ<sub>asym</sub>. T<sub>90</sub> shortens from 52 to 33 ns at b = 4.
 - **Polarisation and Debye–Waller** [fact, Entry 88, `e88_polarisation_dw.json`]. π polarisation is the σ form with α → Cα and κ fixed. An unpolarised beam is a two-term sum, which agrees with TT to 0.02 %. Its effect is within 0.3 % of σ at Si 400 / 8 keV (C² = 0.12) but 20-32 % at Si 440 / 17.48 keV, where the polarisation state must be known. Static Debye–Waller is already inside the X0h constants.
 
 ### 3.5 Where first order stops
 
-- **Linearity bound** [fact, Entry 68, `e68_nu_collapse.json`]. Over 24 series (Bragg, x ∈ {2, 5}, g ∈ {0.01, 0.046}, packets of 1-30 cycles) the weight at the spectral peak satisfies 1 − K ≤ 1.8ν² for ν ≤ 0.3. So ν ≲ 0.1 keeps the weight linear to 2 % on this domain. This is a sufficient condition on the scanned domain, not a law.
-- **The single-criterion hypothesis is falsified** [fact, Entry 68]. Pre-registered rule: at equal ν, 1 − K must not spread by more than ×2 across packet length, absorption and satellite position. Found: ×14 at ν = 0.1 and ×10 at ν = 0.3. No single dimensionless number joins the linear and dynamical regimes.
+- **Linearity bound** [fact, Entry 68, `e68_nu_collapse.json`]. Over 24 series (Bragg, x ∈ {2, 5}, g ∈ {0.01, 0.046, 0.12}, packets of 1-30 cycles, ν as Entry 68 defines it, §2.3) the weight at the spectral peak, K = (W(S)/S)/(W(S<sub>lin</sub>)/S<sub>lin</sub>), satisfies 1 − K ≤ 1.8ν² for ν ≤ 0.3. So ν ≲ 0.1 keeps the weight linear to 2 % on this domain. This is a sufficient condition on the scanned domain, not a law.
+- **The single-criterion hypothesis is falsified** [fact, Entry 68]. Pre-registered rule: at equal ν, 1 − K must not spread by more than ×2 across packet length, absorption and satellite position. Found: ×14 at ν = 0.1 and ×10 at ν = 0.3. ν alone does not join the linear and dynamical regimes; Entry 68 tested this one definition (and a two-term fit) and no other candidate number.
 - **Two nonlinearities** [fact, Entry 65, `e65_packet.json`]. At the spectral peak the weight saturates by about ν². In the wings the second harmonic grows with S itself (J<sub>2</sub>(S); 2.6× its linear value at S = 0.7). This is kinematic and known in kind.
 
 ### 3.6 Beyond first order: the satellite forms dynamically
@@ -225,9 +225,9 @@ The largest centre-intensity discrepancy among the tabulated cases is 0.079 (S =
 
 *Figure 4. Centre intensity of satellite n behind a step front against α|J<sub>n</sub>(S)|t/t<sub>tr</sub>, four (S, α, n) cases, Laue (left) and Bragg (right); full TT (markers) and sin², tanh² (lines), no fitted parameter. Data `explore/nb/poster_f1_points.npz`; `explore/nb/paper_figs.py fig4b`.*
 
-**The formation law has its own beam condition** [fact, Entry 84, `e84_satellite_divergence.json`]. Eight cases were averaged in full TT over Gaussian beams. Both criteria (first-maximum time within 1 %, height within 5 %) hold only for σ<sub>η</sub> ≲ 0.3 w<sub>n</sub> in Bragg and 0.1-0.3 w<sub>n</sub> in Laue, where w<sub>n</sub> = 2πα|J<sub>n</sub>| is the satellite's own rocking width. That is 0.1-0.3 µrad at Si 440 / 17.48 keV and 0.6-1.4 µrad at Si 400 / 8 keV. At σ<sub>η</sub> = w<sub>n</sub> the first maximum loses 13-21 % (Bragg) and 25-40 % (Laue).
+**The formation law has its own beam condition** [fact, Entry 84, `e84_satellite_divergence.json`]. Eight cases were averaged in full TT over Gaussian beams. Both criteria (first-maximum time within 1 %, height within 5 %) hold for σ<sub>η</sub> ≲ 0.3 w<sub>n</sub> in all four Bragg cases, where w<sub>n</sub> = 2πα|J<sub>n</sub>| is the satellite's own rocking width. In Laue the largest passing σ<sub>η</sub> is 0.3, 0.1, < 0.1 and < 0.1 w<sub>n</sub> in the four cases: two pass at no scanned width (one of them partly through a period-metric artefact). In angle that is ≲ 0.13 µrad in Laue at Si 440 / 17.48 keV (< 0.06 µrad for (S, α, n) = (2, 4, 2)), and 0.13-0.3 µrad (Si 440 / 17.48 keV) or 0.6-1.4 µrad (Si 400 / 8 keV) for the Bragg cases. At σ<sub>η</sub> = w<sub>n</sub> the first maximum loses 13-21 % (Bragg) and 25-40 % (Laue).
 
-**The integrated population as the beam-tolerant observable: not established** [fact, Entries 86, 87]. The pre-registered threshold of 3w<sub>n</sub> failed in 3 of 5 runs. The step runs pass from 5w<sub>n</sub> and a ramp from 10w<sub>n</sub>, but these thresholds were found after the run on the same cases. They are not confirmed.
+**The integrated population as the beam-tolerant observable** [fact, Entries 86, 87]. Entry 86 failed under its own rule (its amplitude metric compared differently normalised means). In Entry 87, with corrected metrics fixed in advance, the main criterion, 3w<sub>n</sub>, failed in 3 of 5 runs. The pre-registered fallback scan of 3, 5 and 10w<sub>n</sub> gives 5w<sub>n</sub> for all step runs (2-5 µrad at Si 440 / 17.48 keV) and 10w<sub>n</sub> for the ramp (10 µrad); Entry 87 classes this "confirmed, with a condition". The law of that observable is the TT channel integral itself (tabulated), not sin², and the condition rests on five runs.
 
 ### 3.7 Drive memory, overshoot and the filled-crystal limit
 
@@ -246,11 +246,11 @@ These are supporting results of the formation study.
 
 | claim | outcome | by |
 |---|---|---|
-| one dimensionless number joins the linear and dynamical regimes | falsified (×10-14 spread at fixed ν) | Entry 68 |
+| ν alone joins the linear and dynamical regimes | falsified (×10-14 spread at fixed ν) | Entry 68 |
 | the steady H explains the low-frequency deficit of a 140 ps packet measurement (Chalise et al.) | withdrawn: H is flat to 4 % for that window; only a second-order factor K = 0.65-0.88 applies | Entry 71 (withdraws Entry 65 §2, Entry 66 §3) |
 | packet-free closed form CF-A in T<sub>w</sub> | rejected below ~100τ (8.3 %) | Entry 75 |
-| signal maximum coincides with the Fisher-information maximum (ps packet, one angle) | negative | Entry 70 |
-| integrated-population beam threshold at 3w<sub>n</sub> | failed in 3 of 5 runs | Entry 87 |
+| the crystal moves the Fisher-information maximum away from the signal maximum (ps packet, one angle) | negative: the amplitude maxima coincide (3 GHz apart, under the 8.7 GHz threshold) and the crystal moves nothing; the frequency grid was cut at 30 GHz as a labelled post-hoc change | Entry 70 |
+| integrated-population beam threshold at 3w<sub>n</sub> | failed in 3 of 5 runs (fallback 5w<sub>n</sub> / 10w<sub>n</sub>, §3.6) | Entry 87 |
 | acoustic phase walls are a new mechanism | withdrawn: the 1968 stacking-fault formula reproduces n = 1, 2 within 1-3 %; n = 3 differs (up to 15 % against ≤ 1.3 %), unexplained | Entry 56 |
 | a shear-wave second-harmonic column in the realisability table | withdrawn (shear symmetry) | Entry 80 |
 | chirps, walls and a 250-case search find a new effect | negative: nothing qualitatively new | Entry 41 |
@@ -275,14 +275,14 @@ Eight papers were read in full or as an accepted manuscript. The per-paper recor
   - its closed form in the window length;
   - the quantitative beam condition and the flat factor κ√(π/2)/σ<sub>η</sub>;
   - the effect of χ<sub>ih</sub> on H and the ±η asymmetry;
-  - the ν bound on the weight.
+  - the ν bound as a quantified bound on the weight. It is partly known: Sondhauss and Wark (p. 12) give a rule of thumb, satellite ≤ 10 % of the main peak, and Sheppard et al. (Fig. 4) show intensity ∝ amplitude² up to 1 Å.
 
   Chukhovskii and Förster 1995 and Wark and Lee 1999 contain no first-order strain form. udkm1Dsim (Schick et al. 2014) computes the full dynamical response numerically with a transfer matrix per atomic plane, at every detuning. It would give H for one case by brute force, but it has no closed form and no Fourier estimator. A one-case cross-check against it is the cheapest answer to the objection that the TT solver itself is wrong; it was not run.
-- **Not read** [fact]. Wark and He, Laser Part. Beams 12, 507 (1994): the abstract only; the article is paywalled and no open copy was found. Per its abstract it treats the temporal response of crystals to short X-ray pulses in the dynamical and kinematic regimes. **No novelty is claimed over it.** Also not read: the Methods and Supplementary Information of Trigo et al. 2013; Entin (1977, 1979) and Iolin and Entin (1983) on the X-ray–acoustic overlap regime; Authier and Simon part II for the q-wall; Bucksbaum and Merlin (1999); Grigoriev et al. (2006).
+- **Not read** [fact]. Wark and He, Laser Part. Beams 12, 507 (1994): the abstract only; the article is paywalled and no open copy was found. Per its abstract it treats the temporal response of crystals to short X-ray pulses in the dynamical and kinematic regimes. **No novelty is claimed over it.** Also not read: the Methods and Supplementary Information of Trigo et al. 2013 (Entry 91); Entin (1977, 1979) and Iolin and Entin (1983) on the X-ray–acoustic overlap regime (Entry 51); Authier and Simon part II for the q-wall (Entry 56); Bucksbaum and Merlin (1999) and Grigoriev et al. (2006) (`notes/paper_draft.md` §6).
 
 ### 4.3 Formation law
 
-[inference] The formation law (§3.6) extends known results: temporal Pendellösung for n = 0 (DeCamp et al. 2001) and the static extinction length of acoustically modulated crystals (Polikarpov and Skadorov 1987, 1988). The extension is to every order behind a travelling front, in both geometries, with no fit. It needs its own narrow beam (σ<sub>η</sub> ≲ 0.3w<sub>n</sub>). Its beam-tolerant form, the integrated population, has no confirmed law. A bulk GHz shear-wave experiment of the needed amplitude does not yet exist. The transducer peak power it needs (6-100 W/cm² at 1-2 GHz for S = 1-2, up to 900 W/cm² at S = 6) is unverified (Entries 73, 80).
+[inference] The formation law (§3.6) extends known results: temporal Pendellösung for n = 0 (DeCamp et al. 2001) and the static extinction length of acoustically modulated crystals (Polikarpov and Skadorov 1987, 1988). The extension is to every order behind a travelling front, in both geometries, with no fit. As a centre observable it needs its own narrow beam (σ<sub>η</sub> ≲ 0.3w<sub>n</sub> in Bragg, narrower in Laue). The beam-tolerant form, the integrated Laue population, holds from 5w<sub>n</sub> in five runs, but its formation curve is a TT table rather than a closed law, and the Bragg population is not clean even at 10w<sub>n</sub> (Entries 86, 87). A bulk GHz shear-wave experiment of the needed amplitude does not yet exist. The transducer peak power it needs (6-100 W/cm² at 1-2 GHz for S = 1-2, up to 900 W/cm² at S = 6) is unverified (Entries 73, 80).
 
 ## 5 Limitations
 
@@ -297,16 +297,18 @@ Eight papers were read in full or as an accepted manuscript. The per-paper recor
 
 ## 6 Conclusion
 
-To first order in the strain, the time-Fourier weight of a time-resolved Bragg reflectivity is the strain spectrum times |R<sub>0</sub>|/ω times a closed-form crystal factor H(f; T<sub>w</sub>). H is valid inside the Darwin width and agrees with full TT to 0.30 % at every window from 0.14 to 300 ns for a 0.9-cycle packet. It needs a window in which the strain travels max(1/κ, x/π) extinction lengths (Si 400, 17.48 keV: T<sub>flat</sub> 19.6 ns, T<sub>90</sub> 52.2 ns). It needs a beam within the ringing linewidth: about 0.03-0.4 µrad and 2-4 meV at Si 400. With an ordinary beam the factor is flat, κ√(π/2)/σ<sub>η</sub>, and the kinematic estimator is correct as it stands. This narrow-beam condition is the main limit on the claim's experimental relevance. Against the eight papers read, the closed form, its window law and its quantitative beam condition were not found. The linearisation, the geometry and polarisation factors, χ<sub>ih</sub> as a parameter, and Fourier-transform phonon spectroscopy are prior art. Wark and He 1994 remains unread. When the strain is not small, the satellite forms dynamically with extinction length Λ<sub>P</sub>/|J<sub>n</sub>(S)|. That law also holds only for a beam narrower than the satellite's own rocking width.
+To first order in the strain, the time-Fourier weight of a time-resolved Bragg reflectivity is the strain spectrum times |R<sub>0</sub>|/ω times a closed-form crystal factor H(f; T<sub>w</sub>). H is valid inside the Darwin width and agrees with full TT to 0.30 % at every window from 0.14 to 300 ns for a 0.9-cycle packet. It needs a window in which the strain travels max(1/κ, x/π) extinction lengths (Si 400, 17.48 keV: T<sub>flat</sub> 19.6 ns, T<sub>90</sub> 52.2 ns). It needs a beam within the ringing linewidth: about 0.03-0.4 µrad and 2-4 meV at Si 400. With an ordinary beam in the picosecond band the factor is flat, κ√(π/2)/σ<sub>η</sub>, and the kinematic estimator is correct as it stands; at GHz-train frequencies the beam-averaged factor depends on x and σ together. This narrow-beam condition is the main limit on the claim's experimental relevance. Against the eight papers read, the closed form, its window law and its quantitative beam condition were not found. The linearisation, the geometry and polarisation factors, χ<sub>ih</sub> as a parameter, and Fourier-transform phonon spectroscopy are prior art. Wark and He 1994 remains unread. When the strain is not small, the satellite forms dynamically with extinction length Λ<sub>P</sub>/|J<sub>n</sub>(S)|. That law also holds only for a beam narrower than the satellite's own rocking width.
 
 ## 7 How to reproduce
 
-Setup: `uv sync --extra dev`, then `uv run pytest -q` for the solver tests (analytic limits, Floquet cross-check, formation law). Every command below runs from the repository root. Each writes its `.json` and `.log` next to the script in `explore/nb/`, and figures to `figures/paper/`. Times are from the notebook entries.
+Setup: `uv sync --extra dev`, then `uv run pytest -q` for the solver tests (analytic limits, Floquet cross-check, formation law). Every command below runs from the repository root and prints its numbers. Most write a `.json` next to the script in `explore/nb/` (the saved `.log` files are captured console output) and, with `fig`, a figure in `figures/paper/` (Entries 59 and 65 write to `figures/`). `e65_si400.py` writes its JSON only with `tt`, the unconverged check that §3.1 does not use; the converged check is `e65_conv.py`. Times are from the notebook entries.
 
 ```
 uv run python explore/nb/e59_transfer.py fig weak                # closed form vs TT, Entry 59
 uv run python explore/nb/e64_sw_compare.py                       # plane-wave vs Bloch-wave first order (9 s), Entry 64
 uv run python explore/nb/e65_si400.py                            # H for Si 400 at 8 and 17.48 keV, Entry 65
+E65_S=0.002 E65_PER=48 uv run python explore/nb/e65_conv.py 0.01 30 100   # converged TT check, Entry 65 (bash syntax)
+uv run python explore/nb/e65_packet.py                           # few-cycle packet: saturation and harmonics, Entry 65
 uv run python explore/nb/e68_nu_collapse.py run stats fit2 fig   # linearity bound, falsification (28 s), Entry 68
 uv run python explore/nb/e71_window_H.py                         # window test (11 s), Entry 71
 uv run python explore/nb/e75_window_cf.py run posthoc fig        # H(f; T_w) vs TT and the boundaries (110 s), Entry 75
