@@ -15,9 +15,10 @@ the characteristic time of each satellite, the overshoot under a gradual turn-on
 independent-satellite approximation holds, and a first-order transfer function between the strain
 spectrum and the reflectivity.
 
-Work toward a paper (the transfer function in more detail, its dependence on the measurement
-window, and the conditions a real beam's divergence and bandwidth put on it) is in notebook
-Entries 68-90, with the claim table in `notes/paper_draft.md`. It is a draft.
+The [report](REPORT.md) is the one write-up to read: question, model, results, prior work,
+limitations and how to reproduce. Its main result is the first-order transfer function between the
+strain spectrum and the reflectivity, its dependence on the measurement window, and the narrow beam
+it needs to be seen (Entries 59-91).
 
 ## Install
 
@@ -72,6 +73,7 @@ README's result 3 says how the difference grows with that ratio.
 
 ## Where to go next
 
+- [Report](REPORT.md), on this site: the scientific report on all results, with figures, prior work and limitations.
 - [Equations](equations.md), on this site: the Laue and Bragg equations, the drive and the satellite channels as the solver implements them.
 - [DESIGN.md](../DESIGN.md): the physics conventions, every assumption and what it discards, and the analytic limits used as tests.
 - [Lineage](lineage.md), on this site: where TraTT came from, which script produced which notebook entry, and which claims stand or were withdrawn.

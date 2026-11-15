@@ -26,13 +26,13 @@ Where each part stands:
 | kinematic heterodyne weighting W ∝ \|r0\| \|ε̂\|/ω | probably known in kind | Shayduk 2013 names the oscillation (Entry 60); not seen written as a transfer function |
 | closed form H, Bloch-wave ansatz, valid inside the Darwin width | confirmed | TT to 1 % at κ/2πα = 0.12 incl. plateau; 0.5 % at 0.010 and 0.046 out to x = 100 (Entries 59, 64, 65) |
 | S&W eq. 29 fails within ~1 Darwin width (factor 3–8) | confirmed, in our variables | Entry 64 §5 |
-| H is a factor-2 bias for Si 400 at 17.5 keV over 20–100 GHz | confirmed **only for a long window** (the strain must travel ≥ max(1/κ, x/π) Λ during the window, whether it is a train or a ps packet followed for ≥ 50 ns); wrong for the 140 ps Chalise window, where H is flat to 4 % | Entries 65, 71, 75 |
+| H is a factor-2 bias for Si 400 at 17.5 keV over 20–100 GHz | confirmed **only for a long window** (H settles within e^{−κT_w}, so the window must be a few 1/κ: within 10 % of steady at every f from ln 10/κ = 50 ns at 17.48 keV, whether it is a train or a ps packet followed for ≥ 50 ns; Entry 92); wrong for the 140 ps Chalise window, where H is flat to 4 % | Entries 65, 71, 75, 92 |
 | anomalous absorption χ_ih as a second crystal parameter | **rule fired** (Entry 77): with the X0h ratio χ_ih/χ_i0 = 0.93, H changes by 0.9 % (steady), 1.0 % (14 ns), 1.4 % (52 ns window) in the 20–150 GHz band at 17.48 keV and 3–4 % at 8 keV, opposite in sign on the two sides of the Bragg peak; the extended closed form (complex c) is TT-verified to 0.3 %; the ±η side asymmetry H(−η)/H(+η) = 1.02–1.09 is strain-spectrum-free and predicted, not verified | Entry 77 |
 | ±η side asymmetry of H with χ_ih, strain-spectrum-free, reads χ_ih/χ_i0 | **confirmed in the model** (Entry 78, pre-registered): full TT vs closed form to 0.06 % at two energies, four windows; two packets agree to 0.1 %; size 1.9 % (17.48 keV, steady), 2.8 % (52 ns), 6.2 % (8 keV, 20 GHz); sensitivity dA/d(χ_ih/χ_i0) = 0.02–0.07; \|R0\| ratio 1.0000 in the phonon band (x ≥ 27), to be carried near the Darwin width | Entry 78 |
-| asymmetric Bragg geometry | **confirmed, no solver change** (Entry 81): exact rescaling of the symmetric solver (TT to 1e-16), one geometry factor g → g(√b + 1/√b)/2 with b = γ_0/\|γ_h\|, window numbers scale with Λ_asym (T_90 52 → 33 ns at b = 4, 16.5 ns at b = 10 for Si 400 / 17.48 keV); the g factor itself is prior art (Wark & Lee 1999 eq. 11, Zachariasen units) | Entries 81, 89 |
-| beam divergence / bandwidth: the crystal factor is a single-ray property | **confirmed** (Entry 82): a beam spread in detuning σ ≥ 0.3 Darwin half-widths makes H_conv flat in f at every window, equal to κ√(π/2)/σ_η (TT beam average vs closed form 0.02 %); H(f), the window law, χ_ih and the ±η asymmetry need σ ≲ κ + π/x: 0.03–0.4 µrad and 2–4 meV at Si 400 | Entry 82 |
+| asymmetric Bragg geometry | **confirmed, no solver change** (Entry 81): exact rescaling of the symmetric solver (TT to 1e-16), one geometry factor g → g(√b + 1/√b)/2 with b = γ_0/\|γ_h\|, window numbers scale with Λ_asym (T_90 52 → 33 ns at b = 4, 16.5 ns at b = 10 for Si 400 / 17.48 keV); the g factor itself is prior art (Wark & Lee 1999 eq. 11, Zachariasen units) | Entries 81, 90 |
+| beam divergence / bandwidth: the crystal factor is a single-ray property | **confirmed** (Entry 82): a beam spread in detuning σ ≥ 0.3 Darwin half-widths makes H_conv flat in f at every window, equal to κ√(π/2)/σ_η (TT beam average vs closed form 0.02 %); H(f), the window law, χ_ih and the ±η asymmetry need σ_η ≲ κ + π/x: at Si 400 about 0.03–0.4 µrad, or 2–4 meV where bandwidth enters the detuning (Entry 83 (c)) | Entry 82 |
 | beam condition at GHz-train frequencies (x = 1–10) | **confirmed, single-ray condition stands** (Entry 83): the 5 % tolerance allows σ ≤ 0.6 µrad / 7 meV (x = 1) to 0.3 µrad / 3.6 meV (x = 5) at 8 keV, ≤ 0.14 µrad / 9 meV at 17.48 keV; at x ≲ 2 the beam average first raises the factor 1.3–2× (resonance at π/x off the nominal detuning), so the flat law of Entry 82 holds only for x ≳ 10 | Entry 83 |
-| beam condition for the formation law (P2, satellite centre) | **confirmed, condition table** (Entry 84): at σ_η = w_n (the satellite's own rocking width 2πα\|J_n\|) the first maximum loses 13–21 % (Bragg) and 25–40 % (Laue); both criteria (period 1 %, amplitude 5 %) hold only for σ_η ≤ 0.3 w_n in Bragg and 0.1–0.3 w_n in Laue, i.e. 0.1–0.3 µrad at Si 440 / 17.48 keV, 0.6–1.4 µrad at Si 400 / 8 keV; the integrated population is the beam-tolerant observable (its law not established) | Entry 84 |
+| beam condition for the formation law (P2, satellite centre) | **confirmed, condition table** (Entry 84): at σ_η = w_n (the satellite's own rocking width 2πα\|J_n\|) the first maximum loses 13–21 % (Bragg) and 25–40 % (Laue); both criteria (period 1 %, amplitude 5 %) hold only for σ_η ≤ 0.3 w_n in Bragg and 0.1–0.3 w_n in Laue (two of four Laue cases pass at no scanned width), i.e. ≲ 0.13 µrad in Laue at Si 440 / 17.48 keV (< 0.06 µrad for (2, 4, 2); Entry 92) and 0.6–1.4 µrad in Bragg at Si 400 / 8 keV; the integrated population is the beam-tolerant observable (its law not established) | Entry 84 |
 | integrated satellite population as the beam-tolerant P2 observable | **rule failed as written** (Entry 86; the pre-registered amplitude metric compared differently normalised means, a stated flaw); post hoc, shape-normalised: the Laue population has the flat-beam shape from σ_η ≈ 3 w_n (1.3–3 µrad at Si 440 / 17.48 keV, one-channel detector 9–18 µrad), Bragg not even at 10 w_n; P_flat's shape is 13–38 % off sin²/∫J_0/tanh², so the population needs its own TT formation curve | Entry 86 |
 | Laue integrated population as the beam-tolerant P2 observable (corrected metrics) | **confirmed with a condition** (Entry 87): rule at 3 w_n fails in 3 of 5 runs; all step runs pass from σ_η = 5 w_n (2–5 µrad at Si 440 / 17.48 keV, one-channel detector 9–18 µrad), the 1 t_tr ramp from 10 w_n (10 µrad); the law is the TT channel integral P_0(t) (tabulated), not sin² | Entry 87 |
 | polarisation and static Debye–Waller | **absorbed** (Entry 88): π is the σ form with α → Cα, κ fixed (g/C, x/C, ν → Cν), exact; an unpolarised beam is the two-term closed-form sum, TT to 0.02 %; H_mix within 0.3 % of H_σ at Si 400 / 8 keV (C² = 0.12) but 20–32 % above at Si 440 / 17.48 keV (C = 0.73), so the polarisation state must be known there (vertical diffraction plane = σ); e^{−M} is already in the X0h constants | Entry 88 |
@@ -50,10 +50,10 @@ So the claim is kept only in the form above (H is the correction, ν the guarant
 "a single dimensionless parameter governs the crossover" must not appear in the paper.
 
 **Second correction, same night (Entry 71).** H is the infinite-window limit. It needs the
-measurement window, and so the strained depth, to exceed both the absorption depth 1/κ and the
-extinction-phase depth x/π (tens of ns at Si 400): for the 140 ps packet of Chalise et al. the
+measurement window, and so the strained depth, to exceed a few absorption depths 1/κ (tens of ns
+at Si 400; the extinction phase x/π sets only a ripple, Entry 92): for the 140 ps packet of Chalise et al. the
 crystal factor is flat to 4 % and the Entry 65 "factor 2" does not apply. H is therefore a property
-of **long-window** measurements: the strain must travel ≥ max(1/κ, x/π) Λ during the window. A GHz
+of **long-window** measurements: H settles within e^{−κT_w} (Entry 92). A GHz
 train read over tens of ns satisfies it, and so does a picosecond packet followed over a delay scan
 of ≥ 50 ns (Entry 75: the 10 ps packet shows the full steady factor, H(20)/H(100) = 0.558 at
 52 ns). The window condition therefore does not by itself tie P1 to the poster's apparatus
@@ -109,7 +109,7 @@ G = chance of completion before graduation (2027 spring).
 
 | # | candidate | N | E | D | G | one-line reason |
 |---|---|---|---|---|---|---|
-| P1 | Transfer function H(f; T_w; g, χ_ih/χ_i0) + window condition + linearity bound for reading phonon spectra from time-resolved Bragg reflectivity (Entries 59, 64–66, 68, 71, 75, 77, 82, 90) | 3 | 2 | 4 | 5 | Closed form done and TT-verified; after Entry 82 the f-dependence of H is a single-ray property seen only with meV / sub-µrad resolution, while any ordinary beam measures the kinematic law times a flat κ√(π/2)/σ_η (E lowered 3 → 2); the practical message for ps ultrasonics is "no crystal factor, divide by |R0|/ω". Novelty (Entry 90, four papers read in full: Chukhovskii & Förster 1995, Wark & Lee 1999, Sondhauss & Wark 2003, Sheppard et al. 2005): holds if narrowed to the Bloch-wave H valid inside the Darwin width, its window law and its beam condition; linearisation, polarisation C, the asymmetric g factor (Wark & Lee eq. 11) and χ_ih as a parameter are prior art; neither 1990s paper has a first-order strain form. Wark & He 1994 and the referee list unread |
+| P1 | Transfer function H(f; T_w; g, χ_ih/χ_i0) + window condition + linearity bound for reading phonon spectra from time-resolved Bragg reflectivity (Entries 59, 64–66, 68, 71, 75, 77, 82, 90) | 3 | 2 | 4 | 5 | Closed form done and TT-verified; after Entry 82 the f-dependence of H is a single-ray property seen only with meV / sub-µrad resolution, while any ordinary beam measures the kinematic law times a flat κ√(π/2)/σ_η (E lowered 3 → 2); the practical message for ps ultrasonics is "no crystal factor, divide by |R0|/ω". Novelty (Entry 90, four papers read in full: Chukhovskii & Förster 1995, Wark & Lee 1999, Sondhauss & Wark 2003, Sheppard et al. 2005): holds if narrowed to the Bloch-wave H valid inside the Darwin width, its window law and its beam condition; linearisation, polarisation C, the asymmetric g factor (Wark & Lee eq. 11) and χ_ih as a parameter are prior art; neither 1990s paper has a first-order strain form. Referee list read (Entry 91: Reis 2001, Trigo 2013, udkm1Dsim 2014, Shayduk 2013): no first-order form; phonon frequencies from time Fourier transforms are prior art (Reis, Trigo) and beam dephasing of the oscillations is noted qualitatively by Reis; udkm1Dsim computes the same response numerically. Wark & He 1994 unread (abstract only), no novelty claimed over it |
 | P2 | Temporal Pendellösung of satellites behind a travelling front: formation law, Bessel ladder, period-ratio calibration of S (Entries 1, 9, 13, 19, 24) | 3 | 3 | 5 | 4 | Clean, no-fit, both geometries, tests; prior art DeCamp 2001 (n = 0 pulse) + Polikarpov 1987/88 (static extinction length) makes it "extension to every order"; needs a bulk GHz shear-wave experiment that does not yet exist; the elastic side is clean for all S ≤ 6 at 1–2 GHz (Entry 80), so the only open feasibility item is the transducer peak power, which keeps E at 3 until a number is in hand |
 | P3 | Path memory: Θ_n law, transient-only satellite, overshoot map (Entries 28, 30, 34, 67) | 2 | 3 | 5 | 4 | Robust in the model, but at α = 0.5 it is kinematic diffraction from a graded grating and the slow-ramp limit is the Bessel ladder (Entry 34); best as a section of P2, not a paper |
 | P4 | Overlap regime: Bessel-zero resurrection with a computable third-order coupling and shifted zero (Entries 45, 51, 52, 54) | 4 | 1 | 3 | 2 | Possibly new, but observability is 4e-5 of the window integral (Entry 54) and Entin / Iolin–Entin are unread; theory only |
@@ -122,8 +122,8 @@ spread in detuning exceeds the ringing width κ + π/x (0.03 µrad / 2 meV at 17
 at 8 keV) measures a flat crystal factor κ√(π/2)/σ_η at every window, i.e. the kinematic law. The
 long-window H is therefore an inelastic-scattering-grade measurement, and the ps-ultrasonics message
 is the simpler one (no crystal factor for an ordinary beam).
-H needs a long window: the strain travels ≥ max(1/κ, x/π) Λ during it, which for Si 400 at 17.48 keV
-is ≥ 22 ns (strain travels ≥ 185 µm during the window). Two measurements satisfy it: (i) a
+H needs a long window: it settles within e^{−κT_w}, with 1/κ = 22 ns (185 µm of acoustic travel) for
+Si 400 at 17.48 keV, and is within 10 % of steady at every f from ln 10/κ = 50 ns (Entry 92). Two measurements satisfy it: (i) a
 picosecond-ultrasonics packet with a delay scan of ≥ 50 ns, i.e. P1 has an experiment of its own
 that needs no GHz train; (ii) a GHz bulk train read over tens of ns, the poster's Si 440 Laue
 geometry (t_tr 28–51 ns, Entry 20), where the formation law of P2 appears in the same data. The
@@ -156,11 +156,12 @@ P3 stays inside P2. P4 is a future project (Entry 51 F). Before tonight the reco
 alone on the strength of the Chalise correction; Entry 71 removed that strength.
 
 Risks, in order:
-- Entry 82: the long-window crystal factor needs σ ≲ 0.03–0.4 µrad and ≲ 2–4 meV; with an ordinary
+- Entry 82: the long-window crystal factor needs σ_η ≲ 0.03–0.4 µrad (2–4 meV where bandwidth enters
+  the detuning, Entry 83 (c)); with an ordinary
   beam the measurable crystal factor is flat. This is now the first risk. Entry 83: the GHz-train
   band relaxes this only to 0.3–0.6 µrad / 4–7 meV at 8 keV, so the E scores of P2 and P1+P2 are
-  not raised. Entry 84: the P2 centre observable needs σ_η ≲ 0.3 w_n (0.1–0.3 µrad in the poster's
-  Laue geometry), so P2 is a sub-µrad measurement too as a centre observable. Entry 86: the Laue
+  not raised. Entry 84: the P2 centre observable needs σ_η ≲ 0.1–0.3 w_n in Laue (≲ 0.13 µrad in the poster's
+  Laue geometry, Entry 92), so P2 is a sub-µrad measurement too as a centre observable. Entry 86: the Laue
   integrated population is beam-tolerant from σ_η ≈ 3 w_n (1.3–3 µrad, one-channel detector), which
   would lift the condition for the Laue train, but only under a corrected pre-registration (the one
   run had a mis-specified amplitude metric) and with a TT-tabulated formation curve (13–25 % off
@@ -174,7 +175,8 @@ Risks, in order:
 - A referee calls the Bloch-wave correction of S&W routine. Answer: the paper rests on the window
   condition, the bound and the formation law, not on the linearisation.
 - An earlier first-order Bloch-wave form exists. Chukhovskii & Förster 1995 and Wark & Lee 1999
-  read (Entry 90): none there; Wark & He 1994 unread.
+  read (Entry 90): none there; nor in Reis 2001, Trigo 2013, udkm1Dsim 2014, Shayduk 2013
+  (Entry 91); Wark & He 1994 unread (abstract only).
 - Papers a referee will name (physics cross-review, bibliography unchecked): for
   P1 Reis et al. PRL 86, 3072 (2001), Trigo et al. Nat. Phys. 9, 790 (2013), Schick et al.
   udkm1Dsim CPC 185, 651 (2014); for P2 Bucksbaum & Merlin SSC (1999), Zolotoyabko and Iolin on
@@ -195,7 +197,7 @@ Risks, in order:
 3. **Fig. 3 — a real crystal, and the window condition.** H(f; T_w) against T_w for Si 400 at
    17.48 keV, closed form (lines) with TT (circles), and the ratio H(20)/H(100) against T_w with
    T_flat, T_half, T_90 marked (`figures/paper/e75_window_H.png`, Entry 75): the suppression exists
-   only when the window exceeds 1/κ and x/π. One panel with K(f) for
+   only when the window exceeds a few 1/κ (Entry 92). One panel with K(f) for
    a picosecond packet (`figures/si400_harmonic.png`), where only the second-order term is left.
 4. **Fig. 4 — the linearity bound and the dynamical satellite.** (a) 1 − K against ν for the 24
    series of Entry 68 with the tanh² and sin² laws (`figures/paper/e68_nu_collapse.png`, left panel);

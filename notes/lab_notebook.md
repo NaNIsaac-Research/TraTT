@@ -4467,7 +4467,8 @@ units of Λ/v_L = 1.368 ns) the integral is (1 − e^{−(κ+iπ/x)T})/(κ + iπ
 small T: no suppression. Hand check at T = 10.3 (14 ns): the ratio of this expression at 20 GHz to
 that at 100 GHz is 0.947, against 0.944 from TT. So H needs the window, and hence the strained
 depth, to exceed both 1/κ (16 Λ = 185 µm = 22 ns at 17.48 keV) and x/π (8.7 Λ at 20 GHz). A
-picosecond packet 0.1 Λ deep sees none of it.
+picosecond packet 0.1 Λ deep sees none of it. [Corrected in Entry 92: the approach to the steady
+value is set by 1/κ alone; x/π sets the ripple and, with κ, where H stops being flat.]
 
 **Consequences.**
 - Entry 65 §2 ("a peak-normalised Fourier-weight spectrum taken at 17 keV under-reads 20 GHz by a
@@ -4648,7 +4649,7 @@ joined by one dimensionless criterion?**
   law a S² + b ν² does not capture it either. What holds is 1 − K ≤ 1.8 ν² for ν ≤ 0.3 on the scanned
   domain, so ν ≲ 0.1 is a sufficient linearity condition.
 - Entry 71 adds the other half of the junction: the crystal factor H of the linear regime needs the
-  window to exceed max(1/κ, x/π) Λ/v_s, which is tens of ns, i.e. the long-train regime. So the two
+  window to exceed max(1/κ, x/π) Λ/v_s [corrected in Entry 92: settling is set by 1/κ alone; x/π sets the ripple and the flat regime], which is tens of ns, i.e. the long-train regime. So the two
   regimes meet in one experiment (GHz train, tens of ns), not in one number.
 - Class: the ν bound is **confirmed** (within the model, Bragg, one packet family); the universal
   crossover is **falsified**; the window condition is **confirmed** (Entry 71, hand check 0.3 %).
@@ -5551,7 +5552,8 @@ half-widths; the last two columns give w_n in angle.
   meets both criteria is 0.3 w_n in Bragg (amplitude −0.1 to −1.4 %, period ≤ 0.9 %) and
   0.1–0.3 w_n in Laue (amplitude −0.3 to −1.3 % at 0.1 w_n, −2.6 to −7.8 % at 0.3 w_n). In
   angle that is **0.1–0.3 µrad at Si 440 / 17.48 keV (the poster's Laue case) and 0.6–1.4 µrad at
-  Si 400 / 8 keV Bragg**: the same sub-µrad class as the single-ray crystal factor of Entries 82–83,
+  Si 400 / 8 keV Bragg** [corrected in Entry 92: in Laue ≲ 0.13 µrad, < 0.06 µrad for (2, 4, 2);
+  0.13–0.30 µrad is the Bragg range at Si 440]: the same sub-µrad class as the single-ray crystal factor of Entries 82–83,
   as the pre-run expectation said (0.2–0.3 w_n).
 - The "period" metric (time of the first maximum, parabolic interpolation on a 1/60 grid) is noisy
   where the maximum is broad: the +11 % at σ_η = 0.1 w_n for Laue (1.5, 4, 1) is a detection
@@ -5572,7 +5574,8 @@ half-widths; the last two columns give w_n in angle.
 
 **Answer to T2n.** The poster's centre-intensity formation law needs σ_η ≲ 0.3 w_n, i.e.
 0.1–0.3 µrad in the poster's Si 440 / 17.48 keV Laue geometry (0.6–1.4 µrad at Si 400 / 8 keV
-Bragg), so **P2 is not measurable with an ordinary beam as a centre observable** either; its
+Bragg) [corrected in Entry 92: in Laue the table gives ≲ 0.13 µrad at Si 440 / 17.48 keV, < 0.06 µrad
+for (2, 4, 2); 0.13–0.30 µrad is the Bragg range there], so **P2 is not measurable with an ordinary beam as a centre observable** either; its
 beam-tolerant form is the integrated satellite population, whose formation law is a separate,
 uncomputed item. The E scores of P2 and P1 + P2 stay at 3 with this condition added; the shared
 GHz observable of Entries 82–83 (the beam-averaged factor) remains the ordinary-beam route.
@@ -6005,7 +6008,7 @@ and repeats its limitation.
 | time-resolved reflectivity oscillating with the phonon, from first-order TT | **partly known** | Sh05 eq. 11, Fig. 3: sideband intensity at 2Ω from two counter-propagating modes, angle–time map; SW03 eq. 31 has the oscillating cross term without discussing it (Entry 64). Neither uses the time-Fourier weight as a spectral estimator or divides out a crystal factor |
 | closed-form H, Bloch-wave depth dependence, valid inside the Darwin width | **new** against these four | SW03 p. 12 and Sh05 p. 184 state that their first order fails there; CF95 and WL99 have no first-order form (§1) |
 | S&W eq. 29 fails within ~1 Darwin width (factor 3–8) | **partly known** | the failure is stated in SW03 p. 12 (Fig. 4) and Sh05 p. 184; its size in our variables is ours (Entry 64 §5) |
-| window condition H(f; T_w): strain travels ≥ max(1/κ, x/π) Λ | **new as a law; partly known in kind** | WL99 p. 700–702 (Fig. 12–14): with a perturbation front moving in, the reflectivity time scale is set by the front crossing an absorption depth, not an extinction depth, when absorption depth ≫ extinction depth. That is the 1/κ half of our condition, in kind, for a susceptibility reduction moving at the X-ray-front speed and an integrated reflectivity. The x/π half, the acoustic speed and the closed form in T_w are not there. The CF95 and WL99 response times (fs, eq. 16; ~2 T units, Fig. 2) are X-ray transit times; they support the quasi-static treatment (Entry 62) and are not our window |
+| window condition H(f; T_w): strain travels ≥ max(1/κ, x/π) Λ [corrected in Entry 92: settling is set by 1/κ alone; x/π sets the ripple and the flat regime] | **new as a law; partly known in kind** [after Entry 92: the settling scale is the WL99 absorption-depth scale in kind; new are the closed form in T_w, its flat regime and ripple] | WL99 p. 700–702 (Fig. 12–14): with a perturbation front moving in, the reflectivity time scale is set by the front crossing an absorption depth, not an extinction depth, when absorption depth ≫ extinction depth. That is the 1/κ half of our condition, in kind, for a susceptibility reduction moving at the X-ray-front speed and an integrated reflectivity. The x/π half, the acoustic speed and the closed form in T_w are not there. The CF95 and WL99 response times (fs, eq. 16; ~2 T units, Fig. 2) are X-ray transit times; they support the quasi-static treatment (Entry 62) and are not our window |
 | factor-2 bias for Si 400 at 17.48 keV, long window | **new** (a number) | no paper computes Si 400 or a phonon spectrum weight |
 | χ_ih/χ_i0 as a second crystal parameter of H; ±η side asymmetry | **parameter known, its effect on H new** | k = ψ″_H/ψ′_H and the asymmetric rocking curve it gives are in WL99 eq. 12, p. 695, Fig. 4 (from Zachariasen 1945); none of the four applies it to a satellite or to H, or proposes the ±η ratio as a χ_ih measurement |
 | asymmetric Bragg as a rescaling, g → g(√b + 1/√b)/2 | **known** | WL99 eq. 11: g = (1 − b) ψ″_0 / (2K \|ψ′_H\| \|b\|^½); for Bragg (b < 0) the ratio to the symmetric g is (1 + \|b\|)/(2√\|b\|) = (√\|b\| + 1/√\|b\|)/2, our factor (Zachariasen units). The window numbers in Λ_asym (Entry 81) are application |
@@ -6017,7 +6020,7 @@ and repeats its limitation.
 **3. Overall** (inference from §1–2, limited to these four papers).
 **P1 holds if narrowed to** the Bloch-wave first-order transfer function H(f; T_w) that stays valid
 inside the Darwin width, where the SW03 / Sh05 plane-wave form is stated to fail, together with its
-window law (acoustic travel ≥ max(1/κ, x/π) Λ) and its beam condition (single ray vs the flat
+window law (acoustic travel ≥ max(1/κ, x/π) Λ [corrected in Entry 92: settling is set by 1/κ alone; x/π sets the ripple and the flat regime]) and its beam condition (single ray vs the flat
 κ√(π/2)/σ_η), as an estimator of phonon spectra from time-resolved Bragg reflectivity. The
 linearisation, the polarisation and asymmetric-geometry factors and χ_ih as a parameter are prior
 art, cited and not claimed; the ν bound and the ±η asymmetry are claimed as quantified results on
@@ -6032,3 +6035,113 @@ udkm1Dsim (dynamical X-ray diffraction from strain pulses) first among them.
 **Effect on the scores.** N stays 3: the H-inside-the-Darwin-width claim survives the two papers
 that could have removed it (CF95, WL99), while two supporting parts (asymmetric g, polarisation)
 move from "ours" to "cited". P1 row of `notes/paper_candidates.md` updated. No solver change, no run.
+
+---
+
+## 2026-11-16 — Entry 91: P1 against Wark & He 1994 and the referee list (reading, no computation)
+
+**Why.** Entry 90 judged P1 against four papers and named the rest as the remaining risk: Wark & He
+1994 and the papers a referee will name (Reis 2001, Trigo 2013, udkm1Dsim 2014, Shayduk 2013). The
+novelty paragraph of any write-up waits on them.
+
+**Sources and access** (PDFs obtained from open copies, kept outside the repository, copyright):
+- [WH94] J. S. Wark & H. He, "Subpicosecond X-ray diffraction", Laser Part. Beams 12, 507–513
+  (1994), doi:10.1017/S0263034600008363. **Abstract only**: the article is behind a paywall and no
+  open copy was found. Not judged.
+- [Re01] D. A. Reis et al., "Probing impulsive strain propagation with x-ray pulses", Phys. Rev.
+  Lett. 86, 3072–3075 (2001). Full published text (institutional repository copy) and
+  arXiv:cond-mat/0102179.
+- [Tr13] M. Trigo et al., "Fourier-transform inelastic X-ray scattering from time- and
+  momentum-dependent phonon–phonon correlations", Nat. Phys. 9, 790–794 (2013). Accepted manuscript
+  (SLAC-PUB-15897); its Methods and Supplementary Information were not in that copy and were not read.
+- [Sc14] D. Schick et al., "udkm1Dsim – A simulation toolkit for 1D ultrafast dynamics in condensed
+  matter", Comput. Phys. Commun. 185, 651–660 (2014). Full text of the authors' preprint.
+- [Sh13] A. Shayduk et al., Phys. Rev. B 87, 184301 (2013), arXiv:1303.5643. Full arXiv text
+  (Entry 60 read pp. 1–6; re-read in full). Page numbers below are arXiv pages.
+
+**1. What each paper computes or measures (facts, with locations).**
+
+| | Re01 | Tr13 | Sc14 | Sh13 |
+|---|---|---|---|---|
+| system | InSb 111 and 222, 10 keV, symmetric Bragg, ~100 ps pulses; laser-launched bipolar strain (Thomsen model) | Ge, 10 keV, grazing incidence, fs pulses; diffuse scattering (not Bragg) after a laser quench | toolkit: N-temperature model, then linear-chain strain, then XRD; symmetric coplanar geometry | SrRuO3/SrTiO3 superlattice transducer, 55 and 110 GHz LA packets in STO; STO 002 at 8 keV, 100 ps pulses |
+| X-ray theory | numerical dynamical diffraction of the given strain profile (Wie et al. method, Takagi–Taupin cited, p. 3074), convolved with 1.25 mdeg and 100 ps Gaussians | kinematic, harmonic oscillators; intensity ∝ ⟨u_q u_−q⟩, oscillating at 2ω (eq. 1) | kinematic (Sec. 2.5.1) and dynamical by a 2×2 transfer matrix per atomic plane (Sec. 2.5.2, eq. 26–34), recomputed for every time step (eq. 33) | linear chain plus dynamical XRD simulation; estimator ⟨I_p⟩_t = I_up + β\|A(q)\|² (eq. 2, p. 3), second order in strain |
+| time-Fourier analysis | "a fast-Fourier transform of the data ... gives a dispersion relation" (p. 3073): frequencies only | FT of the diffuse intensity maps the TA dispersion (Fig. 3–4); FT magnitudes shown, no crystal response divided out | none | none: the first-order oscillation is named ("interference" of a moving grating and the static lattice, p. 4), called "not very strong" and averaged away |
+| window | — | resolution 0.05 THz "given by the finite time window" (p. 4) | — | "the shape of the blue curve slightly depends on the averaging time window" (p. 4), cured by long or integer-period averaging |
+| beam | "x-ray pulse length, timing jitter and dephasing (due to a small momentum spread of the x-rays) limit the detection of oscillations to approximately 10 GHz" (p. 3073) | FEL wavelength jitter kept them away from q = 0 (manuscript p. 7) | Pseudo-Voigt convolution of the static curve only (Fig. 4) | measured peaks convolved with a 15×10⁻³ nm⁻¹ resolution, attributed to bending (p. 5) |
+| Darwin width, extinction | sidebands need momentum transfer "large compared to the Darwin width" (p. 3072); extinction "sets a lower limit on the phonon wave vector which can be resolved as a sideband" (p. 3073) | — | the matrix method is exact numerics at every detuning, including inside the Darwin width; no closed form | validity requires q ≫ 1/l, l the extinction or coherence length (eq. 12, p. 4); extinction called negligible off Bragg (p. 5) |
+
+None of the four contains an analytic first-order (linear in strain) dynamical-diffraction form, a
+Bloch-wave or Riccati form, χ_ih or a ±q satellite asymmetry, or a percentage linearity bound.
+
+**2. Verdict per P1 sub-claim** (adds to the Entry 90 table; the verdict words are inference).
+
+| P1 sub-claim | Entry 90 | after these four | basis |
+|---|---|---|---|
+| closed-form first-order H, Bloch-wave depth dependence, valid inside the Darwin width | new against CF95, WL99, SW03, Sh05 | **unchanged** | no analytic first-order form in Re01, Tr13, Sc14, Sh13. Sc14 computes the full nonlinear response numerically inside the Darwin width, so H for one case can be obtained from udkm1Dsim by brute force; the closed form, its parameters and the estimator are not there |
+| time-Fourier weight of the reflectivity as a phonon estimator | partly known | **partly known, more so** | Re01 p. 3073 and Tr13 Fig. 3–4 read phonon frequencies from time Fourier transforms of diffraction data; neither treats the Fourier amplitude as a spectral weight or divides out a crystal factor |
+| window law, strain travels ≥ max(1/κ, x/π) Λ [corrected in Entry 92: settling is set by 1/κ alone; x/π sets the ripple and the flat regime] | new as a law, 1/κ half in kind in WL99 | **unchanged** [after Entry 92: the settling scale is the WL99 scale in kind; new are the closed form in T_w, its flat regime and ripple] | Sh13 p. 4 notes a dependence on the averaging window for a time-averaged, second-order estimator, the opposite case (there the window removes the first-order term); Tr13 p. 4 states only a frequency resolution set by the window. Neither is the crystal-factor window law |
+| beam condition: H is a single-ray property; σ ≫ κ + π/x gives κ√(π/2)/σ_η | new as a statement on H, analogous in kind to WL99 | **new as a quantitative law; qualitative precursor in Re01** | Re01 p. 3073: dephasing from the beam's momentum spread limits the detection of oscillations (to ~10 GHz in their case). That is the physical idea of Entry 82 in one clause, with no formula, threshold or flat-factor law. Cite it |
+| Darwin width and extinction bound which phonons appear as sidebands | — | **known qualitatively** | Re01 p. 3072–3073, Sh13 eq. 12. The quantitative failure of the plane-wave first order inside ~1 Darwin width stays SW03's statement and our size (Entry 64) |
+| χ_ih/χ_i0 effect on H, ±η side asymmetry | parameter known, effect on H new | **unchanged** | absent from all four. Sc14 carries f″ in its form factors (eq. 28), so its numerics would contain the effect without stating it (inference) |
+| linearity bound ν ≲ 0.1 ⇒ 2 % | partly known (SW03 rule of thumb) | **unchanged** | Sh13 eq. 10 requires displacements ≪ interatomic distance; no bound on the weight |
+
+**3. Overall** (inference, limited to the eight papers now read). P1 keeps the narrowed form of
+Entry 90: the Bloch-wave first-order H(f; T_w) valid inside the Darwin width, its window law and its
+quantitative beam condition. Two sentences of the eventual novelty paragraph change: reading phonon
+frequencies from time Fourier transforms of diffraction data is prior art (Re01, Tr13), and beam
+dephasing of the oscillations was noted qualitatively by Re01. udkm1Dsim is the numerical
+alternative a referee will name: a one-case cross-check against it (Si 400, 17.48 keV, the Entry 66
+packet) remains the cheapest answer to "your TT is wrong" and was not run.
+
+**Not judged.** Wark & He 1994 (abstract only: it treats the temporal response of crystals to short
+X-ray pulses in the dynamical and kinematic regimes; strain and phonons are not mentioned in the
+abstract). No novelty is claimed over it. Tr13 Methods and Supplementary Information.
+
+**Effect on the scores.** N stays 3 for P1. No solver change, no run.
+
+---
+
+## 2026-11-16 — Entry 92: corrections after review: the window law is set by absorption alone; the Laue beam tolerance of Entry 84
+
+**Why.** An independent review of the report found two statements stronger than their data. (1) Entries
+71, 75 and 90 state the window condition as "the strain must travel ≥ max(1/κ, x/π) Λ during the
+window". (2) The Entry 84 verdict gives the Laue tolerance at Si 440 / 17.48 keV as 0.1–0.3 µrad,
+which is the Bragg range. Both are checked here against saved data; no TT run.
+
+**1. Window law.** Script `explore/nb/e92_window_law.py` reads `e75_window_cf.json` (Entry 75, full TT,
+0.9-cycle packet) and compares H(f; T)/H(f; 300 ns) with the resonant-term form
+|1 − e^{−(κ + iπ/x)T}| of Entry 71 and with its envelope e^{−κT}. Log `e92_window_law.log`.
+
+| | 17.48 keV | 8 keV |
+|---|---|---|
+| 1/κ | 21.8 ns | 4.67 ns |
+| x/π at 20 / 100 / 150 GHz | 11.9 / 59.6 / 89.4 ns | 11.5 / 57.5 / 86.2 ns |
+| 1/\|κ + iπ/x\| at 20 / 150 GHz | 10.5 / 21.1 ns | 4.3 / 4.7 ns |
+| max \|(H/H_300)/\|1 − e^{−(κ+iπ/x)T}\| − 1\|, T ≥ 5 ns | 0.22 % | 0.11 % |
+| max (\|H/H_300 − 1\| − e^{−κT}) | 0.000 | 0.002 |
+
+- The TT crystal factor follows H(f; T) = H_∞(f) |1 − e^{−(κ + iπ/x)T}| to 0.2 % for T ≥ 5 ns.
+  Its distance from the steady value is bounded by the envelope: |H/H_∞ − 1| ≤ e^{−κT} (to 0.002).
+- So **the approach to the steady value is set by absorption alone**. x/π enters only through the phase:
+  it sets the ripple period 2xΛ/v and, through |κ + iπ/x|, the window below which H is flat
+  (H ≈ H_∞ |κ + iπ/x| T, the same for all f when |2cR0| ≈ π/x). Example: at 150 GHz, x/π = 89 ns,
+  yet H(80 ns) = 0.984 H_∞, and at 100 GHz H(50 ns) = 0.936 H_∞ against x/π = 60 ns.
+- Corrected statement: H is flat while T_w ≪ 1/|κ + iπ/x| (10–21 ns at 17.48 keV over 20–150 GHz);
+  it is within 10 % of its steady value at every f once e^{−κT_w} ≤ 0.1, i.e. T_w ≥ ln 10 / κ
+  (50 ns at 17.48 keV, 10.7 ns at 8 keV), with a ripple of period 2xΛ/v in between. The Entry 75
+  design numbers (T_flat 19.6, T_half 32.8, T_90 52.2 ns for the 20 / 100 GHz ratio) are unchanged.
+- What this corrects: "≥ max(1/κ, x/π) Λ" in Entry 71 (Why in one line), the Entry 75 restatements,
+  and the Entry 90 row "window condition" ("the x/π half ... not there"). With x/π gone from the
+  settling, the settling time scale is the absorption depth, which Wark & Lee 1999 (p. 700–702) give
+  in kind (Entry 90). Novelty of the window part (inference) narrows to the closed form in T_w, its
+  flat regime below 1/|κ + iπ/x| and the ripple; the "1/κ = 16 Λ = 185 µm = 22 ns" number of Entry 71
+  stays as the settling constant, not as a sufficient window.
+
+**2. Entry 84, Laue tolerance.** The Entry 84 table gives the largest σ_η meeting both criteria as
+0.3, 0.1, < 0.1 and < 0.1 w_n for the four Laue cases (two pass at no scanned width; one of them partly
+through a period-metric artefact), with w_n = 0.43, 0.99, 0.62, 0.99 µrad at Si 440 / 17.48 keV. That is
+≲ 0.13 µrad, and < 0.06 µrad for (2, 4, 2). The verdict's "0.1–0.3 µrad in the poster's Si 440 /
+17.48 keV Laue geometry" is the Bragg range at that reflection (0.3 w_n = 0.13–0.30 µrad). The
+Si 400 / 8 keV Bragg range, 0.6–1.4 µrad, stands.
+
+**Class.** Correction from saved data; no solver change, no TT run.

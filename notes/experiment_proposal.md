@@ -116,9 +116,9 @@ S ≤ 2 needs 6–100 W/cm² peak acoustic intensity at 1–2 GHz, pulsed at 1e-
 elastic side is clean for all S ≤ 6 (no shear second harmonic); the only unverified number is the
 transducer's peak output. It measures the formation law (P2) at S ~ 1–6, a different
 observable (satellite centre intensity) whose divergence sensitivity is the satellite's own
-rocking width w_n = 2πα|J_n(S)|: Entry 84 finds the centre law intact only for σ_η ≲ 0.3 w_n,
-0.1–0.3 µrad at Si 440 / 17.48 keV (0.6–1.4 µrad at Si 400 / 8 keV Bragg, the more tolerant
-geometry), so as a centre observable it needs the same sub-µrad beam as regime B; with an ordinary
+rocking width w_n = 2πα|J_n(S)|: Entry 84 finds the centre law intact only for σ_η ≲ 0.3 w_n
+in Bragg and less in Laue, ≲ 0.13 µrad in Laue at Si 440 / 17.48 keV (Entry 92; 0.6–1.4 µrad at
+Si 400 / 8 keV Bragg, the more tolerant geometry), so as a centre observable it needs the same sub-µrad beam as regime B; with an ordinary
 beam the measurable quantity is the integrated satellite population: in Laue its shape is the
 flat-beam one from σ_η ≈ 5 w_n (2–5 µrad at Si 440 / 17.48 keV; 10 µrad for a 1 t_tr ramp) with a
 detector accepting one satellite channel (9–18 µrad), its formation curve is the TT channel integral

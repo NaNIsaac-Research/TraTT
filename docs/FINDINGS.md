@@ -20,7 +20,7 @@ All results are calculations; no experiment has been compared. F numbers follow 
 - Figure: [f5_outlook.png](../figures/poster/f5_outlook.png)
 - Data and script: [e58_abs.json](../explore/nb/e58_abs.json), [e58_darwin.json](../explore/nb/e58_darwin.json), [e64_sw.json](../explore/nb/e64_sw.json), [e59_transfer.py](../explore/nb/e59_transfer.py), [make_poster_figs.py](../explore/make_poster_figs.py) (f5)
 - Status: checked
-- Limits: The closed form is the infinite-window limit: Entry 71 withdraws Entry 65 §2 and Entry 66 §3 for a 140 ps measurement. The first-order linearisation is prior art (Sondhauss & Wark 2003, Entry 64). Checked: closed form against full TT with no fit parameter (Entry 59).
+- Limits: The closed form is the infinite-window limit: Entry 71 withdraws Entry 65 §2 and Entry 66 §3 for a 140 ps measurement. The first-order linearisation is prior art (Sondhauss & Wark 2003, Entry 64). H is a single-ray property: it needs a beam whose spread in detuning σ_η is below κ + π/x (at Si 400 about 0.03-0.4 µrad, or 2-4 meV where bandwidth enters the detuning; Entries 82, 83). A broader beam measures a flat factor κ√(π/2)/σ_η only for x ≳ 10 and σ_η ≫ κ + π/x; at a GHz train the beam-averaged factor is non-monotonic and depends on the frequency (Entry 83). Checked: closed form against full TT with no fit parameter (Entry 59).
 - Report: [6. Transfer function from strain spectrum to reflectivity](research/README.md#6-transfer-function-from-strain-spectrum-to-reflectivity-entries-57-61-64-66) (2026-10-15)
 
 ## F7: An X-ray crossing is quasi-static, and no result transfers to surface waves as it stands

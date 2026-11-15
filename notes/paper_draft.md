@@ -1,7 +1,7 @@
 # Paper draft skeleton (draft; nothing here is new computation)
 
 Written 2026-10-23 from `notes/paper_candidates.md` and lab notebook Entries 1–88; prior-art status
-updated 2026-11-16 to the four-paper verdict of Entry 90. Every number
+updated 2026-11-16 to the verdicts of Entries 90 and 91. Every number
 cites the entry and the script that produced it; a claim's status is the notebook's (confirmed =
 full TT in this model, converged, no fit; prior art = in literature read in full; hypothesis /
 predicted = stated or computed, not tested against experiment). Posting, journal choice and
@@ -50,7 +50,8 @@ scan.)
    78); 3.6 the linearity bound ν ≲ 0.1 on its domain (Entry 68); 3.7 **the beam condition**: the crystal
    factor is a single-ray property; a beam spread σ_η ≫ κ + π/x dephases the ringing after 1/σ_η and
    leaves the kinematic law times a flat κ√(π/2)/σ_η at every window (Entry 82, TT beam average vs
-   closed form 0.02 %), so H(f; T_w), χ_ih and the ±η asymmetry need ≲ 0.03–0.4 µrad and ≲ 2–4 meV.
+   closed form 0.02 %), so H(f; T_w), χ_ih and the ±η asymmetry need σ_η ≲ κ + π/x: at Si 400
+   (x ≳ 27) about 0.03–0.4 µrad, or 2–4 meV where bandwidth enters the detuning (Entry 83 (c)).
 4. Beyond first order: formation law I_n = sin²/tanh²(πα|J_n|t̃) (Entries 1, 9, 19, 24), the
    running-mean reading Θ_n and its degeneracy class with the R ≤ 0.1 boundary (Entries 28–34,
    72, 76, 79), the ramp regime and overshoot map (Entry 67). [P2; a section of P1 if P1 alone.]
@@ -70,7 +71,7 @@ scan.)
    remains), what is not new (Bessel ladder, Pendellösung, the linearisation, polarisation C, the
    asymmetric g factor, χ_ih as a parameter; Entry 90), what is (window condition, two-parameter H
    verified inside the Darwin width, its beam condition, degeneracy class, side asymmetry), and the
-   prior-art caveat (§6: Wark & He 1994 and the referee list unread).
+   prior-art caveat (§6: Wark & He 1994 unread; the referee list read, Entry 91).
 7. Limitations (§5 below).
 Appendix A: the retarded-time Riccati and the analytic continuation past the packet (Entry 75).
 Appendix B: pre-registered rules and their outcomes, one line each (Entries 68, 70–72, 75–79, 81).
@@ -93,21 +94,21 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
 | # | claim | status | evidence |
 |---|---|---|---|
 | 1 | First-order linearisation of TT for a phonon | prior art | Sondhauss & Wark 2003 eq. 25–31 (Entries 64, 69); used again in Sheppard et al. 2005 eq. 6–10 (Entry 90) |
-| 2 | Closed-form H with the Bloch-wave (Riccati) depth dependence, valid inside the Darwin width where the plane-wave form is off by 3–8× | confirmed in the model; new against the four papers read in full (Entry 90: neither Chukhovskii & Förster 1995 nor Wark & Lee 1999 has a first-order strain form; SW03 p. 12 and Sheppard 2005 p. 184 state that their form fails there); Wark & He 1994 and the referee list unread | Entries 59, 64, 65, 90 |
-| 3 | H needs a long window: the strain must travel ≥ max(1/κ, x/π) Λ during it; closed form H(f; T_w) exact to first order at every window 0.14–300 ns | confirmed (TT 0.3 %); packet-free short form rejected below ~100 τ; new as a law, the 1/κ half known in kind (Wark & Lee 1999 p. 700–702, Entry 90) | Entries 71, 75, 90 |
+| 2 | Closed-form H with the Bloch-wave (Riccati) depth dependence, valid inside the Darwin width where the plane-wave form is off by 3–8× | confirmed in the model; new against the four papers read in full (Entry 90: neither Chukhovskii & Förster 1995 nor Wark & Lee 1999 has a first-order strain form; SW03 p. 12 and Sheppard 2005 p. 184 state that their form fails there); no first-order form in the referee list either (Entry 91); Wark & He 1994 unread | Entries 59, 64, 65, 90, 91 |
+| 3 | Closed form H(f; T_w) exact to first order at every window 0.14–300 ns. Window law: in the saved TT runs H follows H_∞\|1 − e^{−(κ+iπ/x)T_w}\| to 0.2 % and approaches H_∞ within e^{−κT_w}, so the settling is set by 1/κ; x/π sets the ripple and, with κ, the flat regime T_w ≪ 1/\|κ + iπ/x\| | closed form confirmed (TT 0.3 %); packet-free short form rejected below ~100 τ. Window law: the form fits the Entry 75 data (Entry 92), the general statement is inference from the closed form; the earlier "≥ max(1/κ, x/π) Λ" is corrected (Entry 92). The settling scale is known in kind (Wark & Lee 1999 p. 700–702, Entry 90); the closed form in T_w, its flat regime and ripple were not found | Entries 71, 75, 90, 92 |
 | 4 | Design numbers Si 400 / 17.48 keV: T_flat 19.6, T_half 32.8, T_90 52.2 ns; ripple with period 2x Λ/v | confirmed (TT to 0.002) | Entry 75 |
 | 5 | Chalise et al. 140 ps window sees no crystal factor (H flat to 4 %); their low-frequency deficit is only partly the second-order term K = 0.65–0.88 | confirmed in the model; their normalisation unknown; any real beam also flattens the crystal factor (Entry 82) | Entries 66, 71, 82 |
 | 6 | χ_ih is a second tabulated crystal parameter: 0.9 % steady, 1.4 % at 52 ns, 3–4 % at 8 keV | confirmed; pre-registered rule fired; the parameter k = ψ″_H/ψ′_H is prior art (Wark & Lee 1999 eq. 12), its effect on H is new (Entry 90) | Entries 77, 90 |
 | 7 | ±η side asymmetry, strain-spectrum-free, reads χ_ih/χ_i0 (1.9–6.2 %, sensitivity 0.02–0.07) | predicted and confirmed in the model (TT 0.06 %); unobserved; a single-ray observable: odd in δ, it averages to zero over a symmetric beam (Entry 82) | Entries 77, 78, 82 |
 | 8 | Asymmetric Bragg = exact rescaling; one geometry factor g(√b + 1/√b)/2; T_90 shortens with Λ_asym | confirmed (TT 1e-16); **prior art**: the g factor is Wark & Lee 1999 eq. 11 (Entry 90), cited and not claimed; the window numbers in Λ_asym are application | Entries 81, 90 |
-| 8b | Beam divergence / bandwidth: for σ_η ≫ κ + π/x the crystal factor is flat, κ√(π/2)/σ_η, at every window (x ≳ 10); H(f; T_w) and the ±η asymmetry are single-ray (meV, sub-µrad) observables; at x = 1–5 the tolerance is 0.3–0.6 µrad / 4–7 meV (8 keV) and the beam-averaged factor is non-monotonic in σ | confirmed (TT beam average vs closed form 0.02–0.24 %); new as a statement on H, analogous in kind to Wark & Lee 1999 p. 695–696 (Entry 90) | Entries 82, 83, 90 |
+| 8b | Beam divergence / bandwidth: for σ_η ≫ κ + π/x the crystal factor is flat, κ√(π/2)/σ_η, at every window (x ≳ 10); H(f; T_w) and the ±η asymmetry are single-ray (meV, sub-µrad) observables; at x = 1–5 the tolerance is 0.3–0.6 µrad / 4–7 meV (8 keV) and the beam-averaged factor is non-monotonic in σ | confirmed (TT beam average vs closed form 0.02–0.24 %); new as a statement on H, analogous in kind to Wark & Lee 1999 p. 695–696 (Entry 90); qualitative precursor in Reis et al. 2001 p. 3073, dephasing from the beam's momentum spread (Entry 91) | Entries 82, 83, 90, 91 |
 | 9 | ν ≲ 0.1 ⇒ weight linear to 2 % (1 − K ≤ 1.8 ν²) | confirmed as a bound on the scanned domain (Bragg, x ∈ {2, 5}, one packet family, weight at the peak); partly known as a rule of thumb (SW03 p. 12, Entry 90) | Entries 68, 90 |
 | 10 | "One dimensionless criterion joins the regimes" | falsified (spread ×10–14 at fixed ν) | Entry 68 |
 | 11 | Formation law I_n = sin²/tanh²(πα\|J_n\|t̃), Bessel ladder, period-ratio calibration | confirmed; prior art in kind DeCamp 2001 (n = 0), Polikarpov 1987/88 (static); as a centre observable it needs the beam condition of 12b | Entries 1, 9, 13, 19, 24; tests |
 | 12 | Order n reads the one-transit running mean of J_n(S A); zero-mean perturbations degenerate (≤ 3e-6 for S ≤ 6); boundary R = 0.2 | confirmed with a boundary | Entries 72, 76, 79 |
-| 12b | Beam condition for the centre formation law: σ_η ≲ 0.3 w_n (0.1–0.3 µrad, Si 440 / 17.48 keV Laue; 0.6–1.4 µrad, Si 400 / 8 keV Bragg); at σ_η = w_n the first maximum loses 13–40 % | confirmed (full TT beam average, 8 cases) | Entry 84 |
+| 12b | Beam condition for the centre formation law: σ_η ≲ 0.3 w_n in Bragg (0.13–0.3 µrad at Si 440 / 17.48 keV, 0.6–1.4 µrad at Si 400 / 8 keV) and ≲ 0.1–0.3 w_n in Laue (≲ 0.13 µrad at Si 440 / 17.48 keV, < 0.06 µrad for (2, 4, 2); two of four Laue cases pass at no scanned width); at σ_η = w_n the first maximum loses 13–40 % | confirmed (full TT beam average, 8 cases) | Entries 84, 92 |
 | 8c | Polarisation: π = σ form with α → Cα (κ fixed), unpolarised = two-term closed-form sum (TT 0.02 %); negligible at Si 400 / 8 keV (C² = 0.12), 20–32 % at Si 440 / 17.48 keV; static Debye–Waller already in the X0h constants | confirmed; **prior art**: C in SW03 eq. 26, 29, Sheppard 2005 eq. 7, Wark & Lee 1999 eq. 13 (Entry 90), cited and not claimed; the unpolarised sum for H is application | Entries 88, 90 |
-| 12c | Integrated Laue satellite population: flat-beam shape from σ_η ≈ 5 w_n (2–5 µrad, step) and 10 w_n (10 µrad, 1 t_tr ramp) with a one-channel detector (9–18 µrad); formation curve from TT (tabulated; 13–25 % off ∫J_0); Bragg population not clean | pre-registered threshold falsified: 3 w_n failed in 3 of 5 runs (Entry 87; Entry 86 failed under its own rule). 5 w_n (step) and 10 w_n (ramp) are post-hoc conditions from the same cases; confirmation needs a pre-registered run on new cases | Entries 86, 87 |
+| 12c | Integrated Laue satellite population: flat-beam shape from σ_η ≈ 5 w_n (2–5 µrad, step) and 10 w_n (10 µrad, 1 t_tr ramp) with a one-channel detector (9–18 µrad); formation curve from TT (tabulated; 13–25 % off ∫J_0); Bragg population not clean | confirmed, with a condition (Entry 87): the main criterion 3 w_n failed in 3 of 5 runs; the pre-registered fallback, the smallest passing σ_η from the scan of 3, 5 and 10 w_n, gives 5 w_n for the four step runs and 10 w_n for the ramp. Entry 86 failed under its own rule. Five runs only | Entries 86, 87 |
 | 13 | Signal maximum = Fisher-information maximum for a ps packet at one angle | negative result | Entry 70 |
 | 14 | Bessel-zero resurrection at third order | confirmed in the model, unobservable (4e-5); **unread** Entin, Iolin–Entin | Entries 45, 51, 52, 54 (not in this paper; P4) |
 | 15 | Realisability: S ≤ 6 at 1–2 GHz clean on the elastic side; drive power 6–900 W/cm² peak | constants only; harmonic column withdrawn (shear symmetry); transducer number unverified | Entries 73, 80 |
@@ -148,15 +149,23 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
   k = ψ″_H/ψ′_H (eq. 12) and the 1/κ time scale in kind (p. 700–702).
 - Sheppard et al., Solid State Commun. 136, 181 (2005): SW03 applied to an optical-phonon pair;
   no new first-order form. Read in full (Entry 90).
-- Wark & He, Laser Part. Beams 12, 507 (1994): the original time-dependent TT. **unread**.
+- Wark & He, Laser Part. Beams 12, 507 (1994): temporal response of crystals to short X-ray pulses.
+  **unread** beyond the abstract (paywalled, Entry 91).
 - Chalise et al. (Entry 57): ps-ultrasonics strain spectrum vs reflectivity spectrum, Fig. 2.
-- Shayduk 2013: names the heterodyne oscillation (Entry 60).
+- Shayduk et al., Phys. Rev. B 87, 184301 (2013): names the first-order oscillation and averages it
+  away; their estimator is second order in strain, valid for q ≫ 1/l (Entries 60, 91). Read in full.
 - DeCamp et al. 2001 (n = 0 pulse); Polikarpov 1987/88 (static extinction length); Bucksbaum &
   Merlin 1999 "phonon Bragg switch" **unread**; Zolotoyabko, Iolin on acoustically modulated
   crystals **unread** (exact papers to identify); Grigoriev et al. APL 2006 piezoelectric X-ray
   switch **unread**.
-- Reis et al. PRL 86, 3072 (2001) **unread**; Trigo et al. Nat. Phys. 9, 790 (2013) **unread**;
-  Schick et al. udkm1Dsim CPC 185, 651 (2014) **unread**: the P1 comparisons a referee will name.
+- Reis et al., Phys. Rev. Lett. 86, 3072 (2001): time-resolved rocking curves of InSb, numerical
+  dynamical diffraction, FFT for the dispersion; dephasing from the beam's momentum spread limits
+  the oscillations to ~10 GHz (p. 3073). Read in full (Entry 91).
+- Trigo et al., Nat. Phys. 9, 790 (2013): time-Fourier analysis of diffuse scattering as phonon
+  spectroscopy, kinematic. Accepted manuscript read; Methods and Supplement not read (Entry 91).
+- Schick et al., udkm1Dsim, Comput. Phys. Commun. 185, 651 (2014): dynamical XRD by a transfer
+  matrix per atomic plane, exact numerics, no closed form or Fourier estimator. Read in full
+  (Entry 91); a one-case cross-check against it is not run.
 - Entin JETP Lett. 26, 392 (1977), JETP 77, 214 (1979); Iolin & Entin JETP 85, 1692 (1983):
   X-ray–acoustic resonance, overlap regime **unread** (P4 only).
 - Zarembo & Krasil'nikov, Sov. Phys. Usp. 13, 778 (1971): no second harmonic of shear waves
@@ -166,6 +175,7 @@ Supplementary candidates: `figures/paper/e72_history_degeneracy.png`, `e76_degen
 
 - Isaac's decision P1 + P2 vs P1 alone (title, §4 and §5.2 depend on it).
 - (done) Fig. 1, Fig. 2, Fig. 4b are files in `figures/paper/` with captions in `CAPTIONS.md`.
-- Wark & He 1994 and the referee list (Reis 2001, Trigo 2013, udkm1Dsim 2014, Shayduk 2013) for
-  the novelty sentences of §3 and §6; the four papers of Entry 90 are read.
+- Wark & He 1994 for the novelty sentences of §3 and §6 (abstract only; the eight papers of
+  Entries 90 and 91 are read).
+- A one-case cross-check of H against udkm1Dsim (Entry 91).
 - A transducer peak-power number for §5.2.

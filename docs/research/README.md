@@ -161,7 +161,8 @@ formation law under a divergent beam; Entry 90 classifies the transfer-function 
 prior-art papers read in full. Every computational entry has a rule written before its run. Each
 entry gives its own verdict; [`notes/paper_candidates.md`](../../notes/paper_candidates.md) scores
 the candidate papers and [`notes/paper_draft.md`](../../notes/paper_draft.md) §4 holds the claim
-table with each claim's status.
+table with each claim's status. Entry 91 reads the remaining prior art. The results of studies 6 and 9
+are written up in the [report](../REPORT.md).
 
 **Reproduce.** One script per entry, `explore/nb/e68_*.py` to `e88_*.py`; the arguments are in
 each entry and in [lineage](../lineage.md#2-scripts-and-notebook-entries). Entry 69 reuses
