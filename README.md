@@ -44,6 +44,40 @@ uv pip install tratt
 Requires Python 3.12+; the package is the solver (`src/tratt`, numpy and scipy only). Notebooks, figure scripts and the poster build need a
 clone of this repository.
 
+## Quick start
+
+Satellite $n$ of a Laue crystal at its centre $\eta_n = nq$ grows like a crystal of thickness
+$v_s t$ with its coupling reduced by $|J_n(S)|$. This prints the solver beside that law for the
+first satellite:
+
+```python
+import numpy as np
+from scipy.special import jv
+
+from tratt import Drive, rocking
+
+alpha = 0.5                            # crystal thickness in Pendelloesung lengths
+drive = Drive(S=1.5, alpha_ac=10.0)    # modulation strength, L in acoustic wavelengths
+eta1 = drive.eta_channel(1)            # centre of the first satellite
+
+print("  t/t_tr   satellite 1   sin^2(pi alpha |J1(S)| t)")
+for t in (0.25, 0.5, 0.75, 1.0):
+    intensity = rocking(alpha, eta1, phi=drive.phi(t), geometry="laue", n_z=2048)
+    predicted = np.sin(np.pi * alpha * abs(jv(1, drive.S)) * t) ** 2
+    print(f"  {t:6.2f}   {float(intensity):11.4f}   {predicted:11.4f}")
+```
+
+`drive.phi(t)` is the frozen phase profile at $t/t_\mathrm{tr}$: the sound wave fills the depth
+$\zeta < t$ and the rest of the crystal is still at rest. The printed table, from tratt 0.1.0 on
+Python 3.13, is in [docs/index.md](docs/index.md#first-run); the two columns differ by at most
+0.002 here.
+
+## Documentation
+
+- [Equations](docs/equations.md) and [DESIGN.md](DESIGN.md): the equations as the solver implements them, and the physics conventions, assumptions and analytic limits.
+- [Lab notebook](notes/lab_notebook.md): every entry the results cite.
+- [Documentation site](https://nanisaac.github.io/docs/tratt/): these pages with a sidebar, as published.
+
 ## Results
 
 These are calculation results only; no experiment has been compared yet. Each item gives the
