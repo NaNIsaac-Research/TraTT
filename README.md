@@ -120,9 +120,10 @@ component of the reflectivity at frequency ω is the strain spectrum multiplied 
 transfer function H(ω). We obtained H(ω) analytically to first order. Inside the Darwin width (the
 angular range of strong reflection) it agrees with full TT, while the perturbation theory of
 Sondhauss & Wark (2003) differs from full TT by a factor of 3–8. H depends on the measurement
-window, and it is a single-ray property: it is seen only with a beam collimated to about 0.03-0.4 µrad and
-monochromatic to about 2-4 meV, and an ordinary beam measures a flat factor instead (Entries 75, 82;
-[report](docs/REPORT.md) §3.2-3.3).
+window, and it is a single-ray property: it is seen only with a beam whose spread in detuning is about 0.03-0.4 µrad
+at Si 400 (or 2-4 meV where bandwidth enters the detuning). In the picosecond band a broader beam
+measures a flat factor instead; at GHz-train frequencies the beam-averaged factor depends on the
+frequency (Entries 75, 82, 83; [report](docs/REPORT.md) §3.2-3.3).
 
 ![First-order theory and full TT inside the Darwin width](https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/f5_outlook.png)
 
