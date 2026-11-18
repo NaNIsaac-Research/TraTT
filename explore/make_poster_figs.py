@@ -68,7 +68,9 @@ def style():
             "axes.spines.top": False,
             "axes.spines.right": False,
             "figure.facecolor": "white",
-            "savefig.facecolor": "none",
+            # Opaque: the README shows these figures, and on a dark page dark text on a clear
+            # background cannot be read.
+            "savefig.facecolor": "white",
             "axes.facecolor": "white",
             "savefig.dpi": 200,
             # Text in the poster's own face; math in STIX, the same pairing poster/build.py uses, so
