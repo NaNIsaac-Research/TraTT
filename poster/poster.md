@@ -25,7 +25,7 @@ A shear wave along the depth $z$ with displacement $u\parallel h$, $u=u_0\sin(Kz
 
 $$ $e^{-i\phi}=\Sigma_n\,(-1)^nJ_n(S)\,e^{in(Kz-\Omega t)}$ {E0}
 
-Harmonic $n$ is Bragg-matched at $\beta_n=nK$ ($\beta$: deviation from the Bragg condition, in m$^{-1}$). Kinematically satellite $n$ carries $J_n(S)^2$, with $\Sigma_nJ_n^2=1$ and equal weight for $\pm n$. In a thick crystal the diffracted wave is scattered back, so dynamical theory sets the intensities. {E0}{E7}{E29}
+Harmonic $n$ is Bragg-matched at $\beta_n=nK$ ($\beta$: deviation from the Bragg condition, in m$^{-1}$). Kinematically satellite $n$ carries $J_n(S)^2$, with $\Sigma_nJ_n^2=1$ and equal weight for $\pm n$. In a thick crystal the diffracted wave is rescattered into the transmitted beam (multiple scattering), so dynamical theory sets the intensities. {E0}{E7}{E29}
 
 ## Two-beam dynamical diffraction
 
