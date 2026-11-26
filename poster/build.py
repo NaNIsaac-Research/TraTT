@@ -91,7 +91,7 @@ SPEC = dict(
     gap=14,
     pad=6,
     header_h=92,
-    footer_h=46,
+    footer_h=54,  # QR 40 mm
     title_pt=52,
     authors_pt=30,
     affil_pt=24,
@@ -105,7 +105,7 @@ SPEC = dict(
     para_gap=6,
     panel_gap=8,
     fig_gap=4,
-    spread_max=8,
+    spread_max=3,
     accent="#1f4e8c",
     page="#ffffff",
     ink="#1a1a1a",
@@ -119,6 +119,11 @@ XH = {"Arial": 0.519, "DejaVu Sans": 0.545}.get(FONT, 0.52)  # x-height / em
 # ───────────── manuscript ─────────────
 
 TAG = re.compile(r"\{E(\d+)\}")
+
+
+def squash(text):
+    """Collapse ASCII whitespace only: a no-break space (U+00A0) keeps "Si 440" on one line."""
+    return re.sub(r"[ \t\r\n]+", " ", text).strip()
 
 
 def parse(text):
@@ -163,12 +168,12 @@ def parse(text):
             continue
         if block.startswith("- "):
             for b in re.split(r"\n- ", block[2:]):
-                b = " ".join(b.split())
+                b = squash(b)
                 add(dict(kind="bullet", text=TAG.sub("", b).strip(), tags=TAG.findall(b)))
             continue
         if block.startswith("~"):
             shape, t = block[1:].split("|", 1)
-            t = " ".join(t.split())
+            t = squash(t)
             add(
                 dict(
                     kind="onset",
@@ -179,18 +184,19 @@ def parse(text):
             )
             continue
         if block.startswith("$$"):
-            t = " ".join(block[2:].split())
+            t = squash(block[2:])
             add(dict(kind="eq", text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
             continue
         kind = "key" if block.startswith(">") else "para"
-        t = " ".join(re.sub(r"^>\s?", "", block, flags=re.M).split())
+        t = squash(re.sub(r"^>\s?", "", block, flags=re.M))
         add(dict(kind=kind, text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
     return meta, panels
 
 
 # ───────────── typesetting ─────────────
 
-TOKEN = re.compile(r"\$[^$]+\$|\*\*[^*]+\*\*|[^\s$*]+|\*")  # a lone * is a word
+# a lone * is a word; only ASCII whitespace separates words, so U+00A0 binds "Si 440"
+TOKEN = re.compile(r"\$[^$]+\$|\*\*[^*]+\*\*|[^ \t\r\n$*]+|\*")
 
 
 class Page:
@@ -476,7 +482,7 @@ def build(preview_dpi=60, ms=MS):
         logo_w = 62
         fit(P, ASSETS / "logo_ihs.png", W - M - 52, 12, 52, s["header_h"] - 24)
     if meta.get("session"):
-        P.flow(meta["session"], M, 10, 150, s["caption_pt"], s["ink2"])
+        P.flow(meta["session"], M + s["pad"], 10, 150, s["caption_pt"], s["ink2"])
     tw = W - 2 * M - 2 * logo_w
     y = 16 - s["title_pt"] * PT_MM * (s["leading"] - 1)
     for line in meta.get("title", "").split("//"):  # "//" in the title = manual line break
@@ -493,20 +499,26 @@ def build(preview_dpi=60, ms=MS):
             )
             - s["title_pt"] * PT_MM * 0.35
         )
-    y = P.flow(meta.get("authors", ""), M + logo_w, y + 11, tw, s["authors_pt"], align="center")
+    y = P.flow(meta.get("authors", ""), M + logo_w, y + 8, tw, s["authors_pt"], align="center")
     P.flow(
-        meta.get("affiliation", ""), M + logo_w, y + 3, tw, s["affil_pt"], s["ink2"], align="center"
+        meta.get("affiliation", ""), M + logo_w, y + 2, tw, s["affil_pt"], s["ink2"], align="center"
     )
-    ax.plot([M, W - M], [s["header_h"], s["header_h"]], color=s["line"], lw=1.0, zorder=2)
+    ax.plot(
+        [M + s["pad"], W - M - s["pad"]],
+        [s["header_h"], s["header_h"]],
+        color=s["line"],
+        lw=1.0,
+        zorder=2,
+    )
 
     # footer: acknowledgement on the left, CUPT logo and repository QR on the right
     fy = H - s["footer_h"]
-    ax.plot([M, W - M], [fy, fy], color=s["line"], lw=1.0, zorder=2)
+    ax.plot([M + s["pad"], W - M - s["pad"]], [fy, fy], color=s["line"], lw=1.0, zorder=2)
     qr = ASSETS / "qr_repo.png"
     if not qr.exists():
         qr = ROOT / "figures" / "poster" / "qr_repo.png"
     qr_w = s["footer_h"] - 14.0
-    qr_x = W - M - qr_w
+    qr_x = W - M - s["pad"] - qr_w
     if qr.exists():
         P.image(qr, qr_x, fy + 7, qr_w, h=qr_w)
     else:
@@ -518,15 +530,17 @@ def build(preview_dpi=60, ms=MS):
         problems.append("missing CUPT footer logo")
     yk = P.flow(
         "Acknowledgement",
-        M,
+        M + s["pad"],
         fy + 8,
-        cupt_left - M - 20,
+        cupt_left - M - s["pad"] - 20,
         s["caption_pt"] + 4,
         s["accent"],
         weight="bold",
     )
-    acknowledgements = " · ".join(v for k, v in meta.items() if k in ("footer", "contact"))
-    P.flow(acknowledgements, M, yk + 1, cupt_left - M - 20, s["caption_pt"] + 1, s["ink"])
+    tx, tw = M + s["pad"], cupt_left - M - s["pad"] - 20
+    yk = P.flow(meta.get("footer", ""), tx, yk + 1, tw, s["caption_pt"] + 1, s["ink"])
+    # the repository line stands apart from the grant text, next to the QR it describes
+    P.flow(meta.get("contact", ""), tx, yk + 2, tw, s["caption_pt"] + 1, s["ink"])
 
     def check(it):
         if it["tags"] is None:  # rows carry no tag; their items do
@@ -552,11 +566,15 @@ def build(preview_dpi=60, ms=MS):
     bottom = fy - 6
     full = W - 2 * M
 
+    panel_h = {}  # measured height of each panel (mm), printed to balance a pair
+
     def band(b, y0, draw):
         n = len(b)
         pw = (full - (n - 1) * 2 * s["gap"]) / n
         ends = []
         hs = [items(P, p["items"], 0.0, 0.0, pw - 2 * s["pad"], False, check) for p in b]
+        if not draw:
+            panel_h.update({p["title"]: h + HEAD for p, h in zip(b, hs, strict=True)})
         for k, p in enumerate(b):
             x = M + s["pad"] + k * (pw + 2 * s["gap"])
             w = pw - 2 * s["pad"]
@@ -601,6 +619,7 @@ def build(preview_dpi=60, ms=MS):
         "band heights (mm): "
         + "  ".join(f"{b[0]['title'][:12]} {h:.0f}" for b, h in zip(bands, heights, strict=True))
     )
+    print("panel heights (mm): " + "  ".join(f"{t[:12]} {h:.0f}" for t, h in panel_h.items()))
     print("entries cited: " + ", ".join(f"E{e}" for e in sorted(used)))
     print(f"wrote {OUT / ms.stem}.pdf and .png")
     if problems:

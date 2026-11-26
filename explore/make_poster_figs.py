@@ -1,4 +1,4 @@
-"""Poster-only figures, drawn at print size for one A0 column. Run: python explore/make_poster_figs.py [f0 f1 f2 f3 f4]
+"""Poster-only figures, drawn at print size for one A0 column. Run: python explore/make_poster_figs.py [--iqms] [f0 ...]
 
 Width FIG_W is the inner width of a poster card (poster/build.py SPEC), so a font size here is the
 printed size. Panels reuse the notebook figure code; nothing is recomputed differently.
@@ -45,10 +45,21 @@ FONT = ["Arial", "DejaVu Sans"]
 
 FIG_W = 14.4  # inches = poster card inner width (~366 mm)
 INTRO_W = 12.5  # inches = left column of the introduction band (~317 mm)
-F1_H, F7_H = 5.7, 7.2  # heights of the two result figures (inches), set by the results band
+F1_H, F7_H, F4_H = 5.7, 7.2, 4.6  # figure heights (inches), set by the bands they sit in
 BIG, SMALL = 26, 23  # printed pt; smallest label 21 pt (SMALL - 2), readable at ~1.5 m on A0
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
+# The i-QMS poster (--iqms) draws the same figures into figures/poster/iqms/ with the poster's one
+# blue (its heading colour), black labels and "sideband" for "satellite"; the KPS set stays as is.
+IQMS = False
+LABEL = BLUE  # colour of the acoustic-wave labels in f9
+TERM = "satellite"
+
+
+def use_iqms():
+    global IQMS, OUT, BLUE, LABEL, TERM, F1_H, F7_H, F4_H
+    IQMS, OUT, BLUE, LABEL, TERM = True, OUT / "iqms", "#1f4e8c", INK, "sideband"
+    F1_H, F7_H, F4_H = 4.9, 6.6, 3.3  # the i-QMS page carries one figure more
 
 
 def style():
@@ -277,12 +288,19 @@ def f1():
             color=INK,
             lw=2.0,
             zorder=3,
-            label=r"independent-satellite model, $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$, "
-            "no fitted parameters",
+            label=(
+                r"closed form, $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$"
+                if IQMS
+                else r"independent-satellite model, $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$, "
+                "no fitted parameters"
+            ),
         )
         for (S, al, n), I, c, m in zip(
             M.CASES, data, (BLUE, ORANGE, AQUA, YELLOW), M.MARK, strict=False
         ):
+            if IQMS:  # end of the transit, t = t_tr, where the wavefront reaches z = L
+                x_tr = al * abs(jv(n, S))
+                a.plot([x_tr, x_tr], [1.04, 1.13], color=c, lw=4, solid_capstyle="butt", zorder=4)
             a.plot(
                 al * abs(jv(n, S)) * t,
                 I,
@@ -297,18 +315,23 @@ def f1():
             )
         a.set(
             xlim=(0, 2.3),
-            ylim=(-0.03, 1.08),
+            ylim=(-0.03, 1.15 if IQMS else 1.08),
             title=title,
             xlabel=r"time $t/\tau_n$",
         )
-    ax[0].set_ylabel(r"satellite intensity $I_n/I_{inc}$")
+    ax[0].set_ylabel(r"sideband $I_n/I_{inc}$" if IQMS else r"satellite intensity $I_n/I_{inc}$")
     ax[1].tick_params(labelleft=False)
+    if IQMS:
+        ax[1].plot([], [], "|", color=INK, ms=18, mew=4, label=r"$t=t_{tr}=L/v_s$")
     # Shared key under both panels: the simulated cases (2 x 2, after their lead), then the curve
     # they are compared with on a row of its own.
     h, lab = ax[1].get_legend_handles_labels()
+    if IQMS:  # the t_tr mark joins the law row
+        h, lab = [h[0], h[-1], *h[1:-1]], [lab[0], lab[-1], *lab[1:-1]]
+    k = 2 if IQMS else 1  # handles on the law row
     sim = fig.legend(
-        h[1:],
-        lab[1:],
+        h[k:],
+        lab[k:],
         ncol=2,
         frameon=False,
         loc="lower left",
@@ -321,8 +344,10 @@ def f1():
         borderpad=0,
     )
     law = fig.legend(
-        h[:1],
-        lab[:1],
+        h[:k],
+        lab[:k],
+        ncol=k,
+        columnspacing=2.0,
         frameon=False,
         loc="lower left",
         bbox_to_anchor=(0, 0.01),
@@ -450,7 +475,7 @@ def f4():
 
     style()
     P = M.merged()
-    fig, ax = plt.subplots(figsize=(FIG_W, 4.6), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(FIG_W, F4_H), constrained_layout=True)
     Ss = sorted(set(P[:, 2]))
     hues = plt.cm.viridis(np.linspace(0, 0.9, len(Ss)))
     for c, S in zip(hues, Ss, strict=False):
@@ -475,9 +500,23 @@ def f4():
     # the boundary the panel is about, so the result is readable without decoding the scatter
     ax.axvline(0.3, color=INK, lw=2.0, ls=(0, (5, 3)), zorder=4)
     ax.text(
-        0.26, 3.5e-5, "independent satellites", fontsize=SMALL, color=INK, ha="right", va="bottom"
+        0.26,
+        3.5e-5,
+        "closed form holds" if IQMS else "independent satellites",
+        fontsize=SMALL,
+        color=INK,
+        ha="right",
+        va="bottom",
     )
-    ax.text(0.35, 3.5e-5, "coupled satellites", fontsize=SMALL, color=INK, ha="left", va="bottom")
+    ax.text(
+        0.35,
+        3.5e-5,
+        "channels couple" if IQMS else "coupled satellites",
+        fontsize=SMALL,
+        color=INK,
+        ha="left",
+        va="bottom",
+    )
     ax.set(
         xscale="log",
         yscale="log",
@@ -491,7 +530,7 @@ def f4():
     norm = mpl.colors.BoundaryNorm(np.arange(len(Ss) + 1) - 0.5, len(Ss))
     cb = fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax, pad=0.01, aspect=25)
     cb.set_ticks(range(len(Ss)), labels=[f"{S:g}" for S in Ss])
-    cb.set_label("acoustic amplitude $S$")
+    cb.set_label("$S$" if IQMS else "acoustic amplitude $S$")
     cb.outline.set_visible(False)
     finish(fig, ax, "f4_regime")
 
@@ -595,11 +634,16 @@ def f7():
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
     fig = plt.figure(figsize=(FIG_W, F7_H), constrained_layout=True)
     grid = fig.add_gridspec(
-        2, 3, height_ratios=[1.78, 1.0], hspace=0.18
+        2, 3, height_ratios=[1.2, 1.0] if IQMS else [1.78, 1.0], hspace=0.18
     )  # PR #9: show the full 2D scan
     ax = fig.add_subplot(grid[0, :])
     im = ax.pcolormesh(
-        data["S"], data["rise"], data["excess"], shading="nearest", cmap="YlOrRd", vmin=0
+        data["S"],
+        data["rise"],
+        data["excess"],
+        shading="nearest",
+        cmap="cividis" if IQMS else "YlOrRd",
+        vmin=0,
     )
     cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.045)
     cb.set_label(r"$\Delta I/I_{inc}$")
@@ -607,7 +651,8 @@ def f7():
     ax.set(
         xlabel=r"final acoustic amplitude $S$",
         ylabel=r"rise time $T_{rise}/t_{tr}$",
-        title=r"Reduced model, Laue, $n=1$, $L=\Lambda_P/2$:  $\Delta I=I_{max}-I_{steady}$",
+        title=("Closed form" if IQMS else "Reduced model")
+        + r", Laue, $n=1$, $L=\Lambda_P/2$:  $\Delta I=I_{max}-I_{steady}$",
     )
 
     def num(v):
@@ -623,6 +668,8 @@ def f7():
         strict=False,
     ):
         letter, S, rise = case["label"], case["S"], case["rise"]
+        if IQMS:  # one hue in the map; the traces are told apart by their letter
+            color = INK
         ax.plot(S, rise, "o", color=color, mec="white", mew=2, ms=13)
         ax.annotate(
             letter,
@@ -631,15 +678,15 @@ def f7():
             textcoords="offset points",
             fontsize=BIG,
             fontweight="bold",
-            color=INK,
+            color="white" if IQMS else INK,
         )
         a = fig.add_subplot(grid[1, ord(letter) - ord("A")])
-        a.plot(data[f"{letter}_t"], data[f"{letter}_I"], color=color)
+        a.plot(data[f"{letter}_t"], data[f"{letter}_I"], color=INK if IQMS else color)
         a.plot(
             data[f"{letter}_tt_t"][::3],
             data[f"{letter}_tt_I"][::3],
             "o",
-            color=color,
+            color=BLUE if IQMS else color,
             mec="white",
             ms=8,
         )
@@ -655,27 +702,46 @@ def f7():
                     arrowstyle="<|-|>", color=INK, lw=1.6, mutation_scale=16, shrinkA=0, shrinkB=0
                 ),
             )
-            a.text(tb, case["steady"] - 0.06, r"$\Delta I$", fontsize=SMALL, ha="center", va="top")
+            if IQMS:  # above the peak it measures: clear of the TT points and the axis
+                a.text(
+                    tb, float(data["B_I"][k]) + 0.06, r"$\Delta I$", fontsize=SMALL + 1, ha="center"
+                )
+            else:
+                a.text(
+                    tb, case["steady"] - 0.06, r"$\Delta I$", fontsize=SMALL, ha="center", va="top"
+                )
         # headroom above every curve (max 0.6) for the two-line case label, which has no backing box
-        a.set(xlabel=r"time $t/t_{tr}$", ylim=(-0.025, 1.3), yticks=[0, 0.5, 1])
-        a.set_title(
-            label, color=color, fontsize=SMALL - 2, fontweight="bold"
-        )  # colour = map marker
+        a.set(xlabel=r"time $t/t_{tr}$", ylim=(-0.025, 1.55 if IQMS else 1.3), yticks=[0, 0.5, 1])
+        if IQMS:
+            a.set_xlim(0, 3)  # one time axis for A-C
         peak, steady = case["peak"], case["steady"]
-        values = (
-            f"peak = steady = {num(steady)}"
-            if peak - steady < 1e-9
-            else f"peak {num(peak)}, steady {num(steady)}"
-        )
-        a.text(
-            0.04,
-            0.95,
-            rf"$S={S:g}$, $T_{{rise}}/t_{{tr}}={rise:g}$" + "\n" + values,
-            transform=a.transAxes,
-            fontsize=SMALL - 2,
-            va="top",
-            linespacing=1.25,
-        )
+        if IQMS:  # 24 pt; the condition goes in the title, the two values on their own lines
+            T = "t_{tr}" if rise == 1 else rf"{rise:g}\,t_{{tr}}"
+            a.set_title(rf"{letter}: $S={S:g}$, $T_{{rise}}={T}$", fontsize=SMALL + 1, color=INK)
+            values = (
+                f"peak = steady = {num(steady)}"
+                if peak - steady < 1e-9
+                else f"peak {num(peak)}\nsteady {num(steady)}"
+            )
+            a.text(0.04, 0.95, values, transform=a.transAxes, fontsize=SMALL + 1, va="top")
+        else:
+            a.set_title(
+                label, color=color, fontsize=SMALL - 2, fontweight="bold"
+            )  # colour = map marker
+            values = (
+                f"peak = steady = {num(steady)}"
+                if peak - steady < 1e-9
+                else f"peak {num(peak)}, steady {num(steady)}"
+            )
+            a.text(
+                0.04,
+                0.95,
+                rf"$S={S:g}$, $T_{{rise}}/t_{{tr}}={rise:g}$" + "\n" + values,
+                transform=a.transAxes,
+                fontsize=SMALL - 2,
+                va="top",
+                linespacing=1.25,
+            )
         if letter == "A":
             a.set_ylabel(r"$I_1/I_{inc}$")
         else:
@@ -747,7 +813,7 @@ def f8():
         xlabel=r"order $n$ (detuning $\beta=nK$)",
         ylabel=r"$J_n(S)^2$",
     )
-    axb.set_xticklabels([f"{k:+d}" if k else "0" for k in n])
+    axb.set_xticklabels([f"{k:+d}".replace("-", "\N{MINUS SIGN}") if k else "0" for k in n])
     axb.legend(frameon=False, loc="upper right")
     finish(fig, axb, "f8_satellites")
 
@@ -838,7 +904,7 @@ def f9():
             wave = r"longitudinal wave along $z$, $u\parallel h$"
             bc = r"$D_0(0)=1,\ D_h(L)=0$"
             how = "on opposite faces"
-        ax.text(4.5, -0.55, wave, ha="center", va="top", fontsize=SMALL, color=BLUE)
+        ax.text(4.5, -0.55, wave, ha="center", va="top", fontsize=SMALL, color=LABEL)
         ax.text(4.5, -1.55, bc, ha="center", va="top", fontsize=SMALL)
         ax.text(4.5, -2.45, how, ha="center", va="top", fontsize=SMALL, color=INK2)
     OUT.mkdir(parents=True, exist_ok=True)
@@ -885,35 +951,38 @@ def f10():
     j1, j2 = abs(jv(1, F10_S)), abs(jv(2, F10_S))
     a = np.linspace(1e-3, 1.6, 400)
     fig, (ax, axr) = plt.subplots(1, 2, figsize=(FIG_W, 5.4), constrained_layout=True)
-    for j, I, c, m, n in ((j1, laue[:, 0], BLUE, "o", 1), (j2, laue[:, 1], ORANGE, "s", 2)):
-        ax.plot(a, np.sin(np.pi * a * j) ** 2, color=c, label=f"$n={n}$")
+    # Left: one colour per order, named on the curve; dashed = kinematic (caption). Right: one
+    # colour per geometry would reuse the left pair for another meaning, so it is black and grey.
+    for j, I, c, m, n, xy in (
+        (j1, laue[:, 0], BLUE, "o", 1, (0.9, 1.06)),
+        (j2, laue[:, 1], ORANGE, "s", 2, (1.42, 0.6)),
+    ):
+        ax.plot(a, np.sin(np.pi * a * j) ** 2, color=c)
         ax.plot(a, (np.pi * a * j) ** 2, color=c, ls="--", lw=2.2)
         ax.plot(F10_ALPHA, I, m, color=c, mec="white", mew=0.8, ms=11, ls="none")
+        ax.text(*xy, f"$n={n}$", color=c, fontsize=BIG, ha="center", va="bottom")
     ax.set(
         xlim=(0, 1.6),
-        ylim=(0, 1.08),
+        ylim=(0, 1.22),
+        yticks=[0, 0.5, 1.0],
         xlabel=r"thickness $L/\Lambda_P$",
         ylabel=r"steady $I_n/I_{inc}$ (Laue)",
     )
-    ax.plot([], [], color=INK2, ls="--", lw=2.2, label=r"kinematic $(\pi L J_n/\Lambda_P)^2$")
-    ax.set_yticks([0, 0.5, 1.0])
-    # under the panels: the dashed kinematic curves leave the axes where an inside key would sit
-    fig.legend(*ax.get_legend_handles_labels(), frameon=False, loc="outside lower center", ncol=3)
     kin = j2**2 / j1**2
     axr.axhline(kin, color=INK2, ls="--", lw=2.2, label=r"kinematic $J_2^2/J_1^2$")
-    for law, I, c, m, name in (
-        (lambda x: np.sin(np.pi * x) ** 2, laue, BLUE, "o", "Laue"),
-        (lambda x: np.tanh(np.pi * x) ** 2, bragg, ORANGE, "s", "Bragg"),
+    for law, I, ls, m, fc, name in (
+        (lambda x: np.sin(np.pi * x) ** 2, laue, "-", "o", INK, "Laue"),
+        (lambda x: np.tanh(np.pi * x) ** 2, bragg, "-.", "s", "white", "Bragg"),
     ):
-        axr.plot(a, law(a * j2) / law(a * j1), color=c, label=name)
-        axr.plot(F10_ALPHA, I[:, 1] / I[:, 0], m, color=c, mec="white", mew=0.8, ms=11, ls="none")
+        axr.plot(a, law(a * j2) / law(a * j1), color=INK, ls=ls, label=name)
+        axr.plot(F10_ALPHA, I[:, 1] / I[:, 0], m, mfc=fc, mec=INK, mew=1.8, ms=11, ls="none")
     axr.set(
         xlim=(0, 1.6),
         ylim=(0, 1.0),
         xlabel=r"thickness $L/\Lambda_P$",
         ylabel=r"ratio $I_2/I_1$",
     )
-    axr.legend(frameon=False, loc="upper left")
+    axr.legend(frameon=False, loc="upper left", handlelength=2.6)
     finish(fig, (ax, axr), "f10_steady")
     for name, I, law in (
         ("Laue", laue, lambda x: np.sin(np.pi * x) ** 2),
@@ -925,5 +994,8 @@ def f10():
 
 
 if __name__ == "__main__":
-    for name in sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10"]:
+    names = [a for a in sys.argv[1:] if a != "--iqms"]
+    if "--iqms" in sys.argv:
+        use_iqms()
+    for name in names or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10"]:
         globals()[name]()

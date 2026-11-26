@@ -164,6 +164,35 @@ row(
     1e-12,
 )
 
+# i-QMS v2 (review round 1)
+row("iqms: Bragg t_tr = L / v_L at L = 296 um (ns)", 32.4, L / v_long * 1e9, 0.05)
+row("iqms: formation times, Bragg tau_1 (ns, printed 4)", 4, tau_bragg * 1e9, 0.5)
+row("iqms: hbar Omega at 2 GHz (ueV)", 8, 4.135667696e-15 * 2e9 * 1e6, 0.5)
+row(
+    "iqms: strain K u0 at 2 GHz, shear (Laue)",
+    5e-5,
+    2 * np.pi * 2e9 / v_shear * 1.5 * D440 / (2 * np.pi),
+    0.5e-5,
+)
+# Darwin half-width of the static reflection, lambda / (2 Lambda_P sin theta_B) = |chi_h| / sin 2theta
+# (sigma, symmetric); w_n = |J_n(S)| of it (Entry 84). Beam conditions: 0.3 w_n Bragg, 0.1 w_n Laue
+# (Entries 84, 92).
+darwin = wavelength / (2 * LAMBDA_P_LAUE * np.sin(theta_b))
+w1 = j1 * darwin
+row("iqms: Darwin half-width, Si 440 30 keV (urad, not printed)", 0.97, darwin * 1e6, 0.005)
+row("iqms: 0.3 w_1 Bragg beam condition (urad)", 0.16, 0.3 * w1 * 1e6, 0.005)
+row("iqms: 0.1 w_1 Laue beam condition (urad)", 0.05, 0.1 * w1 * 1e6, 0.005)
+rise_axis = data["rise"]
+for T, printed in ((0.05, 0.010), (4.0, 0.60)):
+    i = int(np.argmin(abs(rise_axis - T)))
+    row(
+        f"iqms: largest Delta I at T_rise = {T:g} t_tr",
+        printed,
+        float(data["excess"][i].max()),
+        0.005,
+    )
+row("iqms f1: L / Lambda_ac", 20, M.AAC, 0)
+
 
 def main() -> int:
     bad = 0
