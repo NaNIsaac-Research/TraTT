@@ -18,6 +18,7 @@ f6  introductory Bessel coupling weights |J_n(S)| for a sinusoidal grating
 f7  linear-ramp overshoot map and three TT-checked traces (Entry 67)
 f8  kinematic satellites: lattice planes without and with a shear wave, and J_n(S)^2 by order
 f9  symmetric Laue and Bragg geometry: h, the acoustic polarisation that couples, boundary conditions
+f10 steady sidebands against thickness: closed forms, kinematic Bessel law and full TT (Entries 1, 9)
 """
 
 from __future__ import annotations
@@ -845,6 +846,84 @@ def f9():
     print("wrote", OUT / "f9_geometry.png")
 
 
+F10_ALPHA = np.array([0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5])  # L / Lambda_P of the TT points
+F10_S, F10_AAC, F10_PHASES = 1.5, 40.0, 8
+
+
+def f10_points():
+    """Full TT in the filled crystal (steady=True: the whole depth carries the wave), centre
+    intensity at beta = nK for n = 1, 2, averaged over F10_PHASES acoustic phases. Cached in
+    explore/nb/poster_f10_points.npz."""
+    from tratt.cube import rocking_cube
+
+    cache = ROOT / "explore" / "nb" / "poster_f10_points.npz"
+    if cache.exists():
+        d = np.load(cache)
+        return d["laue"], d["bragg"]
+    d = Drive(S=F10_S, alpha_ac=F10_AAC)
+    # one acoustic period is 1 / alpha_ac in units of the transit time
+    t = (np.arange(F10_PHASES) + 0.5) / (F10_PHASES * F10_AAC)
+    eta = np.array([d.q, 2 * d.q])
+    out = {}
+    for geo in ("laue", "bragg"):
+        out[geo] = np.array(
+            [rocking_cube(a, d, eta, t, geometry=geo, steady=True).mean(axis=0) for a in F10_ALPHA]
+        )
+    np.savez(cache, alpha=F10_ALPHA, S=F10_S, alpha_ac=F10_AAC, **out)
+    return out["laue"], out["bragg"]
+
+
+def f10():
+    """Steady sidebands against thickness (Entries 1, 9, 54): the independent-satellite closed
+    forms sin^2(pi L |J_n| / Lambda_P) (Laue) and tanh^2 (Bragg), the kinematic Bessel law
+    (pi L J_n / Lambda_P)^2, and full TT in the filled crystal. Left: Laue I_1 and I_2. Right: the
+    ratio I_2 / I_1, which the kinematic law fixes at J_2^2 / J_1^2 for every thickness."""
+    from scipy.special import jv
+
+    style()
+    laue, bragg = f10_points()
+    j1, j2 = abs(jv(1, F10_S)), abs(jv(2, F10_S))
+    a = np.linspace(1e-3, 1.6, 400)
+    fig, (ax, axr) = plt.subplots(1, 2, figsize=(FIG_W, 5.4), constrained_layout=True)
+    for j, I, c, m, n in ((j1, laue[:, 0], BLUE, "o", 1), (j2, laue[:, 1], ORANGE, "s", 2)):
+        ax.plot(a, np.sin(np.pi * a * j) ** 2, color=c, label=f"$n={n}$")
+        ax.plot(a, (np.pi * a * j) ** 2, color=c, ls="--", lw=2.2)
+        ax.plot(F10_ALPHA, I, m, color=c, mec="white", mew=0.8, ms=11, ls="none")
+    ax.set(
+        xlim=(0, 1.6),
+        ylim=(0, 1.08),
+        xlabel=r"thickness $L/\Lambda_P$",
+        ylabel=r"steady $I_n/I_{inc}$ (Laue)",
+    )
+    ax.plot([], [], color=INK2, ls="--", lw=2.2, label=r"kinematic $(\pi L J_n/\Lambda_P)^2$")
+    ax.set_yticks([0, 0.5, 1.0])
+    # under the panels: the dashed kinematic curves leave the axes where an inside key would sit
+    fig.legend(*ax.get_legend_handles_labels(), frameon=False, loc="outside lower center", ncol=3)
+    kin = j2**2 / j1**2
+    axr.axhline(kin, color=INK2, ls="--", lw=2.2, label=r"kinematic $J_2^2/J_1^2$")
+    for law, I, c, m, name in (
+        (lambda x: np.sin(np.pi * x) ** 2, laue, BLUE, "o", "Laue"),
+        (lambda x: np.tanh(np.pi * x) ** 2, bragg, ORANGE, "s", "Bragg"),
+    ):
+        axr.plot(a, law(a * j2) / law(a * j1), color=c, label=name)
+        axr.plot(F10_ALPHA, I[:, 1] / I[:, 0], m, color=c, mec="white", mew=0.8, ms=11, ls="none")
+    axr.set(
+        xlim=(0, 1.6),
+        ylim=(0, 1.0),
+        xlabel=r"thickness $L/\Lambda_P$",
+        ylabel=r"ratio $I_2/I_1$",
+    )
+    axr.legend(frameon=False, loc="upper left")
+    finish(fig, (ax, axr), "f10_steady")
+    for name, I, law in (
+        ("Laue", laue, lambda x: np.sin(np.pi * x) ** 2),
+        ("Bragg", bragg, lambda x: np.tanh(np.pi * x) ** 2),
+    ):
+        dev = np.abs(I - law(np.outer(F10_ALPHA, [j1, j2]))).max()
+        print(f"f10 {name}: max |TT - closed form| = {dev:.3f}")
+    print(f"f10 kinematic J_2^2/J_1^2 = {kin:.3f}")
+
+
 if __name__ == "__main__":
-    for name in sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9"]:
+    for name in sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10"]:
         globals()[name]()

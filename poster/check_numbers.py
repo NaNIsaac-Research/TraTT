@@ -1,4 +1,4 @@
-"""Recompute every number printed on the poster. Run: uv run python poster/check_numbers.py
+"""Recompute every number on the posters (poster.md, iqms.md). Run: uv run python poster/check_numbers.py
 
 Each row is (printed value, recomputed value, tolerance). The recomputation uses the solver
 (src/tratt), the stored results the figures are drawn from (explore/nb), and the constants
@@ -134,6 +134,34 @@ row(
     0.06,
     worst,
     0.06 - worst if worst < 0.06 else -1,
+)
+
+# i-QMS poster (poster/iqms.md): numbers not already on the KPS poster.
+
+
+def ratio21(law, alpha: float, s: float = 1.5) -> float:
+    return law(np.pi * alpha * abs(jv(2, s))) / law(np.pi * alpha * abs(jv(1, s)))
+
+
+def sin2(x):
+    return np.sin(x) ** 2
+
+
+row("iqms: kinematic I_2/I_1 = J_2^2/J_1^2 at S = 1.5", 0.17, (jv(2, 1.5) / jv(1, 1.5)) ** 2, 0.005)
+row("iqms: Laue I_2/I_1 at L = Lambda_P/2", 0.22, ratio21(sin2, 0.5), 0.005)
+row("iqms: Laue I_2/I_1 at L = Lambda_P", 0.46, ratio21(sin2, 1.0), 0.005)
+f10 = np.load(ROOT / "explore" / "nb" / "poster_f10_points.npz")
+k = {float(a): i for i, a in enumerate(f10["alpha"])}
+for a, printed in ((0.5, 0.22), (1.0, 0.46)):
+    laue = f10["laue"][k[a]]
+    row(f"iqms: full TT Laue I_2/I_1 at L = {a:g} Lambda_P", printed, laue[1] / laue[0], 0.005)
+row("iqms f10: L / Lambda_ac", 40, float(f10["alpha_ac"]), 0)
+s_axis = data["S"]
+row(
+    "iqms: overshoot map, largest Delta I for S below the J_1 maximum (law: 0)",
+    0.0,
+    float(np.max(data["excess"][:, s_axis < s_max])),
+    1e-12,
 )
 
 

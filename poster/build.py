@@ -1,4 +1,4 @@
-r"""poster/poster.md -> poster/out/poster.pdf (+ PNG preview). Run: python poster/build.py [preview_dpi]
+r"""poster/<name>.md -> poster/out/<name>.pdf (+ PNG preview). Run: python poster/build.py [preview_dpi] [manuscript]
 
 Same idea as a print pipeline: the manuscript is canonical and read-only, every coordinate comes
 from SPEC (mm, page origin top-left), and the build ends with machine checks. Looking at the PNG
@@ -458,9 +458,9 @@ def fit(P, path, x, y, w, h, align="right"):
 # ───────────── page ─────────────
 
 
-def build(preview_dpi=60):
+def build(preview_dpi=60, ms=MS):
     s = SPEC
-    meta, panels = parse(MS.read_text(encoding="utf8"))
+    meta, panels = parse(ms.read_text(encoding="utf8"))
     known = set(
         re.findall(r"^## .*?Entry (\d+)\b", NOTEBOOK.read_text(encoding="utf8"), flags=re.M)
     )
@@ -594,15 +594,15 @@ def build(preview_dpi=60):
         print("note: poster/assets/ missing — logos skipped")
 
     OUT.mkdir(exist_ok=True)
-    P.fig.savefig(OUT / "poster.pdf", dpi=300)  # raster figures are resampled to this
-    P.fig.savefig(OUT / "poster.png", dpi=preview_dpi)
+    P.fig.savefig(OUT / f"{ms.stem}.pdf", dpi=300)  # raster figures are resampled to this
+    P.fig.savefig(OUT / f"{ms.stem}.png", dpi=preview_dpi)
     print(f"font: {FONT}; space between bands: {gap:.0f} mm")
     print(
         "band heights (mm): "
         + "  ".join(f"{b[0]['title'][:12]} {h:.0f}" for b, h in zip(bands, heights, strict=True))
     )
     print("entries cited: " + ", ".join(f"E{e}" for e in sorted(used)))
-    print(f"wrote {OUT / 'poster.pdf'} and poster.png")
+    print(f"wrote {OUT / ms.stem}.pdf and .png")
     if problems:
         print(f"\n{len(problems)} problem(s):")
         for m in problems:
@@ -614,4 +614,5 @@ def build(preview_dpi=60):
 
 if __name__ == "__main__":
     dpi = int(sys.argv[1]) if len(sys.argv) > 1 else 60  # optional preview dpi
-    sys.exit(build(dpi))
+    ms = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else MS  # e.g. poster/iqms.md
+    sys.exit(build(dpi, ms))
