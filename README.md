@@ -165,8 +165,8 @@ frequency (Entries 75, 82, 83; [report](docs/REPORT.md) §3.2-3.3).
 
 **KPS 2026 Fall Meeting, poster P2.17** (Jeju, 22 October 2026). Isaac Yong, Ouyoung Kwon,
 Hyunjung Kim — Center for Ultrafast Phase Transformation, Sogang University. The preview is
-built from the current source, whose notation was corrected after the meeting; the printed poster
-is the source at commit 40676f4.
+built from the current source; the printed poster is the source at commit 40676f4.
+`poster/check_numbers.py` recomputes every number on the poster.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/NaNIsaac-Research/TraTT/main/figures/poster/poster_preview.jpg" width="640" alt="KPS 2026 poster P2.17">

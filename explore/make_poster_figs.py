@@ -3,15 +3,21 @@
 Width FIG_W is the inner width of a poster card (poster/build.py SPEC), so a font size here is the
 printed size. Panels reuse the notebook figure code; nothing is recomputed differently.
 
+Notation is the poster's: physical depth z, time t, detuning beta (1/m) in units of the acoustic
+wave vector K, Pendelloesung length Lambda_P, and times in units of a named physical time (t_tr or
+tau_n). The solver's scaled variables (eta, q, zeta, t~) do not appear on an axis.
+
 f0  schematic: Laue slab, acoustic front filling the crystal, incident / transmitted / satellite beams
-f1  filled-depth mapping: Laue sin^2 and Bragg tanh^2 collapse      (make_poster_figure.collapse; Entries 1, 9)
+f1  formation law against full TT on the axis t / tau_n, Laue and Bragg (make_poster_figure; Entries 1, 9)
 f2  time-resolved rocking curve near n = 1 and its centre cut        (make_map_figure.compute; Entries 22, 23)
 f3  path memory: transient-only satellite, up vs down a pulse       (make_memory_figure.panel_a/b; Entries 28, 30)
 f4  population error of the independent-channel picture vs R        (make_phase_figure.merged; Entry 54)
 f5  outlook: Fourier weight / kinematic law (Entry 59, e58 data) and the satellite weight of the
     first-order forms against full TT (Entry 64, e64_sw.json); reads stored results only
-f6  introductory Bessel coupling weights for a sinusoidal grating
+f6  introductory Bessel coupling weights |J_n(S)| for a sinusoidal grating
 f7  linear-ramp overshoot map and three TT-checked traces (Entry 67)
+f8  kinematic satellites: lattice planes without and with a shear wave, and J_n(S)^2 by order
+f9  symmetric Laue and Bragg geometry: h, the acoustic polarisation that couples, boundary conditions
 """
 
 from __future__ import annotations
@@ -31,13 +37,14 @@ from tratt.core import required_nz, rocking  # noqa: E402
 from tratt.drive import Drive  # noqa: E402
 
 OUT = ROOT / "figures" / "poster"
-for _f in sorted((ROOT / "poster" / "fonts").glob("*.ttf")):  # same typeface as the poster text
+for _f in sorted((ROOT / "poster" / "fonts").glob("*.ttf")):
     mpl.font_manager.fontManager.addfont(str(_f))
-FONT = "IBM Plex Sans"  # same face as poster/build.py (f1 still carries Source Sans 3: redrawing it reruns TT)
+# Same face as poster/build.py: Arial where installed (the lab posters use it), else DejaVu Sans.
+FONT = ["Arial", "DejaVu Sans"]
 
 FIG_W = 14.4  # inches = poster card inner width (~366 mm)
 INTRO_W = 12.5  # inches = left column of the introduction band (~317 mm)
-F1_H, F7_H = 7.15, 8.35  # heights of the two result figures (inches), set by the results band
+F1_H, F7_H = 5.7, 7.2  # heights of the two result figures (inches), set by the results band
 BIG, SMALL = 26, 23  # printed pt; smallest label 21 pt (SMALL - 2), readable at ~1.5 m on A0
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
@@ -92,153 +99,139 @@ def finish(fig, ax, name):
 
 
 def f0():
-    """Schematic for half a wide card (text sits on the other half), so FIG_W / 2 wide.
+    """Entry snapshot for half a panel width: Laue slab with depth z running left to right.
 
-    Everything here is computed, like the other four figures: the profile inside the slab is
-    `Drive.phi(t)` sampled in depth, and the curve on the right is a real `rocking()` of that
-    same snapshot, turned on its side so each satellite peak faces the beam it belongs to.
-    The earlier version drew sine curves wiggling along the transverse direction, i.e. the
-    modulation varying across the beam rather than with depth -- the opposite of the drive.
+    The profile inside the slab is `Drive.phi(t)` sampled in depth, and the curve on the right is
+    a real `rocking()` of that same snapshot, turned on its side. The entrance face is vertical, so
+    h (in the surface plane, symmetric Laue) is vertical and the drawn transverse wiggle is the shear
+    displacement u parallel to h. D0 leaves along the incident direction and Dh is deflected by h.
     """
     style()
-    LAB, KEY = BIG + 4, BIG + 8  # the lead schematic of the introduction, read from a distance
+    LAB, KEY = BIG, BIG + 4
     alpha, S, alpha_ac, t = 0.6, 1.5, 5.0, 0.62
     d = Drive(S=S, alpha_ac=alpha_ac)
 
     fig, (ax, axr) = plt.subplots(
         1,
         2,
-        figsize=(INTRO_W, 0.35 * INTRO_W),
+        figsize=(FIG_W, 0.31 * FIG_W),
         constrained_layout=True,
-        gridspec_kw=dict(width_ratios=[2.5, 1.0], wspace=0.0),
+        gridspec_kw=dict(width_ratios=[2.6, 1.0], wspace=0.0),
     )
 
-    ax.set(xlim=(-3.3, 9.6), ylim=(-0.3, 10.4))
+    ax.set(xlim=(-3.6, 10.0), ylim=(-0.6, 10.6))
     ax.axis("off")
-    x0, x1, y0, y1 = 0.0, 6.0, 2.1, 8.1  # slab; depth zeta runs left to right
-    xf = x0 + t * (x1 - x0)  # acoustic front
+    x0, x1, y0, y1 = 0.0, 6.0, 2.1, 8.1
+    xf = x0 + t * (x1 - x0)
     ymid = 0.5 * (y0 + y1)
 
-    ax.add_patch(plt.Rectangle((x0, y0), x1 - x0, y1 - y0, fc="#f4f7fb", ec=INK2, lw=1.6, zorder=1))
-    ax.add_patch(plt.Rectangle((x0, y0), xf - x0, y1 - y0, fc="#e7effa", ec="none", zorder=1))
-
+    ax.add_patch(plt.Rectangle((x0, y0), x1 - x0, y1 - y0, fc="white", ec=INK2, lw=1.6, zorder=1))
     zz = np.linspace(0.0, 1.0, 1200)
     phi = d.phi(t)(zz)
     amp = 0.33 * (y1 - y0) / max(abs(phi).max(), 1e-9)
-    # Draw the propagating acoustic displacement only where the wave has arrived.
-    # A flat phi=0 line ahead of the front can be mistaken for the X-ray path.
-    vibrating = zz <= t
-    ax.plot(
-        x0 + zz[vibrating] * (x1 - x0),
-        ymid + amp * phi[vibrating],
-        color=BLUE,
-        lw=2.8,
-        zorder=3,
-        solid_capstyle="round",
+    inside = zz <= t
+    ax.plot(x0 + zz[inside] * (x1 - x0), ymid + amp * phi[inside], color=BLUE, lw=2.8, zorder=3)
+    ax.plot([xf, xf], [y0, y1], color=BLUE, lw=2.2, ls=(0, (4, 3)), zorder=4)
+    ax.annotate(
+        "",
+        xy=(xf + 1.2, y1 + 0.6),
+        xytext=(xf, y1 + 0.6),
+        arrowprops=dict(arrowstyle="-|>", color=BLUE, lw=2.2, mutation_scale=22),
     )
-    ax.plot([xf, xf], [y0, y1], color=BLUE, lw=2.4, ls=(0, (4, 3)), zorder=4)
-    # Separate the physical sound field (blue oscillation) from the X-ray probe
-    # (dark straight incoming arrow) using a directly associated label.
+    ax.text(xf + 1.35, y1 + 0.6, r"$v_s$", color=BLUE, va="center", fontsize=KEY)
+    ax.text(xf, y1 + 1.3, "wavefront", color=BLUE, ha="center", va="bottom", fontsize=LAB)
     ax.text(
-        x0 + 1.57,
-        y1 + 0.36,
-        "acoustic wave",
+        0.5 * (x0 + xf),
+        y1 + 0.35,
+        r"shear wave, $u\parallel h$",
         color=BLUE,
         ha="center",
         va="bottom",
-        fontsize=LAB - 4,
-        fontweight="medium",
+        fontsize=LAB - 2,
     )
+    ax.text(0.5 * (xf + x1), ymid, r"$u=0$", color=INK2, ha="center", va="center", fontsize=LAB)
 
-    # transducer on the lower part of the entrance face, so the beam enters clear of it
-    ty = y0 + 0.58 * (y1 - y0)
-    ax.add_patch(plt.Rectangle((x0 - 0.44, y0), 0.44, ty - y0, fc=INK2, ec="none", zorder=2))
+    ty = y0 + 0.5 * (y1 - y0)
+    ax.add_patch(plt.Rectangle((x0 - 0.4, y0), 0.4, ty - y0, fc=INK2, ec="none", zorder=2))
     ax.text(
-        x0 - 0.62, 0.5 * (y0 + ty), "transducer", ha="right", va="center", fontsize=LAB, color=INK2
-    )
-
-    # front marker, and the two regions it separates
-    ax.annotate(
-        "",
-        xy=(xf + 1.25, y1 + 0.70),
-        xytext=(xf, y1 + 0.70),
-        arrowprops=dict(arrowstyle="-|>", color=BLUE, lw=2.2, mutation_scale=22),
-    )
-    ax.text(xf + 1.45, y1 + 0.70, r"$v_s$", color=BLUE, va="center", fontsize=KEY)
-    ax.text(xf, y1 + 1.55, "wavefront", color=BLUE, ha="center", va="bottom", fontsize=LAB)
-    ax.text(
-        0.5 * (xf + x1) + 0.1,
-        ymid,
-        "unstrained",
-        color=INK2,
-        ha="center",
+        x0 - 0.55,
+        0.5 * (y0 + ty),
+        "transducer",
+        ha="right",
         va="center",
-        rotation=90,
-        fontsize=LAB - 3,
+        fontsize=LAB - 2,
+        color=INK2,
     )
 
-    # one dimension row: the slab thickness, with the filled part picked out on the same line
-    yd = y0 - 0.72
+    # depth axis and the displaced depth on one row
+    yd = y0 - 0.75
     ax.annotate(
         "",
-        xy=(x1, yd),
+        xy=(x1 + 0.9, yd),
         xytext=(x0, yd),
-        arrowprops=dict(arrowstyle="<|-|>", color=INK2, lw=1.2, mutation_scale=13),
+        arrowprops=dict(arrowstyle="-|>", color=INK2, lw=1.4, mutation_scale=16),
     )
-    for x in (x0, xf, x1):
-        ax.plot([x, x], [yd - 0.22, yd + 0.22], color=INK2, lw=1.1)
-    ax.plot([x0, xf], [yd, yd], color=INK, lw=3.2, solid_capstyle="butt")
-    ax.text(x1 + 0.22, yd, r"$L$", ha="left", va="center", fontsize=LAB, color=INK2)
-    ax.text(
-        0.5 * (x0 + xf),
-        yd - 0.38,
-        r"vibrating depth $v_s t$",
-        ha="center",
-        va="top",
-        fontsize=LAB,
-        color=INK,
-    )
+    for x, lab in ((x0, "$0$"), (x1, "$L$")):
+        ax.plot([x, x], [yd - 0.2, yd + 0.2], color=INK2, lw=1.2)
+        ax.text(x, yd - 0.35, lab, ha="center", va="top", fontsize=LAB, color=INK2)
+    ax.text(x1 + 1.05, yd, "$z$", ha="left", va="center", fontsize=KEY, color=INK2)
+    ax.plot([x0, xf], [yd, yd], color=BLUE, lw=3.4, solid_capstyle="butt")
+    ax.text(0.5 * (x0 + xf), yd - 0.35, r"$v_s t$", ha="center", va="top", fontsize=LAB, color=BLUE)
 
-    # beams: in above the transducer, forward and diffracted out
+    # incident beam in above the transducer; D0 keeps its direction, Dh is turned by h
+    dx, dy = 2.6, -1.45
     ax.annotate(
         "",
-        xy=(x0 + 0.08, ymid + 1.25),
-        xytext=(-2.8, ymid + 2.85),
-        arrowprops=dict(arrowstyle="-|>", color=INK, lw=2.8, mutation_scale=26),
+        xy=(x0, ymid + 1.5),
+        xytext=(x0 - dx, ymid + 1.5 - dy),
+        arrowprops=dict(arrowstyle="-|>", color=INK, lw=2.8, mutation_scale=24),
         zorder=5,
     )
-    ax.text(-2.9, ymid + 3.2, "X-ray", fontsize=KEY, color=INK)
+    ax.text(x0 - dx - 0.2, ymid + 1.5 - dy + 0.35, "X-ray", fontsize=KEY, color=INK)
+    ex, ey = x1, ymid
     ax.annotate(
         "",
-        xy=(9.0, ymid + 1.65),
-        xytext=(x1, ymid + 0.1),
+        xy=(ex + dx, ey + dy),
+        xytext=(ex, ey),
         arrowprops=dict(arrowstyle="-|>", color=INK2, lw=2.4, mutation_scale=22),
     )
-    ax.text(9.2, ymid + 1.8, r"$D_0$", va="center", fontsize=KEY, color=INK2)
+    ax.text(ex + dx + 0.15, ey + dy, r"$D_0$", va="center", fontsize=KEY, color=INK2)
     ax.annotate(
         "",
-        xy=(9.0, ymid - 1.65),
-        xytext=(x1, ymid - 0.1),
+        xy=(ex + dx, ey - dy),
+        xytext=(ex, ey),
         arrowprops=dict(arrowstyle="-|>", color=ORANGE, lw=3.0, mutation_scale=22),
     )
-    ax.text(9.2, ymid - 1.8, r"$D_h$", va="center", fontsize=KEY, color=ORANGE)
+    ax.text(ex + dx + 0.15, ey - dy, r"$D_h$", va="center", fontsize=KEY, color=ORANGE)
+    hx = x1 + 1.45
+    ax.annotate(
+        "",
+        xy=(hx, ymid + 1.0),
+        xytext=(hx, ymid - 1.0),
+        arrowprops=dict(arrowstyle="-|>", color=INK, lw=2.0, mutation_scale=18),
+    )
+    ax.text(hx + 0.2, ymid, r"$h$", va="center", fontsize=KEY, color=INK)
 
     eta = np.linspace(-2.6 * d.q, 2.6 * d.q, 4001)
-    I = rocking(alpha, eta, phi=d.phi(t), n_z=required_nz(alpha, alpha_ac))
-    axr.plot(I, eta / d.q, color=ORANGE, lw=2.2)
-    axr.fill_betweenx(eta / d.q, 0, I, color=ORANGE, alpha=0.16)
-    axr.set(xlim=(0, 1.55 * I.max()), ylim=(-2.75, 2.75), xticks=[], yticks=[-2, -1, 0, 1, 2])
-    axr.set_xlabel(r"$I(\beta)$", fontsize=LAB, labelpad=1)
-    axr.set_ylabel(r"$\beta / K$", fontsize=LAB, labelpad=0)
-    axr.tick_params(labelsize=LAB, length=4)
-    for s in ("top", "right", "bottom"):
+    intensity = rocking(alpha, eta, phi=d.phi(t), n_z=required_nz(alpha, alpha_ac))
+    axr.plot(intensity, eta / d.q, color=ORANGE, lw=2.2)
+    axr.set(
+        xlim=(0, 1.6 * intensity.max()),
+        ylim=(-2.75, 2.75),
+        xticks=[0, 0.5, 1],
+        yticks=[-2, -1, 0, 1, 2],
+    )
+    axr.set_xlabel(r"$I_h$ at time $t$", fontsize=LAB, labelpad=2)
+    axr.set_ylabel(r"detuning $\beta/K$", fontsize=LAB, labelpad=0)
+    axr.tick_params(labelsize=LAB - 2, length=5)
+    for s in ("top", "right"):
         axr.spines[s].set_visible(False)
     axr.grid(False)
     for n in (0, 1, 2):
         axr.annotate(
             f"$n={n}$",
-            (float(np.interp(n * d.q, eta, I)), n),
-            fontsize=LAB,
+            (float(np.interp(n * d.q, eta, intensity)), n),
+            fontsize=LAB - 2,
             color=ORANGE,
             va="center",
             xytext=(6, 0),
@@ -247,7 +240,7 @@ def f0():
 
     OUT.mkdir(parents=True, exist_ok=True)
     fig.savefig(OUT / "f0_scheme.png", dpi=300)
-    print("wrote", OUT / "f0_scheme.png")
+    print("wrote", OUT / "f0_scheme.png", f"(rocking-curve max {intensity.max():.3f})")
 
 
 def f1():
@@ -271,10 +264,10 @@ def f1():
     fig, ax = plt.subplots(1, 2, figsize=(FIG_W, F1_H), constrained_layout=True, sharey=True)
     fig.get_layout_engine().set(rect=(0, key, 1, 1 - key), w_pad=0.04, h_pad=0.02)
     s = np.linspace(0, 2.3, 500)
-    # the laws themselves are written in the panel text, so the titles only name the geometry
+    # alpha |J_n| t~ = t / tau_n: the solver's scaled time is shown as a physical ratio
     for a, data, law, title in (
-        (ax[0], laue, np.sin(np.pi * s) ** 2, "Laue geometry"),
-        (ax[1], bragg, np.tanh(np.pi * s) ** 2, "Bragg geometry"),
+        (ax[0], laue, np.sin(np.pi * s) ** 2, r"Laue: $\sin^2(\pi t/\tau_n)$"),
+        (ax[1], bragg, np.tanh(np.pi * s) ** 2, r"Bragg: $\tanh^2(\pi t/\tau_n)$"),
     ):
         # the law is drawn over the TT markers so the comparison stays visible where they crowd
         a.plot(
@@ -283,7 +276,8 @@ def f1():
             color=INK,
             lw=2.0,
             zorder=3,
-            label="Independent-satellite approximation (no fitted parameters)",
+            label=r"independent-satellite model, $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$, "
+            "no fitted parameters",
         )
         for (S, al, n), I, c, m in zip(
             M.CASES, data, (BLUE, ORANGE, AQUA, YELLOW), M.MARK, strict=False
@@ -298,15 +292,15 @@ def f1():
                 ms=9.5,
                 ls="none",
                 zorder=2,
-                label=rf"$S={S:g},\ \alpha={al:g},\ n={n}$",
+                label=rf"$S={S:g},\ L={al:g}\,\Lambda_P,\ n={n}$",
             )
         a.set(
             xlim=(0, 2.3),
             ylim=(-0.03, 1.08),
             title=title,
-            xlabel=r"$\alpha_n\tilde t$,  $\alpha_n=\alpha\left|J_n(S)\right|$",
+            xlabel=r"time $t/\tau_n$",
         )
-    ax[0].set_ylabel(r"centre intensity $I_n$")
+    ax[0].set_ylabel(r"satellite intensity $I_n/I_{inc}$")
     ax[1].tick_params(labelleft=False)
     # Shared key under both panels: the simulated cases (2 x 2, after their lead), then the curve
     # they are compared with on a row of its own.
@@ -337,14 +331,14 @@ def f1():
         borderpad=0,
     )
     fig.canvas.draw()
-    lead = "Full TT simulation:"
-    probe = fig.text(0, 0, lead, fontsize=SMALL, fontweight="semibold")
+    lead = "Full TT:"
+    probe = fig.text(0, 0, lead, fontsize=SMALL, fontweight="bold")
     wl = probe.get_window_extent().width / fig.bbox.width
     probe.remove()
     box = sim.get_window_extent()
     ws, top = box.width / fig.bbox.width, box.y1 / fig.bbox.height
     x0 = (1 - wl - 0.012 - ws) / 2  # centre the labelled block under the panels
-    fig.text(x0, top, lead, fontsize=SMALL, fontweight="semibold", va="top")
+    fig.text(x0, top, lead, fontsize=SMALL, fontweight="bold", va="top")
     sim.set_bbox_to_anchor((x0 + wl + 0.012, 0.01 + row), transform=fig.transFigure)
     law.set_bbox_to_anchor((x0, 0.01), transform=fig.transFigure)
     finish(fig, ax, "f1_collapse")
@@ -455,7 +449,7 @@ def f4():
 
     style()
     P = M.merged()
-    fig, ax = plt.subplots(figsize=(FIG_W, 4.2), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(FIG_W, 4.6), constrained_layout=True)
     Ss = sorted(set(P[:, 2]))
     hues = plt.cm.viridis(np.linspace(0, 0.9, len(Ss)))
     for c, S in zip(hues, Ss, strict=False):
@@ -488,8 +482,8 @@ def f4():
         yscale="log",
         ylim=(2.2e-5, 1.5),
         xlim=(1e-3, 6),
-        xlabel=r"$R=\Lambda_{ac}/\Lambda_P$",
-        ylabel="intensity error",
+        xlabel=r"$\Lambda_{ac}/\Lambda_P$",
+        ylabel="relative error",
     )
     # nine S values: a discrete colour bar reads better than a nine-entry legend
     cmap = mpl.colors.ListedColormap(hues)
@@ -583,7 +577,7 @@ def f6():
         ax.plot(amplitude, np.abs(jv(n, amplitude)), color=color, label=rf"$n={n}$")
     ax.set(
         xlabel=r"sound amplitude $S=h u_0$",
-        ylabel=r"$|J_n(S)|$",
+        ylabel=r"$\left|J_n(S)\right|$",
         xlim=(0, 5),
         ylim=(0, 1.04),
         title="Sinusoidal grating: Bessel weights",
@@ -607,12 +601,12 @@ def f7():
         data["S"], data["rise"], data["excess"], shading="nearest", cmap="YlOrRd", vmin=0
     )
     cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.045)
-    cb.set_label(r"overshoot $\Delta I$")
+    cb.set_label(r"$\Delta I/I_{inc}$")
     # the map is the reduced coupling law over the scanned grid; only A-C are checked against full TT
     ax.set(
-        xlabel=r"final sound amplitude $S$",
+        xlabel=r"final acoustic amplitude $S$",
         ylabel=r"rise time $T_{rise}/t_{tr}$",
-        title=r"Parameter scan, reduced coupling model: first satellite ($n=1$)",
+        title=r"Reduced model, Laue, $n=1$, $L=\Lambda_P/2$:  $\Delta I=I_{max}-I_{steady}$",
     )
 
     def num(v):
@@ -624,7 +618,7 @@ def f7():
     for case, color, label in zip(
         summary["cases"],
         (BLUE, ORANGE, AQUA),
-        ("A: monotonic growth", "B: finite overshoot", "C: near-zero steady state"),
+        ("A: monotonic", "B: maximum above steady", r"C: final $S$ near zero of $J_1$"),
         strict=False,
     ):
         letter, S, rise = case["label"], case["S"], case["rise"]
@@ -660,17 +654,11 @@ def f7():
                     arrowstyle="<|-|>", color=INK, lw=1.6, mutation_scale=16, shrinkA=0, shrinkB=0
                 ),
             )
-            a.text(
-                tb + 0.08,
-                case["steady"] + 0.3 * (float(data["B_I"][k]) - case["steady"]),
-                r"$\Delta I$",
-                fontsize=SMALL,
-                va="center",
-                color=INK,
-            )
-        a.set(xlabel=r"time / $t_{tr}$", ylim=(-0.025, 1.0))  # headroom for the two-line case label
+            a.text(tb, case["steady"] - 0.06, r"$\Delta I$", fontsize=SMALL, ha="center", va="top")
+        # headroom above every curve (max 0.6) for the two-line case label, which has no backing box
+        a.set(xlabel=r"time $t/t_{tr}$", ylim=(-0.025, 1.3), yticks=[0, 0.5, 1])
         a.set_title(
-            label, color=color, fontsize=SMALL, fontweight="semibold"
+            label, color=color, fontsize=SMALL - 2, fontweight="bold"
         )  # colour = map marker
         peak, steady = case["peak"], case["steady"]
         values = (
@@ -686,10 +674,9 @@ def f7():
             fontsize=SMALL - 2,
             va="top",
             linespacing=1.25,
-            bbox=dict(facecolor="white", edgecolor="none", pad=2),
         )
         if letter == "A":
-            a.set_ylabel("satellite intensity")
+            a.set_ylabel(r"$I_1/I_{inc}$")
         else:
             a.tick_params(labelleft=False)
         a.grid(color=GRID, lw=1)
@@ -699,6 +686,165 @@ def f7():
     print("wrote", OUT / "f7_overshoot.png")
 
 
+def f8():
+    """Kinematic satellites (talk v4, slide 2): planes without and with a shear wave, and J_n(S)^2.
+
+    Depth z runs down, h is horizontal (in the surface plane, symmetric Laue), and the shear
+    displacement u || h bends each plane with depth. The bars are the kinematic weights; the
+    satellite of order n sits at detuning beta = nK.
+    """
+    from scipy.special import jv
+
+    style()
+    fig, (ax, axb) = plt.subplots(
+        1,
+        2,
+        figsize=(FIG_W, 0.33 * FIG_W),
+        constrained_layout=True,
+        gridspec_kw=dict(width_ratios=[1.25, 1.0]),
+    )
+    ax.set(xlim=(-0.9, 10.4), ylim=(-0.9, 9.4))
+    ax.axis("off")
+    z = np.linspace(0.6, 7.6, 300)
+    K = 2 * np.pi / 2.3
+    for left, wave, title in ((0.0, False, "no sound"), (5.4, True, r"shear wave, $u\parallel h$")):
+        for k in range(6):
+            x = left + 0.75 * k + (0.28 * np.sin(K * z) if wave else np.zeros_like(z))
+            ax.plot(x, z, color=INK if wave else INK2, lw=2.2)
+        ax.annotate(
+            "",
+            xy=(left + 4.2, 8.35),
+            xytext=(left, 8.35),
+            arrowprops=dict(arrowstyle="-|>", color=INK, lw=1.8, mutation_scale=18),
+        )
+        ax.text(left + 4.35, 8.35, "$h$", va="center", fontsize=BIG + 2)
+        ax.text(left + 2.0, 9.25, title, ha="center", va="center", fontsize=SMALL)
+    ax.annotate(
+        "",
+        xy=(10.0, 0.6),
+        xytext=(10.0, 7.6),
+        arrowprops=dict(arrowstyle="-|>", color=BLUE, lw=2.4, mutation_scale=20),
+    )
+    ax.text(10.15, 4.1, "$K$", color=BLUE, va="center", fontsize=BIG + 2)
+    ax.annotate(
+        "",
+        xy=(-0.55, 0.4),
+        xytext=(-0.55, 7.6),
+        arrowprops=dict(arrowstyle="-|>", color=INK2, lw=1.4, mutation_scale=16),
+    )
+    ax.text(
+        -0.75, 4.1, "depth $z$", rotation=90, ha="right", va="center", fontsize=SMALL, color=INK2
+    )
+
+    n = np.arange(-3, 4)
+    for S, color, off in ((1.0, INK2, -0.2), (2.0, BLUE, 0.2)):
+        axb.bar(n + off, jv(n, S) ** 2, width=0.38, color=color, label=f"$S={S:g}$")
+    axb.set(
+        xticks=n,
+        ylim=(0, 0.65),
+        yticks=[0, 0.2, 0.4, 0.6],
+        xlabel=r"order $n$ (detuning $\beta=nK$)",
+        ylabel=r"$J_n(S)^2$",
+    )
+    axb.set_xticklabels([f"{k:+d}" if k else "0" for k in n])
+    axb.legend(frameon=False, loc="upper right")
+    finish(fig, axb, "f8_satellites")
+
+
+def f9():
+    """Symmetric Laue and Bragg geometry (talk v4, slide 3) with the acoustic polarisation that
+    couples in each: phi = h.u needs u to have a component along h. Laue: h in the surface plane, a
+    shear wave along z with u || h. Bragg: h along z, a longitudinal wave."""
+    style()
+    fig, axes = plt.subplots(1, 2, figsize=(FIG_W, 0.31 * FIG_W), constrained_layout=True)
+    for ax, geo in zip(axes, ("Laue", "Bragg"), strict=True):
+        ax.set(xlim=(-0.4, 10.4), ylim=(-3.3, 7.4))
+        ax.axis("off")
+        ax.add_patch(plt.Rectangle((0.3, 0.0), 8.4, 3.2, fc="#eef3f9", ec=INK2, lw=1.4))
+        ax.text(8.85, 3.2, "$z=0$", va="center", fontsize=SMALL, color=INK2)
+        ax.text(8.85, 0.0, "$z=L$", va="center", fontsize=SMALL, color=INK2)
+        p = (3.2, 3.2)
+        ax.annotate(
+            "",
+            xy=p,
+            xytext=(1.2, 5.6),
+            arrowprops=dict(arrowstyle="-|>", color=INK, lw=2.4, mutation_scale=20),
+        )
+        ax.text(0.5, 6.1, "incident", fontsize=SMALL)
+        title = "Laue (transmission)" if geo == "Laue" else "Bragg (reflection)"
+        ax.text(5.0, 7.2, title, ha="center", va="top", fontsize=BIG)
+        if geo == "Laue":
+            ax.annotate(
+                "",
+                xy=(5.85, 0.0),
+                xytext=p,
+                arrowprops=dict(arrowstyle="-|>", color=INK2, lw=2.4, mutation_scale=20),
+            )
+            ax.annotate(
+                "",
+                xy=(0.55, 0.0),
+                xytext=p,
+                arrowprops=dict(arrowstyle="-|>", color=ORANGE, lw=2.6, mutation_scale=20),
+            )
+            ax.text(5.0, 1.5, "$D_0$", fontsize=BIG, color=INK2)
+            ax.text(1.0, 1.5, "$D_h$", fontsize=BIG, color=ORANGE)
+            ax.annotate(
+                "",
+                xy=(5.6, 4.4),
+                xytext=(7.9, 4.4),
+                arrowprops=dict(arrowstyle="-|>", color=INK, lw=1.8, mutation_scale=18),
+            )
+            ax.text(8.05, 4.4, "$h$", va="center", fontsize=BIG)
+            ax.annotate(
+                "",
+                xy=(5.6, 5.4),
+                xytext=(7.9, 5.4),
+                arrowprops=dict(arrowstyle="<|-|>", color=BLUE, lw=1.8, mutation_scale=16),
+            )
+            ax.text(8.05, 5.4, "$u$", va="center", fontsize=BIG, color=BLUE)
+            wave = r"shear wave along $z$, $u\parallel h$"
+            bc = r"$D_0(0)=1,\ D_h(0)=0$"
+            how = "both on the entrance face"
+        else:
+            ax.annotate(
+                "",
+                xy=(5.85, 0.0),
+                xytext=p,
+                arrowprops=dict(arrowstyle="-|>", color=INK2, lw=2.4, mutation_scale=20),
+            )
+            ax.annotate(
+                "",
+                xy=(6.6, 5.6),
+                xytext=(3.9, 2.36),
+                arrowprops=dict(arrowstyle="-|>", color=ORANGE, lw=2.6, mutation_scale=20),
+            )
+            ax.text(3.3, 0.6, "$D_0$", fontsize=BIG, color=INK2)
+            ax.text(6.9, 4.7, "$D_h$", fontsize=BIG, color=ORANGE)
+            ax.annotate(
+                "",
+                xy=(8.2, 6.6),
+                xytext=(8.2, 4.3),
+                arrowprops=dict(arrowstyle="-|>", color=INK, lw=1.8, mutation_scale=18),
+            )
+            ax.text(8.4, 5.45, "$h$", va="center", fontsize=BIG)
+            ax.annotate(
+                "",
+                xy=(9.5, 6.6),
+                xytext=(9.5, 4.3),
+                arrowprops=dict(arrowstyle="<|-|>", color=BLUE, lw=1.8, mutation_scale=16),
+            )
+            ax.text(9.7, 5.45, "$u$", va="center", fontsize=BIG, color=BLUE)
+            wave = r"longitudinal wave along $z$, $u\parallel h$"
+            bc = r"$D_0(0)=1,\ D_h(L)=0$"
+            how = "on opposite faces"
+        ax.text(4.5, -0.55, wave, ha="center", va="top", fontsize=SMALL, color=BLUE)
+        ax.text(4.5, -1.55, bc, ha="center", va="top", fontsize=SMALL)
+        ax.text(4.5, -2.45, how, ha="center", va="top", fontsize=SMALL, color=INK2)
+    OUT.mkdir(parents=True, exist_ok=True)
+    fig.savefig(OUT / "f9_geometry.png")
+    print("wrote", OUT / "f9_geometry.png")
+
+
 if __name__ == "__main__":
-    for name in sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7"]:
+    for name in sys.argv[1:] or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9"]:
         globals()[name]()
