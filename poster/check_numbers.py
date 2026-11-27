@@ -148,14 +148,12 @@ def sin2(x):
 
 
 row("iqms: kinematic I_2/I_1 = J_2^2/J_1^2 at S = 1.5", 0.17, (jv(2, 1.5) / jv(1, 1.5)) ** 2, 0.005)
-row("iqms: Laue I_2/I_1 at L = Lambda_P/2", 0.22, ratio21(sin2, 0.5), 0.005)
 row("iqms: Laue I_2/I_1 at L = Lambda_P", 0.46, ratio21(sin2, 1.0), 0.005)
 f10 = np.load(ROOT / "explore" / "nb" / "poster_f10_points.npz")
 k = {float(a): i for i, a in enumerate(f10["alpha"])}
-for a, printed in ((0.5, 0.22), (1.0, 0.46)):
+for a, printed in ((1.0, 0.46),):
     laue = f10["laue"][k[a]]
     row(f"iqms: full TT Laue I_2/I_1 at L = {a:g} Lambda_P", printed, laue[1] / laue[0], 0.005)
-row("iqms f10: L / Lambda_ac", 40, float(f10["alpha_ac"]), 0)
 s_axis = data["S"]
 row(
     "iqms: overshoot map, largest Delta I for S below the J_1 maximum (law: 0)",
@@ -167,7 +165,6 @@ row(
 # i-QMS v2 (review round 1)
 row("iqms: Bragg t_tr = L / v_L at L = 296 um (ns)", 32.4, L / v_long * 1e9, 0.05)
 row("iqms: formation times, Bragg tau_1 (ns, printed 4)", 4, tau_bragg * 1e9, 0.5)
-row("iqms: hbar Omega at 2 GHz (ueV)", 8, 4.135667696e-15 * 2e9 * 1e6, 0.5)
 row(
     "iqms: strain K u0 at 2 GHz, shear (Laue)",
     5e-5,
@@ -182,16 +179,6 @@ w1 = j1 * darwin
 row("iqms: Darwin half-width, Si 440 30 keV (urad, not printed)", 0.97, darwin * 1e6, 0.005)
 row("iqms: 0.3 w_1 Bragg beam condition (urad)", 0.16, 0.3 * w1 * 1e6, 0.005)
 row("iqms: 0.1 w_1 Laue beam condition (urad)", 0.05, 0.1 * w1 * 1e6, 0.005)
-rise_axis = data["rise"]
-for T, printed in ((0.05, 0.010), (4.0, 0.60)):
-    i = int(np.argmin(abs(rise_axis - T)))
-    row(
-        f"iqms: largest Delta I at T_rise = {T:g} t_tr",
-        printed,
-        float(data["excess"][i].max()),
-        0.005,
-    )
-row("iqms f1: L / Lambda_ac", 20, M.AAC, 0)
 
 
 def main() -> int:

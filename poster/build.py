@@ -17,12 +17,15 @@ a variable is a serif italic and is told apart from the sans body. Absolute valu
 \left|..\right|: a bare STIX | is the height of a lowercase l and reads as one.
 
 Manuscript syntax
-  front matter: title ("//" = line break), authors, affiliation, contact, footer, session (header corner)
+  front matter: title ("//" = line break), authors, affiliation, contact, footer, session (header
+                  corner), takehome (one sentence under the title block, tagged), logo_left (a logo
+                  path, or "reserved" to keep the upper left free; the session line then goes on top)
   "## Title"      a panel (numbered automatically); every panel spans the page width
   "@pair"         the next two panels share one band, side by side
   "[[ 0.5 c" ... "|| 0.5" ... "]]"   a row inside a panel: columns with width fractions; "c"
                   centres that column vertically in the row; rows nest
   "> text"        key sentence, set in the accent colour     "- text"  bullet
+  "+ text"        a bold paragraph in body type (a rule the reader should take away)
   "![caption](path)" figure, as wide as its column; path "none" sets the caption as a note
   "~ step | text" input-condition line: a small envelope glyph (step or ramp) followed by the text
   "$$ text"       display line: centred, slightly larger, with space around it (equations)
@@ -93,6 +96,7 @@ SPEC = dict(
     header_h=92,
     footer_h=54,  # QR 40 mm
     title_pt=52,
+    takehome_pt=34,
     authors_pt=30,
     affil_pt=24,
     head_pt=36,
@@ -187,8 +191,8 @@ def parse(text):
             t = squash(block[2:])
             add(dict(kind="eq", text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
             continue
-        kind = "key" if block.startswith(">") else "para"
-        t = squash(re.sub(r"^>\s?", "", block, flags=re.M))
+        kind = {">": "key", "+": "strong"}.get(block[0], "para")
+        t = squash(re.sub(r"^[>+]\s?", "", block, flags=re.M) if kind != "para" else block)
         add(dict(kind=kind, text=TAG.sub("", t).strip(), tags=TAG.findall(t)))
     return meta, panels
 
@@ -439,6 +443,8 @@ def items(P, its, x, y, w, draw, check, spread=0.0):
             y = equation(P, it, x, y, w, draw)
         elif k == "onset":
             y = onset(P, it, x, y, w, draw)
+        elif k == "strong":
+            y = P.flow(it["text"], x, y, w, s["body_pt"], weight="bold", draw=draw) + s["para_gap"]
         else:
             y = P.flow(it["text"], x, y, w, s["body_pt"], draw=draw) + s["para_gap"]
     return y
@@ -467,6 +473,9 @@ def fit(P, path, x, y, w, h, align="right"):
 def build(preview_dpi=60, ms=MS):
     s = SPEC
     meta, panels = parse(ms.read_text(encoding="utf8"))
+    # a SPEC number in the front matter (e.g. "body_pt: 28") holds for this manuscript; one build
+    # per process, and every item function reads SPEC
+    SPEC.update({k: float(v) for k, v in meta.items() if isinstance(SPEC.get(k), int | float)})
     known = set(
         re.findall(r"^## .*?Entry (\d+)\b", NOTEBOOK.read_text(encoding="utf8"), flags=re.M)
     )
@@ -481,10 +490,27 @@ def build(preview_dpi=60, ms=MS):
     if (ASSETS / "logo_ihs.png").exists():
         logo_w = 62
         fit(P, ASSETS / "logo_ihs.png", W - M - 52, 12, 52, s["header_h"] - 24)
-    if meta.get("session"):
+    # "logo_left: reserved" keeps the upper left corner free for a logo still to come; the session
+    # line then moves to the top centre, above the title
+    left = meta.get("logo_left")
+    if left and (ROOT / left).exists():
+        fit(P, ROOT / left, M + s["pad"], 12, 52, s["header_h"] - 24, align="left")
+    shift = 0.0
+    if meta.get("session") and left:
+        P.flow(
+            meta["session"],
+            M + logo_w,
+            6,
+            W - 2 * M - 2 * logo_w,
+            s["caption_pt"],
+            s["ink2"],
+            align="center",
+        )
+        shift = 8.0
+    elif meta.get("session"):
         P.flow(meta["session"], M + s["pad"], 10, 150, s["caption_pt"], s["ink2"])
     tw = W - 2 * M - 2 * logo_w
-    y = 16 - s["title_pt"] * PT_MM * (s["leading"] - 1)
+    y = 16 + shift - s["title_pt"] * PT_MM * (s["leading"] - 1)
     for line in meta.get("title", "").split("//"):  # "//" in the title = manual line break
         y = (
             P.flow(
@@ -500,12 +526,32 @@ def build(preview_dpi=60, ms=MS):
             - s["title_pt"] * PT_MM * 0.35
         )
     y = P.flow(meta.get("authors", ""), M + logo_w, y + 8, tw, s["authors_pt"], align="center")
-    P.flow(
+    y = P.flow(
         meta.get("affiliation", ""), M + logo_w, y + 2, tw, s["affil_pt"], s["ink2"], align="center"
     )
+    header_h = s["header_h"] + shift
+    if meta.get("takehome"):  # the poster's one sentence, under the title block in large type
+        t = meta["takehome"]
+        for tag in TAG.findall(t):
+            used.add(int(tag))
+            if tag not in known:
+                problems.append(f"tag E{tag} is not an Entry in the notebook")
+        if not TAG.findall(t):
+            problems.append("untagged takehome line")
+        y = P.flow(
+            TAG.sub("", t).strip(),
+            M + s["pad"],
+            y + 6,
+            W - 2 * (M + s["pad"]),
+            s["takehome_pt"],
+            s["accent"],
+            weight="bold",
+            align="center",
+        )
+        header_h = max(header_h, y + 6)
     ax.plot(
         [M + s["pad"], W - M - s["pad"]],
-        [s["header_h"], s["header_h"]],
+        [header_h, header_h],
         color=s["line"],
         lw=1.0,
         zorder=2,
@@ -562,7 +608,7 @@ def build(preview_dpi=60, ms=MS):
             bands[-1].append(p)
         else:
             bands.append([p])
-    top = s["header_h"] + s["panel_gap"] + 4
+    top = header_h + s["panel_gap"] + 4
     bottom = fy - 6
     full = W - 2 * M
 

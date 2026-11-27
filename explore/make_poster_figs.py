@@ -59,7 +59,7 @@ TERM = "satellite"
 def use_iqms():
     global IQMS, OUT, BLUE, LABEL, TERM, F1_H, F7_H, F4_H
     IQMS, OUT, BLUE, LABEL, TERM = True, OUT / "iqms", "#1f4e8c", INK, "sideband"
-    F1_H, F7_H, F4_H = 4.9, 6.6, 3.3  # the i-QMS page carries one figure more
+    F1_H, F7_H, F4_H = 5.6, 6.6, 4.2  # f1 key inside the axes, f7 map only
 
 
 def style():
@@ -272,7 +272,7 @@ def f1():
         bragg = np.array([M.centre(a, S, n, t, "bragg") for S, a, n in M.CASES])
         np.savez(cache, t=t, cases=np.array(M.CASES), laue=laue, bragg=bragg)
     row = SMALL * 1.6 / 72 / F1_H  # one key row, as a fraction of the figure height
-    key = 3 * row + 0.02  # key strip under both panels: 2 case rows + the law
+    key = 0.0 if IQMS else 3 * row + 0.02  # key strip under both panels: 2 case rows + the law
     fig, ax = plt.subplots(1, 2, figsize=(FIG_W, F1_H), constrained_layout=True, sharey=True)
     fig.get_layout_engine().set(rect=(0, key, 1, 1 - key), w_pad=0.04, h_pad=0.02)
     s = np.linspace(0, 2.3, 500)
@@ -322,13 +322,40 @@ def f1():
     ax[0].set_ylabel(r"sideband $I_n/I_{inc}$" if IQMS else r"satellite intensity $I_n/I_{inc}$")
     ax[1].tick_params(labelleft=False)
     if IQMS:
-        ax[1].plot([], [], "|", color=INK, ms=18, mew=4, label=r"$t=t_{tr}=L/v_s$")
+        ax[0].set_yticks([0, 0.5, 1])
+    for name, data, curve in (
+        ("Laue", laue, lambda x: np.sin(np.pi * x) ** 2),
+        ("Bragg", bragg, lambda x: np.tanh(np.pi * x) ** 2),
+    ):
+        dev = [
+            np.abs(I - curve(al * abs(jv(n, S)) * t)).max()
+            for (S, al, n), I in zip(M.CASES, data, strict=False)
+        ]
+        print(f"f1 {name}: max |TT - expression| per case", " ".join(f"{v:.3f}" for v in dev))
+    if IQMS:
+        # One short key inside the Bragg panel, where the curve is flat: the four cases share one
+        # entry (the caption names them), the tick stands for t_tr.
+        from matplotlib.legend_handler import HandlerTuple
+
+        h, _ = ax[1].get_legend_handles_labels()
+        tick = ax[1].plot([], [], "|", color=INK, ms=18, mew=4)[0]
+        ax[1].legend(
+            [tuple(h[1:]), h[0], tick],
+            ["full TT, 4 cases", "closed form", r"$t=t_{tr}$"],
+            handler_map={tuple: HandlerTuple(ndivide=None, pad=0.1)},
+            loc="lower right",
+            frameon=False,
+            handlelength=3.2,
+            handletextpad=0.5,
+            borderaxespad=0.3,
+            fontsize=SMALL,
+        )
+        finish(fig, ax, "f1_collapse")
+        return
     # Shared key under both panels: the simulated cases (2 x 2, after their lead), then the curve
     # they are compared with on a row of its own.
     h, lab = ax[1].get_legend_handles_labels()
-    if IQMS:  # the t_tr mark joins the law row
-        h, lab = [h[0], h[-1], *h[1:-1]], [lab[0], lab[-1], *lab[1:-1]]
-    k = 2 if IQMS else 1  # handles on the law row
+    k = 1  # handles on the law row
     sim = fig.legend(
         h[k:],
         lab[k:],
@@ -368,15 +395,6 @@ def f1():
     sim.set_bbox_to_anchor((x0 + wl + 0.012, 0.01 + row), transform=fig.transFigure)
     law.set_bbox_to_anchor((x0, 0.01), transform=fig.transFigure)
     finish(fig, ax, "f1_collapse")
-    for name, data, law in (
-        ("Laue", laue, lambda x: np.sin(np.pi * x) ** 2),
-        ("Bragg", bragg, lambda x: np.tanh(np.pi * x) ** 2),
-    ):
-        dev = [
-            np.abs(I - law(al * abs(jv(n, S)) * t)).max()
-            for (S, al, n), I in zip(M.CASES, data, strict=False)
-        ]
-        print(f"f1 {name}: max |TT - expression| per case", " ".join(f"{v:.3f}" for v in dev))
 
 
 def f2():
@@ -632,6 +650,30 @@ def f7():
     style()
     data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
+    if IQMS:  # the map alone; the J_1 maximum bounds the region without overshoot
+        from scipy.optimize import minimize_scalar
+        from scipy.special import jv
+
+        s_max = minimize_scalar(lambda s: -jv(1, s), bounds=(1, 3), method="bounded").x
+        fig, ax = plt.subplots(figsize=(FIG_W, F7_H), constrained_layout=True)
+        im = ax.pcolormesh(
+            data["S"], data["rise"], data["excess"], shading="nearest", cmap="cividis", vmin=0
+        )
+        cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.045, ticks=[0, 0.2, 0.4, 0.6])
+        cb.set_label(r"$\Delta I/I_{inc}$")
+        ax.axvline(s_max, color="white", ls="--", lw=2)
+        ax.text(
+            s_max - 0.1, 3.8, r"max of $J_1$", color="white", fontsize=SMALL, ha="right", va="top"
+        )
+        ax.set(
+            xlabel=r"final acoustic amplitude $S$",
+            ylabel=r"rise time $T_{rise}/t_{tr}$",
+            yticks=[1, 2, 3, 4],
+        )
+        OUT.mkdir(parents=True, exist_ok=True)
+        fig.savefig(OUT / "f7_overshoot.png")
+        print("wrote", OUT / "f7_overshoot.png")
+        return
     fig = plt.figure(figsize=(FIG_W, F7_H), constrained_layout=True)
     grid = fig.add_gridspec(
         2, 3, height_ratios=[1.2, 1.0] if IQMS else [1.78, 1.0], hspace=0.18
@@ -766,7 +808,7 @@ def f8():
     fig, (ax, axb) = plt.subplots(
         1,
         2,
-        figsize=(FIG_W, 0.33 * FIG_W),
+        figsize=(FIG_W, (0.40 if IQMS else 0.33) * FIG_W),
         constrained_layout=True,
         gridspec_kw=dict(width_ratios=[1.25, 1.0]),
     )
@@ -950,7 +992,9 @@ def f10():
     laue, bragg = f10_points()
     j1, j2 = abs(jv(1, F10_S)), abs(jv(2, F10_S))
     a = np.linspace(1e-3, 1.6, 400)
-    fig, (ax, axr) = plt.subplots(1, 2, figsize=(FIG_W, 5.4), constrained_layout=True)
+    fig, (ax, axr) = plt.subplots(
+        1, 2, figsize=(FIG_W, 6.4 if IQMS else 5.4), constrained_layout=True
+    )
     # Left: one colour per order, named on the curve; dashed = kinematic (caption). Right: one
     # colour per geometry would reuse the left pair for another meaning, so it is black and grey.
     for j, I, c, m, n, xy in (
