@@ -2,7 +2,7 @@
 title: Transit-Time Limit on Sideband Formation // in Acoustically Driven Bragg Diffraction
 authors: **Isaac Yong**¹, Ouyoung Kwon¹, Hyunjung Kim¹
 affiliation: ¹Center for Ultrafast Phase Transformation, Department of Physics, Sogang University, Seoul, Korea
-session: i-QMS 2026, Jeju, Nov. 29 – Dec. 4, 2026
+session: 10-1533 · i-QMS 2026, Jeju, December 3, 2026
 footer: This work was supported by the National Research Foundation of Korea grant RS-2021-NR059920.
 contact: Code, notebook and data: github.com/NaNIsaac-Research/TraTT (QR at right).
 ---
