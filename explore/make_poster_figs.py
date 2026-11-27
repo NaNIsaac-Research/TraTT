@@ -1250,12 +1250,12 @@ def f12():
     from scipy.special import jv
 
     style()
-    fig, (ax, axv) = plt.subplots(1, 2, figsize=(FIG_W, 4.4), constrained_layout=True)
+    fig, (ax, axv) = plt.subplots(1, 2, figsize=(F12_W, 5.6), constrained_layout=True)
     u = np.linspace(0, 65, 600)  # pm
     S = SI_H440 * u * 1e-12
     # labels beside their curves, inside the frame: n = 0 above its falling edge, n = 3 at the right
     for n, x, y, ha in (
-        (0, 15, 0.95, "left"),
+        (0, 9, 0.97, "left"),
         (1, 26, 0.37, "center"),
         (2, 47, 0.27, "center"),
         (3, 64, 0.25, "right"),
@@ -1264,11 +1264,11 @@ def f12():
         ax.text(x, y, f"$n={n}$", color=ORDER[n], fontsize=SMALL, ha=ha)
     u15 = 1.5 / SI_H440 * 1e12
     ax.axvline(u15, color=INK2, ls=":", lw=2.0)
-    ax.text(u15 + 1, 1.02, "$S$ = 1.5", fontsize=SMALL - 2, color=INK2, va="top")
+    ax.text(u15 + 1, 0.66, "$S$ = 1.5", fontsize=SMALL - 2, color=INK2, va="top")
     ax.set(
         xlim=(0, 65),
         ylim=(0, 1.08),
-        xlabel="displacement amplitude $u_0$ (pm), Si 440",
+        xlabel="displacement $u_0$ (pm)",
         ylabel="kinematic weight $J_n(S)^2$",
     )
     top = ax.secondary_xaxis(
@@ -1282,7 +1282,7 @@ def f12():
         axv.plot(v, jv(m, VADILONGA_ARG * v) ** 2, color=ORDER[m], lw=1.8)
         axv.plot(x, y, "osd^v"[m], color=ORDER[m], mec=INK, ls="none")
     for m, xy in (
-        (0, (8, 0.85)),
+        (0, (14, 0.88)),
         (1, (22, 0.37)),
         (2, (41, 0.26)),
         (3, (44, 0.185)),
@@ -1294,7 +1294,7 @@ def f12():
     axv.set(
         xlim=(0, 45),
         ylim=(0, 1.08),
-        xlabel="drive amplitude on the transducer (V)",
+        xlabel="transducer drive (V)",
         ylabel="satellite intensity",
     )
     finish(fig, (ax, axv), "f12_bessel")
@@ -1305,17 +1305,18 @@ F13_DIV = 10.0  # urad FWHM, beam divergence of the f13 rocking curve
 
 def f13():
     """i-QMS introduction. Left: the Laue onset schematic (onset_sketch). Right: rocking curve of the
-    crystal filled with sound, Si 440 at 30 keV, S = 1.5, 2 GHz shear wave (Lambda_ac = 2.96 um),
-    L = 3 Lambda_ac = 8.9 um (L << Lambda, so the peaks carry the kinematic weights), averaged over
-    eight acoustic phases and convolved with a beam divergence of F13_DIV (FWHM); the angle offset is
-    eta / (h L), satellite n at n d / Lambda_ac. Grey: the same crystal without the wave."""
+    crystal filled with sound, the crystal of the other sections: Si 440 at 30 keV, L = 296 um, S = 1.5,
+    2 GHz shear wave (Lambda_ac = 2.92 um), averaged over eight acoustic phases and convolved with a
+    beam divergence of F13_DIV (FWHM), which separates the satellites but not their line shapes; the
+    angle offset is eta / (h L), satellite n at n d / Lambda_ac. Grey: the same crystal without the
+    wave."""
     style()
-    a_ac = 3.0
     lam_ac = V_SHEAR / 2e9
-    L = a_ac * lam_ac
+    L = 296e-6
+    a_ac = L / lam_ac
     alpha = L / LAMBDA_LAUE
     d = Drive(S=1.5, alpha_ac=a_ac)
-    eta = np.linspace(-2.6 * d.q, 2.6 * d.q, 2001)
+    eta = np.arange(-2.6 * d.q, 2.6 * d.q, 1.0)  # a step of 1 resolves the Pendelloesung fringes
     shift = (2.0 + np.arange(8) / 8 * d.period)[:, None]
     n_z = required_nz(alpha, a_ac, S=1.5, eta_max=eta.max())
     I = rocking(alpha, eta, phi=d.phi(shift), n_z=n_z).mean(axis=0)
@@ -1329,7 +1330,7 @@ def f13():
         gridspec_kw=dict(width_ratios=[1.25, 1.0], wspace=0.03),
     )
     onset_sketch(ax)
-    # a Gaussian beam divergence of F13_DIV (FWHM) smooths the thin-crystal side lobes into one peak each
+    # a Gaussian beam divergence of F13_DIV (FWHM): one smooth peak per satellite
     sig = F13_DIV / (2 * np.sqrt(2 * np.log(2)))
     x = np.arange(-4 * sig, 4 * sig, dth[1] - dth[0])
     g = np.exp(-0.5 * (x / sig) ** 2)
@@ -1340,12 +1341,18 @@ def f13():
     axr.plot(dth, I0 * scale, color=INK2, lw=1.6)
     axr.plot(dth, I * scale, color=BLUE)
     axr.text(
-        9, 0.8 * top, "without\nacoustic wave", color=INK2, fontsize=SMALL, ha="left", va="center"
+        78,
+        1.45 * top,
+        "without\nacoustic wave",
+        color=INK2,
+        fontsize=SMALL,
+        ha="right",
+        va="center",
     )
     axr.text(
-        -84,
-        0.8 * top,
-        "with\nacoustic wave,\n$S$ = 1.5",
+        -78,
+        1.45 * top,
+        "with acoustic\nwave, $S$ = 1.5",
         color=BLUE,
         fontsize=SMALL,
         ha="left",
@@ -1366,7 +1373,7 @@ def f13():
         )
     axr.set(
         xlim=(dth[0], dth[-1]),
-        ylim=(0, 1.22 * top),
+        ylim=(0, 1.75 * top),
         xlabel=r"angle offset $\Delta\theta$ (μrad)",
         ylabel="$I_h/I_0$ (%)",
     )
@@ -1379,6 +1386,8 @@ def f13():
 
 
 F16_ALPHA, F16_AAC, F16_S, F16_PHASES = 296e-6 / LAMBDA_LAUE, 100.0, 1.5, 8  # L = 296 um, 2 GHz
+F16_W = 8.85  # inches: the 0.62 column of a paired poster card, so the map prints near 4:3
+F12_W = 12.27  # inches: the 0.4 column of a full-width poster card
 
 
 def f16_profiles():
@@ -1436,25 +1445,24 @@ def f16_profiles():
 def f16():
     """i-QMS section 5: the first sideband inside the crystal while the wave enters. Laue, Si 440 at
     30 keV, S = 1.5, L = 296 um, step onset; x = time after onset (ns), y = depth (um, down, as in the
-    section 1 schematic), colour = |D_h|^2 at the first-sideband angle where the wave has arrived;
-    the layer below the wavefront z = v_s t is plain grey; t_tr marked."""
+    section 1 schematic), colour = |D_h|^2 at the first-sideband angle over the whole slab; dashed
+    wavefront z = v_s t and t_tr marked. Near 4:3, sized to its column so the labels print at 24 pt."""
+    from matplotlib import patheffects
+
     style()
     zeta, t, I = f16_profiles()
     L_um = F16_ALPHA * LAMBDA_LAUE * 1e6
     t_tr = F16_ALPHA * LAMBDA_LAUE / V_SHEAR * 1e9
     lab = 24
-    fig, ax = plt.subplots(figsize=(FIG_W, 3.6), constrained_layout=True)
+    halo = [patheffects.withStroke(linewidth=4.5, foreground=INK)]
+    fig, ax = plt.subplots(figsize=(F16_W, 0.75 * F16_W), constrained_layout=True)
     tn, zn = t * t_tr, zeta * L_um
-    im = ax.pcolormesh(
-        tn, zn, I, shading="gouraud", cmap="cividis", vmin=0, vmax=1, rasterized=True
-    )
-    ax.contour(tn, zn, I, levels=[0.25, 0.5, 0.75], colors="white", linewidths=0.8, alpha=0.45)
-    cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.05, ticks=[0, 0.5, 1])
+    im = ax.pcolormesh(tn, zn, I, shading="gouraud", cmap="magma", vmin=0, vmax=1, rasterized=True)
+    cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.06, ticks=[0, 0.5, 1])
     cb.set_label("$|D_h|^2/I_0$")
     cb.ax.tick_params(direction="in", which="both")
-    ax.add_patch(plt.Polygon([(0, 0), (t_tr, L_um), (0, L_um)], fc="#e6e6e6", ec="none", zorder=3))
-    ax.plot([0, t_tr], [0, L_um], color=INK, ls="--", lw=2.2, zorder=4)
-    ax.axvline(t_tr, color="white", ls=":", lw=1.8, zorder=4)
+    ax.plot([0, t_tr], [0, L_um], color="white", ls="--", lw=2.4, zorder=4, path_effects=halo)
+    ax.axvline(t_tr, color="white", ls=":", lw=2.2, zorder=4, path_effects=halo)
     ax.text(
         t_tr,
         1.02,
@@ -1464,25 +1472,16 @@ def f16():
         ha="center",
         va="bottom",
     )
-    y = 0.42 * L_um
     ax.text(
-        t_tr * (y - 22) / L_um - 1.2,
-        y,
-        "wavefront $z=v_st$",
+        0.62 * t_tr - 4.5,
+        0.62 * L_um,
+        "wavefront\n$z=v_st$",
         fontsize=lab,
+        color="white",
         ha="right",
         va="center",
         zorder=5,
-    )
-    ax.text(
-        1.5,
-        0.85 * L_um,
-        "not yet reached",
-        fontsize=lab,
-        ha="left",
-        va="center",
-        color=INK2,
-        zorder=5,
+        path_effects=halo,
     )
     ax.set(
         xlim=(0, t[-1] * t_tr),
