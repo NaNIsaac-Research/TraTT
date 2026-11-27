@@ -112,7 +112,7 @@ for $t<t_{tr}=L/v_s$, with $I_n$ constant for $t>t_{tr}$. The formation time $\t
 
 ## Drive envelope and overshoot
 
-For a thin crystal ($L=\Lambda/2$) and a drive amplitude ramped linearly over $T_{rise}$, the first sideband exceeds its steady-state value only when the final amplitude lies beyond the first maximum of $J_1$ ($S$ = 1.84); otherwise the rise is monotonic. In the thick crystal of Sec. 4 a step onset overshoots already at $S$ = 1.5, through the oscillation with period $\tau_1$. {E15}{E67}
+For a thin crystal ($L=\Lambda/2$) and a drive amplitude ramped linearly over $T_{rise}$, the first sideband exceeds its steady-state value only when the final amplitude lies beyond the first maximum of $J_1$ ($S$ = 1.84); otherwise the rise is monotonic. In the thick crystal of Sec. 4 a step onset overshoots already at $S$ = 1.5. {E15}{E67}
 
 ![Overshoot $\Delta I=I_{max}-I_{steady}$ of the first sideband versus final amplitude $S$ and rise time $T_{rise}/t_{tr}$. Reduced model (independent satellites; lines), verified against the full TT solution (symbols) at 12 points and for cases A–C; dashed: steady-state value. Laue geometry, $L=\Lambda/2$ (49 μm Si 440); the $L=3\Lambda$ crystal of Secs. 1–4 has not been scanned.](figures/poster/iqms/f7_overshoot.png){E15}{E67}
 
