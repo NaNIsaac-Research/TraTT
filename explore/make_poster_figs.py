@@ -1462,7 +1462,7 @@ def f16():
     cb.set_label("$|D_h|^2/I_0$")
     cb.ax.tick_params(direction="in", which="both")
     ax.plot([0, t_tr], [0, L_um], color="white", ls="--", lw=2.4, zorder=4, path_effects=halo)
-    ax.axvline(t_tr, color="white", ls=":", lw=2.2, zorder=4, path_effects=halo)
+    ax.axvline(t_tr, color="white", ls=(0, (6, 4)), lw=2.4, zorder=4)
     ax.text(
         t_tr,
         1.02,

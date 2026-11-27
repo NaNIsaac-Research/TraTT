@@ -36,7 +36,7 @@ When a GHz shear wave is switched on in silicon, the X-ray **sidebands do not ap
 
 [[ 0.5 c
 
-![A sound wave displaces the lattice planes; the rocking curve gains satellite peaks (sidebands) at angle offsets proportional to $n$. Si 440, $L$ = 296 μm, beam divergence 10 μrad (FWHM).](figures/poster/iqms/f13_rocking.png){E0}{E7}
+![A sound wave displaces the lattice planes; the rocking curve gains satellite peaks (sidebands) at angle offsets proportional to $n$. Si 440, $L$ = 296 μm. Peak widths are set by the 10 μrad (FWHM) beam; in this thick crystal a peak's area scales with $|J_n|$, not $J_n^2$, so together the peaks exceed the no-wave peak.](figures/poster/iqms/f13_rocking.png){E0}{E7}
 
 || 0.5 c
 
@@ -114,7 +114,7 @@ In the formation time $\tau_n$ the front crosses one sideband extinction length;
 
 Behind the wavefront $z=v_st$ the sideband builds up; the crystal is complete when the front reaches $z=L$ at $t_{tr}$. {E1}{E9}
 
-![Laue, Si 440, $S$ = 1.5, $L$ = 296 μm, step onset: $|D_h(z)|^2$ at the first-sideband angle (TT, phase-averaged). The bottom edge $z=L$ is the section 4 curve.](none){E1}{E9}{E20}
+![Laue, Si 440, $S$ = 1.5, $L$ = 296 μm, step onset: $|D_h(z)|^2$ at the first-sideband angle (TT, phase-averaged). Below the front the crystal is unstrained, so $D_h$ passes down unchanged (vertical stripes); above it the field depends only on depth (horizontal stripes). The bottom edge $z=L$ is the section 4 curve.](none){E1}{E9}{E20}
 
 ]]
 
