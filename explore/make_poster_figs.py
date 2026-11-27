@@ -59,7 +59,7 @@ TERM = "satellite"
 def use_iqms():
     global IQMS, OUT, BLUE, LABEL, TERM, F1_H, F7_H, F4_H
     IQMS, OUT, BLUE, LABEL, TERM = True, OUT / "iqms", "#1f4e8c", INK, "sideband"
-    F1_H, F7_H, F4_H = 5.2, 5.6, 4.2  # f1 key inside the axes, f7 map only
+    F1_H, F7_H, F4_H = 5.2, 4.6, 3.8  # f1 key inside the axes, f7 map only
 
 
 def style():
@@ -992,9 +992,7 @@ def f10():
     laue, bragg = f10_points()
     j1, j2 = abs(jv(1, F10_S)), abs(jv(2, F10_S))
     a = np.linspace(1e-3, 1.6, 400)
-    fig, (ax, axr) = plt.subplots(
-        1, 2, figsize=(FIG_W, 6.4 if IQMS else 5.4), constrained_layout=True
-    )
+    fig, (ax, axr) = plt.subplots(1, 2, figsize=(FIG_W, 5.4), constrained_layout=True)
     # Left: one colour per order, named on the curve; dashed = kinematic (caption). Right: one
     # colour per geometry would reuse the left pair for another meaning, so it is black and grey.
     for j, I, c, m, n, xy in (
@@ -1035,6 +1033,132 @@ def f10():
         dev = np.abs(I - law(np.outer(F10_ALPHA, [j1, j2]))).max()
         print(f"f10 {name}: max |TT - closed form| = {dev:.3f}")
     print(f"f10 kinematic J_2^2/J_1^2 = {kin:.3f}")
+
+
+def f11():
+    """i-QMS panel 3: the formation picture. Left, the sketch of the KPS print poster (a7747b0 f0,
+    without its rocking curve): only the layer 0 < z < v_s t behind the wavefront is driven. Right,
+    the closed form for that layer, n = 1, S = 1.5, L = 296 um, Si 440 at 30 keV (constants as in
+    poster/check_numbers.py): Laue oscillates until t_tr and then holds sin^2(pi t_tr / tau_1);
+    Bragg saturates near tau_1. Closed form only; the full-TT check is the f4 panel."""
+    from scipy.special import jv
+
+    style()
+    LAB, KEY = BIG, BIG + 4
+    S, t = 1.5, 0.62
+    d = Drive(S=S, alpha_ac=5.0)
+
+    lam_laue = 98.76e-6
+    theta_b = np.arcsin(12.398420 / 30.0 * 1e-10 / (2 * 5.4310e-10 / np.sqrt(32)))
+    v_laue = np.sqrt(79.6e9 / 2329.0)
+    v_bragg = np.sqrt((165.7e9 + 63.9e9 + 2 * 79.6e9) / (2 * 2329.0))
+    j1, L = abs(jv(1, S)), 296e-6
+    cases = (
+        ("Laue", BLUE, lam_laue / (v_laue * j1), L / v_laue, lambda x: np.sin(np.pi * x) ** 2),
+        (
+            "Bragg",
+            ORANGE,
+            lam_laue * np.tan(theta_b) / (v_bragg * j1),
+            L / v_bragg,
+            lambda x: np.tanh(np.pi * x) ** 2,
+        ),
+    )
+
+    fig, (ax, axr) = plt.subplots(
+        1,
+        2,
+        figsize=(FIG_W, 0.33 * FIG_W),
+        constrained_layout=True,
+        gridspec_kw=dict(width_ratios=[1.55, 1.0], wspace=0.04),
+    )
+    ax.set(xlim=(-3.3, 9.9), ylim=(-0.6, 10.6))
+    ax.axis("off")
+    x0, x1, y0, y1 = 0.0, 6.0, 2.1, 8.1
+    xf = x0 + t * (x1 - x0)
+    ymid = 0.5 * (y0 + y1)
+    ax.add_patch(plt.Rectangle((x0, y0), x1 - x0, y1 - y0, fc="#f4f7fb", ec=INK2, lw=1.6, zorder=1))
+    ax.add_patch(plt.Rectangle((x0, y0), xf - x0, y1 - y0, fc="#e7effa", ec="none", zorder=1))
+    zz = np.linspace(0.0, 1.0, 1200)
+    phi = d.phi(t)(zz)
+    amp = 0.33 * (y1 - y0) / max(abs(phi).max(), 1e-9)
+    on = zz <= t  # only where the wave has arrived; a flat line ahead would read as a beam
+    ax.plot(x0 + zz[on] * (x1 - x0), ymid + amp * phi[on], color=BLUE, lw=2.8, zorder=3)
+    ax.plot([xf, xf], [y0, y1], color=BLUE, lw=2.4, ls=(0, (4, 3)), zorder=4)
+    ax.text(
+        x0 + 1.6, y1 + 0.36, "acoustic wave", color=BLUE, ha="center", va="bottom", fontsize=LAB
+    )
+    ax.annotate(
+        "",
+        xy=(xf + 1.25, y1 + 0.7),
+        xytext=(xf, y1 + 0.7),
+        arrowprops=dict(arrowstyle="-|>", color=BLUE, lw=2.2, mutation_scale=22),
+    )
+    ax.text(xf + 1.45, y1 + 0.7, r"$v_s$", color=BLUE, va="center", fontsize=KEY)
+    ax.text(xf, y1 + 1.55, "wavefront", color=BLUE, ha="center", va="bottom", fontsize=LAB)
+    ax.text(
+        0.5 * (xf + x1) + 0.1,
+        ymid,
+        "unstrained",
+        color=INK2,
+        ha="center",
+        va="center",
+        rotation=90,
+        fontsize=LAB - 2,
+    )
+    ty = y0 + 0.58 * (y1 - y0)
+    ax.add_patch(plt.Rectangle((x0 - 0.44, y0), 0.44, ty - y0, fc=INK2, ec="none", zorder=2))
+    ax.text(
+        x0 - 0.62, 0.5 * (y0 + ty), "transducer", ha="right", va="center", fontsize=LAB, color=INK2
+    )
+    yd = y0 - 0.72
+    ax.annotate(
+        "",
+        xy=(x1, yd),
+        xytext=(x0, yd),
+        arrowprops=dict(arrowstyle="<|-|>", color=INK2, lw=1.2, mutation_scale=13),
+    )
+    for x in (x0, xf, x1):
+        ax.plot([x, x], [yd - 0.22, yd + 0.22], color=INK2, lw=1.1)
+    ax.plot([x0, xf], [yd, yd], color=INK, lw=3.2, solid_capstyle="butt")
+    ax.text(x1 + 0.22, yd, r"$L$", ha="left", va="center", fontsize=LAB, color=INK2)
+    ax.text(
+        0.5 * (x0 + xf), yd - 0.38, r"driven depth $v_s t$", ha="center", va="top", fontsize=LAB
+    )
+    ax.annotate(
+        "",
+        xy=(x0 + 0.08, ymid + 1.25),
+        xytext=(-2.8, ymid + 2.85),
+        arrowprops=dict(arrowstyle="-|>", color=INK, lw=2.8, mutation_scale=26),
+        zorder=5,
+    )
+    ax.text(-2.9, ymid + 3.2, "X-ray", fontsize=KEY, color=INK)
+    for sign, name, color in ((1, r"$D_0$", INK2), (-1, r"$D_h$", ORANGE)):
+        ax.annotate(
+            "",
+            xy=(9.0, ymid + sign * 1.65),
+            xytext=(x1, ymid + sign * 0.1),
+            arrowprops=dict(arrowstyle="-|>", color=color, lw=2.6, mutation_scale=22),
+        )
+        ax.text(9.15, ymid + sign * 1.8, name, va="center", fontsize=KEY, color=color)
+
+    tt = np.linspace(0, 62e-9, 1500)
+    for name, color, tau, t_tr, law in cases:
+        axr.plot(tt * 1e9, law(np.minimum(tt, t_tr) / tau), color=color, lw=2.6, label=name)
+        axr.plot([t_tr * 1e9] * 2, [1.08, 1.2], color=color, lw=4, solid_capstyle="butt")
+    axr.text(62, 1.14, r"$t_{tr}$", ha="right", va="center", fontsize=LAB - 2)
+    axr.set(
+        xlim=(0, 62),
+        ylim=(-0.03, 1.22),
+        yticks=[0, 0.5, 1],
+        xlabel="time $t$ (ns)",
+        ylabel=r"$I_1/I_{inc}$",
+    )
+    axr.legend(loc="lower right", frameon=False, fontsize=LAB - 2, handlelength=1.6)
+    finish(fig, axr, "f11_formation")
+    for name, _, tau, t_tr, law in cases:
+        print(
+            f"f11 {name}: tau_1 {tau * 1e9:.1f} ns, t_tr {t_tr * 1e9:.1f} ns, I(t_tr) {law(t_tr / tau):.2f}"
+        )
 
 
 if __name__ == "__main__":
