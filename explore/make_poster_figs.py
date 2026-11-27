@@ -59,7 +59,7 @@ TERM = "satellite"
 def use_iqms():
     global IQMS, OUT, BLUE, LABEL, TERM, F1_H, F7_H, F4_H
     IQMS, OUT, BLUE, LABEL, TERM = True, OUT / "iqms", "#1f4e8c", INK, "sideband"
-    F1_H, F7_H, F4_H = 5.6, 6.6, 4.2  # f1 key inside the axes, f7 map only
+    F1_H, F7_H, F4_H = 5.2, 5.6, 4.2  # f1 key inside the axes, f7 map only
 
 
 def style():
@@ -808,7 +808,7 @@ def f8():
     fig, (ax, axb) = plt.subplots(
         1,
         2,
-        figsize=(FIG_W, (0.40 if IQMS else 0.33) * FIG_W),
+        figsize=(FIG_W, (0.37 if IQMS else 0.33) * FIG_W),
         constrained_layout=True,
         gridspec_kw=dict(width_ratios=[1.25, 1.0]),
     )

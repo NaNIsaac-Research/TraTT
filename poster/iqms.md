@@ -3,12 +3,10 @@ title: Transit-Time Limit on Sideband Formation // in Acoustically Driven Bragg 
 authors: **Isaac Yong**¹, Ouyoung Kwon¹, Hyunjung Kim¹
 affiliation: ¹Center for Ultrafast Phase Transformation, Department of Physics, Sogang University, Seoul, Korea
 session: 10-1533 · i-QMS 2026, Jeju, December 3, 2026
-logo_left: reserved
+look: lab
 body_pt: 28
 caption_pt: 24
 eq_pt: 30
-takehome_pt: 38
-takehome: Sidebands form within the transit time $L/v_s$, nanoseconds in Si; the Bessel law needs $L\ll\Lambda_P$. {E1}{E9}{E67}
 footer: This work was supported by the National Research Foundation of Korea grant RS-2021-NR059920.
 contact: Code, notebook and data: github.com/NaNIsaac-Research/TraTT (QR at right).
 ---
@@ -18,7 +16,8 @@ Printed text source for the i-QMS 2026 poster; build with python poster/build.py
 Figures: python explore/make_poster_figs.py --iqms f1 f4 f7 f8 f9 f10 (figures/poster/iqms/).
 Story and title follow the i-QMS abstract; notation, sign convention and layout are those of
 poster/poster.md. v4 (declutter): a claim heading, one figure and at most three short lines per
-panel; captions one line. "Closed form" is the one name for the independent-channel model (sin^2,
+panel; captions one line. Header, section heads, Conclusions and footer in the lab look of
+the KPS print poster (look: lab). "Closed form" is the one name for the independent-channel model (sin^2,
 tanh^2, Theta_n). Every number is recomputed by poster/check_numbers.py. "Si 440", "30 keV" and
 "6 %" carry a no-break space (U+00A0).
 -->
@@ -90,7 +89,19 @@ Beyond the $J_1$ maximum ($S$ = 1.84), $I_1$ overshoots, more for a slower rise.
 The closed form holds below $\Lambda_{ac}/\Lambda_P\approx0.3$ (error under 6 %). {E19}{E44}{E54}
 
 - **Known:** steady acoustic satellites (Entin 1977; Iolin & Entin 1983; Polikarpov & Skadorov 1987); acoustic switching (DeCamp et al. 2001); TT (Takagi 1962, 1969; Taupin 1964). {E7}{E21}{E29}{E50}
-- **This work:** one clock per sideband, the transit-time limit, the Bessel-law failure, the overshoot. {E0}{E1}{E9}{E54}{E67}
 - **Method:** RK4 on frozen snapshots ($L/c$ = 0.99 ps $\ll$ 500 ps period), Floquet check. {E0}{E31}{E42}{E62}
-- **Not yet:** experiment, absorption, back-face reflection, asymmetric cuts, realistic pulses, divergent or polychromatic beams. {E0}{E20}
 - **Outlook:** $S$ = 1.5 is $u_0$ = 23 pm, strain $5\times10^{-5}$ at 2 GHz; formation takes 4–30 ns. The sideband centre needs a divergence below 0.16 μrad (Bragg), 0.05 μrad (Laue). {E20}{E73}{E84}{E92}
+
+## Conclusions
+
+[[ 0.59 c
+
+Full Takagi–Taupin calculations of an acoustically driven crystal give one formation clock per sideband, $\tau_n=\Lambda_P/(v_s\left|J_n(S)\right|)$, a transit-time limit on settling, steady ratios away from the Bessel law, and an overshoot for slow ramps past the $J_1$ maximum. {E0}{E1}{E9}{E54}{E67}
+
+|| 0.41 c
+
+> Sidebands form within the transit time $L/v_s$, nanoseconds in Si; the Bessel law needs $L\ll\Lambda_P$. {E1}{E9}{E67}
+
+]]
+
+![Scope: two beams, symmetric geometry, no absorption, quasi-static diffraction. Not yet: experiment, back-face reflection, asymmetric cuts, realistic pulses, divergent or polychromatic beams.](none){E0}{E20}{E62}

@@ -10,7 +10,11 @@ the titles. The header holds the title, authors and affiliation with the Sogang 
 upper right; the footer holds the acknowledgement, the CUPT logo and the repository QR at the lower
 right (logo positions as the advisor asked). One thin grey line separates header and footer from
 the body, because the header is no longer a coloured block.
-The lab template (navy banner, stripe, number squares, beige key band) is v3 in git history.
+
+Look "lab" ("look: lab" in the front matter; see LAB). The header, section heads and footer of the
+KPS print poster: navy banner with white text and a three-colour stripe, number squares on the
+section heads, the key sentence in a tinted box, a tinted Conclusions band, a square-marked
+Acknowledgement. The body items are the same in both looks.
 
 Text face: Arial where installed (the lab posters use it), DejaVu Sans otherwise; math in STIX, so
 a variable is a serif italic and is told apart from the sans body. Absolute values are
@@ -18,8 +22,10 @@ a variable is a serif italic and is told apart from the sans body. Absolute valu
 
 Manuscript syntax
   front matter: title ("//" = line break), authors, affiliation, contact, footer, session (header
-                  corner), takehome (one sentence under the title block, tagged), logo_left (a logo
-                  path, or "reserved" to keep the upper left free; the session line then goes on top)
+                  corner), look ("lab" or plain), any SPEC number (e.g. "body_pt: 28");
+                  plain only: takehome (one sentence under the title block, tagged), logo_left
+                  ("reserved" keeps the upper left free, the session line then goes on top);
+                  lab: logo_left is a logo path, set on a white plate in the banner
   "## Title"      a panel (numbered automatically); every panel spans the page width
   "@pair"         the next two panels share one band, side by side
   "[[ 0.5 c" ... "|| 0.5" ... "]]"   a row inside a panel: columns with width fractions; "c"
@@ -116,6 +122,25 @@ SPEC = dict(
     ink2="#4a4a4a",
     line="#bdbdbd",
 )
+# "look: lab" in the front matter: the lab template of the KPS print poster (Oct 19, commit
+# a7747b0): navy header band on the lab banner with white text and a three-colour stripe, number
+# squares on the section heads, the key sentence in a tinted box, a tinted Conclusions band and a
+# square-marked Acknowledgement. Geometry and colours are taken from that build.
+LAB = dict(
+    header_h=110,
+    stripe_h=5,
+    footer_h=53,
+    navy="#0f2a3a",
+    orange="#e8743b",
+    key_soft="#fcf5e6",
+    zone_end="#f4f5f3",
+    edge="#c3c9ce",
+    rule="#a9b2b9",
+    rule_w=0.4,
+    callout_pt=29,
+    stripe=("#3a3a3a", "#e04b3a", "#f08a3c"),
+)
+LOOK = {"lab": False}
 PT_MM = 25.4 / 72
 XH = {"Arial": 0.519, "DejaVu Sans": 0.545}.get(FONT, 0.52)  # x-height / em
 
@@ -324,6 +349,12 @@ def bullet(P, it, x, y, w, draw=True):
 
 def key(P, it, x, y, w, draw=True):
     s = SPEC
+    if LOOK["lab"]:  # tinted box with an orange edge, as on the print poster
+        y1 = P.flow(it["text"], x + 10, y + 9, w - 20, s["callout_pt"], s["ink"], draw=draw) + 8
+        if draw:
+            P.rect(x, y, w, y1 - y, s["key_soft"], z=2)
+            P.rect(x, y, 1.4, y1 - y, s["orange"], z=2)
+        return y1 + s["para_gap"]
     return P.flow(it["text"], x, y, w, s["key_pt"], s["accent"], draw=draw) + s["para_gap"]
 
 
@@ -451,11 +482,31 @@ def items(P, its, x, y, w, draw, check, spread=0.0):
 
 
 HEAD = 24.0  # section title and the space under it
+HEAD_LAB = 32.0  # number square, title and rule
 
 
 def head(P, num, title, x, y0, w):
     s = SPEC
-    P.flow(f"{num}  {title}", x, y0, w, s["head_pt"], s["accent"], weight="bold")
+    if not LOOK["lab"]:
+        P.flow(f"{num}  {title}", x, y0, w, s["head_pt"], s["accent"], weight="bold")
+        return
+    sq = 12.1
+    P.rect(x, y0 + 4, sq, sq, s["navy"], z=3)
+    P.ax.text(
+        x + sq / 2,
+        y0 + 4 + sq / 2,
+        str(num),
+        fontsize=23.2,
+        color="white",
+        family=FONT,
+        fontweight="bold",
+        ha="center",
+        va="center",
+        zorder=4,
+    )
+    P.flow(title, x + sq + 4.5, y0 + 0.5, w - sq - 4.5, s["head_pt"], s["ink"], weight="bold")
+    P.rect(x, y0 + 24, w * 0.88, s["rule_w"], s["rule"], z=3)
+    P.rect(x + w * 0.88, y0 + 24, w * 0.12, s["rule_w"], s["orange"], z=3)
 
 
 def fit(P, path, x, y, w, h, align="right"):
@@ -470,22 +521,11 @@ def fit(P, path, x, y, w, h, align="right"):
 # ───────────── page ─────────────
 
 
-def build(preview_dpi=60, ms=MS):
-    s = SPEC
-    meta, panels = parse(ms.read_text(encoding="utf8"))
-    # a SPEC number in the front matter (e.g. "body_pt: 28") holds for this manuscript; one build
-    # per process, and every item function reads SPEC
-    SPEC.update({k: float(v) for k, v in meta.items() if isinstance(SPEC.get(k), int | float)})
-    known = set(
-        re.findall(r"^## .*?Entry (\d+)\b", NOTEBOOK.read_text(encoding="utf8"), flags=re.M)
-    )
-    problems, used = [], set()
-    P = Page()
-    ax = P.ax
-    W, H, M = s["W"], s["H"], s["margin"]
-    ax.add_patch(plt.Rectangle((0, 0), W, H, color=s["page"], lw=0, zorder=0))
-
-    # header: title block centred between the margins, the shield at the upper right
+def header_plain(P, meta, tagged):
+    """Plain look: title block on white, the shield at the upper right, a grey rule under it.
+    Returns the y of that rule."""
+    s, ax = SPEC, P.ax
+    W, M = s["W"], s["margin"]
     logo_w = 0
     if (ASSETS / "logo_ihs.png").exists():
         logo_w = 62
@@ -532,12 +572,7 @@ def build(preview_dpi=60, ms=MS):
     header_h = s["header_h"] + shift
     if meta.get("takehome"):  # the poster's one sentence, under the title block in large type
         t = meta["takehome"]
-        for tag in TAG.findall(t):
-            used.add(int(tag))
-            if tag not in known:
-                problems.append(f"tag E{tag} is not an Entry in the notebook")
-        if not TAG.findall(t):
-            problems.append("untagged takehome line")
+        tagged(TAG.findall(t), "takehome line")
         y = P.flow(
             TAG.sub("", t).strip(),
             M + s["pad"],
@@ -556,8 +591,13 @@ def build(preview_dpi=60, ms=MS):
         lw=1.0,
         zorder=2,
     )
+    return header_h
 
-    # footer: acknowledgement on the left, CUPT logo and repository QR on the right
+
+def footer_plain(P, meta, problems):
+    """Plain look: acknowledgement, CUPT logo and repository QR under a grey rule; returns its y."""
+    s, ax = SPEC, P.ax
+    W, H, M = s["W"], s["H"], s["margin"]
     fy = H - s["footer_h"]
     ax.plot([M + s["pad"], W - M - s["pad"]], [fy, fy], color=s["line"], lw=1.0, zorder=2)
     qr = ASSETS / "qr_repo.png"
@@ -587,18 +627,146 @@ def build(preview_dpi=60, ms=MS):
     yk = P.flow(meta.get("footer", ""), tx, yk + 1, tw, s["caption_pt"] + 1, s["ink"])
     # the repository line stands apart from the grant text, next to the QR it describes
     P.flow(meta.get("contact", ""), tx, yk + 2, tw, s["caption_pt"] + 1, s["ink"])
+    return fy
+
+
+def header_lab(P, meta):
+    """Lab look: navy band on the lab banner, white title block, the shield at the right, session
+    line at the upper left, three-colour stripe under the band. An optional logo_left (a path) sits
+    on a white plate under the session line. Returns the y below the stripe."""
+    s, ax = SPEC, P.ax
+    W, H, M = s["W"], s["H"], s["margin"]
+    hh = s["header_h"]
+    ax.add_patch(plt.Rectangle((0, 0), W, hh, color=s["navy"], lw=0, zorder=1))
+    if (ASSETS / "header_bg.png").exists():  # drawn for 130 mm; trim rows, never stretch
+        bg = mpimg.imread(ASSETS / "header_bg.png")
+        keep = min(bg.shape[0], round(bg.shape[0] * hh / 130))
+        top = (bg.shape[0] - keep) // 2
+        ax.imshow(
+            bg[top : top + keep],
+            extent=(0, W, hh, 0),
+            aspect="auto",
+            zorder=1.5,
+            interpolation="lanczos",
+        )
+        ax.set_xlim(0, W)
+        ax.set_ylim(H, 0)
+    seg = (0.0, 0.58, 0.60, 0.84, 0.86, 1.0)
+    for i, c in enumerate(s["stripe"]):
+        P.rect(seg[2 * i] * W, hh + 2, (seg[2 * i + 1] - seg[2 * i]) * W, s["stripe_h"], c, z=1)
+    logo_w = 0
+    if (ASSETS / "logo_ihs.png").exists():  # size and inset of the print poster
+        logo_w = 100
+        P.image(ASSETS / "logo_ihs.png", W - 22.4 - 55.4, (hh - 79.7) / 2, 55.4, h=79.7)
+    if meta.get("session"):
+        P.flow(meta["session"], M + 6, 14, 150, s["caption_pt"], "white")
+    left = meta.get("logo_left")
+    if left and (ROOT / left).exists():
+        P.rect(M + 6, 42, 80, hh - 52, "white", z=2)
+        fit(P, ROOT / left, M + 9, 45, 74, hh - 58, align="left")
+    tw = W - 2 * M - 2 * logo_w
+    y = 15 - s["title_pt"] * PT_MM * (s["leading"] - 1)
+    for line in meta.get("title", "").split("//"):
+        y = (
+            P.flow(
+                line.strip(),
+                M + logo_w,
+                y + s["title_pt"] * PT_MM * (s["leading"] - 1),
+                tw,
+                s["title_pt"],
+                "white",
+                weight="bold",
+                align="center",
+            )
+            - s["title_pt"] * PT_MM * 0.35
+        )
+    y = P.flow(
+        meta.get("authors", ""), M + logo_w, y + 13, tw, s["authors_pt"], "white", align="center"
+    )
+    P.flow(
+        meta.get("affiliation", ""), M + logo_w, y + 4, tw, s["affil_pt"], "#c9d6e0", align="center"
+    )
+    return hh + s["stripe_h"] + 2
+
+
+def footer_lab(P, meta, problems):
+    """Lab look: square-marked Acknowledgement, grant and repository lines, CUPT logo and
+    QR at the lower right. Returns the y of the hairline above it."""
+    s, ax = SPEC, P.ax
+    W, H, M = s["W"], s["H"], s["margin"]
+    fy = H - s["footer_h"]
+    ax.plot([M, W - M], [fy - 1.4, fy - 1.4], color=s["edge"], lw=0.8, zorder=2)
+    left = M + s["pad"]
+    base, sq = fy + 17.5, 6.7
+    P.rect(left, base - sq + 0.4, sq, sq, s["navy"], z=3)
+    ax.text(
+        left + sq + 3.2,
+        base,
+        "Acknowledgement",
+        fontsize=s["head_pt"] - 6,
+        color=s["ink"],
+        family=FONT,
+        fontweight="bold",
+        va="baseline",
+        zorder=3,
+    )
+    qr = ASSETS / "qr_repo.png"
+    if not qr.exists():
+        qr = ROOT / "figures" / "poster" / "qr_repo.png"
+    qr_w = min(37.0, s["footer_h"] - 12.0)
+    qr_x = W - M - qr_w - 1.5
+    if qr.exists():
+        P.image(qr, qr_x, fy + (s["footer_h"] - qr_w) / 2, qr_w, h=qr_w)
+    else:
+        problems.append("missing footer QR")
+    cupt_left = qr_x - 16.0 - 115.0
+    if (ASSETS / "logo_cupt.png").exists():
+        fit(P, ASSETS / "logo_cupt.png", cupt_left, fy + 7, 115.0, s["footer_h"] - 14)
+    else:
+        problems.append("missing CUPT footer logo")
+    y = fy + 21.0
+    for k in ("footer", "contact"):  # grant, then the repository the QR points to
+        y = P.flow(meta.get(k, ""), left, y, cupt_left - left - 22, s["caption_pt"] + 1, s["ink"])
+    return fy - 1.4
+
+
+def build(preview_dpi=60, ms=MS):
+    s = SPEC
+    meta, panels = parse(ms.read_text(encoding="utf8"))
+    LOOK["lab"] = meta.get("look") == "lab"
+    if LOOK["lab"]:
+        SPEC.update(LAB)
+    # a SPEC number in the front matter (e.g. "body_pt: 28") holds for this manuscript; one build
+    # per process, and every item function reads SPEC
+    SPEC.update({k: float(v) for k, v in meta.items() if isinstance(SPEC.get(k), int | float)})
+    known = set(
+        re.findall(r"^## .*?Entry (\d+)\b", NOTEBOOK.read_text(encoding="utf8"), flags=re.M)
+    )
+    problems, used = [], set()
+    P = Page()
+    ax = P.ax
+    W, H, M = s["W"], s["H"], s["margin"]
+    ax.add_patch(plt.Rectangle((0, 0), W, H, color=s["page"], lw=0, zorder=0))
+
+    def tagged(tags, what):
+        if not tags:
+            problems.append(f"untagged {what}")
+        for t in tags:
+            used.add(int(t))
+            if t not in known:
+                problems.append(f"tag E{t} is not an Entry in the notebook")
+
+    if LOOK["lab"]:
+        header_h = header_lab(P, meta)
+        fy = footer_lab(P, meta, problems)
+    else:
+        header_h = header_plain(P, meta, tagged)
+        fy = footer_plain(P, meta, problems)
 
     def check(it):
         if it["tags"] is None:  # rows carry no tag; their items do
             return
-        if not it["tags"]:
-            problems.append(
-                f"untagged {it['kind']}: {it.get('text', it.get('caption', ''))[:50]!r}"
-            )
-        for t in it["tags"]:
-            used.add(int(t))
-            if t not in known:
-                problems.append(f"tag E{t} is not an Entry in the notebook")
+        tagged(it["tags"], f"{it['kind']}: {it.get('text', it.get('caption', ''))[:50]!r}")
         if it["kind"] == "fig" and it["path"] != "none" and not (ROOT / it["path"]).exists():
             problems.append(f"missing figure {it['path']}")
 
@@ -613,6 +781,7 @@ def build(preview_dpi=60, ms=MS):
     full = W - 2 * M
 
     panel_h = {}  # measured height of each panel (mm), printed to balance a pair
+    hd = HEAD_LAB if LOOK["lab"] else HEAD
 
     def band(b, y0, draw):
         n = len(b)
@@ -620,7 +789,7 @@ def build(preview_dpi=60, ms=MS):
         ends = []
         hs = [items(P, p["items"], 0.0, 0.0, pw - 2 * s["pad"], False, check) for p in b]
         if not draw:
-            panel_h.update({p["title"]: h + HEAD for p, h in zip(b, hs, strict=True)})
+            panel_h.update({p["title"]: h + hd for p, h in zip(b, hs, strict=True)})
         for k, p in enumerate(b):
             x = M + s["pad"] + k * (pw + 2 * s["gap"])
             w = pw - 2 * s["pad"]
@@ -637,7 +806,7 @@ def build(preview_dpi=60, ms=MS):
                 if n == 2
                 else 0.0
             )
-            ends.append(items(P, p["items"], x, y0 + HEAD, w, draw, check, spread))
+            ends.append(items(P, p["items"], x, y0 + hd, w, draw, check, spread))
         return max(ends) - s["para_gap"]
 
     number = {id(p): k + 1 for k, p in enumerate(panels)}
@@ -646,6 +815,9 @@ def build(preview_dpi=60, ms=MS):
     gap = s["panel_gap"] + max(0.0, spare) / max(1, len(bands) - 1)
     y = top
     for b, h in zip(bands, heights, strict=True):
+        if LOOK["lab"] and b[0]["title"].startswith("Conclusion"):  # tinted to the footer line
+            z0 = y - min(gap / 2, 12.0)
+            ax.add_patch(plt.Rectangle((0, z0), W, fy - z0, color=s["zone_end"], lw=0, zorder=0.5))
         band(b, y, True)
         y += h + gap
     if spare < 0:
