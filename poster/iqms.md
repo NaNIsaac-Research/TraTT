@@ -16,9 +16,9 @@ contact: Code, notebook and data: github.com/NaNIsaac-Research/TraTT (QR at righ
 <!--
 Printed text source for the i-QMS 2026 poster; build with python poster/build.py 150 poster/iqms.md.
 Figures: uv run --with "mplume @ git+https://github.com/NaNIsaac/mplume@4c064154f8f0ff94f6c6dd300266b68a34759333"
-python explore/make_poster_figs.py --iqms f11 f12 f13 f14 (figures/poster/iqms/). talk_scene.png,
-talk_kinematic.png and talk_twobeam.png are the drawings of the October 2026 TraTT talk
-(NaNIsaac docs/decks/tratt/out/tratt-talk.pptx, slides 2, 3 and 6), copied unchanged.
+python explore/make_poster_figs.py --iqms f11 f12 f13 f14 (figures/poster/iqms/). talk_twobeam.png is the
+drawing of the October 2026 TraTT talk (NaNIsaac docs/decks/tratt/out/tratt-talk.pptx, slide 6),
+copied unchanged; f13 redraws its slide 3 at S = 1.5.
 v5: about half background (sections 1-3), one key result (4), one supporting result (5). Every
 section opens with one sentence saying what it shows; symbols are defined where they first appear;
 axes in physical units. Look: lab header and footer, flat body (no tints, navy accent).
@@ -30,7 +30,7 @@ no-break space (U+00A0).
 
 [[ 0.27 c
 
-![Planes displaced by a shear wave; satellites at $\mathbf{Q}_n$ with kinematic weights ($S$ = 1.6).](figures/poster/iqms/talk_kinematic.png){E0}{E7}
+![Planes displaced by a shear wave; satellites at $\mathbf{Q}_n$ with kinematic weights ($S$ = 1.5).](figures/poster/iqms/f13_kinematic.png){E0}{E7}
 
 || 0.73 c
 
@@ -44,7 +44,7 @@ no-break space (U+00A0).
 
 A sound wave turns the crystal into a moving phase grating; each grating order appears as an X-ray satellite. {E0}{E7}
 
-[[ 0.36 c
+[[ 0.36
 
 The wave displaces the atoms by $u=u_0\sin(Kz-\Omega t)$ (acoustic wavelength $\Lambda_{ac}=2\pi/K$). A reflection with reciprocal-lattice vector $\mathbf{h}$ ($h=2\pi/d$, $d$ the plane spacing) sees the phase $\mathbf{h}\cdot\mathbf{u}$, which gives satellites of order $n$ at $\mathbf{Q}=\mathbf{h}-nK\hat{z}$, shifted in energy by $n\hbar\Omega$. In single scattering (kinematic theory) satellite $n$ has the weight $J_n(S)^2$, a Bessel function of $S=hu_0$: the Bessel law. {E0}{E7}{E42}
 
@@ -90,7 +90,7 @@ Laue $\tau_1$ = 30 ns, $t_{tr}$ = 50.6 ns; Bragg $\tau_1$ = 4.3 ns, $t_{tr}$ = 3
 
 The ratio of two sideband intensities shows up to which thickness single scattering is enough. {E1}{E9}
 
-[[ 0.38 c
+[[ 0.38
 
 For $L\ll\Lambda$ the steady intensities follow the Bessel law; as $L$ approaches $\Lambda$ they deviate. At $S$ = 1.5 the Laue ratio $I_2/I_1$ is 0.17 (Bessel law) and 0.46 at $L=\Lambda$; Bragg deviates at smaller $L$. {E1}{E9}
 

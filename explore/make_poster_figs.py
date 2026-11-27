@@ -23,6 +23,7 @@ f11 i-QMS: the Laue onset drawing of the October talk, redrawn, and the closed-f
     sideband against time, Si (Entries 1, 9)
 f12 i-QMS background: Bessel weights against u0, and the surface-acoustic-wave
     satellites of Vadilonga et al. 2017 (J. Appl. Cryst. 50, 525, CC BY), points read from its Fig. 6
+f13 i-QMS: kinematic satellites at S = 1.5 (planes, positions Q_n, weights), after talk slide 3
 f14 i-QMS: steady I_2/I_1 against thickness in um, Laue and Bragg, full TT and the Bessel law
 
 The i-QMS figures (--iqms) use the mplume "box" style at poster size (closed frame, inward major and
@@ -1222,9 +1223,15 @@ def f12():
     fig, (ax, axv) = plt.subplots(1, 2, figsize=(FIG_W * 1.25, 5.6), constrained_layout=True)
     u = np.linspace(0, 65, 600)  # pm
     S = SI_H440 * u * 1e-12
-    for n, xy in zip(range(4), ((6, 0.9), (26, 0.37), (47, 0.27), (60, 0.12)), strict=True):
+    # labels beside their curves, inside the frame: n = 0 above its falling edge, n = 3 at the right
+    for n, x, y, ha in (
+        (0, 15, 0.95, "left"),
+        (1, 26, 0.37, "center"),
+        (2, 47, 0.27, "center"),
+        (3, 64, 0.25, "right"),
+    ):
         ax.plot(u, jv(n, S) ** 2, color=ORDER[n])
-        ax.text(*xy, f"$n={n}$", color=ORDER[n], fontsize=SMALL, ha="center")
+        ax.text(x, y, f"$n={n}$", color=ORDER[n], fontsize=SMALL, ha=ha)
     u15 = 1.5 / SI_H440 * 1e12
     ax.axvline(u15, color=INK2, ls=":", lw=2.0)
     ax.text(u15 + 1, 1.02, "$S$ = 1.5", fontsize=SMALL - 2, color=INK2, va="top")
@@ -1261,6 +1268,58 @@ def f12():
         ylabel="satellite intensity",
     )
     finish(fig, (ax, axv), "f12_bessel")
+
+
+def f13():
+    """i-QMS introduction: kinematic satellites at S = 1.5, redrawn after the October talk (slide 3,
+    drawn there at S = 1.6). Left: lattice planes displaced by a shear wave. Middle: satellite
+    positions Q_n = h - nK z along the depth axis. Right: kinematic weights J_n(S)^2, one colour per
+    order as in f12."""
+    from scipy.special import jv
+
+    style()
+    S, lab = 1.5, SMALL - 2
+    fig, (ax, axb) = plt.subplots(
+        1, 2, figsize=(8.6, 4.6), gridspec_kw=dict(width_ratios=[1.3, 1.0], wspace=0.0)
+    )
+    fig.subplots_adjust(left=0.01, right=0.99, top=0.99, bottom=0.02)
+    for a in (ax, axb):
+        a.set_ylim(-3.7, 5.5)
+        a.axis("off")
+    ax.set_xlim(-0.5, 7.2)
+    z = np.linspace(-3.4, 3.4, 300)
+    for k in range(5):
+        ax.plot(0.2 + 0.62 * k + 0.16 * np.sin(2 * np.pi * z / 2.3), z, color=INK, lw=1.8)
+    arrow(ax, (0.2, 3.75), (1.9, 3.75), INK, 2.0, ms=18)
+    ax.text(2.05, 3.75, r"$\mathbf{h}$", fontsize=lab + 2, va="center")
+    arrow(ax, (3.2, 2.6), (3.2, 0.4), INK2, 2.2, ms=18)
+    ax.text(3.35, 1.5, "$K$", color=INK2, fontsize=lab + 2, va="center")
+    ax.text(1.4, 4.55, "real space", fontsize=lab, ha="center", va="bottom")
+    o, xq = (4.3, 0.0), 5.9
+    ax.plot(*o, "o", color=INK, ms=7)
+    arrow(ax, o, (xq - 0.12, 0.0), INK, 2.0, ms=16)
+    ax.text(5.05, 0.2, r"$\mathbf{h}$", fontsize=lab, ha="center", va="bottom")
+    for n in range(-3, 4):
+        ax.plot(xq, n, "o", color=ORDER[abs(n)], mec=INK, ms=10)
+        ax.text(
+            xq + 0.3,
+            n,
+            f"{n:+d}".replace("-", "\N{MINUS SIGN}") if n else "0",
+            fontsize=lab,
+            va="center",
+        )
+    ax.text(
+        xq, 4.55, r"$\mathbf{Q}_n=\mathbf{h}-nK\hat{z}$", fontsize=lab, ha="center", va="bottom"
+    )
+    axb.set_xlim(0, 0.5)
+    for n in range(-3, 4):
+        w = jv(n, S) ** 2
+        axb.barh(n, w, height=0.55, color=ORDER[abs(n)], ec=INK, lw=0.8)
+        axb.text(w + 0.015, n, f"{w:.2f}" if w >= 0.01 else f"{w:.3f}", fontsize=lab, va="center")
+    axb.text(0.2, 4.55, "$J_n(S)^2$, $S$ = 1.5", fontsize=lab, ha="center", va="bottom")
+    OUT.mkdir(parents=True, exist_ok=True)
+    fig.savefig(OUT / "f13_kinematic.png")
+    print("wrote", OUT / "f13_kinematic.png", [round(jv(n, S) ** 2, 4) for n in range(4)])
 
 
 def f14():
