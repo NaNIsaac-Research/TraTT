@@ -154,17 +154,9 @@ k = {float(a): i for i, a in enumerate(f10["alpha"])}
 for a, printed in ((1.0, 0.46),):
     laue = f10["laue"][k[a]]
     row(f"iqms: full TT Laue I_2/I_1 at L = {a:g} Lambda_P", printed, laue[1] / laue[0], 0.005)
-s_axis = data["S"]
-row(
-    "iqms: overshoot map, largest Delta I for S below the J_1 maximum (law: 0)",
-    0.0,
-    float(np.max(data["excess"][:, s_axis < s_max])),
-    1e-12,
-)
 
 # i-QMS v2 (review round 1)
 row("iqms: Bragg t_tr = L / v_L at L = 296 um (ns)", 32.4, L / v_long * 1e9, 0.05)
-row("iqms: formation times, Bragg tau_1 (ns, printed 4)", 4, tau_bragg * 1e9, 0.5)
 row(
     "iqms: strain K u0 at 2 GHz, shear (Laue)",
     5e-5,

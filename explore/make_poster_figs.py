@@ -19,6 +19,16 @@ f7  linear-ramp overshoot map and three TT-checked traces (Entry 67)
 f8  kinematic satellites: lattice planes without and with a shear wave, and J_n(S)^2 by order
 f9  symmetric Laue and Bragg geometry: h, the acoustic polarisation that couples, boundary conditions
 f10 steady sidebands against thickness: closed forms, kinematic Bessel law and full TT (Entries 1, 9)
+f11 i-QMS: the Laue onset drawing of the October talk, redrawn, and the closed-form first
+    sideband against time, Si (Entries 1, 9)
+f12 i-QMS background: Bessel weights against u0, and the surface-acoustic-wave
+    satellites of Vadilonga et al. 2017 (J. Appl. Cryst. 50, 525, CC BY), points read from its Fig. 6
+f14 i-QMS: steady I_2/I_1 against thickness in um, Laue and Bragg, full TT and the Bessel law
+
+The i-QMS figures (--iqms) use the mplume "box" style at poster size (closed frame, inward major and
+minor ticks, no grid) and its a0 context (print-size type), mplume main at 4c06415 (the a0
+context is not yet in a release): `uv run --with "mplume @ git+https://github.com/NaNIsaac/mplume@4c064154f8f0ff94f6c6dd300266b68a34759333"
+python explore/make_poster_figs.py --iqms ...`.
 """
 
 from __future__ import annotations
@@ -99,12 +109,32 @@ def style():
             "mathtext.fontset": "stix",
         }
     )
+    if IQMS:
+        import mplume as mp
+
+        # "box" frame with mplume's a0 context (print-size type and ticks); here only the faces
+        # the poster uses, black frame and ticks, and black-edged markers.
+        mp.use(
+            "box",
+            "a0",
+            rc={
+                "font.family": FONT,
+                "mathtext.fontset": "stix",
+                "lines.markeredgecolor": INK,
+                "lines.markeredgewidth": 1.3,
+                "axes.edgecolor": INK,
+                "xtick.color": INK,
+                "ytick.color": INK,
+                "savefig.dpi": 200,
+            },
+        )
 
 
 def finish(fig, ax, name):
     for a in np.atleast_1d(ax):
-        a.grid(color=GRID, lw=1.0)
-        a.set_axisbelow(True)
+        if not IQMS:
+            a.grid(color=GRID, lw=1.0)
+            a.set_axisbelow(True)
     OUT.mkdir(parents=True, exist_ok=True)
     fig.savefig(OUT / f"{name}.png")
     print("wrote", OUT / f"{name}.png")
@@ -1035,130 +1065,233 @@ def f10():
     print(f"f10 kinematic J_2^2/J_1^2 = {kin:.3f}")
 
 
+SI_D440 = 5.4310e-10 / np.sqrt(32)  # m
+SI_H440 = 2 * np.pi / SI_D440  # 1/m
+LAMBDA_LAUE = 98.76e-6  # m, Pendellosung period, Si 440, 30 keV (Entry 20)
+THETA_B = np.arcsin(12.398420 / 30.0 * 1e-10 / (2 * SI_D440))
+LAMBDA_BRAGG = LAMBDA_LAUE * np.tan(THETA_B)  # extinction length (Bragg)
+V_SHEAR = np.sqrt(79.6e9 / 2329.0)
+V_LONG = np.sqrt((165.7e9 + 63.9e9 + 2 * 79.6e9) / (2 * 2329.0))
+ORDER = ("#111111", "#c8102e", "#7b4ea3", "#2e8b57", "#8c5a2b")  # sideband order n = 0..4
+RED = "#d62020"  # diffracted beam D_h in the drawings, as in the October talk
+
+
+def arrow(ax, a, b, color=INK, lw=2.4, style="-|>", ms=22, z=5):
+    ax.annotate(
+        "",
+        xy=b,
+        xytext=a,
+        arrowprops=dict(
+            arrowstyle=style, color=color, lw=lw, mutation_scale=ms, shrinkA=0, shrinkB=0
+        ),
+        zorder=z,
+    )
+
+
+def onset_sketch(ax):
+    """The Laue onset drawing of the October talk (slide 7), redrawn at print size: the transducer
+    film at z = 0, the displaced layer above the wavefront z = v_s t, the layer not yet reached
+    below it, K and h, the incident k_0, D_0 (black) and D_h (red) with the fan between them."""
+    ax.set(xlim=(-1.6, 11.6), ylim=(-2.0, 6.0), aspect="equal")
+    ax.axis("off")
+    x0, x1, yb, yt, yw = 0.0, 10.0, 0.0, 3.6, 2.1
+    ax.add_patch(plt.Rectangle((x0, yb), x1 - x0, yt - yb, fc="#f4f1ea", ec=INK2, lw=1.6, zorder=1))
+    ax.add_patch(plt.Rectangle((x0, yt), x1 - x0, 0.16, fc="#3a3a3a", ec="none", zorder=3))
+    z = np.linspace(yw, yt, 200)
+    for x in np.arange(0.45, x1, 0.62):
+        ax.plot(
+            x + 0.09 * np.sin(2 * np.pi * (yt - z) / 0.55), z, color="#8a8a8a", lw=1.0, zorder=2
+        )
+        ax.plot([x, x], [yb, yw], color="#c4c4c4", lw=1.0, zorder=2)
+    ax.plot([x0, x1], [yw, yw], color=BLUE, lw=2.6, ls=(0, (5, 3)), zorder=4)
+    ax.text(0.3, 0.5 * (yw + yt), "displaced", fontsize=SMALL, va="center", color=INK, zorder=6)
+    ax.text(
+        0.3, 0.5 * (yb + yw), "not yet reached", fontsize=SMALL, va="center", color=INK2, zorder=6
+    )
+    ax.text(x1 + 0.2, yt, "$z=0$", fontsize=SMALL, va="center", color=INK2)
+    ax.text(x1 + 0.2, yb, "$z=L$", fontsize=SMALL, va="center", color=INK2)
+    ax.text(x1 + 0.2, yw, "$z=v_st$", fontsize=SMALL, va="center", color=BLUE)
+    ax.text(x0, yt + 0.36, "transducer film", fontsize=SMALL, ha="left", va="bottom", color=INK2)
+    arrow(ax, (8.6, 3.35), (8.6, 2.45), BLUE, 2.4)
+    ax.text(8.85, 2.95, "$K$", color=BLUE, fontsize=BIG, va="center")
+    arrow(ax, (9.6, 0.5), (8.1, 0.5), INK, 2.2)
+    ax.text(9.75, 0.5, "$h$", fontsize=BIG, ha="left", va="center")
+    arrow(ax, (-1.3, 0.2 + yt), (-1.3, yb - 0.2), INK2, 1.4, ms=16)
+    ax.text(
+        -1.5, 1.8, "depth $z$", rotation=90, fontsize=SMALL, ha="right", va="center", color=INK2
+    )
+    p = (5.2, yt + 0.16)
+    tb = np.tan(np.radians(14))
+    d0 = (p[0] + (p[1] - yb + 1.6) * tb, yb - 1.6)
+    dh = (p[0] - (p[1] - yb + 1.6) * tb, yb - 1.6)
+    fan = [p, (p[0] + (p[1] - yb) * tb, yb), (p[0] - (p[1] - yb) * tb, yb)]
+    ax.add_patch(plt.Polygon(fan, fc="#f6d9b8", ec="none", alpha=0.8, zorder=2.5))
+    arrow(ax, (p[0] - 1.1 * 1.6 * tb * 2.2, p[1] + 1.6 * 1.1), p, INK, 2.8)
+    ax.text(
+        p[0] - 1.1 * 1.6 * tb * 2.2 - 0.1,
+        p[1] + 1.95,
+        r"$\mathbf{k}_0$",
+        fontsize=BIG + 2,
+        ha="right",
+    )
+    arrow(ax, p, d0, INK, 2.8)
+    arrow(ax, p, dh, RED, 2.8)
+    ax.text(d0[0] + 0.2, d0[1] - 0.05, "$D_0$", fontsize=BIG + 2, va="top")
+    ax.text(dh[0] - 0.2, dh[1] - 0.05, "$D_h$", fontsize=BIG + 2, va="top", ha="right", color=RED)
+    ax.text(p[0], yb - 0.75, r"$2\theta_B$", fontsize=SMALL, ha="center", va="center")
+
+
 def f11():
-    """i-QMS panel 3: the formation picture. Left, the sketch of the KPS print poster (a7747b0 f0,
-    without its rocking curve): only the layer 0 < z < v_s t behind the wavefront is driven. Right,
-    the closed form for that layer, n = 1, S = 1.5, L = 296 um, Si 440 at 30 keV (constants as in
-    poster/check_numbers.py): Laue oscillates until t_tr and then holds sin^2(pi t_tr / tau_1);
-    Bragg saturates near tau_1. Closed form only; the full-TT check is the f4 panel."""
+    """i-QMS panel 4: the formation picture. Left, the Laue onset drawing of the October talk
+    (onset_sketch). Right, the closed form for the driven layer v_s t, first sideband, S = 1.5,
+    L = 296 um, Si 440 at 30 keV (constants as in poster/check_numbers.py): Laue oscillates until
+    t_tr and then holds; Bragg saturates near tau_1. Lines are labelled where they end."""
     from scipy.special import jv
 
     style()
-    LAB, KEY = BIG, BIG + 4
-    S, t = 1.5, 0.62
-    d = Drive(S=S, alpha_ac=5.0)
-
-    lam_laue = 98.76e-6
-    theta_b = np.arcsin(12.398420 / 30.0 * 1e-10 / (2 * 5.4310e-10 / np.sqrt(32)))
-    v_laue = np.sqrt(79.6e9 / 2329.0)
-    v_bragg = np.sqrt((165.7e9 + 63.9e9 + 2 * 79.6e9) / (2 * 2329.0))
+    S = 1.5
     j1, L = abs(jv(1, S)), 296e-6
     cases = (
-        ("Laue", BLUE, lam_laue / (v_laue * j1), L / v_laue, lambda x: np.sin(np.pi * x) ** 2),
+        ("Laue", BLUE, LAMBDA_LAUE / (V_SHEAR * j1), L / V_SHEAR, lambda x: np.sin(np.pi * x) ** 2),
         (
             "Bragg",
             ORANGE,
-            lam_laue * np.tan(theta_b) / (v_bragg * j1),
-            L / v_bragg,
+            LAMBDA_BRAGG / (V_LONG * j1),
+            L / V_LONG,
             lambda x: np.tanh(np.pi * x) ** 2,
         ),
     )
-
     fig, (ax, axr) = plt.subplots(
         1,
         2,
         figsize=(FIG_W, 0.33 * FIG_W),
         constrained_layout=True,
-        gridspec_kw=dict(width_ratios=[1.55, 1.0], wspace=0.04),
+        gridspec_kw=dict(width_ratios=[1.35, 1.0], wspace=0.03),
     )
-    ax.set(xlim=(-3.3, 9.9), ylim=(-0.6, 10.6))
-    ax.axis("off")
-    x0, x1, y0, y1 = 0.0, 6.0, 2.1, 8.1
-    xf = x0 + t * (x1 - x0)
-    ymid = 0.5 * (y0 + y1)
-    ax.add_patch(plt.Rectangle((x0, y0), x1 - x0, y1 - y0, fc="#f4f7fb", ec=INK2, lw=1.6, zorder=1))
-    ax.add_patch(plt.Rectangle((x0, y0), xf - x0, y1 - y0, fc="#e7effa", ec="none", zorder=1))
-    zz = np.linspace(0.0, 1.0, 1200)
-    phi = d.phi(t)(zz)
-    amp = 0.33 * (y1 - y0) / max(abs(phi).max(), 1e-9)
-    on = zz <= t  # only where the wave has arrived; a flat line ahead would read as a beam
-    ax.plot(x0 + zz[on] * (x1 - x0), ymid + amp * phi[on], color=BLUE, lw=2.8, zorder=3)
-    ax.plot([xf, xf], [y0, y1], color=BLUE, lw=2.4, ls=(0, (4, 3)), zorder=4)
-    ax.text(
-        x0 + 1.6, y1 + 0.36, "acoustic wave", color=BLUE, ha="center", va="bottom", fontsize=LAB
-    )
-    ax.annotate(
-        "",
-        xy=(xf + 1.25, y1 + 0.7),
-        xytext=(xf, y1 + 0.7),
-        arrowprops=dict(arrowstyle="-|>", color=BLUE, lw=2.2, mutation_scale=22),
-    )
-    ax.text(xf + 1.45, y1 + 0.7, r"$v_s$", color=BLUE, va="center", fontsize=KEY)
-    ax.text(xf, y1 + 1.55, "wavefront", color=BLUE, ha="center", va="bottom", fontsize=LAB)
-    ax.text(
-        0.5 * (xf + x1) + 0.1,
-        ymid,
-        "unstrained",
-        color=INK2,
-        ha="center",
-        va="center",
-        rotation=90,
-        fontsize=LAB - 2,
-    )
-    ty = y0 + 0.58 * (y1 - y0)
-    ax.add_patch(plt.Rectangle((x0 - 0.44, y0), 0.44, ty - y0, fc=INK2, ec="none", zorder=2))
-    ax.text(
-        x0 - 0.62, 0.5 * (y0 + ty), "transducer", ha="right", va="center", fontsize=LAB, color=INK2
-    )
-    yd = y0 - 0.72
-    ax.annotate(
-        "",
-        xy=(x1, yd),
-        xytext=(x0, yd),
-        arrowprops=dict(arrowstyle="<|-|>", color=INK2, lw=1.2, mutation_scale=13),
-    )
-    for x in (x0, xf, x1):
-        ax.plot([x, x], [yd - 0.22, yd + 0.22], color=INK2, lw=1.1)
-    ax.plot([x0, xf], [yd, yd], color=INK, lw=3.2, solid_capstyle="butt")
-    ax.text(x1 + 0.22, yd, r"$L$", ha="left", va="center", fontsize=LAB, color=INK2)
-    ax.text(
-        0.5 * (x0 + xf), yd - 0.38, r"driven depth $v_s t$", ha="center", va="top", fontsize=LAB
-    )
-    ax.annotate(
-        "",
-        xy=(x0 + 0.08, ymid + 1.25),
-        xytext=(-2.8, ymid + 2.85),
-        arrowprops=dict(arrowstyle="-|>", color=INK, lw=2.8, mutation_scale=26),
-        zorder=5,
-    )
-    ax.text(-2.9, ymid + 3.2, "X-ray", fontsize=KEY, color=INK)
-    for sign, name, color in ((1, r"$D_0$", INK2), (-1, r"$D_h$", ORANGE)):
-        ax.annotate(
-            "",
-            xy=(9.0, ymid + sign * 1.65),
-            xytext=(x1, ymid + sign * 0.1),
-            arrowprops=dict(arrowstyle="-|>", color=color, lw=2.6, mutation_scale=22),
-        )
-        ax.text(9.15, ymid + sign * 1.8, name, va="center", fontsize=KEY, color=color)
-
+    onset_sketch(ax)
     tt = np.linspace(0, 62e-9, 1500)
     for name, color, tau, t_tr, law in cases:
-        axr.plot(tt * 1e9, law(np.minimum(tt, t_tr) / tau), color=color, lw=2.6, label=name)
-        axr.plot([t_tr * 1e9] * 2, [1.08, 1.2], color=color, lw=4, solid_capstyle="butt")
-    axr.text(62, 1.14, r"$t_{tr}$", ha="right", va="center", fontsize=LAB - 2)
+        axr.plot(tt * 1e9, law(np.minimum(tt, t_tr) / tau), color=color)
+        axr.plot([t_tr * 1e9] * 2, [1.1, 1.22], color=color, lw=4, solid_capstyle="butt")
+        axr.text(
+            t_tr * 1e9,
+            1.25,
+            f"{name} $t_{{tr}}$",
+            color=color,
+            fontsize=SMALL - 2,
+            ha="center",
+            va="bottom",
+        )
+    axr.text(61, 0.62, "Laue", color=BLUE, fontsize=SMALL, ha="right", va="bottom")
+    axr.text(61, 0.93, "Bragg", color=ORANGE, fontsize=SMALL, ha="right", va="top")
     axr.set(
         xlim=(0, 62),
-        ylim=(-0.03, 1.22),
+        ylim=(0, 1.42),
         yticks=[0, 0.5, 1],
-        xlabel="time $t$ (ns)",
-        ylabel=r"$I_1/I_{inc}$",
+        xlabel="time after onset (ns)",
+        ylabel="first sideband $I_1/I_0$",
     )
-    axr.legend(loc="lower right", frameon=False, fontsize=LAB - 2, handlelength=1.6)
     finish(fig, axr, "f11_formation")
     for name, _, tau, t_tr, law in cases:
         print(
             f"f11 {name}: tau_1 {tau * 1e9:.1f} ns, t_tr {t_tr * 1e9:.1f} ns, I(t_tr) {law(t_tr / tau):.2f}"
         )
+
+
+# Vadilonga et al., J. Appl. Cryst. 50, 525 (2017), Fig. 6 (CC BY 2.0 UK): satellite intensities of a
+# Rayleigh surface acoustic wave on Y-cut langasite at BESSY II against the IDT drive amplitude (V).
+# Read off the published figure (pixel positions, about +-0.01); the J_m^2 reference lines use the
+# argument 0.077 V^-1 read from where its m = 0, 1, 2 lines peak or vanish.
+VADILONGA = {
+    0: ((0, 10, 20, 30, 40), (1.0, 0.725, 0.308, 0.107, 0.084)),
+    1: ((10, 20, 30, 40), (0.066, 0.226, 0.172, 0.128)),
+    2: ((20, 30, 40), (0.048, 0.115, 0.108)),
+    3: ((30, 40), (0.039, 0.046)),
+    4: ((30, 40), (0.005, 0.013)),
+}
+VADILONGA_ARG = 0.077
+
+
+def f12():
+    """i-QMS background: (left) Bessel weights J_n(S)^2 against the displacement amplitude u0 for
+    Si 440, with S = h u0 on the top axis and S = 1.5 marked; (right) the measured surface-acoustic-
+    wave satellites of Vadilonga et al. 2017 with their J_m^2 reference lines."""
+    from scipy.special import jv
+
+    style()
+    fig, (ax, axv) = plt.subplots(1, 2, figsize=(FIG_W * 1.25, 5.6), constrained_layout=True)
+    u = np.linspace(0, 65, 600)  # pm
+    S = SI_H440 * u * 1e-12
+    for n, xy in zip(range(4), ((6, 0.9), (26, 0.37), (47, 0.27), (60, 0.12)), strict=True):
+        ax.plot(u, jv(n, S) ** 2, color=ORDER[n])
+        ax.text(*xy, f"$n={n}$", color=ORDER[n], fontsize=SMALL, ha="center")
+    u15 = 1.5 / SI_H440 * 1e12
+    ax.axvline(u15, color=INK2, ls=":", lw=2.0)
+    ax.text(u15 + 1, 1.02, "$S$ = 1.5", fontsize=SMALL - 2, color=INK2, va="top")
+    ax.set(
+        xlim=(0, 65),
+        ylim=(0, 1.08),
+        xlabel="displacement amplitude $u_0$ (pm), Si 440",
+        ylabel="kinematic weight $J_n(S)^2$",
+    )
+    top = ax.secondary_xaxis(
+        "top", functions=(lambda x: SI_H440 * x * 1e-12, lambda s: s / SI_H440 * 1e12)
+    )
+    top.set_xlabel("$S=hu_0$")
+    top.tick_params(direction="in", which="both")
+
+    v = np.linspace(0, 45, 400)
+    for m, (x, y) in VADILONGA.items():
+        axv.plot(v, jv(m, VADILONGA_ARG * v) ** 2, color=ORDER[m], lw=1.8)
+        axv.plot(x, y, "osd^v"[m], color=ORDER[m], mec=INK, ls="none")
+    for m, xy in (
+        (0, (8, 0.85)),
+        (1, (22, 0.37)),
+        (2, (41, 0.26)),
+        (3, (44, 0.185)),
+        (4, (44, 0.065)),
+    ):
+        axv.text(
+            *xy, f"$m={m}$", color=ORDER[m], fontsize=SMALL - 2, ha="center" if m < 3 else "right"
+        )
+    axv.set(
+        xlim=(0, 45),
+        ylim=(0, 1.08),
+        xlabel="drive amplitude on the transducer (V)",
+        ylabel="satellite intensity",
+    )
+    finish(fig, (ax, axv), "f12_bessel")
+
+
+def f14():
+    """i-QMS: steady I_2/I_1 against crystal thickness in um (crystal filled by the wave, S = 1.5),
+    Laue and Bragg: two-beam closed forms (lines), full TT (points, f10_points), Bessel law
+    J_2^2/J_1^2 (grey dashed)."""
+    from scipy.special import jv
+
+    style()
+    laue, bragg = f10_points()
+    j1, j2 = abs(jv(1, F10_S)), abs(jv(2, F10_S))
+    fig, ax = plt.subplots(figsize=(FIG_W * 0.62, 4.3), constrained_layout=True)
+    kin = j2**2 / j1**2
+    ax.axhline(kin, color=INK2, ls="--", lw=2.2)
+    ax.text(150, kin - 0.03, "Bessel law", color=INK2, fontsize=SMALL - 2, ha="right", va="top")
+    for name, lam, law, I, m, color, xy in (
+        ("Laue", LAMBDA_LAUE, lambda x: np.sin(np.pi * x) ** 2, laue, "o", BLUE, (112, 0.62)),
+        ("Bragg", LAMBDA_BRAGG, lambda x: np.tanh(np.pi * x) ** 2, bragg, "s", ORANGE, (60, 0.72)),
+    ):
+        L = np.linspace(0.5, 160, 500)
+        a = L * 1e-6 / lam
+        ax.plot(L, law(a * j2) / law(a * j1), color=color)
+        ax.plot(F10_ALPHA * lam * 1e6, I[:, 1] / I[:, 0], m, color=color, mec=INK, ls="none")
+        ax.text(*xy, name, color=color, fontsize=SMALL)
+    ax.set(
+        xlim=(0, 160),
+        ylim=(0, 1.0),
+        xlabel="crystal thickness $L$ (μm)",
+        ylabel="intensity ratio $I_2/I_1$",
+    )
+    finish(fig, ax, "f14_thickness")
 
 
 if __name__ == "__main__":

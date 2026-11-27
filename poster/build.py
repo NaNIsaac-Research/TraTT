@@ -14,7 +14,9 @@ the body, because the header is no longer a coloured block.
 Look "lab" ("look: lab" in the front matter; see LAB). The header, section heads and footer of the
 KPS print poster: navy banner with white text and a three-colour stripe, number squares on the
 section heads, the key sentence in a tinted box, a tinted Conclusions band, a square-marked
-Acknowledgement. The body items are the same in both looks.
+Acknowledgement. "flat: 1" keeps that header and footer but drops the tints and the orange: the
+key sentence in a thin navy outline, grey rules under the heads. The body items are the same in
+both looks.
 
 Text face: Arial where installed (the lab posters use it), DejaVu Sans otherwise; math in STIX, so
 a variable is a serif italic and is told apart from the sans body. Absolute values are
@@ -139,6 +141,9 @@ LAB = dict(
     rule_w=0.4,
     callout_pt=29,
     stripe=("#3a3a3a", "#e04b3a", "#f08a3c"),
+    # "flat: 1": white body, navy the only accent: the key sentence in a thin navy outline, grey
+    # rules under the section heads, no tinted Conclusions band (header and footer unchanged)
+    flat=0,
 )
 LOOK = {"lab": False}
 PT_MM = 25.4 / 72
@@ -351,7 +356,15 @@ def key(P, it, x, y, w, draw=True):
     s = SPEC
     if LOOK["lab"]:  # tinted box with an orange edge, as on the print poster
         y1 = P.flow(it["text"], x + 10, y + 9, w - 20, s["callout_pt"], s["ink"], draw=draw) + 8
-        if draw:
+        if draw and s["flat"]:
+            for bx, by, bw, bh in (
+                (x, y, w, 0.5),
+                (x, y1 - 0.5, w, 0.5),
+                (x, y, 0.5, y1 - y),
+                (x + w - 0.5, y, 0.5, y1 - y),
+            ):
+                P.rect(bx, by, bw, bh, s["navy"], z=2)
+        elif draw:
             P.rect(x, y, w, y1 - y, s["key_soft"], z=2)
             P.rect(x, y, 1.4, y1 - y, s["orange"], z=2)
         return y1 + s["para_gap"]
@@ -505,6 +518,9 @@ def head(P, num, title, x, y0, w):
         zorder=4,
     )
     P.flow(title, x + sq + 4.5, y0 + 0.5, w - sq - 4.5, s["head_pt"], s["ink"], weight="bold")
+    if s["flat"]:
+        P.rect(x, y0 + 24, w, s["rule_w"], s["rule"], z=3)
+        return
     P.rect(x, y0 + 24, w * 0.88, s["rule_w"], s["rule"], z=3)
     P.rect(x + w * 0.88, y0 + 24, w * 0.12, s["rule_w"], s["orange"], z=3)
 
@@ -633,7 +649,7 @@ def footer_plain(P, meta, problems):
 def header_lab(P, meta):
     """Lab look: navy band on the lab banner, white title block, the shield at the right, session
     line at the upper left, three-colour stripe under the band. An optional logo_left (a path) sits
-    on a white plate under the session line. Returns the y below the stripe."""
+    on a white plate at the upper left, the session line then under it. Returns the y below the stripe."""
     s, ax = SPEC, P.ax
     W, H, M = s["W"], s["H"], s["margin"]
     hh = s["header_h"]
@@ -658,12 +674,14 @@ def header_lab(P, meta):
     if (ASSETS / "logo_ihs.png").exists():  # size and inset of the print poster
         logo_w = 100
         P.image(ASSETS / "logo_ihs.png", W - 22.4 - 55.4, (hh - 79.7) / 2, 55.4, h=79.7)
-    if meta.get("session"):
-        P.flow(meta["session"], M + 6, 14, 150, s["caption_pt"], "white")
     left = meta.get("logo_left")
-    if left and (ROOT / left).exists():
-        P.rect(M + 6, 42, 80, hh - 52, "white", z=2)
-        fit(P, ROOT / left, M + 9, 45, 74, hh - 58, align="left")
+    session_y = 14
+    if left and (ROOT / left).exists():  # conference logo on a white plate, session line under it
+        P.rect(M + 6, 12, 120, 32, "white", z=2)
+        fit(P, ROOT / left, M + 9, 14, 114, 28, align="left")
+        session_y = 50
+    if meta.get("session"):
+        P.flow(meta["session"], M + 6, session_y, 150, s["caption_pt"], "white")
     tw = W - 2 * M - 2 * logo_w
     y = 15 - s["title_pt"] * PT_MM * (s["leading"] - 1)
     for line in meta.get("title", "").split("//"):
@@ -815,7 +833,9 @@ def build(preview_dpi=60, ms=MS):
     gap = s["panel_gap"] + max(0.0, spare) / max(1, len(bands) - 1)
     y = top
     for b, h in zip(bands, heights, strict=True):
-        if LOOK["lab"] and b[0]["title"].startswith("Conclusion"):  # tinted to the footer line
+        if (
+            LOOK["lab"] and not s["flat"] and b[0]["title"].startswith("Conclusion")
+        ):  # tinted to the footer line
             z0 = y - min(gap / 2, 12.0)
             ax.add_patch(plt.Rectangle((0, z0), W, fy - z0, color=s["zone_end"], lw=0, zorder=0.5))
         band(b, y, True)
