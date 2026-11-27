@@ -70,7 +70,7 @@ TERM = "satellite"
 def use_iqms():
     global IQMS, OUT, BLUE, LABEL, TERM, F1_H, F7_H, F4_H
     IQMS, OUT, BLUE, LABEL, TERM = True, OUT / "iqms", "#1f4e8c", INK, "sideband"
-    F1_H, F7_H, F4_H = 5.2, 4.6, 3.8  # f1 key inside the axes, f7 map only
+    F1_H, F7_H, F4_H = 5.2, 6.6, 3.8  # f1 key inside the axes, f7 map over its A-C traces
 
 
 def style():
@@ -675,18 +675,25 @@ def f6():
     finish(fig, ax, "f6_background")
 
 
+# i-QMS f7: one colour per TT-checked case, shared by its map marker and its trace
+F7_CASE_COLORS = {"A": "#4a90e2", "B": "#eb6834", "C": "#1baf7a"}
+
+
 def f7():
     import json
 
     style()
     data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
-    if IQMS:  # the map alone; the J_1 maximum bounds the region without overshoot
+    if IQMS:  # map with the J_1 maximum, and the three TT-checked traces in the marker colours
+        from matplotlib import patheffects
         from scipy.optimize import minimize_scalar
         from scipy.special import jv
 
         s_max = minimize_scalar(lambda s: -jv(1, s), bounds=(1, 3), method="bounded").x
-        fig, ax = plt.subplots(figsize=(FIG_W, F7_H), constrained_layout=True)
+        fig = plt.figure(figsize=(FIG_W, F7_H), constrained_layout=True)
+        grid = fig.add_gridspec(2, 3, height_ratios=[1.3, 1.0])
+        ax = fig.add_subplot(grid[0, :])
         im = ax.pcolormesh(
             data["S"], data["rise"], data["excess"], shading="nearest", cmap="magma", vmin=0
         )
@@ -702,22 +709,81 @@ def f7():
             ha="right",
             va="top",
         )
-        for case in summary["cases"]:  # the three conditions checked against full TT
-            ax.plot(case["S"], case["rise"], "o", color="white", mec=INK, mew=1.5, ms=13)
-            ax.annotate(
-                case["label"],
-                (case["S"], case["rise"]),
-                xytext=(10, 6),
-                textcoords="offset points",
-                fontsize=SMALL,
-                fontweight="bold",
-                color="white",
-            )
         ax.set(
             xlabel=r"final acoustic amplitude $S$",
             ylabel=r"rise time $T_{rise}/t_{tr}$",
             yticks=[1, 2, 3, 4],
         )
+
+        def num(v):
+            if v >= 0.01:
+                return f"{v:.2f}"
+            m, e = f"{v:.1e}".split("e")
+            return rf"${m}\times10^{{{int(e)}}}$"
+
+        for k, case in enumerate(summary["cases"]):
+            letter, S, rise = case["label"], case["S"], case["rise"]
+            color = F7_CASE_COLORS[letter]
+            ax.plot(S, rise, "o", color=color, mec="white", mew=2, ms=14)
+            ax.annotate(
+                letter,
+                (S, rise),
+                xytext=(11, 6),
+                textcoords="offset points",
+                fontsize=SMALL,
+                fontweight="bold",
+                color=color,
+                path_effects=[patheffects.withStroke(linewidth=4, foreground="white")],
+            )
+            a = fig.add_subplot(grid[1, k])
+            a.plot(data[f"{letter}_t"], data[f"{letter}_I"], color=color, lw=2.6)
+            a.plot(
+                data[f"{letter}_tt_t"][::4],
+                data[f"{letter}_tt_I"][::4],
+                "o",
+                mfc="white",
+                mec=color,
+                mew=2,
+                ms=7,
+            )
+            a.axhline(case["steady"], color=INK2, ls="--", lw=1.5)
+            peak, steady = case["peak"], case["steady"]
+            if letter == "B":  # the quantity the map shows
+                i = int(np.argmax(data["B_I"]))
+                tb = float(data["B_t"][i])
+                a.annotate(
+                    "",
+                    xy=(tb, peak),
+                    xytext=(tb, steady),
+                    arrowprops=dict(
+                        arrowstyle="<|-|>",
+                        color=INK,
+                        lw=1.6,
+                        mutation_scale=16,
+                        shrinkA=0,
+                        shrinkB=0,
+                    ),
+                )
+                a.text(tb, steady - 0.05, r"$\Delta I$", fontsize=SMALL, ha="center", va="top")
+            T = "t_{tr}" if rise == 1 else rf"{rise:g}\,t_{{tr}}"
+            a.set_title(
+                rf"{letter}: $S$ = {S:g}, $T_{{rise}}={T}$",
+                fontsize=SMALL,
+                color=color,
+                fontweight="bold",
+            )
+            values = (
+                f"peak = steady = {num(steady)}"
+                if peak - steady < 1e-9
+                else f"peak {num(peak)}\nsteady {num(steady)}"
+            )
+            a.text(0.07, 0.92, values, transform=a.transAxes, fontsize=SMALL, va="top")
+            a.set(xlabel=r"time $t/t_{tr}$", xlim=(0, 3), ylim=(-0.025, 1.2), yticks=[0, 0.5, 1])
+            if k == 0:
+                a.set_ylabel(r"$I_1/I_{inc}$")
+            else:
+                a.tick_params(labelleft=False)
+        fig.align_ylabels()
         OUT.mkdir(parents=True, exist_ok=True)
         fig.savefig(OUT / "f7_overshoot.png")
         print("wrote", OUT / "f7_overshoot.png")
@@ -1204,7 +1270,7 @@ def f12():
     from scipy.special import jv
 
     style()
-    fig, (ax, axv) = plt.subplots(1, 2, figsize=(F12_W, 5.6), constrained_layout=True)
+    fig, (ax, axv) = plt.subplots(1, 2, figsize=(F12_W, 4.6), constrained_layout=True)
     u = np.linspace(0, 65, 600)  # pm
     S = SI_H440 * u * 1e-12
     # labels beside their curves, inside the frame: n = 0 above its falling edge, n = 3 at the right

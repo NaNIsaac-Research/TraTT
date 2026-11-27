@@ -30,13 +30,13 @@ no-break space (U+00A0).
 
 ## * Key result
 
-When a GHz shear wave is switched on in silicon, the X-ray **sidebands do not appear at once**: each grows only behind the **acoustic wavefront**. Time-dependent Takagi–Taupin equations (Laue geometry) show that the first sideband of a 296 μm crystal is **complete at the transit time** (50.6 ns), **not after one acoustic period** (0.5 ns). {E1}{E9}{E20}{E28}
+When an acoustic wave is switched on in a crystal, the X-ray **sidebands do not appear at once**: each grows only behind the **acoustic wavefront**. Time-dependent Takagi–Taupin equations show that formation is **complete at the transit time** $t_{tr}=L/v_s$, **not after one acoustic period** (example: Si 440, 296 μm, 2 GHz: 50.6 ns, not 0.5 ns). {E1}{E9}{E20}{E28}
 
 ## Introduction: why the build-up time matters
 
 [[ 0.5 c
 
-![A sound wave displaces the lattice planes; the rocking curve gains satellite peaks (sidebands) at angle offsets proportional to $n$. Si 440, $L$ = 296 μm. Peak widths are set by the 10 μrad (FWHM) beam; in this thick crystal a peak's area scales with $|J_n|$, not $J_n^2$, so together the peaks exceed the no-wave peak.](figures/poster/iqms/f13_rocking.png){E0}{E7}
+![A sound wave displaces the lattice planes; the rocking curve gains satellites (sidebands) at offsets proportional to $n$. In a thick crystal a peak's area scales with $|J_n|$, not $J_n^2$, so together the peaks exceed the no-wave peak. Example: Si 440, $L$ = 296 μm, $S$ = 1.5, 10 μrad (FWHM) beam.](figures/poster/iqms/f13_rocking.png){E0}{E7}
 
 || 0.5 c
 
@@ -44,7 +44,7 @@ When a GHz shear wave is switched on in silicon, the X-ray **sidebands do not ap
 
 - **Why it matters:** acoustically driven crystals are proposed as fast X-ray switches and pulse shapers at storage rings and XFELs; the build-up time sets their speed. {E7}{E21}{E50}
 
-- **Approach:** time-dependent Takagi–Taupin equations, Laue (transmission) geometry, Si 440 at 30 keV. {E0}{E20}
+- **Approach:** time-dependent Takagi–Taupin equations in Laue (transmission) geometry; example: Si 440 at 30 keV. {E0}{E20}
 
 - **Result:** each sideband builds up behind the acoustic wavefront and is complete at the transit time. {E1}{E9}{E28}
 
@@ -68,7 +68,7 @@ The wave displaces the atoms by $u=u_0\sin(Kz-\Omega t)$ (acoustic wavelength $\
 
 || 0.4 c
 
-![Left: Bessel weights against $u_0$, Si 440; dotted: $S$ = 1.5, used below. Right: surface acoustic wave on langasite, BESSY II: satellites $m$ = 0–4 against transducer drive, read from Fig. 6 of Vadilonga et al., J. Appl. Cryst. 50, 525 (2017), and redrawn (CC BY), with its $J_m^2$ lines. That wave is a surface grating; here the wave runs through the depth.](figures/poster/iqms/f12_bessel.png){E7}{E21}
+![Left: Bessel weights $J_n(S)^2$; $u_0$ scale for the Si 440 example, dotted: its $S$ = 1.5. Right: surface acoustic wave (a surface grating) on langasite, BESSY II: satellites $m$ = 0–4 against drive, from Fig. 6 of Vadilonga et al., J. Appl. Cryst. 50, 525 (2017), redrawn (CC BY), with $J_m^2$ lines.](figures/poster/iqms/f12_bessel.png){E7}{E21}
 
 ]]
 
@@ -76,9 +76,9 @@ The wave displaces the atoms by $u=u_0\sin(Kz-\Omega t)$ (acoustic wavelength $\
 
 ## Takagi–Taupin equations in Laue geometry
 
-In a thick, nearly perfect crystal X-rays are scattered many times; single scattering is no longer enough. {E0}{E20}
+In a thick, nearly perfect crystal X-rays scatter many times, not once. {E0}{E20}
 
-In Laue (transmission) geometry the X-rays cross the slab from the top face to the bottom face (section 1). The Takagi–Taupin (TT) equations (Takagi 1962, 1969; Taupin 1964) couple the transmitted wave $D_0$ and the diffracted wave $D_h$ along the depth $z$; the displacement $\mathbf{u}(z,t)$ enters as the phase $\mathbf{h}\cdot\mathbf{u}$ ($\Lambda$: Pendellösung length, 98.8 μm; $\beta$: deviation from the Bragg angle). {E0}{E20}{E62}
+In Laue (transmission) geometry (section 1) the Takagi–Taupin (TT) equations (Takagi 1962, 1969; Taupin 1964) couple the transmitted wave $D_0$ and the diffracted wave $D_h$ along the depth $z$; the displacement $\mathbf{u}(z,t)$ enters as the phase $\mathbf{h}\cdot\mathbf{u}$ ($\Lambda$: Pendellösung length, example: 98.8 μm for Si 440; $\beta$: deviation from the Bragg angle). {E0}{E20}{E62}
 
 $$ $dD_0/dz=(i\pi/\Lambda)\,e^{i\mathbf{h}\cdot\mathbf{u}}D_h$,  $dD_h/dz=(i\pi/\Lambda)\,e^{-i\mathbf{h}\cdot\mathbf{u}}D_0+i\beta D_h$ {E0}
 
@@ -104,11 +104,11 @@ $$ $I_n=\sin^2(\pi t/\tau_n)$ {E1}{E9}
 
 $$ $\tau_n=\Lambda/(v_s\left|J_n(S)\right|)$ {E1}{E9}
 
-In $\tau_n$ the front crosses one sideband extinction length $\Lambda/\left|J_n\right|$. The sideband oscillates until the front reaches $z=L$ at $t_{tr}=L/v_s$ = 50.6 ns, then holds its steady value 0.73 ($\tau_1$ = 30 ns). In reflection (Bragg) geometry it saturates already at about $\tau_1$ = 4.3 ns. {E1}{E9}{E20}{E28}{E44}{E54}{E85}
+In $\tau_n$ the front crosses one extinction length $\Lambda/\left|J_n\right|$; at $t_{tr}=L/v_s$ the sideband stops at $\sin^2(\pi t_{tr}/\tau_n)$. In Bragg geometry it saturates much earlier. Example: $t_{tr}$ = 50.6 ns, $\tau_1$ = 30 ns, steady 0.73; Bragg: 4.3 ns. {E1}{E9}{E20}{E28}{E44}{E54}{E85}
 
 ]]
 
-![Laue, Si 440, $S$ = 1.5, $L$ = 296 μm, step onset; TT, phase-averaged; top: $|D_h(z)|^2$ at the first-sideband angle, bottom: its edge $z=L$. Below the front the crystal is unstrained, so $D_h$ passes down unchanged (vertical stripes); above it the field depends only on depth (horizontal stripes).](none){E1}{E9}{E20}
+![Example: Laue, Si 440, $S$ = 1.5, $L$ = 296 μm, step onset; TT, phase-averaged; top: $|D_h(z)|^2$ at the first-sideband angle, bottom: its edge $z=L$. Below the front the crystal is unstrained, so $D_h$ passes down unchanged (vertical stripes); above it the field depends only on depth (horizontal stripes).](none){E1}{E9}{E20}
 
 @pair
 
@@ -116,14 +116,14 @@ In $\tau_n$ the front crosses one sideband extinction length $\Lambda/\left|J_n\
 
 With a linear ramp of the drive, the first sideband overshoots its steady value only if the final $S$ lies above the maximum of $J_1$ ($S$ = 1.84); below it the rise is monotonic. {E15}{E67}
 
-![Overshoot $\Delta I=I_{max}-I_{steady}$ of the first sideband against the final amplitude $S$ and the ramp time $T_{rise}$. Reduced model (independent satellites, checked against full TT at 12 points and at A–C), Laue, $L=\Lambda/2$ (49 μm, Si 440), linear ramp, then held. The 296 μm crystal of sections 1–4 is not scanned.](figures/poster/iqms/f7_overshoot.png){E15}{E67}
+![$\Delta I=I_{max}-I_{steady}$ of the first sideband for a linear ramp of duration $T_{rise}$, then held. Reduced model (lines; circles: full TT, also at 12 map points), Laue, $L=\Lambda/2$ (example: 49 μm, Si 440); dashed: steady value. The 296 μm example of sections 1–4 is not scanned.](figures/poster/iqms/f7_overshoot.png){E15}{E67}
 
 ## Conclusions and outlook
 
-> **Sideband formation is complete within the acoustic transit time** $L/v_s$ (tens of ns in Si); the formation time $\tau_n$, not the acoustic period, sets the switching speed. The Bessel law holds for $L\ll\Lambda$. {E1}{E9}{E67}
+> **Sideband formation is complete within the acoustic transit time** $L/v_s$; the formation time $\tau_n$, not the acoustic period, sets the switching speed. The Bessel law holds for $L\ll\Lambda$. Example: 50.6 ns for 296 μm of Si. {E1}{E9}{E67}
 
 - **Drive envelope:** a linear ramp gives an overshoot only for $S$ above the $J_1$ maximum (1.84); below it the sideband rises monotonically (section 5). {E15}{E67}
 
-- **Outlook:** $S$ = 1.5 is $u_0$ = 23 pm (strain $5\times10^{-5}$ at 2 GHz). Next: an experiment. Separating the satellites needs only a 10 μrad beam (section 1); following the centre of one sideband in time needs a divergence below 0.05 μrad, a fraction of the Darwin half-width. {E20}{E73}{E84}{E92}
+- **Outlook:** the drive is weak: $S=hu_0$ = 1.5 needs $u_0$ = 1.5/$h$ (example: 23 pm, strain $5\times10^{-5}$ at 2 GHz). Next: an experiment. Separating the satellites needs a beam narrower than their spacing (example: 10 μrad, section 1); following the centre of one sideband in time needs a divergence below a tenth of its Darwin half-width (example: 0.05 μrad). {E20}{E73}{E84}{E92}
 
 ![Method: TT equations, RK4, checked against an exact periodic-drive (Floquet) solver; two-beam forms within 6 % of full TT for $\Lambda_{ac}<0.3\,\Lambda$.](none){E0}{E19}{E20}{E31}{E42}{E54}{E62}
