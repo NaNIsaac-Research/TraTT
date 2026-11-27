@@ -16,9 +16,9 @@ contact: Code, notebook and data: github.com/NaNIsaac-Research/TraTT (QR at righ
 <!--
 Printed text source for the i-QMS 2026 poster; build with python poster/build.py 150 poster/iqms.md.
 Figures: uv run --with "mplume @ git+https://github.com/NaNIsaac/mplume@4c064154f8f0ff94f6c6dd300266b68a34759333"
-python explore/make_poster_figs.py --iqms f11 f12 f13 f15 (figures/poster/iqms/). talk_twobeam.png is the
+python explore/make_poster_figs.py --iqms f11 f12 f13 f16 (figures/poster/iqms/). talk_twobeam.png is the
 drawing of the October 2026 TraTT talk (NaNIsaac docs/decks/tratt/out/tratt-talk.pptx, slide 6),
-copied unchanged; f13 redraws its slide 3 at S = 1.5, f11 its slide 2 (onset schematic).
+copied unchanged; f13 redraws its slide 2 (onset schematic) beside a computed rocking curve.
 v5: about half background (sections 1-3), one key result (4), one supporting result (5). Every
 section opens with one sentence saying what it shows; symbols are defined where they first appear;
 axes in physical units. Look: lab header and footer, flat body (no tints, navy accent).
@@ -28,27 +28,35 @@ no-break space (U+00A0).
 
 ## Introduction
 
-[[ 0.27 c
+[[ 0.5 c
 
-![Planes displaced by a shear wave; satellites at $\mathbf{Q}_n$ with kinematic weights ($S$ = 1.5).](figures/poster/iqms/f13_kinematic.png){E0}{E7}
+![A sound wave displaces the lattice planes; the rocking curve gains satellite peaks (sidebands) at angle offsets proportional to $n$.](figures/poster/iqms/f13_rocking.png){E0}{E7}
 
-|| 0.73 c
+|| 0.5 c
 
-**Motivation.** A GHz sound wave displaces the lattice periodically in depth and time and splits an X-ray Bragg reflection into satellites (sidebands). Acoustic strain is a pump in ultrafast X-ray diffraction; acoustically driven crystals switch X-ray pulses (DeCamp et al. 2001) and are proposed as fast switches and pulse shapers at storage rings and XFELs. The build-up time of the sidebands sets their speed. Dynamical theory gives steady-state sideband intensities (Entin 1977; Iolin & Entin 1983; Polikarpov & Skadorov 1987), not their build-up in time. {E7}{E21}{E29}{E50}
+**Motivation.** A GHz sound wave displaces the lattice periodically in depth and time and splits an X-ray Bragg reflection into satellites (sidebands). Acoustically driven crystals are proposed as fast X-ray switches and pulse shapers at storage rings and XFELs; the build-up time of the sidebands sets their speed. Dynamical theory gives steady-state sideband intensities (Entin 1977; Iolin & Entin 1983; Polikarpov & Skadorov 1987), not their build-up in time. {E7}{E21}{E29}{E50}
 
 > **This work.** After the sound is switched on, each sideband builds up as the acoustic wavefront enters the crystal. It is complete at the latest after the transit time (thickness / sound velocity, tens of ns in Si), not after the 0.5 ns acoustic period. {E1}{E9}{E28}
 
 ]]
 
-## Acoustic modulation of X-ray diffraction
+## Acoustic modulation of X-ray diffraction: theory and observations
 
 A sound wave turns the crystal into a moving phase grating; each grating order appears as an X-ray satellite. {E0}{E7}
 
-[[ 0.36
+[[ 0.5
 
 The wave displaces the atoms by $u=u_0\sin(Kz-\Omega t)$ (acoustic wavelength $\Lambda_{ac}=2\pi/K$). A reflection with reciprocal-lattice vector $\mathbf{h}$ ($h=2\pi/d$, $d$ the plane spacing) sees the phase $\mathbf{h}\cdot\mathbf{u}$, which gives satellites of order $n$ at $\mathbf{Q}=\mathbf{h}-nK\hat{z}$, shifted in energy by $n\hbar\Omega$. In single scattering (kinematic theory) satellite $n$ has the weight $J_n(S)^2$, a Bessel function of $S=hu_0$: the Bessel law. {E0}{E7}{E42}
 
-|| 0.64 c
+**Observed so far.** {E7}{E21}
+
+- 1999, GaAs, surface wave: up to 12 satellites (Sauer et al., APL 75, 1709). {E7}
+- 1999, GaAs, laser-plasma source: a 100 ps acoustic pulse (Rose-Petruck et al., Nature 398, 310). {E21}
+- 2000, InSb: coherent acoustic phonons, ps resolved (Lindenberg et al., PRL 84, 111). {E21}
+- 2001, APS, Ge Laue: sub-ns acoustic X-ray switch (DeCamp et al., Nature 413, 825). {E21}
+- 2017, BESSY II, langasite surface wave: satellites against drive (right). {E7}
+
+|| 0.5 c
 
 ![Left: Bessel weights against $u_0$, Si 440; dotted: $S$ = 1.5, used below. Right: surface acoustic wave on langasite, BESSY II: satellites $m$ = 0–4 against transducer drive, read from Fig. 6 of Vadilonga et al., J. Appl. Cryst. 50, 525 (2017) and redrawn (CC BY), with its $J_m^2$ lines. That wave is a surface grating; here the wave runs through the depth.](figures/poster/iqms/f12_bessel.png){E7}{E21}
 
@@ -72,9 +80,9 @@ $\beta$: deviation from the Bragg angle (1/length); + Laue, − Bragg. {E0}
 
 After switch-on, only the layer behind the wavefront is strained; each sideband grows with that layer. {E1}{E9}
 
-![Left: Laue onset (schematic, not to scale); above the wavefront $z=v_st$ the lattice is displaced. Right: first sideband after a step onset, Si, $L$ = 296 μm, $S$ = 1.5 ($u_0$ = 23 pm), $I_0$ incident.](figures/poster/iqms/f11_formation.png){E0}{E1}{E9}{E20}{E85}
+![First sideband after a step onset (schematic: section 1), Si, $L$ = 296 μm, $S$ = 1.5 ($u_0$ = 23 pm), $I_0$ incident.](figures/poster/iqms/f11_formation.png){E0}{E1}{E9}{E20}{E85}
 
-With sound, satellite $n$ is a two-beam problem with extinction length $\Lambda/\left|J_n(S)\right|$: in a crystal filled by the wave $I_n=\sin^2(\pi L\left|J_n\right|/\Lambda)$ (Laue) or $\tanh^2(\ldots)$ (Bragg), the Bessel law for $L\ll\Lambda$. {E1}{E9}{E44}{E54}
+With sound, satellite $n$ is a two-beam problem with extinction length $\Lambda/\left|J_n(S)\right|$: in a crystal filled by the wave $I_n=\sin^2(\pi L\left|J_n\right|/\Lambda)$ (Laue) or $\tanh^2(\ldots)$ (Bragg). {E1}{E9}{E44}{E54}
 
 During onset the strained layer has thickness $v_st$ ($v_s$: sound velocity); with $L\to v_st$: {E1}{E9}
 
@@ -86,11 +94,11 @@ Laue $\tau_1$ = 30 ns, $t_{tr}$ = 50.6 ns; Bragg $\tau_1$ = 4.3 ns, $t_{tr}$ = 3
 
 @pair
 
-## Gradual switch-on: transient overshoot
+## Sideband build-up inside the crystal
 
-When the sound amplitude is ramped up linearly over a rise time $T_{rise}$, a sideband can first exceed its final, steady intensity by the overshoot $\Delta I$ and then fall back; $\Delta I$ depends on the final amplitude and on $T_{rise}$. {E5}{E15}{E67}
+Behind the wavefront the sideband builds up; the crystal is complete when the front reaches $z=L$ at $t_{tr}$. {E1}{E9}
 
-![Laue, first sideband, $L=\Lambda/2$ = 49 μm ($t_{tr}$ = 8.4 ns). Map: two-beam form. Right: $I_1(t)$ at A–C, two-beam form (line) and full TT (points); dashed: steady value. Below the maximum of $J_1$ ($S$ = 1.84, $u_0$ = 28 pm) there is no overshoot.](figures/poster/iqms/f15_overshoot.png){E5}{E15}{E28}{E67}
+![Laue, Si 440, 30 keV, $S$ = 1.5, $L$ = 296 μm, step onset: $|D_h(z)|^2$ at the first-sideband angle, from the TT equations, averaged over the acoustic phase. Dashed: the wavefront $z=v_st$; dotted: $t_{tr}$.](figures/poster/iqms/f16_depth_time.png){E1}{E9}{E20}
 
 ## Conclusions and outlook
 
@@ -98,4 +106,4 @@ When the sound amplitude is ramped up linearly over a rise time $T_{rise}$, a si
 
 **Outlook.** $S$ = 1.5 corresponds to $u_0$ = 23 pm (strain $5\times10^{-5}$ at 2 GHz). Resolving the sideband centre needs a beam divergence below 0.16 μrad (Bragg) or 0.05 μrad (Laue), a fraction of the Darwin half-width. {E20}{E73}{E84}{E92}
 
-![Method: frozen strain snapshots (X-ray transit 0.99 ps, acoustic period 500 ps), RK4, checked against an exact periodic-drive (Floquet) solver; two-beam forms within 6 % of full TT for $\Lambda_{ac}<0.3\,\Lambda$. Scope: two beams, symmetric geometry, no absorption. Not yet: experiment, back-face reflection, asymmetric cuts, realistic pulses, divergent or polychromatic beams.](none){E0}{E19}{E20}{E31}{E42}{E54}{E62}
+![Method: TT equations, RK4, checked against an exact periodic-drive (Floquet) solver; two-beam forms within 6 % of full TT for $\Lambda_{ac}<0.3\,\Lambda$. Not yet: experiment, back-face reflection, asymmetric cuts, realistic pulses, divergent beams.](none){E0}{E19}{E20}{E31}{E42}{E54}{E62}

@@ -19,12 +19,12 @@ f7  linear-ramp overshoot map and three TT-checked traces (Entry 67)
 f8  kinematic satellites: lattice planes without and with a shear wave, and J_n(S)^2 by order
 f9  symmetric Laue and Bragg geometry: h, the acoustic polarisation that couples, boundary conditions
 f10 steady sidebands against thickness: closed forms, kinematic Bessel law and full TT (Entries 1, 9)
-f11 i-QMS: the Laue onset drawing of the October talk, redrawn, and the closed-form first
-    sideband against time, Si (Entries 1, 9)
+f11 i-QMS: the closed-form first sideband against time after a step onset, Si (Entries 1, 9)
 f12 i-QMS background: Bessel weights against u0, and the surface-acoustic-wave
     satellites of Vadilonga et al. 2017 (J. Appl. Cryst. 50, 525, CC BY), points read from its Fig. 6
-f13 i-QMS: kinematic satellites at S = 1.5 (planes, positions Q_n, weights), after talk slide 3
-f15 i-QMS: overshoot map after a linear ramp (Entry 67) in u0 (pm) and rise time (ns), traces A-C
+f13 i-QMS: the Laue onset schematic of the October talk (slide 2), redrawn, and the rocking curve
+    of a thin Si crystal filled with sound, S = 1.5 (own RK4)
+f16 i-QMS: first sideband |D_h(z)|^2 against depth and time after a step onset, Laue, Si (own RK4 sweep)
 
 The i-QMS figures (--iqms) use the mplume "box" style at poster size (closed frame, inward major and
 minor ticks, no grid) and its a0 context (print-size type), mplume main at 4c06415 (the a0
@@ -1167,8 +1167,7 @@ def onset_sketch(ax):
 
 
 def f11():
-    """i-QMS panel 4: the formation picture. Left, the Laue onset drawing of the October talk
-    (onset_sketch). Right, the closed form for the driven layer v_s t, first sideband, S = 1.5,
+    """i-QMS panel 4: the closed form for the driven layer v_s t, first sideband, S = 1.5,
     L = 296 um, Si 440 at 30 keV (constants as in poster/check_numbers.py): Laue oscillates until
     t_tr and then holds; Bragg saturates near tau_1. Lines are labelled where they end."""
     from scipy.special import jv
@@ -1186,14 +1185,7 @@ def f11():
             lambda x: np.tanh(np.pi * x) ** 2,
         ),
     )
-    fig, (ax, axr) = plt.subplots(
-        1,
-        2,
-        figsize=(FIG_W, 0.30 * FIG_W),
-        constrained_layout=True,
-        gridspec_kw=dict(width_ratios=[1.35, 1.0], wspace=0.03),
-    )
-    onset_sketch(ax)
+    fig, axr = plt.subplots(figsize=(FIG_W, 0.27 * FIG_W), constrained_layout=True)
     tt = np.linspace(0, 62e-9, 1500)
     for name, color, tau, t_tr, law in cases:
         axr.plot(tt * 1e9, law(np.minimum(tt, t_tr) / tau), color=color)
@@ -1244,7 +1236,7 @@ def f12():
     from scipy.special import jv
 
     style()
-    fig, (ax, axv) = plt.subplots(1, 2, figsize=(FIG_W * 1.25, 5.0), constrained_layout=True)
+    fig, (ax, axv) = plt.subplots(1, 2, figsize=(FIG_W, 4.4), constrained_layout=True)
     u = np.linspace(0, 65, 600)  # pm
     S = SI_H440 * u * 1e-12
     # labels beside their curves, inside the frame: n = 0 above its falling edge, n = 3 at the right
@@ -1295,116 +1287,148 @@ def f12():
 
 
 def f13():
-    """i-QMS introduction: kinematic satellites at S = 1.5, redrawn after the October talk (slide 3,
-    drawn there at S = 1.6). Left: lattice planes displaced by a shear wave. Middle: satellite
-    positions Q_n = h - nK z along the depth axis. Right: kinematic weights J_n(S)^2, one colour per
-    order as in f12."""
-    from scipy.special import jv
-
+    """i-QMS introduction. Left: the Laue onset schematic (onset_sketch). Right: rocking curve of the
+    crystal filled with sound, Si 440 at 30 keV, S = 1.5, 2 GHz shear wave (Lambda_ac = 2.96 um),
+    L = 3 Lambda_ac = 8.9 um (L << Lambda, so the peaks carry the kinematic weights), averaged over
+    eight acoustic phases; the angle offset is eta / (h L), satellite n at n d / Lambda_ac. Grey: the
+    same crystal without sound."""
     style()
-    S, lab = 1.5, SMALL - 2
-    fig, (ax, axb) = plt.subplots(
-        1, 2, figsize=(8.6, 4.2), gridspec_kw=dict(width_ratios=[1.3, 1.0], wspace=0.0)
+    a_ac = 3.0
+    lam_ac = V_SHEAR / 2e9
+    L = a_ac * lam_ac
+    alpha = L / LAMBDA_LAUE
+    d = Drive(S=1.5, alpha_ac=a_ac)
+    eta = np.linspace(-2.6 * d.q, 2.6 * d.q, 2001)
+    shift = (2.0 + np.arange(8) / 8 * d.period)[:, None]
+    n_z = required_nz(alpha, a_ac, S=1.5, eta_max=eta.max())
+    I = rocking(alpha, eta, phi=d.phi(shift), n_z=n_z).mean(axis=0)
+    I0 = rocking(alpha, eta, n_z=n_z)
+    dth = eta / (SI_H440 * L) * 1e6  # urad
+    fig, (ax, axr) = plt.subplots(
+        1,
+        2,
+        figsize=(FIG_W, 0.34 * FIG_W),
+        constrained_layout=True,
+        gridspec_kw=dict(width_ratios=[1.25, 1.0], wspace=0.03),
     )
-    fig.subplots_adjust(left=0.01, right=0.99, top=0.99, bottom=0.02)
-    for a in (ax, axb):
-        a.set_ylim(-3.7, 5.5)
-        a.axis("off")
-    ax.set_xlim(-0.5, 7.2)
-    z = np.linspace(-3.4, 3.4, 300)
-    for k in range(5):
-        ax.plot(0.2 + 0.62 * k + 0.16 * np.sin(2 * np.pi * z / 2.3), z, color=INK, lw=1.8)
-    arrow(ax, (0.2, 3.75), (1.9, 3.75), INK, 2.0, ms=18)
-    ax.text(2.05, 3.75, r"$\mathbf{h}$", fontsize=lab + 2, va="center")
-    arrow(ax, (3.2, 2.6), (3.2, 0.4), INK2, 2.2, ms=18)
-    ax.text(3.35, 1.5, "$K$", color=INK2, fontsize=lab + 2, va="center")
-    ax.text(1.4, 4.55, "real space", fontsize=lab, ha="center", va="bottom")
-    o, xq = (4.3, 0.0), 5.9
-    ax.plot(*o, "o", color=INK, ms=7)
-    arrow(ax, o, (xq - 0.12, 0.0), INK, 2.0, ms=16)
-    ax.text(5.05, 0.2, r"$\mathbf{h}$", fontsize=lab, ha="center", va="bottom")
-    for n in range(-3, 4):
-        ax.plot(xq, n, "o", color=ORDER[abs(n)], mec=INK, ms=10)
-        ax.text(
-            xq + 0.3,
-            n,
-            f"{n:+d}".replace("-", "\N{MINUS SIGN}") if n else "0",
-            fontsize=lab,
-            va="center",
+    onset_sketch(ax)
+    scale = 1e2
+    axr.plot(dth, I0 * scale, color=INK2, lw=1.6)
+    axr.plot(dth, I * scale, color=BLUE)
+    axr.text(4, 0.8 * I0.max() * scale, "no sound", color=INK2, fontsize=SMALL - 2, ha="left")
+    step = d.q / (SI_H440 * L) * 1e6
+    for n in range(-2, 3):
+        k = np.argmin(abs(eta - n * d.q))
+        lab = "$n=0$" if n == 0 else f"${n:+d}$".replace("-", "−")
+        axr.text(
+            n * step,
+            I[k] * scale + 0.12,
+            lab,
+            fontsize=SMALL - 2,
+            ha="center",
+            va="bottom",
+            color=BLUE,
         )
-    ax.text(
-        xq, 4.55, r"$\mathbf{Q}_n=\mathbf{h}-nK\hat{z}$", fontsize=lab, ha="center", va="bottom"
+    axr.set(
+        xlim=(dth[0], dth[-1]),
+        ylim=(0, 1.15 * I0.max() * scale),
+        xlabel=r"angle offset $\Delta\theta$ (μrad)",
+        ylabel="$I_h/I_0$ (%)",
     )
-    axb.set_xlim(0, 0.5)
-    for n in range(-3, 4):
-        w = jv(n, S) ** 2
-        axb.barh(n, w, height=0.55, color=ORDER[abs(n)], ec=INK, lw=0.8)
-        axb.text(w + 0.015, n, f"{w:.2f}" if w >= 0.01 else f"{w:.3f}", fontsize=lab, va="center")
-    axb.text(0.2, 4.55, "$J_n(S)^2$, $S$ = 1.5", fontsize=lab, ha="center", va="bottom")
-    OUT.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT / "f13_kinematic.png")
-    print("wrote", OUT / "f13_kinematic.png", [round(jv(n, S) ** 2, 4) for n in range(4)])
+    finish(fig, axr, "f13_rocking")
+    print(
+        f"f13: L {L * 1e6:.2f} um, alpha {alpha:.3f}, satellite step {step:.1f} urad, n_z {n_z}",
+        "peaks",
+        [round(float(I[np.argmin(abs(eta - n * d.q))] * scale), 3) for n in range(3)],
+    )
 
 
-def f15():
-    """i-QMS section 5: overshoot of the first sideband after a linear ramp of the sound amplitude
-    (Entry 67: Laue, L = Lambda / 2, two-beam form over the grid, A-C checked against full TT), in
-    physical units for Si 440 at 30 keV: x = u0 (pm) with S = h u0 on top, y = rise time in ns with
-    t_tr marked. Right: I_1(t) at A-C, two-beam form (line), full TT (points), steady level dashed."""
-    import json
+F16_ALPHA, F16_AAC, F16_S, F16_PHASES = 296e-6 / LAMBDA_LAUE, 100.0, 1.5, 8  # L = 296 um, 2 GHz
 
-    from matplotlib import patheffects as pe
 
+def f16_profiles():
+    """|D_h(z)|^2 inside a Laue crystal at the first-sideband angle (eta = q), step onset, against
+    depth and time: the RK4 sweep of tratt.core.solve_laue, keeping D_h at every depth step instead
+    of the exit value only (in Laue the field at depth z depends only on the layers above it).
+    Vectorised over times and F16_PHASES acoustic phases (shifts of a fraction of one period),
+    averaged over the phases. Cached in explore/nb/poster_f16_depth_time.npz."""
+    from tratt.core import required_nz
+
+    cache = ROOT / "explore" / "nb" / "poster_f16_depth_time.npz"
+    if cache.exists() and float(np.load(cache)["alpha"]) == F16_ALPHA:
+        c = np.load(cache)
+        return c["zeta"], c["t"], c["I"]
+    d = Drive(S=F16_S, alpha_ac=F16_AAC)
+    eta = d.eta_channel(1)
+    n_z = required_nz(F16_ALPHA, F16_AAC, S=F16_S, eta_max=eta)
+    t = np.linspace(0.0, 1.3, 105)
+    shift = np.arange(F16_PHASES) / F16_PHASES * d.period
+    T = (t[:, None] + shift[None, :]).ravel()
+    phi = d.phi(T)
+    c, h = 1j * np.pi * F16_ALPHA, 1.0 / n_z
+
+    def cpl(z):
+        e = np.exp(1j * phi(np.float64(z)))
+        return c * e, c * np.conj(e)
+
+    def f(cp, cm, d0, dh):
+        return cp * dh, cm * d0 + 1j * eta * dh
+
+    D0 = np.ones(T.shape, dtype=np.complex128)
+    Dh = np.zeros(T.shape, dtype=np.complex128)
+    keep = max(1, n_z // 600)
+    zeta, rows = [0.0], [np.zeros(T.shape)]
+    start = cpl(0.0)
+    for i in range(n_z):
+        mid, end = cpl((i + 0.5) * h), cpl((i + 1) * h)
+        k1a, k1b = f(*start, D0, Dh)
+        k2a, k2b = f(*mid, D0 + 0.5 * h * k1a, Dh + 0.5 * h * k1b)
+        k3a, k3b = f(*mid, D0 + 0.5 * h * k2a, Dh + 0.5 * h * k2b)
+        k4a, k4b = f(*end, D0 + h * k3a, Dh + h * k3b)
+        D0 = D0 + (h / 6.0) * (k1a + 2 * k2a + 2 * k3a + k4a)
+        Dh = Dh + (h / 6.0) * (k1b + 2 * k2b + 2 * k3b + k4b)
+        start = end
+        if (i + 1) % keep == 0 or i + 1 == n_z:
+            zeta.append((i + 1) * h)
+            rows.append(np.abs(Dh) ** 2)
+    I = np.array(rows).reshape(len(zeta), t.size, F16_PHASES).mean(axis=2)  # (depth, time)
+    np.savez(
+        cache, zeta=np.array(zeta), t=t, I=I, n_z=n_z, alpha=F16_ALPHA, alpha_ac=F16_AAC, S=F16_S
+    )
+    return np.array(zeta), t, I
+
+
+def f16():
+    """i-QMS section 5: the first sideband inside the crystal while the wave enters. Laue, Si 440 at
+    30 keV, S = 1.5, L = 296 um , step onset; x = depth (um), y = time after onset (ns),
+    colour = |D_h|^2 at the first-sideband angle; dashed: the wavefront z = v_s t; t_tr marked."""
     style()
-    data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
-    summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
-    t_tr = summary["alpha"] * LAMBDA_LAUE / V_SHEAR * 1e9  # ns
-    pm = 1e12 / SI_H440  # u0 in pm per unit S
-    fig = plt.figure(figsize=(FIG_W, 4.6), constrained_layout=True)
-    grid = fig.add_gridspec(3, 2, width_ratios=[2.15, 1.0])
-    ax = fig.add_subplot(grid[:, 0])
+    zeta, t, I = f16_profiles()
+    L_um = F16_ALPHA * LAMBDA_LAUE * 1e6
+    t_tr = F16_ALPHA * LAMBDA_LAUE / V_SHEAR * 1e9
+    fig, ax = plt.subplots(figsize=(FIG_W, 4.4), constrained_layout=True)
     im = ax.pcolormesh(
-        data["S"] * pm, data["rise"] * t_tr, data["excess"], shading="nearest", cmap="Blues", vmin=0
+        zeta * L_um, t * t_tr, I.T, shading="gouraud", cmap="Blues", vmin=0, vmax=1, rasterized=True
     )
-    cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.06, ticks=[0, 0.2, 0.4, 0.6])
-    cb.set_label(r"overshoot $\Delta I/I_0$")
+    cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.05, ticks=[0, 0.5, 1])
+    cb.set_label("first sideband $|D_h|^2/I_0$")
     cb.ax.tick_params(direction="in", which="both")
-    ax.axhline(t_tr, color=INK, ls="--", lw=1.8)
-    ax.text(88, t_tr + 0.6, "$t_{tr}$", fontsize=SMALL, ha="right", va="bottom")
-    halo = [pe.withStroke(linewidth=4, foreground="white")]
-    for case in summary["cases"]:
-        x, y = case["S"] * pm, case["rise"] * t_tr
-        ax.plot(x, y, "o", color="white", mec=INK, mew=2, ms=13)
-        ax.text(x + 2.5, y + 0.8, case["label"], fontsize=BIG, fontweight="bold", path_effects=halo)
-    ax.set(
-        xlabel="displacement amplitude $u_0$ (pm), Si 440",
-        ylabel="rise time $T_{rise}$ (ns)",
-        ylim=(data["rise"][0] * t_tr, data["rise"][-1] * t_tr),
+    ax.plot([0, L_um], [0, t_tr], color=INK, ls="--", lw=2.0)
+    ax.text(
+        0.42 * L_um, 0.42 * t_tr + 2.5, "wavefront $z=v_st$", fontsize=SMALL, rotation=0, ha="right"
     )
-    top = ax.secondary_xaxis("top", functions=(lambda u: u / pm, lambda s: s * pm))
-    top.set_xlabel("$S=hu_0$")
-    top.tick_params(direction="in", which="both")
-    for k, case in enumerate(summary["cases"]):
-        letter = case["label"]
-        a = fig.add_subplot(grid[k, 1])
-        a.plot(data[f"{letter}_t"] * t_tr, data[f"{letter}_I"], color=BLUE)
-        a.plot(
-            data[f"{letter}_tt_t"][::4] * t_tr, data[f"{letter}_tt_I"][::4], "o", color=BLUE, ms=6
-        )
-        a.axhline(case["steady"], color=INK2, ls="--", lw=1.6)
-        a.text(
-            0.04, 0.92, letter, transform=a.transAxes, fontsize=SMALL, fontweight="bold", va="top"
-        )
-        a.set(ylim=(0, 0.68), yticks=[0, 0.5], xlim=(0, data[f"{letter}_t"][-1] * t_tr))
-        if k == 1:
-            a.set_ylabel("$I_1/I_0$")
-        if k == 2:
-            a.set_xlabel("time (ns)")
-    OUT.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT / "f15_overshoot.png")
-    print("wrote", OUT / "f15_overshoot.png", f"t_tr {t_tr:.2f} ns, u0 per S {pm:.2f} pm")
-    for case in summary["cases"]:
-        print(case["label"], f"u0 {case['S'] * pm:.0f} pm", f"T_rise {case['rise'] * t_tr:.1f} ns")
+    ax.axhline(t_tr, color=INK2, ls=":", lw=1.8)
+    ax.text(8, t_tr + 1.2, f"$t_{{tr}}$ = {t_tr:.1f} ns", fontsize=SMALL, va="bottom")
+    ax.set(
+        xlim=(0, L_um),
+        ylim=(0, t[-1] * t_tr),
+        xlabel="depth $z$ (μm)",
+        ylabel="time after onset (ns)",
+    )
+    finish(fig, ax, "f16_depth_time")
+    print(
+        f"f16: L {L_um:.0f} um, t_tr {t_tr:.1f} ns, exit max {I[-1].max():.3f}, exit at t_tr {np.interp(1.0, t, I[-1]):.3f}"
+    )
 
 
 if __name__ == "__main__":

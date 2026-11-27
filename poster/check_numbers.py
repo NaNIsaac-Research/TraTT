@@ -139,14 +139,8 @@ row(
 # i-QMS poster (poster/iqms.md): numbers not already on the KPS poster.
 
 
-# i-QMS v5d, section 5: the overshoot map (Entry 67, L = Lambda_P / 2, Laue) in physical units
-row(
-    "iqms: t_tr = L / v_s at L = Lambda_P / 2, Laue (ns)",
-    8.4,
-    LAMBDA_P_LAUE / 2 / v_shear * 1e9,
-    0.05,
-)
-row("iqms: u0 at the J_1 maximum (pm)", 28, s_max * D440 / (2 * np.pi) * 1e12, 0.5)
+# i-QMS v5d, section 1: satellite n of the rocking curve sits at n d / Lambda_ac (2 GHz shear wave)
+row("iqms: satellite step d / Lambda_ac at 2 GHz (urad)", 32.8, D440 / (v_shear / 2e9) * 1e6, 0.05)
 
 # i-QMS v2 (review round 1)
 row("iqms: Bragg t_tr = L / v_L at L = 296 um (ns)", 32.4, L / v_long * 1e9, 0.05)
