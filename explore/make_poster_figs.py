@@ -19,12 +19,12 @@ f7  linear-ramp overshoot map and three TT-checked traces (Entry 67)
 f8  kinematic satellites: lattice planes without and with a shear wave, and J_n(S)^2 by order
 f9  symmetric Laue and Bragg geometry: h, the acoustic polarisation that couples, boundary conditions
 f10 steady sidebands against thickness: closed forms, kinematic Bessel law and full TT (Entries 1, 9)
-f11 i-QMS: the closed-form first sideband against time after a step onset, Laue, Si (Entries 1, 9)
 f12 i-QMS background: Bessel weights against u0, and the surface-acoustic-wave
     satellites of Vadilonga et al. 2017 (J. Appl. Cryst. 50, 525, CC BY), points read from its Fig. 6
 f13 i-QMS: the Laue onset schematic of the October talk (slide 2), redrawn, and the rocking curve
-    of a thin Si crystal filled with sound, S = 1.5 (own RK4)
-f16 i-QMS: first sideband |D_h(z)|^2 against time and depth after a step onset, Laue, Si (own RK4 sweep)
+    of the 296 um Si crystal filled with sound, S = 1.5 (own RK4)
+f17 i-QMS: sideband formation, the depth-time map of |D_h(z)|^2 over the I_1(t) exit curve, one
+    time axis, Laue, Si, step onset (own RK4 sweep)
 
 The i-QMS figures (--iqms) use the mplume "box" style at poster size (closed frame, inward major and
 minor ticks, no grid) and its a0 context (print-size type), mplume main at 4c06415 (the a0
@@ -688,14 +688,31 @@ def f7():
         s_max = minimize_scalar(lambda s: -jv(1, s), bounds=(1, 3), method="bounded").x
         fig, ax = plt.subplots(figsize=(FIG_W, F7_H), constrained_layout=True)
         im = ax.pcolormesh(
-            data["S"], data["rise"], data["excess"], shading="nearest", cmap="cividis", vmin=0
+            data["S"], data["rise"], data["excess"], shading="nearest", cmap="magma", vmin=0
         )
         cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.045, ticks=[0, 0.2, 0.4, 0.6])
         cb.set_label(r"$\Delta I/I_{inc}$")
-        ax.axvline(s_max, color="white", ls="--", lw=2)
+        ax.axvline(s_max, color="white", ls=(0, (6, 4)), lw=2.4)
         ax.text(
-            s_max - 0.1, 3.8, r"max of $J_1$", color="white", fontsize=SMALL, ha="right", va="top"
+            s_max - 0.1,
+            3.8,
+            r"max of $J_1$" + "\n" + rf"$S$ = {s_max:.2f}",
+            color="white",
+            fontsize=SMALL,
+            ha="right",
+            va="top",
         )
+        for case in summary["cases"]:  # the three conditions checked against full TT
+            ax.plot(case["S"], case["rise"], "o", color="white", mec=INK, mew=1.5, ms=13)
+            ax.annotate(
+                case["label"],
+                (case["S"], case["rise"]),
+                xytext=(10, 6),
+                textcoords="offset points",
+                fontsize=SMALL,
+                fontweight="bold",
+                color="white",
+            )
         ax.set(
             xlabel=r"final acoustic amplitude $S$",
             ylabel=r"rise time $T_{rise}/t_{tr}$",
@@ -1166,69 +1183,6 @@ def onset_sketch(ax):
     )
 
 
-def f11():
-    """i-QMS section 4: the closed form for the driven layer v_s t, first sideband, Laue, S = 1.5,
-    L = 296 um, Si 440 at 30 keV (constants as in poster/check_numbers.py): I_1 = sin^2(pi t / tau_1)
-    until t_tr = L / v_s, then the steady value. Marks: t_tr (dashed), the filled crystal (grey), the
-    steady value (dotted), one period tau_1 (arrow between two maxima)."""
-    from scipy.special import jv
-
-    style()
-    lab = 24
-    tau = LAMBDA_LAUE / (V_SHEAR * abs(jv(1, 1.5))) * 1e9
-    t_tr = 296e-6 / V_SHEAR * 1e9
-    t_end = 66.0
-    tt = np.linspace(0, t_end, 2000)
-    steady = np.sin(np.pi * t_tr / tau) ** 2
-    fig, ax = plt.subplots(figsize=(FIG_W, 0.26 * FIG_W), constrained_layout=True)
-    ax.axvspan(t_tr, t_end, color="#ebebeb", lw=0, zorder=0)
-    ax.axhline(steady, color=INK2, ls=":", lw=1.8, zorder=1)
-    ax.plot(tt, np.sin(np.pi * np.minimum(tt, t_tr) / tau) ** 2, color=BLUE, zorder=3)
-    ax.axvline(t_tr, color=INK, ls="--", lw=1.8, zorder=2)
-    ax.text(
-        t_tr - 1.2,
-        1.46,
-        rf"$t_{{tr}}=L/v_s$ = {t_tr:.1f} ns",
-        fontsize=lab,
-        ha="right",
-        va="center",
-    )
-    ax.text(
-        (t_tr + t_end) / 2,
-        1.46,
-        "crystal filled",
-        fontsize=lab,
-        ha="center",
-        va="center",
-        color=INK2,
-    )
-    ax.text(
-        t_end - 0.8,
-        steady - 0.07,
-        f"steady\nvalue {steady:.2f}",
-        fontsize=lab,
-        ha="right",
-        va="top",
-        color=INK2,
-    )
-    ax.annotate(
-        "",
-        xy=(1.5 * tau, 1.09),
-        xytext=(0.5 * tau, 1.09),
-        arrowprops=dict(arrowstyle="<->", color=INK, lw=1.6),
-    )
-    ax.text(tau, 1.14, rf"$\tau_1$ = {tau:.0f} ns", fontsize=lab, ha="center", va="bottom")
-    ax.set(
-        xlim=(0, t_end),
-        ylim=(0, 1.72),
-        yticks=[0, 0.5, 1],
-        xlabel="time after onset (ns)",
-        ylabel="first-sideband\nintensity $I_1/I_0$",
-    )
-    finish(fig, ax, "f11_formation")
-    print(f"f11 Laue: tau_1 {tau:.1f} ns, t_tr {t_tr:.1f} ns, steady {steady:.3f}")
-
-
 # Vadilonga et al., J. Appl. Cryst. 50, 525 (2017), Fig. 6 (CC BY 2.0 UK): satellite intensities of a
 # Rayleigh surface acoustic wave on Y-cut langasite at BESSY II against the IDT drive amplitude (V).
 # Read off the published figure (pixel positions, about +-0.01); the J_m^2 reference lines use the
@@ -1386,7 +1340,7 @@ def f13():
 
 
 F16_ALPHA, F16_AAC, F16_S, F16_PHASES = 296e-6 / LAMBDA_LAUE, 100.0, 1.5, 8  # L = 296 um, 2 GHz
-F16_W = 8.85  # inches: the 0.62 column of a paired poster card, so the map prints near 4:3
+F17_W = 8.0  # inches: the 0.56 column of a paired poster card
 F12_W = 12.27  # inches: the 0.4 column of a full-width poster card
 
 
@@ -1442,36 +1396,36 @@ def f16_profiles():
     return np.array(zeta), t, I
 
 
-def f16():
-    """i-QMS section 5: the first sideband inside the crystal while the wave enters. Laue, Si 440 at
-    30 keV, S = 1.5, L = 296 um, step onset; x = time after onset (ns), y = depth (um, down, as in the
-    section 1 schematic), colour = |D_h|^2 at the first-sideband angle over the whole slab; dashed
-    wavefront z = v_s t and t_tr marked. Near 4:3, sized to its column so the labels print at 24 pt."""
+def f17():
+    """i-QMS section 4: one figure for sideband formation. Top: the depth-time map (Laue,
+    Si 440 at 30 keV, S = 1.5, L = 296 um, step onset, |D_h(z)|^2 at the first-sideband angle,
+    phase-averaged TT); bottom: its edge z = L, the exit intensity, on the same time axis, with
+    t_tr, tau_1 and the steady value. Sized to the 0.56 column of a paired card."""
     from matplotlib import patheffects
 
     style()
     zeta, t, I = f16_profiles()
     L_um = F16_ALPHA * LAMBDA_LAUE * 1e6
     t_tr = F16_ALPHA * LAMBDA_LAUE / V_SHEAR * 1e9
+    tn, zn = t * t_tr, zeta * L_um
+    edge = I[-1]
+    steady = float(np.interp(1.0, t, edge))
+    peaks = tn[1:-1][(edge[1:-1] > edge[:-2]) & (edge[1:-1] >= edge[2:]) & (tn[1:-1] < t_tr)]
     lab = 24
     halo = [patheffects.withStroke(linewidth=4.5, foreground=INK)]
-    fig, ax = plt.subplots(figsize=(F16_W, 0.75 * F16_W), constrained_layout=True)
-    tn, zn = t * t_tr, zeta * L_um
+    fig = plt.figure(figsize=(F17_W, 1.0 * F17_W), constrained_layout=True)
+    grid = fig.add_gridspec(2, 2, width_ratios=[1, 0.045], height_ratios=[1.55, 1.0])
+    ax, axb, cax = (
+        fig.add_subplot(grid[0, 0]),
+        fig.add_subplot(grid[1, 0]),
+        fig.add_subplot(grid[0, 1]),
+    )
+    fig.add_subplot(grid[1, 1]).axis("off")
     im = ax.pcolormesh(tn, zn, I, shading="gouraud", cmap="magma", vmin=0, vmax=1, rasterized=True)
-    cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.06, ticks=[0, 0.5, 1])
+    cb = fig.colorbar(im, cax=cax, ticks=[0, 0.5, 1])
     cb.set_label("$|D_h|^2/I_0$")
     cb.ax.tick_params(direction="in", which="both")
     ax.plot([0, t_tr], [0, L_um], color="white", ls="--", lw=2.4, zorder=4, path_effects=halo)
-    ax.axvline(t_tr, color="white", ls=":", lw=2.2, zorder=4, path_effects=halo)
-    ax.text(
-        t_tr,
-        1.02,
-        f"$t_{{tr}}$ = {t_tr:.1f} ns",
-        transform=ax.get_xaxis_transform(),
-        fontsize=lab,
-        ha="center",
-        va="bottom",
-    )
     ax.text(
         0.62 * t_tr - 4.5,
         0.62 * L_um,
@@ -1483,14 +1437,55 @@ def f16():
         zorder=5,
         path_effects=halo,
     )
-    ax.set(
-        xlim=(0, t[-1] * t_tr),
-        ylim=(L_um, 0),
-        xlabel="time after onset (ns)",
-        ylabel="depth $z$ (μm)",
+    ax.text(
+        t_tr,
+        1.02,
+        f"$t_{{tr}}$ = {t_tr:.1f} ns",
+        transform=ax.get_xaxis_transform(),
+        fontsize=lab,
+        ha="center",
+        va="bottom",
     )
-    finish(fig, ax, "f16_depth_time")
-    print(f"f16: L {L_um:.0f} um, t_tr {t_tr:.1f} ns, exit at t_tr {np.interp(1.0, t, I[-1]):.3f}")
+    ax.set(xlim=(0, tn[-1]), ylim=(L_um, 0), ylabel="depth $z$ (μm)")
+    ax.tick_params(labelbottom=False)
+    for a in (ax, axb):
+        a.axvline(t_tr, color="white" if a is ax else INK, ls=(0, (6, 4)), lw=2.4, zorder=4)
+    axb.axhline(steady, color=INK2, ls=":", lw=1.8)
+    axb.plot(tn, edge, color=BLUE, lw=2.6)
+    axb.text(
+        (t_tr + tn[-1]) / 2 - 0.2,
+        steady - 0.08,
+        f"steady\n{steady:.2f}",
+        fontsize=lab,
+        ha="center",
+        va="top",
+        color=INK2,
+    )
+    if peaks.size >= 2:
+        axb.annotate(
+            "",
+            xy=(peaks[1], 1.1),
+            xytext=(peaks[0], 1.1),
+            arrowprops=dict(arrowstyle="<->", color=INK, lw=1.6),
+        )
+        axb.text(
+            peaks[:2].mean(),
+            1.16,
+            rf"$\tau_1$ = {peaks[1] - peaks[0]:.0f} ns",
+            fontsize=lab,
+            ha="center",
+            va="bottom",
+        )
+    axb.set(
+        xlim=(0, tn[-1]),
+        ylim=(0, 1.62),
+        yticks=[0, 0.5, 1],
+        xlabel="time after onset (ns)",
+        ylabel="$I_1/I_0$ at $z=L$",
+    )
+    fig.align_ylabels([ax, axb])
+    finish(fig, axb, "f17_formation")
+    print(f"f17: t_tr {t_tr:.1f} ns, steady {steady:.3f}, maxima at {np.round(peaks, 1)} ns")
 
 
 if __name__ == "__main__":
