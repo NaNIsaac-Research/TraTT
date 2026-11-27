@@ -1250,12 +1250,12 @@ def f12():
     from scipy.special import jv
 
     style()
-    fig, (ax, axv) = plt.subplots(1, 2, figsize=(FIG_W, 4.4), constrained_layout=True)
+    fig, (ax, axv) = plt.subplots(1, 2, figsize=(F12_W, 5.6), constrained_layout=True)
     u = np.linspace(0, 65, 600)  # pm
     S = SI_H440 * u * 1e-12
     # labels beside their curves, inside the frame: n = 0 above its falling edge, n = 3 at the right
     for n, x, y, ha in (
-        (0, 15, 0.95, "left"),
+        (0, 9, 0.97, "left"),
         (1, 26, 0.37, "center"),
         (2, 47, 0.27, "center"),
         (3, 64, 0.25, "right"),
@@ -1264,11 +1264,11 @@ def f12():
         ax.text(x, y, f"$n={n}$", color=ORDER[n], fontsize=SMALL, ha=ha)
     u15 = 1.5 / SI_H440 * 1e12
     ax.axvline(u15, color=INK2, ls=":", lw=2.0)
-    ax.text(u15 + 1, 1.02, "$S$ = 1.5", fontsize=SMALL - 2, color=INK2, va="top")
+    ax.text(u15 + 1, 0.66, "$S$ = 1.5", fontsize=SMALL - 2, color=INK2, va="top")
     ax.set(
         xlim=(0, 65),
         ylim=(0, 1.08),
-        xlabel="displacement amplitude $u_0$ (pm), Si 440",
+        xlabel="displacement $u_0$ (pm)",
         ylabel="kinematic weight $J_n(S)^2$",
     )
     top = ax.secondary_xaxis(
@@ -1282,7 +1282,7 @@ def f12():
         axv.plot(v, jv(m, VADILONGA_ARG * v) ** 2, color=ORDER[m], lw=1.8)
         axv.plot(x, y, "osd^v"[m], color=ORDER[m], mec=INK, ls="none")
     for m, xy in (
-        (0, (8, 0.85)),
+        (0, (14, 0.88)),
         (1, (22, 0.37)),
         (2, (41, 0.26)),
         (3, (44, 0.185)),
@@ -1294,7 +1294,7 @@ def f12():
     axv.set(
         xlim=(0, 45),
         ylim=(0, 1.08),
-        xlabel="drive amplitude on the transducer (V)",
+        xlabel="transducer drive (V)",
         ylabel="satellite intensity",
     )
     finish(fig, (ax, axv), "f12_bessel")
@@ -1386,7 +1386,8 @@ def f13():
 
 
 F16_ALPHA, F16_AAC, F16_S, F16_PHASES = 296e-6 / LAMBDA_LAUE, 100.0, 1.5, 8  # L = 296 um, 2 GHz
-F16_W = 7.8  # inches: the 0.55 column of a paired poster card, so the map prints near 4:3
+F16_W = 8.85  # inches: the 0.62 column of a paired poster card, so the map prints near 4:3
+F12_W = 12.27  # inches: the 0.4 column of a full-width poster card
 
 
 def f16_profiles():
@@ -1442,9 +1443,9 @@ def f16_profiles():
 
 
 def f16():
-    """i-QMS section 6: the first sideband inside the crystal while the wave enters. Laue, Si 440 at
+    """i-QMS section 5: the first sideband inside the crystal while the wave enters. Laue, Si 440 at
     30 keV, S = 1.5, L = 296 um, step onset; x = time after onset (ns), y = depth (um, down, as in the
-    section 2 schematic), colour = |D_h|^2 at the first-sideband angle over the whole slab; dashed
+    section 1 schematic), colour = |D_h|^2 at the first-sideband angle over the whole slab; dashed
     wavefront z = v_s t and t_tr marked. Near 4:3, sized to its column so the labels print at 24 pt."""
     from matplotlib import patheffects
 

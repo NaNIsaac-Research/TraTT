@@ -32,14 +32,6 @@ no-break space (U+00A0).
 
 When a GHz shear wave is switched on in silicon, the X-ray **sidebands do not appear at once**: each grows only behind the **acoustic wavefront**. Time-dependent Takagi–Taupin equations (Laue geometry) show that the first sideband of a 296 μm crystal is **complete at the transit time** (50.6 ns), **not after one acoustic period** (0.5 ns). {E1}{E9}{E20}{E28}
 
-## Overview: from switch-on to steady sidebands
-
-=> Switch-on :: Sound switched on
-=> Onset :: Wavefront at $z=v_st$
-=> Onset :: Sidebands grow behind it
-=> Filled :: Crystal filled at $t_{tr}=L/v_s$
-=> Filled :: Steady sidebands {E1}{E9}
-
 ## Introduction: why the build-up time matters
 
 [[ 0.5 c
@@ -86,7 +78,7 @@ The wave displaces the atoms by $u=u_0\sin(Kz-\Omega t)$ (acoustic wavelength $\
 
 In a thick, nearly perfect crystal X-rays are scattered many times; single scattering is no longer enough. {E0}{E20}
 
-In Laue (transmission) geometry the X-rays cross the slab from the top face to the bottom face (section 2). The Takagi–Taupin (TT) equations (Takagi 1962, 1969; Taupin 1964) couple the transmitted wave $D_0$ and the diffracted wave $D_h$ along the depth $z$; the displacement $\mathbf{u}(z,t)$ enters as the phase $\mathbf{h}\cdot\mathbf{u}$ ($\Lambda$: Pendellösung length, 98.8 μm; $\beta$: deviation from the Bragg angle). {E0}{E20}{E62}
+In Laue (transmission) geometry the X-rays cross the slab from the top face to the bottom face (section 1). The Takagi–Taupin (TT) equations (Takagi 1962, 1969; Taupin 1964) couple the transmitted wave $D_0$ and the diffracted wave $D_h$ along the depth $z$; the displacement $\mathbf{u}(z,t)$ enters as the phase $\mathbf{h}\cdot\mathbf{u}$ ($\Lambda$: Pendellösung length, 98.8 μm; $\beta$: deviation from the Bragg angle). {E0}{E20}{E62}
 
 $$ $dD_0/dz=(i\pi/\Lambda)\,e^{i\mathbf{h}\cdot\mathbf{u}}D_h$,  $dD_h/dz=(i\pi/\Lambda)\,e^{-i\mathbf{h}\cdot\mathbf{u}}D_0+i\beta D_h$ {E0}
 
@@ -102,7 +94,7 @@ $$ $dD_0/dz=(i\pi/\Lambda)\,e^{i\mathbf{h}\cdot\mathbf{u}}D_h$,  $dD_h/dz=(i\pi/
 
 After switch-on, only the layer behind the wavefront is strained; each sideband grows with that layer. {E1}{E9}
 
-![First sideband after a step onset, Laue, Si, $L$ = 296 μm, $S$ = 1.5 ($u_0$ = 23 pm); schematic in section 2.](figures/poster/iqms/f11_formation.png){E0}{E1}{E9}{E20}{E85}
+![First sideband after a step onset, Laue, Si, $L$ = 296 μm, $S$ = 1.5 ($u_0$ = 23 pm); schematic in section 1.](figures/poster/iqms/f11_formation.png){E0}{E1}{E9}{E20}{E85}
 
 Satellite $n$ is a two-beam problem with extinction length $\Lambda/\left|J_n(S)\right|$: a filled crystal gives $I_n=\sin^2(\pi L\left|J_n\right|/\Lambda)$; during onset the strained layer has thickness $v_st$ ($v_s$: sound velocity), so $L\to v_st$: {E1}{E9}{E44}{E54}
 
@@ -114,15 +106,15 @@ In the formation time $\tau_n$ the front crosses one sideband extinction length;
 
 ## Build-up inside the crystal: depth–time map
 
-[[ 0.55 c
+[[ 0.62 c
 
 ![](figures/poster/iqms/f16_depth_time.png){E1}{E9}{E20}
 
-|| 0.45 c
+|| 0.38 c
 
 Behind the wavefront $z=v_st$ the sideband builds up; the crystal is complete when the front reaches $z=L$ at $t_{tr}$. {E1}{E9}
 
-![Laue, Si 440, $S$ = 1.5, $L$ = 296 μm, step onset: $|D_h(z)|^2$ at the first-sideband angle (TT, phase-averaged). The bottom edge $z=L$ is the section 5 curve.](none){E1}{E9}{E20}
+![Laue, Si 440, $S$ = 1.5, $L$ = 296 μm, step onset: $|D_h(z)|^2$ at the first-sideband angle (TT, phase-averaged). The bottom edge $z=L$ is the section 4 curve.](none){E1}{E9}{E20}
 
 ]]
 
@@ -130,6 +122,6 @@ Behind the wavefront $z=v_st$ the sideband builds up; the crystal is complete wh
 
 > **Sideband formation is complete within the acoustic transit time** $L/v_s$ (tens of ns in Si); the formation time $\tau_n$, not the acoustic period, sets the switching speed. The Bessel law holds for $L\ll\Lambda$. {E1}{E9}{E67}
 
-- **Outlook:** $S$ = 1.5 is $u_0$ = 23 pm (strain $5\times10^{-5}$ at 2 GHz). Next: an experiment. Separating the satellites needs only a 10 μrad beam (section 2); following the centre of one sideband in time needs a divergence below 0.05 μrad, a fraction of the Darwin half-width. {E20}{E73}{E84}{E92}
+- **Outlook:** $S$ = 1.5 is $u_0$ = 23 pm (strain $5\times10^{-5}$ at 2 GHz). Next: an experiment. Separating the satellites needs only a 10 μrad beam (section 1); following the centre of one sideband in time needs a divergence below 0.05 μrad, a fraction of the Darwin half-width. {E20}{E73}{E84}{E92}
 
 ![Method: TT equations, RK4, checked against an exact periodic-drive (Floquet) solver; two-beam forms within 6 % of full TT for $\Lambda_{ac}<0.3\,\Lambda$.](none){E0}{E19}{E20}{E31}{E42}{E54}{E62}
