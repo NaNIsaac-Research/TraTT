@@ -1305,17 +1305,18 @@ F13_DIV = 10.0  # urad FWHM, beam divergence of the f13 rocking curve
 
 def f13():
     """i-QMS introduction. Left: the Laue onset schematic (onset_sketch). Right: rocking curve of the
-    crystal filled with sound, Si 440 at 30 keV, S = 1.5, 2 GHz shear wave (Lambda_ac = 2.96 um),
-    L = 3 Lambda_ac = 8.9 um (L << Lambda, so the peaks carry the kinematic weights), averaged over
-    eight acoustic phases and convolved with a beam divergence of F13_DIV (FWHM); the angle offset is
-    eta / (h L), satellite n at n d / Lambda_ac. Grey: the same crystal without the wave."""
+    crystal filled with sound, the crystal of the other sections: Si 440 at 30 keV, L = 296 um, S = 1.5,
+    2 GHz shear wave (Lambda_ac = 2.92 um), averaged over eight acoustic phases and convolved with a
+    beam divergence of F13_DIV (FWHM), which separates the satellites but not their line shapes; the
+    angle offset is eta / (h L), satellite n at n d / Lambda_ac. Grey: the same crystal without the
+    wave."""
     style()
-    a_ac = 3.0
     lam_ac = V_SHEAR / 2e9
-    L = a_ac * lam_ac
+    L = 296e-6
+    a_ac = L / lam_ac
     alpha = L / LAMBDA_LAUE
     d = Drive(S=1.5, alpha_ac=a_ac)
-    eta = np.linspace(-2.6 * d.q, 2.6 * d.q, 2001)
+    eta = np.arange(-2.6 * d.q, 2.6 * d.q, 1.0)  # a step of 1 resolves the Pendelloesung fringes
     shift = (2.0 + np.arange(8) / 8 * d.period)[:, None]
     n_z = required_nz(alpha, a_ac, S=1.5, eta_max=eta.max())
     I = rocking(alpha, eta, phi=d.phi(shift), n_z=n_z).mean(axis=0)
@@ -1329,7 +1330,7 @@ def f13():
         gridspec_kw=dict(width_ratios=[1.25, 1.0], wspace=0.03),
     )
     onset_sketch(ax)
-    # a Gaussian beam divergence of F13_DIV (FWHM) smooths the thin-crystal side lobes into one peak each
+    # a Gaussian beam divergence of F13_DIV (FWHM): one smooth peak per satellite
     sig = F13_DIV / (2 * np.sqrt(2 * np.log(2)))
     x = np.arange(-4 * sig, 4 * sig, dth[1] - dth[0])
     g = np.exp(-0.5 * (x / sig) ** 2)
@@ -1340,12 +1341,18 @@ def f13():
     axr.plot(dth, I0 * scale, color=INK2, lw=1.6)
     axr.plot(dth, I * scale, color=BLUE)
     axr.text(
-        9, 0.8 * top, "without\nacoustic wave", color=INK2, fontsize=SMALL, ha="left", va="center"
+        78,
+        1.45 * top,
+        "without\nacoustic wave",
+        color=INK2,
+        fontsize=SMALL,
+        ha="right",
+        va="center",
     )
     axr.text(
-        -84,
-        0.8 * top,
-        "with\nacoustic wave,\n$S$ = 1.5",
+        -78,
+        1.45 * top,
+        "with acoustic\nwave, $S$ = 1.5",
         color=BLUE,
         fontsize=SMALL,
         ha="left",
@@ -1366,7 +1373,7 @@ def f13():
         )
     axr.set(
         xlim=(dth[0], dth[-1]),
-        ylim=(0, 1.22 * top),
+        ylim=(0, 1.75 * top),
         xlabel=r"angle offset $\Delta\theta$ (μrad)",
         ylabel="$I_h/I_0$ (%)",
     )

@@ -44,7 +44,7 @@ When a GHz shear wave is switched on in silicon, the X-ray **sidebands do not ap
 
 [[ 0.5 c
 
-![A sound wave displaces the lattice planes; the rocking curve gains satellite peaks (sidebands) at angle offsets proportional to $n$. Si 440, $L$ = 8.8 μm, 10 μrad (FWHM) beam divergence.](figures/poster/iqms/f13_rocking.png){E0}{E7}
+![A sound wave displaces the lattice planes; the rocking curve gains satellite peaks (sidebands) at angle offsets proportional to $n$. Si 440, $L$ = 296 μm, beam divergence 10 μrad (FWHM).](figures/poster/iqms/f13_rocking.png){E0}{E7}
 
 || 0.5 c
 
@@ -122,6 +122,6 @@ Behind the wavefront the sideband builds up; the crystal is complete when the fr
 
 > **Sideband formation is complete within the acoustic transit time** $L/v_s$ (tens of ns in Si); the formation time $\tau_n$, not the acoustic period, sets the switching speed. The Bessel law holds for $L\ll\Lambda$. {E1}{E9}{E67}
 
-- **Outlook:** $S$ = 1.5 is $u_0$ = 23 pm (strain $5\times10^{-5}$ at 2 GHz). Next: an experiment; resolving the sideband centre needs a beam divergence below 0.05 μrad, a fraction of the Darwin half-width. {E20}{E73}{E84}{E92}
+- **Outlook:** $S$ = 1.5 is $u_0$ = 23 pm (strain $5\times10^{-5}$ at 2 GHz). Next: an experiment. Separating the satellites needs only a 10 μrad beam (section 2); following the centre of one sideband in time needs a divergence below 0.05 μrad, a fraction of the Darwin half-width. {E20}{E73}{E84}{E92}
 
 ![Method: TT equations, RK4, checked against an exact periodic-drive (Floquet) solver; two-beam forms within 6 % of full TT for $\Lambda_{ac}<0.3\,\Lambda$.](none){E0}{E19}{E20}{E31}{E42}{E54}{E62}
