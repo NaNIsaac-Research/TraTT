@@ -11,7 +11,7 @@
   "observable": "carrier-phase-averaged intensity at eta=q, incident intensity=1",
   "map_method": "independent-satellite accumulated-coupling approximation",
   "geometry": "laue",
-  "trace_window": "0 <= t/t_tr <= rise + 1",
+  "trace_window": "0 <= t/t_tr <= max(3, rise + 1)",
   "tt_checks": {
     "phases": 8,
     "depth_grid": "required_nz",
@@ -31,11 +31,11 @@
       "label": "A",
       "S": 1.5,
       "rise": 1.0,
-      "peak": 0.5905047979319379,
+      "peak": 0.5905047979319382,
       "steady": 0.5905047979319379,
-      "excess": 0.0,
-      "tt_refinement_max_change": 3.4025352068534076e-05,
-      "max_trace_error": 1.3576447023044835e-05
+      "excess": 3.3306690738754696e-16,
+      "tt_refinement_max_change": 3.4025352069422254e-05,
+      "max_trace_error": 1.3568482537529292e-05
     },
     {
       "label": "B",
@@ -44,8 +44,8 @@
       "peak": 0.4366651234371409,
       "steady": 0.2578288745375755,
       "excess": 0.1788362488995654,
-      "tt_refinement_max_change": 4.150284844239849e-06,
-      "max_trace_error": 3.9116145831630256e-05
+      "tt_refinement_max_change": 2.6272155831952304e-06,
+      "max_trace_error": 3.9116145832129856e-05
     },
     {
       "label": "C",

@@ -70,7 +70,7 @@ TERM = "satellite"
 def use_iqms():
     global IQMS, OUT, BLUE, LABEL, TERM, F1_H, F7_H, F4_H
     IQMS, OUT, BLUE, LABEL, TERM = True, OUT / "iqms", "#1f4e8c", INK, "sideband"
-    F1_H, F7_H, F4_H = 5.2, 6.6, 3.8  # f1 key inside the axes, f7 map over its A-C traces
+    F1_H, F7_H, F4_H = 5.2, 5.4, 3.8  # f1 key inside the axes, f7 map over its A-C traces
 
 
 def style():
@@ -711,7 +711,7 @@ def f7():
         )
         ax.set(
             xlabel=r"final acoustic amplitude $S$",
-            ylabel=r"rise time $T_{rise}/t_{tr}$",
+            ylabel=r"$T_{rise}/t_{tr}$",
             yticks=[1, 2, 3, 4],
         )
 
@@ -764,7 +764,7 @@ def f7():
                         shrinkB=0,
                     ),
                 )
-                a.text(tb, steady - 0.05, r"$\Delta I$", fontsize=SMALL, ha="center", va="top")
+                a.text(tb, peak + 0.05, r"$\Delta I$", fontsize=SMALL, ha="center", va="bottom")
             T = "t_{tr}" if rise == 1 else rf"{rise:g}\,t_{{tr}}"
             a.set_title(
                 rf"{letter}: $S$ = {S:g}, $T_{{rise}}={T}$",
@@ -777,8 +777,17 @@ def f7():
                 if peak - steady < 1e-9
                 else f"peak {num(peak)}\nsteady {num(steady)}"
             )
-            a.text(0.07, 0.92, values, transform=a.transAxes, fontsize=SMALL, va="top")
-            a.set(xlabel=r"time $t/t_{tr}$", xlim=(0, 3), ylim=(-0.025, 1.2), yticks=[0, 0.5, 1])
+            a.text(
+                0.95,
+                0.92,
+                values,
+                transform=a.transAxes,
+                fontsize=SMALL - 2,
+                ha="right",
+                va="top",
+                bbox=dict(fc="white", ec="none", pad=1),
+            )
+            a.set(xlabel=r"time $t/t_{tr}$", xlim=(0, 3), ylim=(-0.025, 1.45), yticks=[0, 0.5, 1])
             if k == 0:
                 a.set_ylabel(r"$I_1/I_{inc}$")
             else:

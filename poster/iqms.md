@@ -19,111 +19,113 @@ contact: Code, notebook and data: github.com/NaNIsaac-Research/TraTT (QR at righ
 <!--
 Printed text source for the i-QMS 2026 poster; build with python poster/build.py 150 poster/iqms.md.
 Figures: uv run --with "mplume @ git+https://github.com/NaNIsaac/mplume@4c064154f8f0ff94f6c6dd300266b68a34759333"
-python explore/make_poster_figs.py --iqms f11 f12 f13 f16 (figures/poster/iqms/). f13 redraws slide 2 of the
+python explore/make_poster_figs.py --iqms f7 f12 f13 f17 (figures/poster/iqms/). f13 redraws slide 2 of the
 October 2026 TraTT talk (onset schematic) beside a computed rocking curve.
-v5e: one story in Laue geometry; ICAMD 2025 card look (key-result card, overview strip, cards). Every
-section opens with one sentence saying what it shows; symbols are defined where they first appear;
-axes in physical units. Look: lab header and footer, flat body (no tints, navy accent).
+v5l: journal register; the general result is stated first and the Si 440 case inside the sentence;
+"Sec. N" cross references; ICAMD 2025 card look. Symbols are defined where they first appear; axes in
+physical units. Look: lab header and footer, flat body (no tints, navy accent).
 Every number is recomputed by poster/check_numbers.py. "Si 440", "30 keV" and "6 %" carry a
 no-break space (U+00A0).
 -->
 
 ## * Key result
 
-When an acoustic wave is switched on in a crystal, the X-ray **sidebands do not appear at once**: each grows only behind the **acoustic wavefront**. Time-dependent Takagi–Taupin equations show that formation is **complete at the transit time** $t_{tr}=L/v_s$, **not after one acoustic period** (example: Si 440, 296 μm, 2 GHz: 50.6 ns, not 0.5 ns). {E1}{E9}{E20}{E28}
+**Acoustically induced X-ray sidebands form on the acoustic transit time, not on the acoustic period.** After the drive is switched on, each sideband develops only within the strained region behind the acoustic wavefront. Time-dependent Takagi–Taupin calculations in the Laue geometry show that the first sideband is complete at $t_{tr}=L/v_s$: 50.6 ns for a 296 μm Si 440 crystal driven at 2 GHz (acoustic period 0.5 ns). {E1}{E9}{E20}{E28}
 
-## Introduction: why the build-up time matters
+## Introduction
 
-[[ 0.5 c
+[[ 0.42 c
 
-![A sound wave displaces the lattice planes; the rocking curve gains satellites (sidebands) at offsets proportional to $n$. In a thick crystal a peak's area scales with $|J_n|$, not $J_n^2$, so together the peaks exceed the no-wave peak. Example: Si 440, $L$ = 296 μm, $S$ = 1.5, 10 μrad (FWHM) beam.](figures/poster/iqms/f13_rocking.png){E0}{E7}
+![Left: Laue geometry with the acoustic wavefront at $z=v_st$. Right: calculated rocking curve without and with the acoustic wave ($S$ = 1.5) for Si 440, $L$ = 296 μm, convolved with a 10 μrad (FWHM) beam. Satellites of order $n$ appear at $\Delta\theta\propto n$. In a thick crystal the integrated intensity of order $n$ scales as $|J_n(S)|$ rather than $J_n^2(S)$, so the total diffracted intensity increases.](figures/poster/iqms/f13_rocking.png){E0}{E7}
 
-|| 0.5 c
+|| 0.58 c
 
-- **The question:** dynamical theory gives steady sideband intensities (Entin 1977; Iolin & Entin 1983; Polikarpov & Skadorov 1987). How fast do they build up after switch-on? {E7}{E21}{E29}
+- **Background.** The dynamical theory of X-ray diffraction in acoustically excited crystals gives the stationary sideband intensities (Entin 1977; Iolin & Entin 1983; Polikarpov & Skadorov 1987). {E7}{E21}{E29}
 
-- **Why it matters:** acoustically driven crystals are proposed as fast X-ray switches and pulse shapers at storage rings and XFELs; the build-up time sets their speed. {E7}{E21}{E50}
+- **Open problem.** The transient response after switch-on, i.e. the time scale on which the sidebands form. {E7}{E21}
 
-- **Approach:** time-dependent Takagi–Taupin equations in Laue (transmission) geometry; example: Si 440 at 30 keV. {E0}{E20}
+- **Motivation.** Acoustically modulated crystals are candidates for fast X-ray switching and pulse shaping at storage rings and XFELs; the formation time bounds the switching speed. {E7}{E21}{E50}
 
-- **Result:** each sideband builds up behind the acoustic wavefront and is complete at the transit time. {E1}{E9}{E28}
+- **Approach.** Time-dependent Takagi–Taupin equations in the Laue geometry; numerical results for Si 440 at 30 keV. {E0}{E20}
+
+- **Result.** Sideband formation is limited by the acoustic transit time. {E1}{E9}{E28}
 
 ]]
 
-## Acoustic modulation of X-ray diffraction: theory and observations
+## Acoustic modulation of X-ray diffraction
 
-A sound wave turns the crystal into a moving phase grating; each grating order appears as an X-ray satellite. {E0}{E7}
+[[ 0.66
 
-[[ 0.6
+A coherent acoustic wave $u=u_0\sin(Kz-\Omega t)$ (wavelength $\Lambda_{ac}=2\pi/K$) imposes a travelling phase grating $\mathbf{h}\cdot\mathbf{u}$ on the reflection $\mathbf{h}$ ($h=2\pi/d$). The diffracted beam acquires satellites of order $n$ at $\mathbf{Q}=\mathbf{h}-nK\hat{z}$, shifted in energy by $n\hbar\Omega$. In the kinematic limit the satellite intensities follow the Bessel law $J_n^2(S)$, with $S=hu_0$ the modulation amplitude. {E0}{E7}{E42}
 
-The wave displaces the atoms by $u=u_0\sin(Kz-\Omega t)$ (acoustic wavelength $\Lambda_{ac}=2\pi/K$). A reflection with reciprocal-lattice vector $\mathbf{h}$ ($h=2\pi/d$, $d$ the plane spacing) sees the phase $\mathbf{h}\cdot\mathbf{u}$, which gives satellites of order $n$ at $\mathbf{Q}=\mathbf{h}-nK\hat{z}$, shifted in energy by $n\hbar\Omega$. In single scattering (kinematic theory) satellite $n$ has the weight $J_n(S)^2$, a Bessel function of $S=hu_0$: the Bessel law. {E0}{E7}{E42}
+**Previous observations** {E7}{E21}
 
-**Observed so far.** {E7}{E21}
+- Surface acoustic waves on GaAs: up to 12 satellites (Sauer et al., APL 75, 1709 (1999)). {E7}
+- Picosecond acoustic pulses in GaAs, 100 ps (Rose-Petruck et al., Nature 398, 310 (1999)). {E21}
+- Coherent acoustic phonons in InSb, picosecond resolution (Lindenberg et al., PRL 84, 111 (2000)). {E21}
+- Sub-nanosecond acoustic X-ray switching in Laue-geometry Ge (DeCamp et al., Nature 413, 825 (2001)). {E21}
+- Surface acoustic waves on langasite: satellite intensity versus drive amplitude (Vadilonga et al., J. Appl. Cryst. 50, 525 (2017)). {E7}
 
-- 1999, GaAs, surface wave: up to 12 satellites (Sauer et al., APL 75, 1709). {E7}
-- 1999, GaAs: 100 ps acoustic pulse (Rose-Petruck et al., Nature 398, 310). {E21}
-- 2000, InSb: coherent acoustic phonons, ps resolved (Lindenberg et al., PRL 84, 111). {E21}
-- 2001, APS, Ge Laue: sub-ns acoustic X-ray switch (DeCamp et al., Nature 413, 825). {E21}
-- 2017, BESSY II, langasite surface wave: satellites against drive (right). {E7}
+|| 0.34 c
 
-|| 0.4 c
-
-![Left: Bessel weights $J_n(S)^2$; $u_0$ scale for the Si 440 example, dotted: its $S$ = 1.5. Right: surface acoustic wave (a surface grating) on langasite, BESSY II: satellites $m$ = 0–4 against drive, from Fig. 6 of Vadilonga et al., J. Appl. Cryst. 50, 525 (2017), redrawn (CC BY), with $J_m^2$ lines.](figures/poster/iqms/f12_bessel.png){E7}{E21}
+![Left: kinematic weights $J_n^2(S)$ versus displacement amplitude $u_0$ for Si 440; dotted line: $S$ = 1.5. Right: measured satellite intensities $m$ = 0–4 versus transducer drive for a surface acoustic wave on langasite, with $J_m^2$ curves; data from Fig. 6 of Vadilonga et al. (2017), redrawn (CC BY). There the wave forms a surface grating; in the present work it propagates through the depth of the crystal.](figures/poster/iqms/f12_bessel.png){E7}{E21}
 
 ]]
 
 @pair
 
-## Takagi–Taupin equations in Laue geometry
+## Dynamical theory: Takagi–Taupin equations
 
-In a thick, nearly perfect crystal X-rays scatter many times, not once. {E0}{E20}
-
-In Laue (transmission) geometry (section 1) the Takagi–Taupin (TT) equations (Takagi 1962, 1969; Taupin 1964) couple the transmitted wave $D_0$ and the diffracted wave $D_h$ along the depth $z$; the displacement $\mathbf{u}(z,t)$ enters as the phase $\mathbf{h}\cdot\mathbf{u}$ ($\Lambda$: Pendellösung length, example: 98.8 μm for Si 440; $\beta$: deviation from the Bragg angle). {E0}{E20}{E62}
+For $L\gtrsim\Lambda$ multiple scattering couples the transmitted and diffracted waves and the kinematic result no longer holds. In the symmetric Laue geometry the Takagi–Taupin (TT) equations (Takagi 1962, 1969; Taupin 1964) for the transmitted amplitude $D_0$ and the diffracted amplitude $D_h$ read {E0}{E20}{E62}
 
 $$ $dD_0/dz=(i\pi/\Lambda)\,e^{i\mathbf{h}\cdot\mathbf{u}}D_h$,  $dD_h/dz=(i\pi/\Lambda)\,e^{-i\mathbf{h}\cdot\mathbf{u}}D_0+i\beta D_h$ {E0}
 
-**What TT adds.** The Bessel law counts each X-ray as scattered once. In TT, $D_h$ scatters back into $D_0$, so intensity swaps between them with depth; a sideband's intensity then depends on the thickness and, while the wave enters, on time. {E0}{E20}{E44}
+where $\Lambda$ is the Pendellösung length (98.8 μm for Si 440 at 30 keV), $\beta$ the deviation from the Bragg condition and $\mathbf{u}(z,t)$ the acoustic displacement. {E0}{E20}{E62}
+
+**Beyond the kinematic limit.** Energy is exchanged between $D_0$ and $D_h$ over the depth (Pendellösung effect). The sideband intensity therefore depends on the crystal thickness and, during the onset of the wave, on time. {E0}{E20}{E44}
 
 | | Kinematic (Bessel law) | *Dynamical (TT, this work)
-| Thickness | $L\ll\Lambda$ | any; here $L$ = 3$\Lambda$
-| Scattering | once | many, $D_0\leftrightarrow D_h$
-| Time | steady only | onset, $L\to v_st$
-| Predicts | weights $J_n(S)^2$ | $I_n(t)$, formation time {E0}{E1}{E9}{E20}
+| Thickness | $L\ll\Lambda$ | arbitrary ($L=3\Lambda$ in this work)
+| Scattering | single | multiple, $D_0\leftrightarrow D_h$
+| Time dependence | stationary | transient, strained depth $v_st$
+| Result | $J_n^2(S)$ | $I_n(t)$, formation time $\tau_n$ {E0}{E1}{E9}{E20}
 
-## Sideband formation: the transit-time limit
+## Sideband formation: transit-time limit
 
-[[ 0.56 c
+[[ 0.48 c
 
 ![](figures/poster/iqms/f17_formation.png){E0}{E1}{E9}{E20}{E85}
 
-|| 0.44 c
+|| 0.52 c
 
-After switch-on, only the layer behind the wavefront $z=v_st$ is strained; each sideband grows with that layer. {E1}{E9}
+For satellite $n$ the coupling is reduced by $|J_n(S)|$, and in the two-beam approximation the growing strained layer gives {E1}{E9}{E44}{E54}
 
-$$ $I_n=\sin^2(\pi t/\tau_n)$ {E1}{E9}
+$$ $I_n(t)=\sin^2(\pi t/\tau_n)$, {E1}{E9}
 
 $$ $\tau_n=\Lambda/(v_s\left|J_n(S)\right|)$ {E1}{E9}
 
-In $\tau_n$ the front crosses one extinction length $\Lambda/\left|J_n\right|$; at $t_{tr}=L/v_s$ the sideband stops at $\sin^2(\pi t_{tr}/\tau_n)$. In Bragg geometry it saturates much earlier. Example: $t_{tr}$ = 50.6 ns, $\tau_1$ = 30 ns, steady 0.73; Bragg: 4.3 ns. {E1}{E9}{E20}{E28}{E44}{E54}{E85}
+for $t<t_{tr}=L/v_s$, with $I_n$ constant for $t>t_{tr}$. The formation time $\tau_n$ is the time in which the wavefront traverses one extinction length $\Lambda/|J_n|$ of satellite $n$. For Si 440 with $S$ = 1.5 and $L$ = 296 μm: $\tau_1$ = 30 ns, $t_{tr}$ = 50.6 ns and a stationary intensity of 0.73. In the Bragg (reflection) geometry the corresponding time is $\tau_1$ = 4.3 ns. {E1}{E9}{E20}{E28}{E85}
 
 ]]
 
-![Example: Laue, Si 440, $S$ = 1.5, $L$ = 296 μm, step onset; TT, phase-averaged; top: $|D_h(z)|^2$ at the first-sideband angle, bottom: its edge $z=L$. Below the front the crystal is unstrained, so $D_h$ passes down unchanged (vertical stripes); above it the field depends only on depth (horizontal stripes).](none){E1}{E9}{E20}
+![Top: $|D_h(z,t)|^2$ at the first-sideband angle after a step onset (TT, averaged over the acoustic phase). Bottom: intensity at the exit surface, $I_1(t)$. Ahead of the wavefront the crystal is unstrained and $D_h$ propagates unchanged; behind it the field is stationary and depends only on depth. Si 440, $S$ = 1.5, $L$ = 296 μm.](none){E1}{E9}{E20}
 
 @pair
 
-## Drive envelope: overshoot
+## Drive envelope and overshoot
 
-With a linear ramp of the drive, the first sideband overshoots its steady value only if the final $S$ lies above the maximum of $J_1$ ($S$ = 1.84); below it the rise is monotonic. {E15}{E67}
+For a drive amplitude ramped linearly over $T_{rise}$, the first sideband exceeds its stationary value only when the final amplitude lies beyond the first maximum of $J_1$ ($S$ = 1.84); otherwise the rise is monotonic. {E15}{E67}
 
-![$\Delta I=I_{max}-I_{steady}$ of the first sideband for a linear ramp of duration $T_{rise}$, then held. Reduced model (lines; circles: full TT, also at 12 map points), Laue, $L=\Lambda/2$ (example: 49 μm, Si 440); dashed: steady value. The 296 μm example of sections 1–4 is not scanned.](figures/poster/iqms/f7_overshoot.png){E15}{E67}
+![Overshoot $\Delta I=I_{max}-I_{steady}$ of the first sideband versus final amplitude $S$ and rise time $T_{rise}/t_{tr}$. Reduced model (independent satellites; lines), verified against the full TT solution (symbols) at 12 points and for cases A–C; dashed: stationary value. Laue geometry, $L=\Lambda/2$ (49 μm Si 440); the $L=3\Lambda$ crystal of Secs. 1–4 has not been scanned. A: monotonic rise. B: maximum above the stationary value. C: final $S$ near the first zero of $J_1$.](figures/poster/iqms/f7_overshoot.png){E15}{E67}
 
 ## Conclusions and outlook
 
-> **Sideband formation is complete within the acoustic transit time** $L/v_s$; the formation time $\tau_n$, not the acoustic period, sets the switching speed. The Bessel law holds for $L\ll\Lambda$. Example: 50.6 ns for 296 μm of Si. {E1}{E9}{E67}
+> **Sideband formation is limited by the acoustic transit time** $t_{tr}=L/v_s$. The formation time $\tau_n=\Lambda/(v_s|J_n(S)|)$, not the acoustic period, sets the switching speed (tens of ns in Si). {E1}{E9}{E67}
 
-- **Drive envelope:** a linear ramp gives an overshoot only for $S$ above the $J_1$ maximum (1.84); below it the sideband rises monotonically (section 5). {E15}{E67}
+- **Thick crystals.** For $L>\Lambda$ the satellite intensities deviate from the Bessel law, which is recovered for $L\ll\Lambda$. {E0}{E44}
 
-- **Outlook:** the drive is weak: $S=hu_0$ = 1.5 needs $u_0$ = 1.5/$h$ (example: 23 pm, strain $5\times10^{-5}$ at 2 GHz). Next: an experiment. Separating the satellites needs a beam narrower than their spacing (example: 10 μrad, section 1); following the centre of one sideband in time needs a divergence below a tenth of its Darwin half-width (example: 0.05 μrad). {E20}{E73}{E84}{E92}
+- **Drive envelope.** A ramped drive produces an overshoot only for $S$ beyond the first maximum of $J_1$ (1.84) (Sec. 5). {E15}{E67}
 
-![Method: TT equations, RK4, checked against an exact periodic-drive (Floquet) solver; two-beam forms within 6 % of full TT for $\Lambda_{ac}<0.3\,\Lambda$.](none){E0}{E19}{E20}{E31}{E42}{E54}{E62}
+- **Outlook.** Time-resolved measurement on Si 440: $S$ = 1.5 corresponds to $u_0$ = 23 pm (strain $5\times10^{-5}$ at 2 GHz). A beam divergence of 10 μrad resolves the satellites (Sec. 1); tracking a single satellite in time requires a divergence below 0.05 μrad, a fraction of the Darwin half-width. {E20}{E73}{E84}{E92}
+
+![Numerics: TT equations integrated with RK4 and validated against an exact Floquet solution for a periodic drive; the two-beam expressions agree with full TT within 6 % for $\Lambda_{ac}<0.3\,\Lambda$.](none){E0}{E19}{E20}{E31}{E42}{E54}{E62}
