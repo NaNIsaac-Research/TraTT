@@ -143,7 +143,13 @@ row(
 row("iqms: satellite step d / Lambda_ac at 2 GHz (urad)", 32.8, D440 / (v_shear / 2e9) * 1e6, 0.05)
 
 # i-QMS v2 (review round 1)
-row("iqms: Bragg t_tr = L / v_L at L = 296 um (ns)", 32.4, L / v_long * 1e9, 0.05)
+# i-QMS v5e, section 5: the Laue sideband holds sin^2(pi t_tr / tau_1) after the transit time
+row(
+    "iqms: Laue steady value of the first sideband",
+    0.73,
+    np.sin(np.pi * (L / v_shear) / tau_laue) ** 2,
+    0.005,
+)
 row(
     "iqms: strain K u0 at 2 GHz, shear (Laue)",
     5e-5,
@@ -151,12 +157,11 @@ row(
     0.5e-5,
 )
 # Darwin half-width of the static reflection, lambda / (2 Lambda_P sin theta_B) = |chi_h| / sin 2theta
-# (sigma, symmetric); w_n = |J_n(S)| of it (Entry 84). Beam conditions: 0.3 w_n Bragg, 0.1 w_n Laue
+# (sigma, symmetric); w_n = |J_n(S)| of it (Entry 84). Beam condition: 0.1 w_n in Laue
 # (Entries 84, 92).
 darwin = wavelength / (2 * LAMBDA_P_LAUE * np.sin(theta_b))
 w1 = j1 * darwin
 row("iqms: Darwin half-width, Si 440 30 keV (urad, not printed)", 0.97, darwin * 1e6, 0.005)
-row("iqms: 0.3 w_1 Bragg beam condition (urad)", 0.16, 0.3 * w1 * 1e6, 0.005)
 row("iqms: 0.1 w_1 Laue beam condition (urad)", 0.05, 0.1 * w1 * 1e6, 0.005)
 
 

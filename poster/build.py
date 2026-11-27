@@ -17,6 +17,10 @@ section heads, the key sentence in a tinted box, a tinted Conclusions band, a sq
 Acknowledgement. "flat: 1" keeps that header and footer but drops the tints and the orange: the
 key sentence in a thin navy outline, grey rules under the heads. The body items are the same in
 both looks.
+"cards: 1" (on top of the lab look, after the ICAMD 2025 poster): light grey page, every panel in a
+white card with a thin border, the section head above its card as a black square and "01. Title" in
+bold blue, the key sentence in a pale-yellow box, a larger CUPT logo in the footer. A title that
+starts with "* " is an unnumbered card (an abstract or key-result card).
 
 Text face: Arial where installed (the lab posters use it), DejaVu Sans otherwise; math in STIX, so
 a variable is a serif italic and is told apart from the sans body. Absolute values are
@@ -35,6 +39,10 @@ Manuscript syntax
   "> text"        key sentence, set in the accent colour     "- text"  bullet
   "+ text"        a bold paragraph in body type (a rule the reader should take away)
   "![caption](path)" figure, as wide as its column; path "none" sets the caption as a note
+  "| a | b | *c"   a table, one line per row, the first row the header; a header cell starting
+                  with * marks "our" column, tinted light green
+  "=> phase :: text"  one box of a one-row flow strip; consecutive boxes with the same phase share
+                  a coloured band with the phase name on top
   "~ step | text" input-condition line: a small envelope glyph (step or ramp) followed by the text
   "$$ text"       display line: centred, slightly larger, with space around it (equations)
   {E12}           notebook entry tag (stripped from print, required on every item)
@@ -144,6 +152,17 @@ LAB = dict(
     # "flat: 1": white body, navy the only accent: the key sentence in a thin navy outline, grey
     # rules under the section heads, no tinted Conclusions band (header and footer unchanged)
     flat=0,
+    # "cards: 1": the ICAMD 2025 poster look
+    cards=0,
+    bg="#f2f2f2",
+    card_edge="#d0d0d0",
+    head_blue="#2f5597",
+    callout="#fff2cc",
+    ours="#e2efda",
+    ours_head="#c5e0b4",
+    thead="#dae3f3",
+    phases=("#e7e6e6", "#dae3f3", "#e2efda"),
+    box_edge="#4a72b8",
 )
 LOOK = {"lab": False}
 PT_MM = 25.4 / 72
@@ -195,6 +214,20 @@ def parse(text):
             continue
         if block == "]]":
             stack.pop()
+            continue
+        if block.startswith("|"):
+            rows = [
+                [c.strip() for c in squash(TAG.sub("", line)).strip("|").split("|")]
+                for line in block.splitlines()
+            ]
+            add(dict(kind="table", rows=rows, tags=TAG.findall(block)))
+            continue
+        if block.startswith("=>"):
+            boxes = []
+            for line in block.splitlines():
+                phase, txt = TAG.sub("", line).strip()[2:].split("::", 1)
+                boxes.append((phase.strip(), squash(txt)))
+            add(dict(kind="flow", boxes=boxes, tags=TAG.findall(block)))
             continue
         m = re.match(r"!\[(.*?)\]\((.*?)\)(.*)", block, re.S)
         if m:
@@ -356,7 +389,9 @@ def key(P, it, x, y, w, draw=True):
     s = SPEC
     if LOOK["lab"]:  # tinted box with an orange edge, as on the print poster
         y1 = P.flow(it["text"], x + 10, y + 9, w - 20, s["callout_pt"], s["ink"], draw=draw) + 8
-        if draw and s["flat"]:
+        if draw and s["cards"]:
+            P.rect(x, y, w, y1 - y, s["callout"], z=2)
+        elif draw and s["flat"]:
             for bx, by, bw, bh in (
                 (x, y, w, 0.5),
                 (x, y1 - 0.5, w, 0.5),
@@ -429,6 +464,96 @@ def onset(P, it, x, y, w, draw=True):
     return max(y1, base + 2.0 + lab) + s["para_gap"]
 
 
+def table(P, it, x, y, w, draw=True):
+    """A small comparison table: header row tinted blue, "our" column (header cell with *) light
+    green, the first column bold, thin rules between rows."""
+    s = SPEC
+    rows = [list(r) for r in it["rows"]]
+    nc = len(rows[0])
+    ours = {j for j, c in enumerate(rows[0]) if c.startswith("*")}
+    rows[0] = [c.lstrip("*").strip() for c in rows[0]]
+    fr = [0.24] + [0.76 / (nc - 1)] * (nc - 1)
+    cw = [w * f for f in fr]
+    cx = [x + sum(cw[:j]) for j in range(nc)]
+    pt, px, py = s["body_pt"], 2.5, 2.2
+    for i, row in enumerate(rows):
+        bold = ["bold" if i == 0 or j == 0 else "normal" for j in range(nc)]
+        rh = (
+            max(
+                P.flow(c, cx[j] + px, y + py, cw[j] - 2 * px, pt, weight=bold[j], draw=False) - y
+                for j, c in enumerate(row)
+            )
+            + py
+        )
+        if draw:
+            for j in range(nc):
+                fc = (
+                    (s["ours_head"] if j in ours else s["thead"])
+                    if i == 0
+                    else (s["ours"] if j in ours else None)
+                )
+                if fc:
+                    P.rect(cx[j], y, cw[j], rh, fc, z=1.5)
+                P.flow(row[j], cx[j] + px, y + py, cw[j] - 2 * px, pt, weight=bold[j])
+            P.rect(x, y + rh - 0.25, w, 0.5, s["rule"], z=2)
+        y += rh
+    return y + s["para_gap"]
+
+
+def flowstrip(P, it, x, y, w, draw=True):
+    """One row of boxes joined by arrows; consecutive boxes of one phase share a coloured band
+    with the phase name on top."""
+    from matplotlib.patches import FancyBboxPatch
+
+    s = SPEC
+    boxes = it["boxes"]
+    n, ag = len(boxes), 14.0
+    bw = (w - (n - 1) * ag) / n
+    bx = [x + k * (bw + ag) for k in range(n)]
+    pt, ppt = s["body_pt"], s["caption_pt"] + 2
+    ph = ppt * PT_MM * s["leading"] + 4
+    ths = [P.flow(b[1], 0, 0, bw - 8, pt, align="center", draw=False) for b in boxes]
+    bh = max(ths) + 9
+    yb = y + ph + 3
+    end = yb + bh + 4
+    if draw:
+        groups, k = [], 0
+        while k < n:
+            j = k
+            while j + 1 < n and boxes[j + 1][0] == boxes[k][0]:
+                j += 1
+            groups.append((k, j))
+            k = j + 1
+        for g, (k, j) in enumerate(groups):
+            x0 = x if k == 0 else bx[k] - ag / 2
+            x1 = x + w if j == n - 1 else bx[j] + bw + ag / 2
+            P.rect(x0, y, x1 - x0, end - y, s["phases"][g % len(s["phases"])], z=1.5)
+            P.flow(boxes[k][0], x0, y + 2, x1 - x0, ppt, s["ink"], weight="bold", align="center")
+        for k, (_, txt) in enumerate(boxes):
+            P.ax.add_patch(
+                FancyBboxPatch(
+                    (bx[k], yb),
+                    bw,
+                    bh,
+                    boxstyle="round,pad=0,rounding_size=2.5",
+                    fc="white",
+                    ec=s["box_edge"],
+                    lw=1.6,
+                    zorder=2,
+                )
+            )
+            P.flow(txt, bx[k] + 4, yb + (bh - ths[k]) / 2 - 0.5, bw - 8, pt, align="center")
+            if k < n - 1:
+                P.ax.annotate(
+                    "",
+                    xy=(bx[k + 1] - 1.0, yb + bh / 2),
+                    xytext=(bx[k] + bw + 1.0, yb + bh / 2),
+                    zorder=3,
+                    arrowprops=dict(arrowstyle="-|>", color=s["ink2"], lw=2.0, mutation_scale=20),
+                )
+    return end + s["para_gap"]
+
+
 def aspect(path):
     a = mpimg.imread(path)
     return a.shape[0] / a.shape[1]
@@ -481,6 +606,10 @@ def items(P, its, x, y, w, draw, check, spread=0.0):
             y += s["para_gap"]
         elif k == "bullet":
             y = bullet(P, it, x, y, w, draw)
+        elif k == "table":
+            y = table(P, it, x, y, w, draw)
+        elif k == "flow":
+            y = flowstrip(P, it, x, y, w, draw)
         elif k == "key":
             y = key(P, it, x, y, w, draw)
         elif k == "eq":
@@ -500,6 +629,12 @@ HEAD_LAB = 32.0  # number square, title and rule
 
 def head(P, num, title, x, y0, w):
     s = SPEC
+    if s.get("cards"):  # black square, then "01. Title" in bold blue, above the card
+        sq = s["head_pt"] * PT_MM * 0.62
+        P.rect(x, y0 + s["head_pt"] * PT_MM * 0.42, sq, sq, "#000000", z=3)
+        text = f"{num:02d}. {title}" if num else title
+        P.flow(text, x + sq + 4.5, y0, w - sq - 4.5, s["head_pt"], s["head_blue"], weight="bold")
+        return
     if not LOOK["lab"]:
         P.flow(f"{num}  {title}", x, y0, w, s["head_pt"], s["accent"], weight="bold")
         return
@@ -716,7 +851,8 @@ def footer_lab(P, meta, problems):
     s, ax = SPEC, P.ax
     W, H, M = s["W"], s["H"], s["margin"]
     fy = H - s["footer_h"]
-    ax.plot([M, W - M], [fy - 1.4, fy - 1.4], color=s["edge"], lw=0.8, zorder=2)
+    if not s["cards"]:
+        ax.plot([M, W - M], [fy - 1.4, fy - 1.4], color=s["edge"], lw=0.8, zorder=2)
     left = M + s["pad"]
     base, sq = fy + 17.5, 6.7
     P.rect(left, base - sq + 0.4, sq, sq, s["navy"], z=3)
@@ -740,9 +876,10 @@ def footer_lab(P, meta, problems):
         P.image(qr, qr_x, fy + (s["footer_h"] - qr_w) / 2, qr_w, h=qr_w)
     else:
         problems.append("missing footer QR")
-    cupt_left = qr_x - 16.0 - 115.0
+    cupt_w, cupt_m = (175.0, 4.0) if s["cards"] else (115.0, 7.0)  # cards: the large ICAMD logo
+    cupt_left = qr_x - 16.0 - cupt_w
     if (ASSETS / "logo_cupt.png").exists():
-        fit(P, ASSETS / "logo_cupt.png", cupt_left, fy + 7, 115.0, s["footer_h"] - 14)
+        fit(P, ASSETS / "logo_cupt.png", cupt_left, fy + cupt_m, cupt_w, s["footer_h"] - 2 * cupt_m)
     else:
         problems.append("missing CUPT footer logo")
     y = fy + 21.0
@@ -760,6 +897,8 @@ def build(preview_dpi=60, ms=MS):
     # a SPEC number in the front matter (e.g. "body_pt: 28") holds for this manuscript; one build
     # per process, and every item function reads SPEC
     SPEC.update({k: float(v) for k, v in meta.items() if isinstance(SPEC.get(k), int | float)})
+    if s.get("cards"):
+        s["page"] = s["bg"]
     known = set(
         re.findall(r"^## .*?Entry (\d+)\b", NOTEBOOK.read_text(encoding="utf8"), flags=re.M)
     )
@@ -803,6 +942,11 @@ def build(preview_dpi=60, ms=MS):
 
     panel_h = {}  # measured height of each panel (mm), printed to balance a pair
     hd = HEAD_LAB if LOOK["lab"] else HEAD
+    cards = bool(s.get("cards"))
+    head_h = s["head_pt"] * PT_MM * 1.1 + 2.5  # cards: the head above the card
+    pad_v = 5.0  # cards: space between the card edge and its content, top and bottom
+    if cards:
+        hd = head_h + pad_v
 
     def band(b, y0, draw):
         n = len(b)
@@ -815,7 +959,7 @@ def build(preview_dpi=60, ms=MS):
             x = M + s["pad"] + k * (pw + 2 * s["gap"])
             w = pw - 2 * s["pad"]
             if draw:
-                head(P, number[id(p)], p["title"], x, y0, w)
+                head(P, number[id(p)], p["title"], x - (s["pad"] if cards else 0), y0, w)
             # side by side, the shorter panel spreads its slack over its item gaps (capped), so the
             # two columns end near the same line instead of leaving a hole under one of them
             spread = (
@@ -828,9 +972,29 @@ def build(preview_dpi=60, ms=MS):
                 else 0.0
             )
             ends.append(items(P, p["items"], x, y0 + hd, w, draw, check, spread))
+        if cards:
+            bottom_ = max(ends) - s["para_gap"] + pad_v
+            if draw:
+                for k in range(n):
+                    cx_ = M + k * (pw + 2 * s["gap"])
+                    ax.add_patch(
+                        plt.Rectangle(
+                            (cx_, y0 + head_h),
+                            pw,
+                            bottom_ - y0 - head_h,
+                            fc="white",
+                            ec=s["card_edge"],
+                            lw=1.0,
+                            zorder=0.8,
+                        )
+                    )
+            return bottom_
         return max(ends) - s["para_gap"]
 
-    number = {id(p): k + 1 for k, p in enumerate(panels)}
+    numbered = [p for p in panels if not p["title"].startswith("* ")]
+    number = {id(p): (numbered.index(p) + 1 if p in numbered else 0) for p in panels}
+    for p in panels:
+        p["title"] = p["title"].removeprefix("* ")
     heights = [band(b, 0.0, False) for b in bands]
     spare = bottom - top - sum(heights) - s["panel_gap"] * (len(bands) - 1)
     gap = s["panel_gap"] + max(0.0, spare) / max(1, len(bands) - 1)

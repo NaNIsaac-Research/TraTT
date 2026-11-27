@@ -19,12 +19,12 @@ f7  linear-ramp overshoot map and three TT-checked traces (Entry 67)
 f8  kinematic satellites: lattice planes without and with a shear wave, and J_n(S)^2 by order
 f9  symmetric Laue and Bragg geometry: h, the acoustic polarisation that couples, boundary conditions
 f10 steady sidebands against thickness: closed forms, kinematic Bessel law and full TT (Entries 1, 9)
-f11 i-QMS: the closed-form first sideband against time after a step onset, Si (Entries 1, 9)
+f11 i-QMS: the closed-form first sideband against time after a step onset, Laue, Si (Entries 1, 9)
 f12 i-QMS background: Bessel weights against u0, and the surface-acoustic-wave
     satellites of Vadilonga et al. 2017 (J. Appl. Cryst. 50, 525, CC BY), points read from its Fig. 6
 f13 i-QMS: the Laue onset schematic of the October talk (slide 2), redrawn, and the rocking curve
     of a thin Si crystal filled with sound, S = 1.5 (own RK4)
-f16 i-QMS: first sideband |D_h(z)|^2 against depth and time after a step onset, Laue, Si (own RK4 sweep)
+f16 i-QMS: first sideband |D_h(z)|^2 against time and depth after a step onset, Laue, Si (own RK4 sweep)
 
 The i-QMS figures (--iqms) use the mplume "box" style at poster size (closed frame, inward major and
 minor ticks, no grid) and its a0 context (print-size type), mplume main at 4c06415 (the a0
@@ -1167,52 +1167,66 @@ def onset_sketch(ax):
 
 
 def f11():
-    """i-QMS panel 4: the closed form for the driven layer v_s t, first sideband, S = 1.5,
-    L = 296 um, Si 440 at 30 keV (constants as in poster/check_numbers.py): Laue oscillates until
-    t_tr and then holds; Bragg saturates near tau_1. Lines are labelled where they end."""
+    """i-QMS section 4: the closed form for the driven layer v_s t, first sideband, Laue, S = 1.5,
+    L = 296 um, Si 440 at 30 keV (constants as in poster/check_numbers.py): I_1 = sin^2(pi t / tau_1)
+    until t_tr = L / v_s, then the steady value. Marks: t_tr (dashed), the filled crystal (grey), the
+    steady value (dotted), one period tau_1 (arrow between two maxima)."""
     from scipy.special import jv
 
     style()
-    S = 1.5
-    j1, L = abs(jv(1, S)), 296e-6
-    cases = (
-        ("Laue", BLUE, LAMBDA_LAUE / (V_SHEAR * j1), L / V_SHEAR, lambda x: np.sin(np.pi * x) ** 2),
-        (
-            "Bragg",
-            ORANGE,
-            LAMBDA_BRAGG / (V_LONG * j1),
-            L / V_LONG,
-            lambda x: np.tanh(np.pi * x) ** 2,
-        ),
+    lab = 24
+    tau = LAMBDA_LAUE / (V_SHEAR * abs(jv(1, 1.5))) * 1e9
+    t_tr = 296e-6 / V_SHEAR * 1e9
+    t_end = 66.0
+    tt = np.linspace(0, t_end, 2000)
+    steady = np.sin(np.pi * t_tr / tau) ** 2
+    fig, ax = plt.subplots(figsize=(FIG_W, 0.26 * FIG_W), constrained_layout=True)
+    ax.axvspan(t_tr, t_end, color="#ebebeb", lw=0, zorder=0)
+    ax.axhline(steady, color=INK2, ls=":", lw=1.8, zorder=1)
+    ax.plot(tt, np.sin(np.pi * np.minimum(tt, t_tr) / tau) ** 2, color=BLUE, zorder=3)
+    ax.axvline(t_tr, color=INK, ls="--", lw=1.8, zorder=2)
+    ax.text(
+        t_tr - 1.2,
+        1.46,
+        rf"$t_{{tr}}=L/v_s$ = {t_tr:.1f} ns",
+        fontsize=lab,
+        ha="right",
+        va="center",
     )
-    fig, axr = plt.subplots(figsize=(FIG_W, 0.27 * FIG_W), constrained_layout=True)
-    tt = np.linspace(0, 62e-9, 1500)
-    for name, color, tau, t_tr, law in cases:
-        axr.plot(tt * 1e9, law(np.minimum(tt, t_tr) / tau), color=color)
-        axr.plot([t_tr * 1e9] * 2, [1.1, 1.22], color=color, lw=4, solid_capstyle="butt")
-        axr.text(
-            t_tr * 1e9,
-            1.25,
-            f"{name} $t_{{tr}}$",
-            color=color,
-            fontsize=SMALL - 2,
-            ha="center",
-            va="bottom",
-        )
-    axr.text(61, 0.62, "Laue", color=BLUE, fontsize=SMALL, ha="right", va="bottom")
-    axr.text(61, 0.93, "Bragg", color=ORANGE, fontsize=SMALL, ha="right", va="top")
-    axr.set(
-        xlim=(0, 62),
-        ylim=(0, 1.42),
+    ax.text(
+        (t_tr + t_end) / 2,
+        1.46,
+        "crystal filled",
+        fontsize=lab,
+        ha="center",
+        va="center",
+        color=INK2,
+    )
+    ax.text(
+        t_end - 0.8,
+        steady - 0.07,
+        f"steady\nvalue {steady:.2f}",
+        fontsize=lab,
+        ha="right",
+        va="top",
+        color=INK2,
+    )
+    ax.annotate(
+        "",
+        xy=(1.5 * tau, 1.09),
+        xytext=(0.5 * tau, 1.09),
+        arrowprops=dict(arrowstyle="<->", color=INK, lw=1.6),
+    )
+    ax.text(tau, 1.14, rf"$\tau_1$ = {tau:.0f} ns", fontsize=lab, ha="center", va="bottom")
+    ax.set(
+        xlim=(0, t_end),
+        ylim=(0, 1.72),
         yticks=[0, 0.5, 1],
         xlabel="time after onset (ns)",
-        ylabel="first sideband $I_1/I_0$",
+        ylabel="first-sideband\nintensity $I_1/I_0$",
     )
-    finish(fig, axr, "f11_formation")
-    for name, _, tau, t_tr, law in cases:
-        print(
-            f"f11 {name}: tau_1 {tau * 1e9:.1f} ns, t_tr {t_tr * 1e9:.1f} ns, I(t_tr) {law(t_tr / tau):.2f}"
-        )
+    finish(fig, ax, "f11_formation")
+    print(f"f11 Laue: tau_1 {tau:.1f} ns, t_tr {t_tr:.1f} ns, steady {steady:.3f}")
 
 
 # Vadilonga et al., J. Appl. Cryst. 50, 525 (2017), Fig. 6 (CC BY 2.0 UK): satellite intensities of a
@@ -1286,12 +1300,15 @@ def f12():
     finish(fig, (ax, axv), "f12_bessel")
 
 
+F13_DIV = 10.0  # urad FWHM, beam divergence of the f13 rocking curve
+
+
 def f13():
     """i-QMS introduction. Left: the Laue onset schematic (onset_sketch). Right: rocking curve of the
     crystal filled with sound, Si 440 at 30 keV, S = 1.5, 2 GHz shear wave (Lambda_ac = 2.96 um),
     L = 3 Lambda_ac = 8.9 um (L << Lambda, so the peaks carry the kinematic weights), averaged over
-    eight acoustic phases; the angle offset is eta / (h L), satellite n at n d / Lambda_ac. Grey: the
-    same crystal without sound."""
+    eight acoustic phases and convolved with a beam divergence of F13_DIV (FWHM); the angle offset is
+    eta / (h L), satellite n at n d / Lambda_ac. Grey: the same crystal without the wave."""
     style()
     a_ac = 3.0
     lam_ac = V_SHEAR / 2e9
@@ -1307,22 +1324,40 @@ def f13():
     fig, (ax, axr) = plt.subplots(
         1,
         2,
-        figsize=(FIG_W, 0.34 * FIG_W),
+        figsize=(FIG_W, 0.27 * FIG_W),
         constrained_layout=True,
         gridspec_kw=dict(width_ratios=[1.25, 1.0], wspace=0.03),
     )
     onset_sketch(ax)
+    # a Gaussian beam divergence of F13_DIV (FWHM) smooths the thin-crystal side lobes into one peak each
+    sig = F13_DIV / (2 * np.sqrt(2 * np.log(2)))
+    x = np.arange(-4 * sig, 4 * sig, dth[1] - dth[0])
+    g = np.exp(-0.5 * (x / sig) ** 2)
+    I = np.convolve(I, g / g.sum(), mode="same")
+    I0 = np.convolve(I0, g / g.sum(), mode="same")
     scale = 1e2
+    top = I0.max() * scale
     axr.plot(dth, I0 * scale, color=INK2, lw=1.6)
     axr.plot(dth, I * scale, color=BLUE)
-    axr.text(4, 0.8 * I0.max() * scale, "no sound", color=INK2, fontsize=SMALL - 2, ha="left")
+    axr.text(
+        9, 0.8 * top, "without\nacoustic wave", color=INK2, fontsize=SMALL, ha="left", va="center"
+    )
+    axr.text(
+        -84,
+        0.8 * top,
+        "with\nacoustic wave,\n$S$ = 1.5",
+        color=BLUE,
+        fontsize=SMALL,
+        ha="left",
+        va="center",
+    )
     step = d.q / (SI_H440 * L) * 1e6
     for n in range(-2, 3):
         k = np.argmin(abs(eta - n * d.q))
-        lab = "$n=0$" if n == 0 else f"${n:+d}$".replace("-", "−")
+        lab = "$n=0$" if n == 0 else f"${n:+d}$".replace("-", "\N{MINUS SIGN}")
         axr.text(
             n * step,
-            I[k] * scale + 0.12,
+            (top * 1.03 if n == 0 else I[k] * scale + 0.1 * top),
             lab,
             fontsize=SMALL - 2,
             ha="center",
@@ -1331,7 +1366,7 @@ def f13():
         )
     axr.set(
         xlim=(dth[0], dth[-1]),
-        ylim=(0, 1.15 * I0.max() * scale),
+        ylim=(0, 1.22 * top),
         xlabel=r"angle offset $\Delta\theta$ (μrad)",
         ylabel="$I_h/I_0$ (%)",
     )
@@ -1400,35 +1435,63 @@ def f16_profiles():
 
 def f16():
     """i-QMS section 5: the first sideband inside the crystal while the wave enters. Laue, Si 440 at
-    30 keV, S = 1.5, L = 296 um , step onset; x = depth (um), y = time after onset (ns),
-    colour = |D_h|^2 at the first-sideband angle; dashed: the wavefront z = v_s t; t_tr marked."""
+    30 keV, S = 1.5, L = 296 um, step onset; x = time after onset (ns), y = depth (um, down, as in the
+    section 1 schematic), colour = |D_h|^2 at the first-sideband angle where the wave has arrived;
+    the layer below the wavefront z = v_s t is plain grey; t_tr marked."""
     style()
     zeta, t, I = f16_profiles()
     L_um = F16_ALPHA * LAMBDA_LAUE * 1e6
     t_tr = F16_ALPHA * LAMBDA_LAUE / V_SHEAR * 1e9
-    fig, ax = plt.subplots(figsize=(FIG_W, 4.4), constrained_layout=True)
+    lab = 24
+    fig, ax = plt.subplots(figsize=(FIG_W, 3.6), constrained_layout=True)
+    tn, zn = t * t_tr, zeta * L_um
     im = ax.pcolormesh(
-        zeta * L_um, t * t_tr, I.T, shading="gouraud", cmap="Blues", vmin=0, vmax=1, rasterized=True
+        tn, zn, I, shading="gouraud", cmap="cividis", vmin=0, vmax=1, rasterized=True
     )
+    ax.contour(tn, zn, I, levels=[0.25, 0.5, 0.75], colors="white", linewidths=0.8, alpha=0.45)
     cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.05, ticks=[0, 0.5, 1])
-    cb.set_label("first sideband $|D_h|^2/I_0$")
+    cb.set_label("$|D_h|^2/I_0$")
     cb.ax.tick_params(direction="in", which="both")
-    ax.plot([0, L_um], [0, t_tr], color=INK, ls="--", lw=2.0)
+    ax.add_patch(plt.Polygon([(0, 0), (t_tr, L_um), (0, L_um)], fc="#e6e6e6", ec="none", zorder=3))
+    ax.plot([0, t_tr], [0, L_um], color=INK, ls="--", lw=2.2, zorder=4)
+    ax.axvline(t_tr, color="white", ls=":", lw=1.8, zorder=4)
     ax.text(
-        0.42 * L_um, 0.42 * t_tr + 2.5, "wavefront $z=v_st$", fontsize=SMALL, rotation=0, ha="right"
+        t_tr,
+        1.02,
+        f"$t_{{tr}}$ = {t_tr:.1f} ns",
+        transform=ax.get_xaxis_transform(),
+        fontsize=lab,
+        ha="center",
+        va="bottom",
     )
-    ax.axhline(t_tr, color=INK2, ls=":", lw=1.8)
-    ax.text(8, t_tr + 1.2, f"$t_{{tr}}$ = {t_tr:.1f} ns", fontsize=SMALL, va="bottom")
+    y = 0.42 * L_um
+    ax.text(
+        t_tr * (y - 22) / L_um - 1.2,
+        y,
+        "wavefront $z=v_st$",
+        fontsize=lab,
+        ha="right",
+        va="center",
+        zorder=5,
+    )
+    ax.text(
+        1.5,
+        0.85 * L_um,
+        "not yet reached",
+        fontsize=lab,
+        ha="left",
+        va="center",
+        color=INK2,
+        zorder=5,
+    )
     ax.set(
-        xlim=(0, L_um),
-        ylim=(0, t[-1] * t_tr),
-        xlabel="depth $z$ (μm)",
-        ylabel="time after onset (ns)",
+        xlim=(0, t[-1] * t_tr),
+        ylim=(L_um, 0),
+        xlabel="time after onset (ns)",
+        ylabel="depth $z$ (μm)",
     )
     finish(fig, ax, "f16_depth_time")
-    print(
-        f"f16: L {L_um:.0f} um, t_tr {t_tr:.1f} ns, exit max {I[-1].max():.3f}, exit at t_tr {np.interp(1.0, t, I[-1]):.3f}"
-    )
+    print(f"f16: L {L_um:.0f} um, t_tr {t_tr:.1f} ns, exit at t_tr {np.interp(1.0, t, I[-1]):.3f}")
 
 
 if __name__ == "__main__":
