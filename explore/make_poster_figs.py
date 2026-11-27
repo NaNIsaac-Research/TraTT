@@ -30,6 +30,9 @@ The i-QMS figures (--iqms) use the mplume "box" style at poster size (closed fra
 minor ticks, no grid) and its a0 context (print-size type), mplume main at 4c06415 (the a0
 context is not yet in a release): `uv run --with "mplume @ git+https://github.com/NaNIsaac/mplume@4c064154f8f0ff94f6c6dd300266b68a34759333"
 python explore/make_poster_figs.py --iqms ...`.
+
+"--dpi N" saves the same figures at N dpi into poster/out/<set>_<N>dpi/ (not tracked), for the
+editable PowerPoint copy of the poster (poster/build_pptx.py), which needs 300 dpi or more at print size.
 """
 
 from __future__ import annotations
@@ -65,6 +68,7 @@ BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
 IQMS = False
 LABEL = BLUE  # colour of the acoustic-wave labels in f9
 TERM = "satellite"
+DPI = None  # "--dpi N": save resolution override, output under poster/out
 
 
 def use_iqms():
@@ -129,6 +133,8 @@ def style():
                 "savefig.dpi": 200,
             },
         )
+    if DPI:
+        mpl.rcParams["savefig.dpi"] = DPI
 
 
 def finish(fig, ax, name):
@@ -1566,8 +1572,16 @@ def f17():
 
 
 if __name__ == "__main__":
-    names = [a for a in sys.argv[1:] if a != "--iqms"]
-    if "--iqms" in sys.argv:
+    args = sys.argv[1:]
+    if "--dpi" in args:
+        k = args.index("--dpi")
+        DPI = int(args[k + 1])
+        del args[k : k + 2]
+    names = [a for a in args if a != "--iqms"]
+    if "--iqms" in args:
         use_iqms()
+    if DPI:
+        OUT = ROOT / "poster" / "out" / f"{OUT.name}_{DPI}dpi"
+        OUT.mkdir(parents=True, exist_ok=True)
     for name in names or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10"]:
         globals()[name]()

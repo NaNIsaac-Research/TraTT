@@ -181,6 +181,8 @@ uv run python explore/make_poster_figs.py   # poster figures -> figures/poster/
 uv run python poster/build.py               # poster/poster.md -> poster/out/poster.pdf
 ```
 
+`poster/build_pptx.py` writes the same layout as one editable PowerPoint slide (`poster/out/<name>.pptx`). It sets native text in Arial, a native table, and the figures as pictures. Run it with `uv run --extra dev --with python-pptx==1.0.2 python poster/build_pptx.py poster/iqms.md`. Render the figures at 600 dpi first with `make_poster_figs.py --iqms --dpi 600`.
+
 The banner and the Sogang and CUPT logos are in `poster/assets/`.
 
 ## Layout
