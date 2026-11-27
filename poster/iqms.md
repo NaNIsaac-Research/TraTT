@@ -16,9 +16,9 @@ contact: Code, notebook and data: github.com/NaNIsaac-Research/TraTT (QR at righ
 <!--
 Printed text source for the i-QMS 2026 poster; build with python poster/build.py 150 poster/iqms.md.
 Figures: uv run --with "mplume @ git+https://github.com/NaNIsaac/mplume@4c064154f8f0ff94f6c6dd300266b68a34759333"
-python explore/make_poster_figs.py --iqms f11 f12 f13 f14 (figures/poster/iqms/). talk_twobeam.png is the
+python explore/make_poster_figs.py --iqms f11 f12 f13 f15 (figures/poster/iqms/). talk_twobeam.png is the
 drawing of the October 2026 TraTT talk (NaNIsaac docs/decks/tratt/out/tratt-talk.pptx, slide 6),
-copied unchanged; f13 redraws its slide 3 at S = 1.5.
+copied unchanged; f13 redraws its slide 3 at S = 1.5, f11 its slide 2 (onset schematic).
 v5: about half background (sections 1-3), one key result (4), one supporting result (5). Every
 section opens with one sentence saying what it shows; symbols are defined where they first appear;
 axes in physical units. Look: lab header and footer, flat body (no tints, navy accent).
@@ -72,7 +72,7 @@ $\beta$: deviation from the Bragg angle (1/length); + Laue, − Bragg. {E0}
 
 After switch-on, only the layer behind the wavefront is strained; each sideband grows with that layer. {E1}{E9}
 
-![Left: Laue onset; the layer $0<z<v_st$ above the wavefront is displaced. Right: first sideband after a step onset, Si, $L$ = 296 μm, $S$ = 1.5 ($u_0$ = 23 pm), $I_0$ incident.](figures/poster/iqms/f11_formation.png){E0}{E1}{E9}{E20}{E85}
+![Left: Laue onset (schematic, not to scale); above the wavefront $z=v_st$ the lattice is displaced. Right: first sideband after a step onset, Si, $L$ = 296 μm, $S$ = 1.5 ($u_0$ = 23 pm), $I_0$ incident.](figures/poster/iqms/f11_formation.png){E0}{E1}{E9}{E20}{E85}
 
 With sound, satellite $n$ is a two-beam problem with extinction length $\Lambda/\left|J_n(S)\right|$: in a crystal filled by the wave $I_n=\sin^2(\pi L\left|J_n\right|/\Lambda)$ (Laue) or $\tanh^2(\ldots)$ (Bragg), the Bessel law for $L\ll\Lambda$. {E1}{E9}{E44}{E54}
 
@@ -86,19 +86,11 @@ Laue $\tau_1$ = 30 ns, $t_{tr}$ = 50.6 ns; Bragg $\tau_1$ = 4.3 ns, $t_{tr}$ = 3
 
 @pair
 
-## Thickness range of the Bessel law
+## Gradual switch-on: transient overshoot
 
-The ratio of two sideband intensities shows up to which thickness single scattering is enough. {E1}{E9}
+When the sound amplitude is ramped up linearly over a rise time $T_{rise}$, a sideband can first exceed its final, steady intensity by the overshoot $\Delta I$ and then fall back; $\Delta I$ depends on the final amplitude and on $T_{rise}$. {E5}{E15}{E67}
 
-[[ 0.38
-
-For $L\ll\Lambda$ the steady intensities follow the Bessel law; as $L$ approaches $\Lambda$ they deviate. At $S$ = 1.5 the Laue ratio $I_2/I_1$ is 0.17 (Bessel law) and 0.46 at $L=\Lambda$; Bragg deviates at smaller $L$. {E1}{E9}
-
-|| 0.62 c
-
-![Crystal filled by the wave, $S$ = 1.5: full TT (points), two-beam form (lines).](figures/poster/iqms/f14_thickness.png){E1}{E9}{E54}
-
-]]
+![Laue, first sideband, $L=\Lambda/2$ = 49 μm ($t_{tr}$ = 8.4 ns). Map: two-beam form. Right: $I_1(t)$ at A–C, two-beam form (line) and full TT (points); dashed: steady value. Below the maximum of $J_1$ ($S$ = 1.84, $u_0$ = 28 pm) there is no overshoot.](figures/poster/iqms/f15_overshoot.png){E5}{E15}{E28}{E67}
 
 ## Conclusions and outlook
 

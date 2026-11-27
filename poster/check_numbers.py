@@ -139,21 +139,14 @@ row(
 # i-QMS poster (poster/iqms.md): numbers not already on the KPS poster.
 
 
-def ratio21(law, alpha: float, s: float = 1.5) -> float:
-    return law(np.pi * alpha * abs(jv(2, s))) / law(np.pi * alpha * abs(jv(1, s)))
-
-
-def sin2(x):
-    return np.sin(x) ** 2
-
-
-row("iqms: kinematic I_2/I_1 = J_2^2/J_1^2 at S = 1.5", 0.17, (jv(2, 1.5) / jv(1, 1.5)) ** 2, 0.005)
-row("iqms: Laue I_2/I_1 at L = Lambda_P", 0.46, ratio21(sin2, 1.0), 0.005)
-f10 = np.load(ROOT / "explore" / "nb" / "poster_f10_points.npz")
-k = {float(a): i for i, a in enumerate(f10["alpha"])}
-for a, printed in ((1.0, 0.46),):
-    laue = f10["laue"][k[a]]
-    row(f"iqms: full TT Laue I_2/I_1 at L = {a:g} Lambda_P", printed, laue[1] / laue[0], 0.005)
+# i-QMS v5d, section 5: the overshoot map (Entry 67, L = Lambda_P / 2, Laue) in physical units
+row(
+    "iqms: t_tr = L / v_s at L = Lambda_P / 2, Laue (ns)",
+    8.4,
+    LAMBDA_P_LAUE / 2 / v_shear * 1e9,
+    0.05,
+)
+row("iqms: u0 at the J_1 maximum (pm)", 28, s_max * D440 / (2 * np.pi) * 1e12, 0.5)
 
 # i-QMS v2 (review round 1)
 row("iqms: Bragg t_tr = L / v_L at L = 296 um (ns)", 32.4, L / v_long * 1e9, 0.05)
