@@ -27,7 +27,7 @@ Manuscript syntax
                   corner), look ("lab" or plain), any SPEC number (e.g. "body_pt: 28");
                   plain only: takehome (one sentence under the title block, tagged), logo_left
                   ("reserved" keeps the upper left free, the session line then goes on top);
-                  lab: logo_left is a logo path, set on a white plate in the banner
+                  lab: logo_left is a white-safe logo path, set straight on the banner
   "## Title"      a panel (numbered automatically); every panel spans the page width
   "@pair"         the next two panels share one band, side by side
   "[[ 0.5 c" ... "|| 0.5" ... "]]"   a row inside a panel: columns with width fractions; "c"
@@ -649,7 +649,7 @@ def footer_plain(P, meta, problems):
 def header_lab(P, meta):
     """Lab look: navy band on the lab banner, white title block, the shield at the right, session
     line at the upper left, three-colour stripe under the band. An optional logo_left (a path) sits
-    on a white plate at the upper left, the session line then under it. Returns the y below the stripe."""
+    straight on the band at the upper left (white-safe artwork), the session line then under it. Returns the y below the stripe."""
     s, ax = SPEC, P.ax
     W, H, M = s["W"], s["H"], s["margin"]
     hh = s["header_h"]
@@ -675,13 +675,16 @@ def header_lab(P, meta):
         logo_w = 100
         P.image(ASSETS / "logo_ihs.png", W - 22.4 - 55.4, (hh - 79.7) / 2, 55.4, h=79.7)
     left = meta.get("logo_left")
-    session_y = 14
-    if left and (ROOT / left).exists():  # conference logo on a white plate, session line under it
-        P.rect(M + 6, 12, 120, 32, "white", z=2)
-        fit(P, ROOT / left, M + 9, 14, 114, 28, align="left")
-        session_y = 50
-    if meta.get("session"):
-        P.flow(meta["session"], M + 6, session_y, 150, s["caption_pt"], "white")
+    if left and (ROOT / left).exists():
+        # a white-on-transparent logo straight on the band, the session line in one line under it,
+        # the pair centred on the band's height
+        lh, gap, sh = 38.0, 5.0, 7.0
+        ly = (hh - lh - gap - sh) / 2
+        fit(P, ROOT / left, M + 6, ly, 190, lh, align="left")
+        if meta.get("session"):
+            P.flow(meta["session"], M + 6, ly + lh + gap, 200, 20, "#c9d6e0")
+    elif meta.get("session"):
+        P.flow(meta["session"], M + 6, 14, 150, s["caption_pt"], "white")
     tw = W - 2 * M - 2 * logo_w
     y = 15 - s["title_pt"] * PT_MM * (s["leading"] - 1)
     for line in meta.get("title", "").split("//"):
