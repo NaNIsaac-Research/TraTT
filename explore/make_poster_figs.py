@@ -70,7 +70,7 @@ TERM = "satellite"
 def use_iqms():
     global IQMS, OUT, BLUE, LABEL, TERM, F1_H, F7_H, F4_H
     IQMS, OUT, BLUE, LABEL, TERM = True, OUT / "iqms", "#1f4e8c", INK, "sideband"
-    F1_H, F7_H, F4_H = 5.2, 5.4, 3.8  # f1 key inside the axes, f7 map over its A-C traces
+    F1_H, F7_H, F4_H = 5.2, 4.85, 3.8  # f1 key inside the axes, f7 map over its A-C traces
 
 
 def style():
@@ -692,7 +692,7 @@ def f7():
 
         s_max = minimize_scalar(lambda s: -jv(1, s), bounds=(1, 3), method="bounded").x
         fig = plt.figure(figsize=(FIG_W, F7_H), constrained_layout=True)
-        grid = fig.add_gridspec(2, 3, height_ratios=[1.3, 1.0])
+        grid = fig.add_gridspec(2, 3, height_ratios=[1.0, 1.15], wspace=0.14)
         ax = fig.add_subplot(grid[0, :])
         im = ax.pcolormesh(
             data["S"], data["rise"], data["excess"], shading="nearest", cmap="magma", vmin=0
@@ -728,8 +728,9 @@ def f7():
             ax.annotate(
                 letter,
                 (S, rise),
-                xytext=(11, 6),
+                xytext=(10, -2) if letter == "A" else (11, 6),  # A below, clear of the J_1 label
                 textcoords="offset points",
+                va="top" if letter == "A" else "baseline",
                 fontsize=SMALL,
                 fontweight="bold",
                 color=color,
@@ -1310,15 +1311,16 @@ def f12():
     for m, (x, y) in VADILONGA.items():
         axv.plot(v, jv(m, VADILONGA_ARG * v) ** 2, color=ORDER[m], lw=1.8)
         axv.plot(x, y, "osd^v"[m], color=ORDER[m], mec=INK, ls="none")
+    # m = 2-4 crowd at the right edge, so their labels stack above the curves there
     for m, xy in (
         (0, (14, 0.88)),
         (1, (22, 0.37)),
-        (2, (41, 0.26)),
-        (3, (44, 0.185)),
-        (4, (44, 0.065)),
+        (2, (44, 0.58)),
+        (3, (44, 0.48)),
+        (4, (44, 0.38)),
     ):
         axv.text(
-            *xy, f"$m={m}$", color=ORDER[m], fontsize=SMALL - 2, ha="center" if m < 3 else "right"
+            *xy, f"$m={m}$", color=ORDER[m], fontsize=SMALL - 2, ha="center" if m < 2 else "right"
         )
     axv.set(
         xlim=(0, 45),
