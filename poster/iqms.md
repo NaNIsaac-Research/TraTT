@@ -114,9 +114,17 @@ In the formation time $\tau_n$ the front crosses one sideband extinction length;
 
 ## Build-up inside the crystal: depth–time map
 
-Behind the wavefront the sideband builds up; the crystal is complete when the front reaches $z=L$ at $t_{tr}$. {E1}{E9}
+[[ 0.55 c
 
-![Laue, Si 440, $S$ = 1.5, $L$ = 296 μm, step onset: $|D_h(z)|^2$ at the first-sideband angle (TT, phase-averaged). Along the wavefront, and along $z=L$ after $t_{tr}$, the colour follows the curve of section 5.](figures/poster/iqms/f16_depth_time.png){E1}{E9}{E20}
+![](figures/poster/iqms/f16_depth_time.png){E1}{E9}{E20}
+
+|| 0.45 c
+
+Behind the wavefront $z=v_st$ the sideband builds up; the crystal is complete when the front reaches $z=L$ at $t_{tr}$. {E1}{E9}
+
+![Laue, Si 440, $S$ = 1.5, $L$ = 296 μm, step onset: $|D_h(z)|^2$ at the first-sideband angle (TT, phase-averaged). The bottom edge $z=L$ is the section 5 curve.](none){E1}{E9}{E20}
+
+]]
 
 ## Conclusions and outlook
 

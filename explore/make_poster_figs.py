@@ -1386,6 +1386,7 @@ def f13():
 
 
 F16_ALPHA, F16_AAC, F16_S, F16_PHASES = 296e-6 / LAMBDA_LAUE, 100.0, 1.5, 8  # L = 296 um, 2 GHz
+F16_W = 7.8  # inches: the 0.55 column of a paired poster card, so the map prints near 4:3
 
 
 def f16_profiles():
@@ -1441,27 +1442,26 @@ def f16_profiles():
 
 
 def f16():
-    """i-QMS section 5: the first sideband inside the crystal while the wave enters. Laue, Si 440 at
+    """i-QMS section 6: the first sideband inside the crystal while the wave enters. Laue, Si 440 at
     30 keV, S = 1.5, L = 296 um, step onset; x = time after onset (ns), y = depth (um, down, as in the
-    section 1 schematic), colour = |D_h|^2 at the first-sideband angle where the wave has arrived;
-    the layer below the wavefront z = v_s t is plain grey; t_tr marked."""
+    section 2 schematic), colour = |D_h|^2 at the first-sideband angle over the whole slab; dashed
+    wavefront z = v_s t and t_tr marked. Near 4:3, sized to its column so the labels print at 24 pt."""
+    from matplotlib import patheffects
+
     style()
     zeta, t, I = f16_profiles()
     L_um = F16_ALPHA * LAMBDA_LAUE * 1e6
     t_tr = F16_ALPHA * LAMBDA_LAUE / V_SHEAR * 1e9
     lab = 24
-    fig, ax = plt.subplots(figsize=(FIG_W, 3.6), constrained_layout=True)
+    halo = [patheffects.withStroke(linewidth=4.5, foreground=INK)]
+    fig, ax = plt.subplots(figsize=(F16_W, 0.75 * F16_W), constrained_layout=True)
     tn, zn = t * t_tr, zeta * L_um
-    im = ax.pcolormesh(
-        tn, zn, I, shading="gouraud", cmap="cividis", vmin=0, vmax=1, rasterized=True
-    )
-    ax.contour(tn, zn, I, levels=[0.25, 0.5, 0.75], colors="white", linewidths=0.8, alpha=0.45)
-    cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.05, ticks=[0, 0.5, 1])
+    im = ax.pcolormesh(tn, zn, I, shading="gouraud", cmap="magma", vmin=0, vmax=1, rasterized=True)
+    cb = fig.colorbar(im, ax=ax, pad=0.02, fraction=0.06, ticks=[0, 0.5, 1])
     cb.set_label("$|D_h|^2/I_0$")
     cb.ax.tick_params(direction="in", which="both")
-    ax.add_patch(plt.Polygon([(0, 0), (t_tr, L_um), (0, L_um)], fc="#e6e6e6", ec="none", zorder=3))
-    ax.plot([0, t_tr], [0, L_um], color=INK, ls="--", lw=2.2, zorder=4)
-    ax.axvline(t_tr, color="white", ls=":", lw=1.8, zorder=4)
+    ax.plot([0, t_tr], [0, L_um], color="white", ls="--", lw=2.4, zorder=4, path_effects=halo)
+    ax.axvline(t_tr, color="white", ls=":", lw=2.2, zorder=4, path_effects=halo)
     ax.text(
         t_tr,
         1.02,
@@ -1471,25 +1471,16 @@ def f16():
         ha="center",
         va="bottom",
     )
-    y = 0.42 * L_um
     ax.text(
-        t_tr * (y - 22) / L_um - 1.2,
-        y,
-        "wavefront $z=v_st$",
+        0.62 * t_tr - 4.5,
+        0.62 * L_um,
+        "wavefront\n$z=v_st$",
         fontsize=lab,
+        color="white",
         ha="right",
         va="center",
         zorder=5,
-    )
-    ax.text(
-        1.5,
-        0.85 * L_um,
-        "not yet reached",
-        fontsize=lab,
-        ha="left",
-        va="center",
-        color=INK2,
-        zorder=5,
+        path_effects=halo,
     )
     ax.set(
         xlim=(0, t[-1] * t_tr),
