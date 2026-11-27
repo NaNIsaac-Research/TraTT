@@ -17,6 +17,9 @@ from tratt.core import required_nz, rocking  # noqa: E402
 
 ALPHA, AAC = 0.5, 40.0
 CASES = [("A", 1.5, 1.0), ("B", 3.0, 1.0), ("C", 3.85, 2.0)]
+TRACE_END = (
+    3.0  # t/t_tr; every case runs past its ramp to the same end, so all hold the stationary value
+)
 OUT = ROOT / "explore" / "nb"
 
 
@@ -74,7 +77,7 @@ def main():
         observable="carrier-phase-averaged intensity at eta=q, incident intensity=1",
         map_method="independent-satellite accumulated-coupling approximation",
         geometry="laue",
-        trace_window="0 <= t/t_tr <= rise + 1",
+        trace_window=f"0 <= t/t_tr <= max({TRACE_END:g}, rise + 1)",
         tt_checks=dict(phases=8, depth_grid="required_nz", times=101),
         tt_cases=dict(
             phases=16,
@@ -100,9 +103,20 @@ def main():
         )
         results["checks"].append(result)
         print(result, flush=True)
+    case_traces(results, arrays)
+    j, i = np.unravel_index(np.argmax(refined), refined.shape)
+    results["map_maximum"] = dict(
+        S=float(amplitudes[i]), rise=float(rises[j]), excess=float(refined[j, i])
+    )
+    save(results, arrays)
+
+
+def case_traces(results, arrays):
+    results["cases"] = []
     for label, S, rise in CASES:
-        times = np.linspace(0, 1 + rise, 601)
-        coarse_times = np.linspace(0, 1 + rise, 61)
+        end = max(TRACE_END, 1 + rise)
+        times = np.linspace(0, end, 601)
+        coarse_times = np.linspace(0, end, 61)
         trace = intensity(S, rise, times, samples=8193)
         tt = tt_average(S, rise, coarse_times)
         fine_tt = tt_average(S, rise, coarse_times, phases=16, refinement=2)
@@ -127,14 +141,25 @@ def main():
                 f"{label}_tt_I": fine_tt,
             }
         )
-    j, i = np.unravel_index(np.argmax(refined), refined.shape)
-    results["map_maximum"] = dict(
-        S=float(amplitudes[i]), rise=float(rises[j]), excess=float(refined[j, i])
-    )
+
+
+def save(results, arrays):
     np.savez_compressed(OUT / "e67_overshoot.npz", **arrays)
-    (OUT / "e67_overshoot.json").write_text(json.dumps(results, indent=2) + "\n", encoding="utf-8")
+    (OUT / "e67_overshoot.json").write_text(
+        json.dumps(results, indent=2) + "\n", encoding="utf-8", newline="\n"
+    )
     print(json.dumps(results, indent=2), flush=True)
 
 
+def cases_only():
+    """Recompute the A-C traces and keep the map and spot checks from the last full run."""
+    results = json.loads((OUT / "e67_overshoot.json").read_text(encoding="utf-8"))
+    with np.load(OUT / "e67_overshoot.npz") as data:
+        arrays = {k: data[k] for k in data.files}
+    results["trace_window"] = f"0 <= t/t_tr <= max({TRACE_END:g}, rise + 1)"
+    case_traces(results, arrays)
+    save(results, arrays)
+
+
 if __name__ == "__main__":
-    main()
+    cases_only() if "--cases" in sys.argv else main()

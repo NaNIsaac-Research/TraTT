@@ -163,6 +163,8 @@ darwin = wavelength / (2 * LAMBDA_P_LAUE * np.sin(theta_b))
 w1 = j1 * darwin
 row("iqms: Darwin half-width, Si 440 30 keV (urad, not printed)", 0.97, darwin * 1e6, 0.005)
 row("iqms: 0.1 w_1 Laue beam condition (urad)", 0.05, 0.1 * w1 * 1e6, 0.005)
+# i-QMS v5m, section 3: the dropped X-ray time derivative, transit along the beam in symmetric Laue
+row("iqms: X-ray transit L/(c cos theta_B) (ps)", 1.0, L / (C * np.cos(theta_b)) * 1e12, 0.05)
 
 
 def main() -> int:

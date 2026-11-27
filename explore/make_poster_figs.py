@@ -30,6 +30,9 @@ The i-QMS figures (--iqms) use the mplume "box" style at poster size (closed fra
 minor ticks, no grid) and its a0 context (print-size type), mplume main at 4c06415 (the a0
 context is not yet in a release): `uv run --with "mplume @ git+https://github.com/NaNIsaac/mplume@4c064154f8f0ff94f6c6dd300266b68a34759333"
 python explore/make_poster_figs.py --iqms ...`.
+
+"--dpi N" saves the same figures at N dpi into poster/out/<set>_<N>dpi/ (not tracked), for the
+editable PowerPoint copy of the poster (poster/build_pptx.py), which needs 300 dpi or more at print size.
 """
 
 from __future__ import annotations
@@ -65,12 +68,13 @@ BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
 IQMS = False
 LABEL = BLUE  # colour of the acoustic-wave labels in f9
 TERM = "satellite"
+DPI = None  # "--dpi N": save resolution override, output under poster/out
 
 
 def use_iqms():
     global IQMS, OUT, BLUE, LABEL, TERM, F1_H, F7_H, F4_H
     IQMS, OUT, BLUE, LABEL, TERM = True, OUT / "iqms", "#1f4e8c", INK, "sideband"
-    F1_H, F7_H, F4_H = 5.2, 4.6, 3.8  # f1 key inside the axes, f7 map only
+    F1_H, F7_H, F4_H = 5.2, 4.85, 3.8  # f1 key inside the axes, f7 map over its A-C traces
 
 
 def style():
@@ -129,6 +133,8 @@ def style():
                 "savefig.dpi": 200,
             },
         )
+    if DPI:
+        mpl.rcParams["savefig.dpi"] = DPI
 
 
 def finish(fig, ax, name):
@@ -675,18 +681,25 @@ def f6():
     finish(fig, ax, "f6_background")
 
 
+# i-QMS f7: one colour per TT-checked case, shared by its map marker and its trace
+F7_CASE_COLORS = {"A": "#4a90e2", "B": "#eb6834", "C": "#1baf7a"}
+
+
 def f7():
     import json
 
     style()
     data = np.load(ROOT / "explore" / "nb" / "e67_overshoot.npz")
     summary = json.loads((ROOT / "explore" / "nb" / "e67_overshoot.json").read_text())
-    if IQMS:  # the map alone; the J_1 maximum bounds the region without overshoot
+    if IQMS:  # map with the J_1 maximum, and the three TT-checked traces in the marker colours
+        from matplotlib import patheffects
         from scipy.optimize import minimize_scalar
         from scipy.special import jv
 
         s_max = minimize_scalar(lambda s: -jv(1, s), bounds=(1, 3), method="bounded").x
-        fig, ax = plt.subplots(figsize=(FIG_W, F7_H), constrained_layout=True)
+        fig = plt.figure(figsize=(FIG_W, F7_H), constrained_layout=True)
+        grid = fig.add_gridspec(2, 3, height_ratios=[1.0, 1.15], wspace=0.14)
+        ax = fig.add_subplot(grid[0, :])
         im = ax.pcolormesh(
             data["S"], data["rise"], data["excess"], shading="nearest", cmap="magma", vmin=0
         )
@@ -702,22 +715,91 @@ def f7():
             ha="right",
             va="top",
         )
-        for case in summary["cases"]:  # the three conditions checked against full TT
-            ax.plot(case["S"], case["rise"], "o", color="white", mec=INK, mew=1.5, ms=13)
-            ax.annotate(
-                case["label"],
-                (case["S"], case["rise"]),
-                xytext=(10, 6),
-                textcoords="offset points",
-                fontsize=SMALL,
-                fontweight="bold",
-                color="white",
-            )
         ax.set(
             xlabel=r"final acoustic amplitude $S$",
-            ylabel=r"rise time $T_{rise}/t_{tr}$",
+            ylabel=r"$T_{rise}/t_{tr}$",
             yticks=[1, 2, 3, 4],
         )
+
+        def num(v):
+            if v >= 0.01:
+                return f"{v:.2f}"
+            m, e = f"{v:.1e}".split("e")
+            return rf"${m}\times10^{{{int(e)}}}$"
+
+        for k, case in enumerate(summary["cases"]):
+            letter, S, rise = case["label"], case["S"], case["rise"]
+            color = F7_CASE_COLORS[letter]
+            ax.plot(S, rise, "o", color=color, mec="white", mew=2, ms=14)
+            ax.annotate(
+                letter,
+                (S, rise),
+                xytext=(10, -2) if letter == "A" else (11, 6),  # A below, clear of the J_1 label
+                textcoords="offset points",
+                va="top" if letter == "A" else "baseline",
+                fontsize=SMALL,
+                fontweight="bold",
+                color=color,
+                path_effects=[patheffects.withStroke(linewidth=4, foreground="white")],
+            )
+            a = fig.add_subplot(grid[1, k])
+            a.plot(data[f"{letter}_t"], data[f"{letter}_I"], color=color, lw=2.6)
+            a.plot(
+                data[f"{letter}_tt_t"][::4],
+                data[f"{letter}_tt_I"][::4],
+                "o",
+                mfc="white",
+                mec=color,
+                mew=2,
+                ms=7,
+            )
+            a.axhline(case["steady"], color=INK2, ls="--", lw=1.5)
+            peak, steady = case["peak"], case["steady"]
+            if letter == "B":  # the quantity the map shows
+                i = int(np.argmax(data["B_I"]))
+                tb = float(data["B_t"][i])
+                a.annotate(
+                    "",
+                    xy=(tb, peak),
+                    xytext=(tb, steady),
+                    arrowprops=dict(
+                        arrowstyle="<|-|>",
+                        color=INK,
+                        lw=1.6,
+                        mutation_scale=16,
+                        shrinkA=0,
+                        shrinkB=0,
+                    ),
+                )
+                a.text(tb, peak + 0.05, r"$\Delta I$", fontsize=SMALL, ha="center", va="bottom")
+            T = "t_{tr}" if rise == 1 else rf"{rise:g}\,t_{{tr}}"
+            a.set_title(
+                rf"{letter}: $S$ = {S:g}, $T_{{rise}}={T}$",
+                fontsize=SMALL,
+                color=color,
+                fontweight="bold",
+            )
+            values = (
+                f"peak = steady = {num(steady)}"
+                if peak - steady < 1e-9
+                else f"peak {num(peak)}\nsteady {num(steady)}"
+            )
+            a.text(
+                0.95,
+                0.92,
+                values,
+                transform=a.transAxes,
+                fontsize=SMALL - 2,
+                ha="right",
+                va="top",
+                bbox=dict(fc="white", ec="none", pad=1),
+            )
+            a.set(xlabel=r"time $t/t_{tr}$", xlim=(0, 3), ylim=(-0.025, 1.45), yticks=[0, 0.5, 1])
+            if k == 0:
+                a.set_ylabel(r"$I_1/I_{inc}$")
+            else:
+                a.tick_params(labelleft=False)
+        fig.align_ylabels()
         OUT.mkdir(parents=True, exist_ok=True)
         fig.savefig(OUT / "f7_overshoot.png")
         print("wrote", OUT / "f7_overshoot.png")
@@ -1204,7 +1286,7 @@ def f12():
     from scipy.special import jv
 
     style()
-    fig, (ax, axv) = plt.subplots(1, 2, figsize=(F12_W, 5.6), constrained_layout=True)
+    fig, (ax, axv) = plt.subplots(1, 2, figsize=(F12_W, 4.6), constrained_layout=True)
     u = np.linspace(0, 65, 600)  # pm
     S = SI_H440 * u * 1e-12
     # labels beside their curves, inside the frame: n = 0 above its falling edge, n = 3 at the right
@@ -1235,15 +1317,16 @@ def f12():
     for m, (x, y) in VADILONGA.items():
         axv.plot(v, jv(m, VADILONGA_ARG * v) ** 2, color=ORDER[m], lw=1.8)
         axv.plot(x, y, "osd^v"[m], color=ORDER[m], mec=INK, ls="none")
+    # m = 2-4 crowd at the right edge, so their labels stack above the curves there
     for m, xy in (
         (0, (14, 0.88)),
         (1, (22, 0.37)),
-        (2, (41, 0.26)),
-        (3, (44, 0.185)),
-        (4, (44, 0.065)),
+        (2, (44, 0.58)),
+        (3, (44, 0.48)),
+        (4, (44, 0.38)),
     ):
         axv.text(
-            *xy, f"$m={m}$", color=ORDER[m], fontsize=SMALL - 2, ha="center" if m < 3 else "right"
+            *xy, f"$m={m}$", color=ORDER[m], fontsize=SMALL - 2, ha="center" if m < 2 else "right"
         )
     axv.set(
         xlim=(0, 45),
@@ -1489,8 +1572,16 @@ def f17():
 
 
 if __name__ == "__main__":
-    names = [a for a in sys.argv[1:] if a != "--iqms"]
-    if "--iqms" in sys.argv:
+    args = sys.argv[1:]
+    if "--dpi" in args:
+        k = args.index("--dpi")
+        DPI = int(args[k + 1])
+        del args[k : k + 2]
+    names = [a for a in args if a != "--iqms"]
+    if "--iqms" in args:
         use_iqms()
+    if DPI:
+        OUT = ROOT / "poster" / "out" / f"{OUT.name}_{DPI}dpi"
+        OUT.mkdir(parents=True, exist_ok=True)
     for name in names or ["f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10"]:
         globals()[name]()
